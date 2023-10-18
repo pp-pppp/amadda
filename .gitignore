@@ -1,0 +1,13 @@
+# VS Code
+.vscode/
+
+# IntelliJ
+.idea/
+
+# misc
+**/.DS_Store
+**/*.pem
+
+# env
+**/.env
+**/env.properties
