@@ -6,10 +6,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.pppppp.amadda.global.entity.exception.errorcode.ErrorCode;
 
-import lombok.extern.slf4j.Slf4j;
-
 @RestControllerAdvice
-@Slf4j
 public class GlobalExceptionHandler {
 	@ExceptionHandler(RestApiException.class)
 	public ResponseEntity<Object> handleCustomException(RestApiException e){
