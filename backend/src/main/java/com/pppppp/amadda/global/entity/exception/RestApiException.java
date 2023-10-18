@@ -8,6 +8,5 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class RestApiException extends RuntimeException {
-	// 전달할 에러 코드
 	private final ErrorCode errorCode;
 }

@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
-	// REST API에서 발생하는 예외 던지는 메소드
 	@ExceptionHandler(RestApiException.class)
 	public ResponseEntity<Object> handleCustomException(RestApiException e){
 		ErrorCode errorCode = e.getErrorCode();
