@@ -27,6 +27,6 @@ public class Comment extends BaseEntity {
 	@JoinColumn(name = "schedule_seq")
 	private Schedule schedule;
 
-	@Column(nullable = false, length = 100)
+	@Column(nullable = false)
 	private String comment_content;
 }

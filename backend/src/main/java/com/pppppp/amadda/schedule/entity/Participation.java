@@ -30,7 +30,7 @@ public class Participation extends BaseEntity {
 	@JoinColumn(name = "category_seq")
 	private Category category;
 
-	@Column(nullable = false, length = 100)
+	@Column(nullable = false, length = 50)
 	private String scheduleName;
 
 	@Column(nullable = false)
