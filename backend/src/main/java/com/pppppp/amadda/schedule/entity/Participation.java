@@ -37,5 +37,5 @@ public class Participation extends BaseEntity {
 	private String scheduleMemo;
 
 	@Column
-	private Long alarmTime;
+	private Integer alarmTime;
 }
