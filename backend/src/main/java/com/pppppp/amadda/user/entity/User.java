@@ -20,4 +20,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String imageUrl;
 
+    @Column(nullable = false)
+    private boolean isInited;
+
 }
