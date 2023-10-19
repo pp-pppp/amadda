@@ -11,13 +11,13 @@ public class User extends BaseEntity {
     @Column
     private Long userSeq;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50, updatable = false)
     private String userName;
 
-    @Column
+    @Column(length = 50, unique = true)
     private String userId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100, unique = true)
     private String imageUrl;
 
     @Column(nullable = false)

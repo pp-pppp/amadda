@@ -14,7 +14,7 @@ public class UserGroup extends BaseEntity {
     @Column
     private Long groupSeq;
 
-    @Column
+    @Column(nullable = false, length = 50)
     private String groupName;
 
     @ManyToOne(fetch = LAZY)
