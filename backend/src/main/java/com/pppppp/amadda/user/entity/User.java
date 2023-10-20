@@ -10,7 +10,6 @@ import jakarta.persistence.*;
 public class User extends BaseEntity {
 
     @Id
-    @Column(nullable = false)
     private Long userSeq;
 
     @Column(nullable = false, length = 50, updatable = false)
