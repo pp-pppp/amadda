@@ -6,8 +6,6 @@ import jakarta.persistence.*;
 
 import static jakarta.persistence.FetchType.LAZY;
 
-import org.hibernate.annotations.ColumnDefault;
-
 @Entity
 public class FriendRequest extends BaseEntity {
 
