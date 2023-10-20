@@ -1,5 +1,7 @@
 package com.pppppp.amadda.user.entity;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import com.pppppp.amadda.global.entity.BaseEntity;
 import jakarta.persistence.*;
 
@@ -8,7 +10,6 @@ import jakarta.persistence.*;
 public class User extends BaseEntity {
 
     @Id
-    @Column
     private Long userSeq;
 
     @Column(nullable = false, length = 50, updatable = false)
@@ -17,10 +18,11 @@ public class User extends BaseEntity {
     @Column(length = 50, unique = true)
     private String userId;
 
-    @Column(nullable = false, length = 100, unique = true)
+    @Column(nullable = false, unique = true)
     private String imageUrl;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    @ColumnDefault(value = "0")
     private boolean isInited;
 
 }

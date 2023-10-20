@@ -11,13 +11,12 @@ public class UserGroup extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
     private Long groupSeq;
 
     @Column(nullable = false, length = 50)
     private String groupName;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY, optional = false)
     @JoinColumn(name = "user_seq")
     private User owner;
 

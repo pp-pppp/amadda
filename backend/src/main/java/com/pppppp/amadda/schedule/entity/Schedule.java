@@ -2,6 +2,8 @@ package com.pppppp.amadda.schedule.entity;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import com.pppppp.amadda.global.entity.BaseEntity;
 import com.pppppp.amadda.user.entity.User;
 
@@ -28,7 +30,8 @@ public class Schedule extends BaseEntity {
 	@JoinColumn(name = "repeated_schedule_seq")
 	private RepeatedSchedule repeatedSchedule;
 
-	@Column(nullable = false)
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+	@ColumnDefault("0")
 	private boolean isTimeSelected;
 
 	@Column
@@ -37,15 +40,18 @@ public class Schedule extends BaseEntity {
 	@Column
 	private LocalDateTime scheduleEndAt;
 
-	@Column(nullable = false)
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+	@ColumnDefault("0")
 	private boolean isAlarmed;
 
-	@Column(nullable = false)
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+	@ColumnDefault("0")
 	private boolean isFinished;
 
 	@Column
 	private String scheduleContent;
 
-	@Column(nullable = false)
+	@Column(nullable = false, columnDefinition = "TINYINT(1)")
+	@ColumnDefault("0")
 	private boolean isAuthorizedAll;
 }

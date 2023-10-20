@@ -11,18 +11,18 @@ public class FriendRequest extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
     private Long requestSeq;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY, optional = false)
     @JoinColumn(name = "owner_seq")
     private User owner;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY, optional = false)
     @JoinColumn(name = "friend_seq")
     private User friend;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private FriendRequestStatus status; // REQUESTED, ACCEPTED, DECLINED
 
 }
