@@ -33,7 +33,7 @@ public class Participation extends BaseEntity {
 	@Column(nullable = false, length = 50)
 	private String scheduleName;
 
-	@Column(nullable = false)
+	@Column
 	private String scheduleMemo;
 
 	@Column

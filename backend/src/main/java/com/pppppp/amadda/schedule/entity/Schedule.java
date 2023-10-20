@@ -29,7 +29,7 @@ public class Schedule extends BaseEntity {
 	private RepeatedSchedule repeatedSchedule;
 
 	@Column(nullable = false)
-	private boolean isTimeSelected;
+	private Boolean isTimeSelected;
 
 	@Column
 	private LocalDateTime scheduleStartAt;
@@ -38,14 +38,14 @@ public class Schedule extends BaseEntity {
 	private LocalDateTime scheduleEndAt;
 
 	@Column(nullable = false)
-	private boolean isAlarmed;
+	private Boolean isAlarmed;
 
 	@Column(nullable = false)
-	private boolean isFinished;
+	private Boolean isFinished;
 
 	@Column
 	private String scheduleContent;
 
 	@Column(nullable = false)
-	private boolean isAuthorizedAll;
+	private Boolean isAuthorizedAll;
 }
