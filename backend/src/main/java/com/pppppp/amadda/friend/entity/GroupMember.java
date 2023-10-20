@@ -11,7 +11,6 @@ public class GroupMember extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
     private Long relationSeq;
 
     @ManyToOne(fetch = LAZY)

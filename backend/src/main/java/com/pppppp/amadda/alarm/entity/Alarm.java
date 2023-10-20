@@ -1,5 +1,7 @@
 package com.pppppp.amadda.alarm.entity;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import com.pppppp.amadda.global.entity.BaseEntity;
 import com.pppppp.amadda.user.entity.User;
 import jakarta.persistence.Column;
@@ -25,10 +27,12 @@ public class Alarm extends BaseEntity {
     @Column(nullable = false, length = 255)
     private String content;
 
-    @Column(nullable = false, columnDefinition="TINYINT(1) DEFAULT 0")
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    @ColumnDefault("0")
     private boolean isRead;
 
-    @Column(nullable = false, columnDefinition="TINYINT(1) DEFAULT 0")
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    @ColumnDefault("0")
     private boolean isSend;
 
 }

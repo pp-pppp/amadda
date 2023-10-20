@@ -6,12 +6,13 @@ import jakarta.persistence.*;
 
 import static jakarta.persistence.FetchType.LAZY;
 
+import org.hibernate.annotations.ColumnDefault;
+
 @Entity
 public class FriendRequest extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
     private Long requestSeq;
 
     @ManyToOne(fetch = LAZY)
@@ -23,6 +24,7 @@ public class FriendRequest extends BaseEntity {
     private User friend;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private FriendRequestStatus status; // REQUESTED, ACCEPTED, DECLINED
 
 }

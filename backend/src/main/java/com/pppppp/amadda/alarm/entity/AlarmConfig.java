@@ -1,5 +1,7 @@
 package com.pppppp.amadda.alarm.entity;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import com.pppppp.amadda.global.entity.BaseEntity;
 import com.pppppp.amadda.user.entity.User;
 import jakarta.persistence.Column;
@@ -28,6 +30,7 @@ public class AlarmConfig extends BaseEntity {
     @Column(nullable = false, length = 50)
     private AlarmType alarmType;
 
-    @Column(nullable = false, columnDefinition="TINYINT(1) DEFAULT 1")
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    @ColumnDefault("1")
     private boolean isEnabled;
 }
