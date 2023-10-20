@@ -13,7 +13,7 @@ public class UserGroup extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long groupSeq;
 
-    @Column(nullable = false, length = 40)
+    @Column(nullable = false, length = 50)
     private String groupName;
 
     @ManyToOne(fetch = LAZY, optional = false)
