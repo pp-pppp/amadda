@@ -5,6 +5,8 @@ import com.pppppp.amadda.user.entity.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,4 +26,8 @@ public class Category extends BaseEntity {
 
 	@Column(nullable = false, length = 20)
 	private String categoryName;
+
+	@Enumerated(EnumType.STRING)
+	@Column(length = 10)
+	private CategoryColor categoryColor;
 }
