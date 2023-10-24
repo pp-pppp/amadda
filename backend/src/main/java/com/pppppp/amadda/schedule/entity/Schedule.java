@@ -26,10 +26,6 @@ public class Schedule extends BaseEntity {
 	@JoinColumn(name = "user_seq")
 	private User user;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "repeated_schedule_seq")
-	private RepeatedSchedule repeatedSchedule;
-
 	@Column(nullable = false, columnDefinition = "TINYINT(1)")
 	@ColumnDefault("0")
 	private boolean isTimeSelected;
