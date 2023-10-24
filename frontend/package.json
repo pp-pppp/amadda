@@ -1,0 +1,19 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "preinstall": "pnpm dlx only-allow pnpm"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "workspaces": [
+    "frontend/*"
+  ],
+  "packageManager": "pnpm@8.9.2",
+  "devDependencies": {
+    "pnpm": "^8.9.2"
+  }
+}
