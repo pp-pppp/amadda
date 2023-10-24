@@ -26,7 +26,7 @@ public class Participation extends BaseEntity {
 	@JoinColumn(name = "schedule_seq")
 	private Schedule schedule;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "category_seq")
 	private Category category;
 
