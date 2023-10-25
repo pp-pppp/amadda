@@ -10,4 +10,4 @@
 
 # env
 **/.env
-**/env.properties
+**/env.yml
