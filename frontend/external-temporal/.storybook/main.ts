@@ -1,22 +1,22 @@
-import type { StorybookConfig } from "@storybook/react-webpack5";
-import { VanillaExtractPlugin } from "@vanilla-extract/webpack-plugin";
-import MiniCssExtractPlugin from "mini-css-extract-plugin";
-import path from "path";
+import type { StorybookConfig } from '@storybook/react-webpack5';
+import { VanillaExtractPlugin } from '@vanilla-extract/webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import path from 'path';
 
 const config: StorybookConfig = {
-  stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
+  stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
   addons: [
-    "@storybook/addon-links",
-    "@storybook/addon-essentials",
-    "@storybook/addon-onboarding",
-    "@storybook/addon-interactions",
+    '@storybook/addon-links',
+    '@storybook/addon-essentials',
+    '@storybook/addon-onboarding',
+    '@storybook/addon-interactions',
   ],
   framework: {
-    name: "@storybook/react-webpack5",
+    name: '@storybook/react-webpack5',
     options: {},
   },
   docs: {
-    autodocs: "tag",
+    autodocs: 'tag',
   },
   staticDirs: ['../public'],
   webpackFinal(config, options) {
@@ -56,7 +56,7 @@ const config: StorybookConfig = {
     config.resolve.alias = {
       //@ts-ignore
       ...config.resolve.alias,
-      '@/*': path.resolve(__dirname, '..'),
+      '@': path.resolve(__dirname, '../src'),
     };
     return config;
   },
