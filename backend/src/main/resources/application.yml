@@ -1,0 +1,88 @@
+spring:
+  profiles:
+    default: local
+
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        use_sql_comments: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+
+  jackson:
+    time-zone: Asia/Seoul
+
+server:
+  port: 8080
+  
+# TODO: S3 설정 추가 필요 => aws.yml
+#cloud:
+#  aws:
+#    s3:
+#      bucket: ${aws.s3.bucket}
+#    credentials:
+#      access-key: ${aws.s3.key.access}
+#      secret-key: ${aws.s3.key.secret}
+#    region:
+#      static: ${aws.s3.region}
+#      auto: false
+#    stack:
+#      auto: false
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    defer-datasource-initialization: true
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${aws.rds.prod.url}
+    username: ${aws.rds.prod.username}
+    password: ${aws.rds.prod.password}
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    defer-datasource-initialization: true
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${mysql.url}
+    username: ${mysql.username}
+    password: ${mysql.password}
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:~/ammada;MODE=MYSQL
+    username: sa
+    password:
+
+  h2:
+    console:
+      path: /h2-console
+      enabled: true
+
+  sql:
+    init:
+      mode: never
