@@ -1,4 +1,4 @@
-import { globalFontFace } from '@vanilla-extract/css';
+import { globalFontFace, globalStyle } from '@vanilla-extract/css';
 
 globalFontFace('pretendard', {
   src: 'url("/fonts/Pretendard-Regular.woff")',
@@ -8,4 +8,8 @@ globalFontFace('pretendard', {
 globalFontFace('pretendardBold', {
   src: 'url("/fonts/Pretendard-Bold.woff")',
   fontWeight: 700,
+});
+
+globalStyle('html, body', {
+  backgroundColor: 'pink',
 });
