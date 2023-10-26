@@ -32,13 +32,13 @@ public class ScheduleController {
     public void getSchedule(@RequestParam(value = "category", required = false) Long categorySeq,
         @RequestParam(value = "searchKey", required = false) String searchKey,
         @RequestParam(value = "unscheduled", required = false) Long unscheduled) {
-        log.info("GET /api/schedule?category=" + categorySeq + "&searchKey=" + searchKey
-            + "&unscheduled=" + unscheduled);
+        log.info("GET /api/schedule?category={}&searchKey={}&unscheduled={}", categorySeq,
+            searchKey, unscheduled);
     }
 
     @GetMapping("/{scheduleSeq}/participation")
     public void getParticipatingUsers(@PathVariable Long scheduleSeq,
         @RequestParam(value = "searchKey", required = false) String searchKey) {
-        log.info("GET /api/schedule/" + scheduleSeq + "/participation?searchKey=" + searchKey);
+        log.info("GET /api/schedule/{}/participation?searchKey={}", scheduleSeq, searchKey);
     }
 }
