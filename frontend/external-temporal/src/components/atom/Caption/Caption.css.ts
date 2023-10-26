@@ -5,7 +5,7 @@ const BASE = style({
   fontSize: '0.9rem',
 });
 
-export const TYPE_VARIANTS = styleVariants({
+export const TYPE = styleVariants({
   none: [
     BASE,
     {
