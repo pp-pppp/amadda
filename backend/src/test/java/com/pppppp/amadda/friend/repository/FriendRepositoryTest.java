@@ -10,23 +10,22 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ActiveProfiles("test")
-@SpringBootTest
 class FriendRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
     private FriendRepository friendRepository;
 
-    @DisplayName("")
+    @DisplayName("친구 신청을 보내면 friend_request 테이블에 친구 요청 보냄 상태로 저장된다. ")
     @Test
-    void test() {
+    void sendFriendRequest() {
         // given
+//        Friend f1 = Friend.
 
 
         // when
 
 
-        //then
+        // then
 
     }
 
