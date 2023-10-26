@@ -1,5 +1,5 @@
 import { HTMLAttributes } from 'react';
-import { TYPE_VARIANTS } from './Caption.css';
+import { TYPE } from './Caption.css';
 
 interface Props extends HTMLAttributes<HTMLParagraphElement> {
   type: 'none' | 'desc' | 'warn';
@@ -7,5 +7,5 @@ interface Props extends HTMLAttributes<HTMLParagraphElement> {
 }
 
 export default function Caption({ type, caption = '' }: Props) {
-  return <p className={TYPE_VARIANTS[type]}>{caption}</p>;
+  return <p className={TYPE[type]}>{caption}</p>;
 }
