@@ -44,6 +44,33 @@ module.exports = (env, argv) => {
             },
           ],
         },
+        {
+          test: /\.(jpe?g|png|gif)$/i,
+          use: [
+            {
+              loader: 'url-loader',
+              options: {
+                limit: 8192,
+                name: 'assets/images/[name].[hash:8].[ext]',
+              },
+            },
+          ],
+        },
+        {
+          test: /\.svg$/i,
+          use: ['@svgr/webpack'],
+        },
+        {
+          test: /\.(woff|woff2|eot|ttf|otf)$/i,
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                name: 'assets/fonts/[name].[hash:8].[ext]',
+              },
+            },
+          ],
+        },
       ],
     },
     plugins: [
