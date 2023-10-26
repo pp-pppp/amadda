@@ -1,18 +1,17 @@
 import { globalFontFace, globalStyle } from '@vanilla-extract/css';
 import colors from './constants/colors';
 
-globalFontFace('pretendard', {
+globalFontFace('regular', {
   src: 'url("/fonts/Pretendard-Regular.woff")',
   fontWeight: 400,
 });
 
-globalFontFace('pretendardBold', {
+globalFontFace('bold', {
   src: 'url("/fonts/Pretendard-Bold.woff")',
   fontWeight: 700,
 });
 
 globalStyle('html, body, h1, h2, h3, h4, h5, h6, p, span', {
-  fontFamily: 'pretendard',
   margin: 0,
   padding: 0,
   fontWeight: 400,
@@ -23,6 +22,7 @@ globalStyle('html, body, h1, h2, h3, h4, h5, h6, p, span', {
 
 globalStyle('*', {
   boxSizing: 'border-box',
+  fontFamily: 'regular',
 });
 
 globalStyle('a', {
