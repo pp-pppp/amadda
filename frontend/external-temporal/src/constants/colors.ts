@@ -30,11 +30,11 @@ export default {
   key: KEY,
   white: WHITE,
   black: BLACK,
-  disabled: GREY_300,
+  disabled: GREY_200,
   keyHover: KEY78,
   whiteHover: GREY_200,
   blackHover: GREY_700,
-  disalbedText: GREY_700,
+  disalbedText: GREY_400,
   category: {
     salmon: '#e87763',
     yellow: '#f2d057',
