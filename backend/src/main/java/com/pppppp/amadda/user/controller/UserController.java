@@ -25,7 +25,7 @@ public class UserController {
 
     }
 
-    @GetMapping
+    @GetMapping("")
     public void findUser(@RequestParam String searchKey) {
         log.info("전체 유저에서 친구 검색. 일치로만 검색할거임. ");
         log.info("searchKey="+searchKey);
@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @GetMapping("/{userSeq}")
-    public void hoverUserInfo(@RequestParam String userSeq) {
+    public void hoverUserInfo(@RequestParam Long userSeq) {
         log.info("유저 정보. 호버용. ");
 
     }

@@ -14,7 +14,6 @@ public class FriendController {
     private final FriendService friendService;
 
     @GetMapping
-//    public List<FriendReadResponse> getFriendList() {
     public void getFriendList(@RequestParam String searchKey) {
         log.info("친구 목록 검색");
         log.info("searchKey="+searchKey);
@@ -27,7 +26,7 @@ public class FriendController {
     }
 
     @PostMapping("/request/{requestSeq}")
-    public void acceptFriendRequest(@PathVariable String requestSeq) {
+    public void acceptFriendRequest(@PathVariable Long requestSeq) {
         log.info("친구 요청 수락");
 
     }
