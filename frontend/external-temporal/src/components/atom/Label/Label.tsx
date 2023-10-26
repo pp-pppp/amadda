@@ -3,13 +3,9 @@ import { HTMLAttributes } from 'react';
 import { BASE } from './Label.css';
 
 interface Props extends HTMLAttributes<HTMLLabelElement> {
-  label: string;
   id: string;
 }
-export default function Label({ label, id }: Props) {
-  return (
-    <label className={BASE} htmlFor={id}>
-      {label}
-    </label>
-  );
+
+export default function Label({ id, ...props }: Props) {
+  return <label className={BASE} htmlFor={id} {...props}></label>;
 }

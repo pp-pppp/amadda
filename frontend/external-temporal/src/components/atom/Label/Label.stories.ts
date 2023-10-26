@@ -18,7 +18,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Text: Story = {
   args: {
-    label: '이메일을 입력해주세요.',
     id: 'sample-text',
+    children: '이메일을 입력해주세요.',
   },
 };
