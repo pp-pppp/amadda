@@ -24,13 +24,13 @@ export const None: Story = {
 export const Desc: Story = {
   args: {
     type: 'desc',
-    caption: '실명 또는 실명에 가까운 별명을 넣어주세요.',
+    children: '실명 또는 실명에 가까운 별명을 넣어주세요.',
   },
 };
 
 export const Warn: Story = {
   args: {
     type: 'warn',
-    caption: '아이디에는 영소문자와 숫자만 사용해주세요.',
+    children: '아이디에는 영소문자와 숫자만 사용해주세요.',
   },
 };
