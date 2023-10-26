@@ -39,7 +39,7 @@ export const SIZE = styleVariants({
   '7.5rem': [
     BASE,
     {
-      height: '7rem',
+      height: '7.5rem',
     },
   ],
   '10rem': [
