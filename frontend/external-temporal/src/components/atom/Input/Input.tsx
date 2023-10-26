@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { ChangeEvent, HTMLAttributes } from 'react';
-import { TYPE_VARIANTS } from './Input.css';
+import { TYPE } from './Input.css';
 
 interface Props extends HTMLAttributes<HTMLInputElement> {
   type: 'text' | 'checkbox';
@@ -27,7 +27,7 @@ export default function Input({
 }: Props) {
   return (
     <input
-      className={TYPE_VARIANTS[type]}
+      className={TYPE[type]}
       type={type}
       id={id}
       name={name}

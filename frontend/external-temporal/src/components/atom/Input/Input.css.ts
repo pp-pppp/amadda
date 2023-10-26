@@ -25,7 +25,7 @@ const BASE_CHECKBOX = style({
   cursor: 'pointer',
 });
 
-export const TYPE_VARIANTS = styleVariants({
+export const TYPE = styleVariants({
   text: [
     BASE,
     BASE_TEXT,
