@@ -49,7 +49,8 @@ class UserServiceTest extends IntegrationTestSupport {
 
         // when // then
         assertThatThrownBy(() -> userService.getUserBySeq(1111l))
-                .isInstanceOf(RestApiException.class);
-                // 추후 코드랑 메시지 확인 코드 추가 예정
+                .isInstanceOf(RestApiException.class)
+                .hasMessage("USER_NOT_FOUND")
+                ;
     }
 }
