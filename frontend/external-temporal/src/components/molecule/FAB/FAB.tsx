@@ -1,14 +1,9 @@
 import { Icon } from '@/components/atom/Icon/Icon';
-import { HTMLAttributes } from 'react';
 import { BASE } from './FAB.css';
 
-interface Props extends HTMLAttributes<HTMLButtonElement> {
-  onClick: () => void;
-}
-
-export default function FAB({ onClick }: Props) {
+export default function FAB() {
   return (
-    <button className={BASE} onClick={onClick}>
+    <button className={BASE} type="button">
       <Icon type="scheduleadd" color="white" cursor="pointer"></Icon>
     </button>
   );
