@@ -19,5 +19,5 @@ public class UserService {
     public Optional<User> findUserByUserSeq(Long userSeq) {
         return Optional.ofNullable(userSeq).flatMap(userRepository::findByUserSeq);
     }
-
+  
 }
