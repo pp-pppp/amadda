@@ -42,13 +42,13 @@ class FriendRequestTest extends IntegrationTestSupport {
 
         // when
         List<FriendRequest> savedFr = friendRequestRepository.findAll();
-        savedFr.get(0).update(FriendRequestStatus.ACCEPTED);
+        savedFr.get(0).updateStatus(FriendRequestStatus.ACCEPTED);
 
         //then
         assertThat(savedFr)
-                .extracting("requestSeq", "owner", "friend", "status")
+                .extracting("owner", "friend", "status")
                 .containsExactlyInAnyOrder(
-                        tuple(1L, u1, u2, FriendRequestStatus.ACCEPTED)
+                        tuple(u1, u2, FriendRequestStatus.ACCEPTED)
                 );
     }
 

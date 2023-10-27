@@ -13,8 +13,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
@@ -92,7 +90,7 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         List<FriendRequest> friendRequests = friendRequestRepository.saveAll(List.of(fr));
 
         List<FriendRequest> savedFr = friendRequestRepository.findAll();
-        savedFr.get(0).update(FriendRequestStatus.ACCEPTED); // 수정
+        savedFr.get(0).updateStatus(FriendRequestStatus.ACCEPTED); // 수정
 
         FriendRequestRequest request = FriendRequestRequest.builder()
                 .userSeq(1111L)
