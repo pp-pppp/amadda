@@ -2,8 +2,6 @@ import { style, styleVariants } from '@vanilla-extract/css';
 import colors from '@/constants/colors';
 
 const BASE = style({
-  height: '2.5rem',
-  borderRadius: '0.5rem',
   backgroundColor: colors.GREY_200,
   ':disabled': {
     backgroundColor: colors.disabled,
@@ -12,16 +10,20 @@ const BASE = style({
 });
 
 const BASE_TEXT = style({
-  color: colors.BLACK,
   border: 'none',
+  borderRadius: '0.5rem',
+  color: colors.BLACK,
+  height: '2.5rem',
   padding: '0rem 1rem',
   width: '100%',
 });
 
 const BASE_CHECKBOX = style({
   appearance: 'none',
+  borderRadius: '0.3rem',
   border: `0.1rem solid ${colors.key} `,
-  width: '2.5rem',
+  height: '1.25rem',
+  width: '1.25rem',
   cursor: 'pointer',
 });
 
