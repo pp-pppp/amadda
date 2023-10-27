@@ -47,7 +47,10 @@ export const TYPE = styleVariants({
     BASE,
     BASE_CHECKBOX,
     {
-      ':checked': {
+      '&:checked': {
+        backgroundImage: 'url("/image/checked.svg")',
+        backgroundSize: '1.5rem',
+        backgroundPosition: 'center center',
         backgroundColor: colors.key,
       },
       ':disabled': {
