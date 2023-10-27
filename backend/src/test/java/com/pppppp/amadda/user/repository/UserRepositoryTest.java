@@ -31,13 +31,12 @@ class UserRepositoryTest extends IntegrationTestSupport {
         // given
         User u1 = User.create(1111l, "유저1", "id1", "imageUrl1", false);
         User u2 = User.create(1234l, "유저2", "id2", "imageUrl2", true);
-        userRepository.saveAll(List.of(u1, u2));
 
         // when
-        List<User> users = userRepository.findAll();
+        List<User> savedUsers = userRepository.saveAll(List.of(u1, u2));
 
         //then
-        assertThat(users).hasSize(2)
+        assertThat(savedUsers).hasSize(2)
                 .extracting("userSeq", "userName", "userId", "imageUrl", "isInited")
                 .containsExactlyInAnyOrder(
                         tuple(1111l, "유저1", "id1", "imageUrl1", false),
@@ -54,8 +53,7 @@ class UserRepositoryTest extends IntegrationTestSupport {
         userRepository.saveAll(List.of(u1, u2));
 
         // when
-        User u = userRepository.findByUserSeq(1111l)
-                .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        User u = userRepository.findByUserSeq(1111l).get();
 
         //then
         assertThat(u).isNotNull();

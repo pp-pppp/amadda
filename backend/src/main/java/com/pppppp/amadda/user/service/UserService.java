@@ -15,7 +15,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public User getUserBySeq(Long userSeq) {
+    public User getUserInfoBySeq(Long userSeq) {
         return findUserByUserSeq(userSeq).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
     }
 
