@@ -34,6 +34,14 @@ public class Schedule extends BaseEntity {
     @ColumnDefault("0")
     private boolean isTimeSelected;
 
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    @ColumnDefault("0")
+    private boolean isDateSelected;
+
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    @ColumnDefault("0")
+    private boolean isAllDay;
+
     @Column
     private LocalDateTime scheduleStartAt;
 
@@ -56,11 +64,13 @@ public class Schedule extends BaseEntity {
     private boolean isAuthorizedAll;
 
     @Builder
-    public Schedule(User user, boolean isTimeSelected, LocalDateTime scheduleStartAt,
-        LocalDateTime scheduleEndAt, boolean isAlarmed, boolean isFinished, String scheduleContent,
-        boolean isAuthorizedAll) {
+    public Schedule(User user, boolean isTimeSelected, boolean isDateSelected, boolean isAllDay,
+        LocalDateTime scheduleStartAt, LocalDateTime scheduleEndAt, boolean isAlarmed,
+        boolean isFinished, String scheduleContent, boolean isAuthorizedAll) {
         this.user = user;
         this.isTimeSelected = isTimeSelected;
+        this.isDateSelected = isDateSelected;
+        this.isAllDay = isAllDay;
         this.scheduleStartAt = scheduleStartAt;
         this.scheduleEndAt = scheduleEndAt;
         this.isAlarmed = isAlarmed;
