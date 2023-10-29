@@ -15,22 +15,8 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const None: Story = {
+export const Primary: Story = {
   args: {
-    type: 'none',
-  },
-};
-
-export const Desc: Story = {
-  args: {
-    type: 'desc',
     children: '실명 또는 실명에 가까운 별명을 넣어주세요.',
-  },
-};
-
-export const Warn: Story = {
-  args: {
-    type: 'warn',
-    children: '아이디에는 영소문자와 숫자만 사용해주세요.',
   },
 };
