@@ -1,0 +1,25 @@
+{
+  "name": "external-temporal",
+  "version": "0.0.0",
+  "license": "MIT",
+  "main": "./index.tsx",
+  "types": "./index.tsx",
+  "scripts": {
+    "lint": "eslint .",
+    "generate:component": "turbo gen react-component"
+  },
+  "devDependencies": {
+    "@storybook/react": "7.5.1",
+    "@turbo/gen": "1.10.12",
+    "@types/node": "20.5.2",
+    "@types/react": "18.2.0",
+    "@types/react-datepicker": "4.19.1",
+    "@types/react-dom": "18.2.0",
+    "@vanilla-extract/css": "1.13.0",
+    "eslint-config-custom": "workspace:*",
+    "react": "18.2.0",
+    "react-datepicker": "4.21.0",
+    "tsconfig": "workspace:*",
+    "typescript": "5.2.2"
+  }
+}
