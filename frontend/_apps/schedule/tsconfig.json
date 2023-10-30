@@ -1,0 +1,15 @@
+{
+  "extends": "tsconfig/nextjs.json",
+  "compilerOptions": {
+    "plugins": [{ "name": "next" }],
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["./*"],
+      "#/*": ["../../_packages/@external-temporal/*"],
+      "#/components/*": ["../../_packages/@external-temporal/components/*"],
+      "#/constants/*": ["../../_packages/@external-temporal/constants/*"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
