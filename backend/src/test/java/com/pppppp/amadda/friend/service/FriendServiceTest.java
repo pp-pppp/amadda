@@ -125,4 +125,24 @@ class FriendServiceTest extends IntegrationTestSupport {
 
     }
 
+    @DisplayName("친구를 삭제한다. ")
+    @Test
+    void deleteFriend() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1", false);
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2", true);
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
+
+        FriendRequest fr = FriendRequest.create(u1, u2);
+        fr.updateStatus(FriendRequestStatus.ACCEPTED);
+        friendService.createFriend(FriendRequestResponse.of(fr));
+
+        // when
+        friendService.deleteFriends(u1, u2);
+
+        // then
+        assertThat(friendRepository.findAll()).hasSize(0);
+    }
+
+
 }
