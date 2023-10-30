@@ -1,6 +1,6 @@
 spring:
   profiles:
-    default: local
+    default: dev
 
   jpa:
     show-sql: true
@@ -50,11 +50,11 @@ spring:
 spring:
   config:
     activate:
-      on-profile: local
+      on-profile: dev
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     defer-datasource-initialization: true
 
   datasource:
