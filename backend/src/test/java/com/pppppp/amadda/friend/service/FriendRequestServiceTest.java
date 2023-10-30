@@ -215,4 +215,44 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
                 .hasMessage("FRIEND_REQUEST_INVALID");
     }
 
+    @DisplayName("친구요청 기록을 삭제한다. ")
+    @Test
+    void deleteFriendRequest() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1", false);
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2", true);
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
+
+        FriendRequestRequest request = FriendRequestRequest.builder()
+                .userSeq(1111L)
+                .targetSeq(1234L)
+                .build();
+        FriendRequestResponse response = friendRequestService.createFriendRequest(request);
+        response = friendRequestService.findFriendRequestBySeq(response.requestSeq())
+                        .get().updateStatus(FriendRequestStatus.ACCEPTED);
+        friendService.createFriend(response);
+
+        // when
+        friendRequestService.deleteFriendAndRequest(1111L, 1234L);
+
+        // then
+        assertThat(friendRequestRepository.findAll()).hasSize(0);
+        assertThat(friendRepository.findAll()).hasSize(0);
+    }
+
+    @DisplayName("존재하지 않는 친구요청 기록을 삭제하면 예외가 발생한다. ")
+    @Test
+    void deleteFriendRequestError() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1", false);
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2", true);
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
+
+        // when // then
+        assertThatThrownBy(() -> friendRequestService.deleteFriendAndRequest(1111L, 1234L))
+                .isInstanceOf(RestApiException.class)
+                .hasMessage("FRIEND_REQUEST_NOT_FOUND");
+    }
+
+
 }

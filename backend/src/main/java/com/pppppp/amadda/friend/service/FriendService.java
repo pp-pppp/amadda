@@ -41,8 +41,16 @@ public class FriendService {
         return List.of(FriendResponse.of(f1), FriendResponse.of(f2));
     }
 
-    public boolean isAlreadyFriends(User u1, User u2) {
-        return findFriendByOwnerAndFriend(u1, u2).isPresent();
+    public void deleteFriends(User u1, User u2) {
+
+        Long relationSeq1 = findFriendByOwnerAndFriend(u1, u2)
+                .orElseThrow(() -> new RestApiException(FriendErrorCode.FRIEND_NOT_FOUND))
+                .getRelationSeq();
+        Long relationSeq2 = findFriendByOwnerAndFriend(u2, u1)
+                .orElseThrow(() -> new RestApiException(FriendErrorCode.FRIEND_NOT_FOUND))
+                .getRelationSeq();
+        deleteFriendBySeq(relationSeq1);
+        deleteFriendBySeq(relationSeq2);
     }
 
 
@@ -54,6 +62,16 @@ public class FriendService {
 
     public Optional<Friend> findFriendByOwnerAndFriend(User u1, User u2) {
         return friendRepository.findByOwnerAndFriend(u1, u2);
+    }
+
+    private void deleteFriendBySeq(Long relationSeq) {
+        friendRepository.deleteById(relationSeq);
+    }
+
+    // =========================================================
+
+    public boolean isAlreadyFriends(User u1, User u2) {
+        return findFriendByOwnerAndFriend(u1, u2).isPresent();
     }
 
 }

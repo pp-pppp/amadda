@@ -6,6 +6,7 @@ import com.pppppp.amadda.friend.entity.FriendRequest;
 import com.pppppp.amadda.friend.entity.FriendRequestStatus;
 import com.pppppp.amadda.friend.repository.FriendRequestRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
+import com.pppppp.amadda.global.entity.exception.errorcode.FriendErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.FriendRequestErrorCode;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.service.UserService;
@@ -70,6 +71,20 @@ public class FriendRequestService {
         else throw new RestApiException(FriendRequestErrorCode.FRIEND_REQUEST_INVALID);
     }
 
+    @Transactional
+    public void deleteFriendAndRequest(Long userSeq, Long friendSeq) {
+
+        User u1 = userService.getUserInfoBySeq(userSeq);
+        User u2 = userService.getUserInfoBySeq(friendSeq);
+
+        FriendRequest chk = findFriendRequestByUserAndFriend(u1, u2)
+                .orElse(findFriendRequestByUserAndFriend(u2, u1).orElse(null));
+        if(chk == null) throw new RestApiException(FriendRequestErrorCode.FRIEND_REQUEST_NOT_FOUND);
+
+        deleteFriendRequestBySeq(chk.getRequestSeq());
+        friendService.deleteFriends(u1, u2);
+    }
+
 
     // =============== 레포지토리에 직접 접근하는 메소드들 ===============
 
@@ -83,6 +98,10 @@ public class FriendRequestService {
                 .flatMap(user1 -> Optional.ofNullable(u2)
                         .flatMap(user2 -> friendRequestRepository.findByOwnerAndFriend(user1, user2))
                 );
+    }
+
+    private void deleteFriendRequestBySeq(Long requestSeq) {
+        friendRequestRepository.deleteById(requestSeq);
     }
 
     // =========================================================

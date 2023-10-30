@@ -67,4 +67,24 @@ class FriendRepositoryTest extends IntegrationTestSupport {
                 .containsExactly(u1, u2);
     }
 
+    @DisplayName("친구를 삭제할 수 있다. ")
+    @Test
+    void deleteFriend() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1", false);
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2", true);
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
+
+        Friend f = Friend.create(u1, u2);
+        f = friendRepository.save(f);
+
+        // when
+        friendRepository.deleteById(f.getRelationSeq());
+
+        // then
+        assertThat(friendRepository.findAll())
+                .hasSize(0);
+    }
+
+
 }
