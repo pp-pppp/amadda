@@ -1,11 +1,15 @@
-import React from 'react';
-import type { HTMLAttributes } from 'react';
-import { COLOR } from './Texts.css';
+import React from "react";
+import type { HTMLAttributes } from "react";
+import { COLOR } from "./Texts.css";
+import { TYPE } from "./P.css";
 
 export interface PghProps extends HTMLAttributes<HTMLParagraphElement> {
+  type: "text" | "caption";
   color?: keyof typeof COLOR;
   children: string;
 }
-export function P({ color = 'black', children }: PghProps) {
-  return <p className={COLOR[color]}>{children}</p>;
+export function P({ type, color = "black", children }: PghProps) {
+  const className = `${COLOR[color]} ${TYPE[type]}`;
+
+  return <p className={className}>{children}</p>;
 }
