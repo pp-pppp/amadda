@@ -1,9 +1,12 @@
 {
   "extends": "tsconfig/react-library.json",
   "compilerOptions": {
-    "paths": {"#/*": ["./*"],
-    "#/components/*": ["./components/*"],
-    "#/constants/*": ["./constants/*"]}
+    "paths": {
+      "#/*": ["./*"],
+      "#/components/*": ["./components/*"],
+      "#/constants/*": ["./constants/*"],
+      "react": ["./node_modules/@types/react"]
+    }
   },
   "include": ["."],
   "exclude": ["dist", "build", "node_modules"]
