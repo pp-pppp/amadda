@@ -27,7 +27,6 @@ public class FriendService {
     public List<FriendResponse> createFriend(FriendRequestResponse friendRequest) {
 
         // 상태가 ACCEPTED가 맞는지 확인
-        System.out.println(">>> "+friendRequest.status());
         if(!friendRequest.status().equals("ACCEPTED"))
             throw new RestApiException(FriendErrorCode.FRIEND_INVALID);
 
@@ -43,8 +42,7 @@ public class FriendService {
     }
 
     public boolean isAlreadyFriends(User u1, User u2) {
-        if(findFriendByOwnerAndFriend(u1, u2).orElse(null) != null) return true;
-        else return false;
+        return findFriendByOwnerAndFriend(u1, u2).isPresent();
     }
 
 

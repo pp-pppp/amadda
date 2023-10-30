@@ -34,8 +34,7 @@ public class FriendRequestService {
         // 이미 요청된(REQUESTED) 혹은 친구 상태(ACCEPTED)라면 예외처리
         FriendRequest chk = findFriendRequestByUserAndFriend(u1, u2)
                 .orElse(findFriendRequestByUserAndFriend(u2, u1).orElse(null));
-        if(chk != null && (chk.getStatus() == FriendRequestStatus.REQUESTED
-                        || chk.getStatus() == FriendRequestStatus.ACCEPTED))
+        if(chk != null && (isRequested(chk) || isAccepted(chk)))
             throw new RestApiException(FriendRequestErrorCode.FRIEND_REQUEST_INVALID);
 
         FriendRequest fr = FriendRequest.create(u1, u2);
@@ -49,8 +48,7 @@ public class FriendRequestService {
         FriendRequest chk = findFriendRequestBySeq(requestSeq).orElse(null);
 
         // userSeq == chk.friendSeq && REQUESTED 상태일때만 허용
-        if(chk != null && userSeq.equals(chk.getFriend().getUserSeq())
-                && chk.getStatus() == FriendRequestStatus.REQUESTED) {
+        if(chk != null && isTarget(userSeq, chk) && isRequested(chk)) {
             chk.updateStatus(FriendRequestStatus.DECLINED);
             return FriendRequestResponse.of(chk);
         }
@@ -62,8 +60,7 @@ public class FriendRequestService {
         FriendRequest chk = findFriendRequestBySeq(requestSeq).orElse(null);
 
         // userSeq == chk.friendSeq && REQUESTED && 이미 친구가 아닌 상태일때만 허용
-        if(chk != null && userSeq.equals(chk.getFriend().getUserSeq())
-                && chk.getStatus() == FriendRequestStatus.REQUESTED
+        if(chk != null && isTarget(userSeq, chk) && isRequested(chk)
                 && !friendService.isAlreadyFriends(chk.getOwner(), chk.getFriend())) {
 
             chk.updateStatus(FriendRequestStatus.ACCEPTED);
@@ -86,5 +83,18 @@ public class FriendRequestService {
                 .flatMap(user1 -> Optional.ofNullable(u2)
                         .flatMap(user2 -> friendRequestRepository.findByOwnerAndFriend(user1, user2))
                 );
+    }
+
+    // =========================================================
+
+    private boolean isRequested(FriendRequest request) {
+        return request.getStatus() == FriendRequestStatus.REQUESTED;
+    }
+    private boolean isAccepted(FriendRequest request) {
+        return request.getStatus() == FriendRequestStatus.ACCEPTED;
+    }
+
+    private boolean isTarget(Long userSeq, FriendRequest request) {
+        return userSeq.equals(request.getFriend().getUserSeq());
     }
 }
