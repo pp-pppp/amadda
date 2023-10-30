@@ -22,8 +22,9 @@ public class FriendRequestService {
 
     private final FriendRequestRepository friendRequestRepository;
     private final UserService userService;
+    private final FriendService friendService;
 
-    public FriendRequestResponse createRequest(FriendRequestRequest request) {
+    public FriendRequestResponse createFriendRequest(FriendRequestRequest request) {
 
         Long userSeq = request.userSeq();
         Long targetSeq = request.targetSeq();
@@ -41,6 +42,43 @@ public class FriendRequestService {
         fr = friendRequestRepository.save(fr);
 
         return FriendRequestResponse.of(fr);
+    }
+
+    public FriendRequestResponse declineFriendRequest(Long userSeq, Long requestSeq) {
+
+        FriendRequest chk = findFriendRequestBySeq(requestSeq).orElse(null);
+
+        // userSeq == chk.friendSeq && REQUESTED 상태일때만 허용
+        if(chk != null && userSeq.equals(chk.getFriend().getUserSeq())
+                && chk.getStatus() == FriendRequestStatus.REQUESTED) {
+            chk.updateStatus(FriendRequestStatus.DECLINED);
+            return FriendRequestResponse.of(chk);
+        }
+        else throw new RestApiException(FriendRequestErrorCode.FRIEND_REQUEST_INVALID);
+    }
+
+    public FriendRequestResponse acceptFriendRequest(Long userSeq, Long requestSeq) {
+
+        FriendRequest chk = findFriendRequestBySeq(requestSeq).orElse(null);
+
+        // userSeq == chk.friendSeq && REQUESTED && 이미 친구가 아닌 상태일때만 허용
+        if(chk != null && userSeq.equals(chk.getFriend().getUserSeq())
+                && chk.getStatus() == FriendRequestStatus.REQUESTED
+                && !friendService.isAlreadyFriends(chk.getOwner(), chk.getFriend())) {
+
+            chk.updateStatus(FriendRequestStatus.ACCEPTED);
+            friendService.createFriend(FriendRequestResponse.of(chk));
+            return FriendRequestResponse.of(chk);
+        }
+        else throw new RestApiException(FriendRequestErrorCode.FRIEND_REQUEST_INVALID);
+    }
+
+
+    // =============== 레포지토리에 직접 접근하는 메소드들 ===============
+
+    public Optional<FriendRequest> findFriendRequestBySeq(Long seq) {
+        return Optional.ofNullable(seq)
+                .flatMap(friendRequestRepository::findById);
     }
 
     public Optional<FriendRequest> findFriendRequestByUserAndFriend(User u1, User u2) {

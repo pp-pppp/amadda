@@ -1,5 +1,6 @@
 package com.pppppp.amadda.friend.entity;
 
+import com.pppppp.amadda.friend.dto.response.FriendRequestResponse;
 import com.pppppp.amadda.global.entity.BaseEntity;
 import com.pppppp.amadda.user.entity.User;
 import jakarta.persistence.*;
@@ -45,8 +46,9 @@ public class FriendRequest extends BaseEntity {
                 .build();
     }
 
-    public void updateStatus(FriendRequestStatus status) {
+    public FriendRequestResponse updateStatus(FriendRequestStatus status) {
         this.status = status;
+        return FriendRequestResponse.of(this);
     }
 
 }

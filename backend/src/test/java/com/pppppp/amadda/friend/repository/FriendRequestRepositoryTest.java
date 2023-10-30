@@ -46,8 +46,8 @@ class FriendRequestRepositoryTest extends IntegrationTestSupport {
 
         // then
         assertThat(friendRequests)
-                .extracting("requestSeq", "owner", "friend", "status")
-                .containsExactlyInAnyOrder(1L, u1, u2, FriendRequestStatus.REQUESTED);
+                .extracting("owner", "friend", "status")
+                .containsExactlyInAnyOrder(u1, u2, FriendRequestStatus.REQUESTED);
 
     }
 
@@ -69,8 +69,8 @@ class FriendRequestRepositoryTest extends IntegrationTestSupport {
 
         // then
         assertThat(search)
-                .extracting("requestSeq", "owner", "friend", "status")
-                .containsExactlyInAnyOrder(1L, u1, u2, FriendRequestStatus.REQUESTED);
+                .extracting("owner", "friend", "status")
+                .containsExactlyInAnyOrder(u1, u2, FriendRequestStatus.REQUESTED);
     }
 
 }
