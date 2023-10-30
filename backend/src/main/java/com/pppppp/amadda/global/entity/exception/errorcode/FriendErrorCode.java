@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum FriendRequestErrorCode implements ErrorCode {
-    FRIEND_REQUEST_INVALID(HttpStatus.BAD_REQUEST, "해당 친구 신청 요청은 유효하지 않습니다. "),
+public enum FriendErrorCode implements ErrorCode {
+    FRIEND_INVALID(HttpStatus.BAD_REQUEST, "해당 친구 요청은 유효하지 않습니다. "),
     ;
 
     private final HttpStatus httpStatus;
