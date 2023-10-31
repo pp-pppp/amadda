@@ -8,7 +8,7 @@ import {
 export interface FlexProps {
   flexDirection?: keyof typeof DIRECTION_VARIANT;
   justifyContents: keyof typeof JUSTIFY_VARIANT;
-  alignItems: keyof typeof ALIGN_VARIANT;
+  alignItems?: keyof typeof ALIGN_VARIANT;
   flexWrap?: keyof typeof WRAP_VARIANT;
   children: React.ReactNode;
 }

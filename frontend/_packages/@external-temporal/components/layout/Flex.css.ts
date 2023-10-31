@@ -21,6 +21,6 @@ export const ALIGN_VARIANT = styleVariants({
 });
 
 export const WRAP_VARIANT = styleVariants({
-  none: { flexWrap: 'nowrap' },
+  nowrap: { flexWrap: 'nowrap' },
   wrap: { flexWrap: 'wrap' },
 });
