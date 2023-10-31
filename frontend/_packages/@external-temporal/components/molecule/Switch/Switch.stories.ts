@@ -21,12 +21,6 @@ const meta = {
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
     // backgroundColor: { control: 'color' },
-    children: {
-      description: '자식 노드를 받습니다. 텍스트 노드 사용을 권고합니다.',
-      table: {
-        category: 'Tabs', // 추가
-      },
-    },
   },
 } satisfies Meta<typeof Switch>;
 
