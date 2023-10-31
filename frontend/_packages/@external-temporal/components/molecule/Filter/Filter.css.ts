@@ -27,7 +27,7 @@ export const STATUS = styleVariants({
     BGCOLOR,
     {
       borderRadius: "0.75rem",
-      border: `0.1rem solid ${colors.key}`,
+      outline: `0.1rem solid ${colors.key}`,
       paddingBottom: "0.25rem",
     },
   ],
@@ -38,6 +38,7 @@ export const STATUS = styleVariants({
     {
       border: "none",
     },
+    
   ],
 
   // main(뷰 선택하기) div : 열린 상태
@@ -59,6 +60,9 @@ export const STATUS = styleVariants({
     {
       borderRadius: "0.5rem",
       padding: "0.5rem",
+      ':hover': {
+        outline: `0.1rem solid ${colors.key}`,
+      },
     },
   ],
 
