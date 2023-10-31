@@ -5,20 +5,15 @@ import { Form } from './Form';
 import { Input } from '#/components/atom/Input/Input';
 import { Btn } from '#/components/atom/Btn/Btn';
 
-// More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
   title: 'molecule/Form',
   component: Form,
   parameters: {
-    // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/react/configure/story-layout
     layout: 'centered',
     componentSubtitle: '폼 태그입니다.',
   },
-  // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: ['autodocs'],
-  // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
-    // backgroundColor: { control: 'color' },
     formName: {
       description: '폼의 이름을 받습니다.',
     },
@@ -35,7 +30,6 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Primary: Story = {
   args: {
     formName: 'form',

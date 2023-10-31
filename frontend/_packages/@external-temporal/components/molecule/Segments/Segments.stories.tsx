@@ -3,12 +3,10 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { Segments } from './Segments';
 
-// More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
   title: 'molecule/Segments',
   component: Segments,
   parameters: {
-    // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/react/configure/story-layout
     layout: 'centered',
     componentSubtitle:
       '여러 페이지 중 하나를 선택해 볼 수 있는 탭 컴포넌트입니다.',
@@ -19,11 +17,8 @@ const meta = {
       },
     },
   },
-  // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: ['autodocs'],
-  // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
-    // backgroundColor: { control: 'color' },
     titles: {
       description: '트리거 버튼에 들어갈 텍스트를 배열로 받습니다.',
       control: 'radio',
@@ -47,7 +42,6 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Primary: Story = {
   args: {
     // primary: true,

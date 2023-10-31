@@ -2,12 +2,10 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { Tooltip } from './Tooltip';
 
-// More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
   title: 'molecule/Tooltip',
   component: Tooltip,
   parameters: {
-    // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/react/configure/story-layout
     layout: 'centered',
     componentSubtitle: '한 줄 요약',
     docs: {
@@ -16,11 +14,8 @@ const meta = {
       },
     },
   },
-  // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: ['autodocs'],
-  // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
-    // backgroundColor: { control: 'color' },
     children: {
       description: '자식 노드를 받습니다. 텍스트 노드 사용을 권고합니다.',
       table: {
@@ -33,7 +28,6 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Primary: Story = {
   args: {
     // primary: true,
