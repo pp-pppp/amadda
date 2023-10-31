@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/react";
 
-import { Label } from './Label';
+import { Label } from "./Label";
 
 const meta = {
-  title: 'atom/Label',
+  title: "atom/Label",
   component: Label,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {},
 } satisfies Meta<typeof Label>;
 
@@ -18,7 +18,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Text: Story = {
   args: {
-    id: 'sample-text',
-    children: '이메일을 입력해주세요.',
+    htmlFor: "sample-text",
+    children: "이메일을 입력해주세요.",
   },
 };
