@@ -19,10 +19,7 @@ export function BtnRound({
 }: BtnRoundProps) {
   const className = `${VARIANTS[variant]} ${SIZE[size]}`;
   return (
-    <button
-      className={className}
-      disabled={disabled}
-      type={type}>
+    <button className={className} disabled={disabled} type={type}>
       {children}
     </button>
   );

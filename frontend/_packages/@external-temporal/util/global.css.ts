@@ -2,12 +2,12 @@ import { globalFontFace, globalStyle } from '@vanilla-extract/css';
 import colors from '../constants/colors';
 
 globalFontFace('regular', {
-  src: 'url("/fonts/Pretendard-Regular.woff")',
+  src: 'url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/packages/pretendard/dist/web/static/woff/Pretendard-Regular.woff")',
   fontWeight: 400,
 });
 
 globalFontFace('bold', {
-  src: 'url("/fonts/Pretendard-Bold.woff")',
+  src: 'url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/packages/pretendard/dist/web/static/woff/Pretendard-Bold.woff")',
   fontWeight: 700,
 });
 
