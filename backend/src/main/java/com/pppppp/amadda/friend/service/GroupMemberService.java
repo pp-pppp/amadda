@@ -8,6 +8,7 @@ import com.pppppp.amadda.friend.repository.UserGroupRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
 import com.pppppp.amadda.user.entity.User;
+import com.pppppp.amadda.user.repository.UserRepository;
 import com.pppppp.amadda.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,14 @@ public class GroupMemberService {
 
     private final GroupMemberRepository groupMemberRepository;
     private final UserGroupRepository userGroupRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
+
+    public void isUserValid(GroupCreateRequest request) {
+        List<Long> seqs = request.userSeqs();
+        seqs.forEach(seq -> {
+            User u = findUserBySeq(seq);
+        });
+    }
 
     public void createGroupMember(GroupCreateRequest request, Long groupSeq) {
         UserGroup ug = getGroup(groupSeq)
@@ -47,6 +55,7 @@ public class GroupMemberService {
     }
 
     private User findUserBySeq(Long seq) {
-        return userService.getUserInfoBySeq(seq);
+        return userRepository.findByUserSeq(seq)
+                .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
     }
 }

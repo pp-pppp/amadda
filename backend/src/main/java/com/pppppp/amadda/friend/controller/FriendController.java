@@ -75,5 +75,4 @@ public class FriendController {
         groupMemberService.createGroupMember(request, groupSeq); // 그룹 멤버 만들기
         return ApiResponse.ok("그룹 만들기 완료");
     }
-
 }
