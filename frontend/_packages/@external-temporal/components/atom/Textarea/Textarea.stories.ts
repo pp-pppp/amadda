@@ -7,9 +7,25 @@ const meta = {
   component: Textarea,
   parameters: {
     layout: 'centered',
+    componentSubtitle: 'Textarea',
+    docs: {
+      description: {
+        component: '보다 긴 입력값을 받을 수 있는 Textarea 입니다.',
+      },
+    },
   },
   tags: ['autodocs'],
-  argTypes: {},
+  argTypes: {
+    height: {
+      description: '입력창의 높이를 선택할 수 있습니다.',
+    },
+    placeholder: {
+      description: '입력값이 없을 때 보여질 문구입니다',
+    },
+    value: {
+      description: '입력값입니다.',
+    },
+  },
 } satisfies Meta<typeof Textarea>;
 
 export default meta;
