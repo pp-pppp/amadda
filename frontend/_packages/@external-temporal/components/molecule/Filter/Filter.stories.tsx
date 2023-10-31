@@ -17,11 +17,14 @@ const meta = {
   },
   tags: ["autodocs"],
   argTypes: {
-    multiselect: {
-      description: "다중선택 여부를 선택합니다.",
-    },
     isOpen: {
       description: "Filter 컴포넌트의 열림 또는 닫힘 여부를 선택합니다.",
+    },
+    onClick: {
+      description: "main을 클릭하면 작동할 함수를 넣습니다.",
+    },
+    main: {
+      description: "main에 보여줄 텍스트를 입력합니다.",
     },
     children: {
       description:
@@ -35,12 +38,31 @@ type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
   args: {
-    multiselect: true,
     isOpen: true,
+    onClick: e => console.log(e),
+    main: "뷰 선택하기",
     children: [
-      <Filter.FilterOption>a</Filter.FilterOption>,
-      <Filter.FilterOption>b</Filter.FilterOption>,
-      <Filter.FilterOption>c</Filter.FilterOption>,
+      <Filter.FilterOption
+        id="a"
+        name="a"
+        onChange={e => console.log(e.target.value)}
+        value="a">
+        a
+      </Filter.FilterOption>,
+      <Filter.FilterOption
+        id="b"
+        name="b"
+        onChange={e => console.log(e.target.value)}
+        value="b">
+        b
+      </Filter.FilterOption>,
+      <Filter.FilterOption
+        id="c"
+        name="c"
+        onChange={e => console.log(e.target.value)}
+        value="c">
+        c
+      </Filter.FilterOption>,
     ],
   },
 };
