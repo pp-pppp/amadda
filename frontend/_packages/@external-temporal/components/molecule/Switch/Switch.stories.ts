@@ -39,5 +39,6 @@ export const Primary: Story = {
     // primary: true,
     id: 'id',
     selected: true,
+    value: 'wow',
   },
 };
