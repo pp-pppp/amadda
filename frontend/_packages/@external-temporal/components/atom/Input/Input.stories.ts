@@ -7,10 +7,44 @@ const meta = {
   title: 'atom/Input',
   component: Input,
   parameters: {
-    layout: 'centered',
+    componentSubtitle: 'input',
+    docs: {
+      description: {
+        component: 'text와 checkbox 타입을 지원하는 input 태그입니다.',
+      },
+    },
   },
   tags: ['autodocs'],
-  argTypes: {},
+  argTypes: {
+    type: {
+      description: 'input의 타입을 선택할 수 있습니다.',
+    },
+    validator: {
+      description: '사용자에게 받은 입력 받은 유효성을 검증하는 함수입니다.',
+    },
+    id: {
+      description: 'Label 및 Caption과의 바인딩을 위한 id입니다.',
+    },
+    name: {
+      description: '데이터 전송 시 사용되는 name입니다',
+    },
+    onChange: {
+      description: '입력값이 변경되면 실행될 함수입니다.',
+    },
+    disabled: {
+      description:
+        '작동 여부를 정합니다. 입력을 막고 싶다면 true를 선택해주세요.',
+    },
+    placeholder: {
+      description: '입력값이 없을 때 보여질 문구입니다',
+    },
+    value: {
+      description: '입력값을 저장합니다.',
+    },
+    checked: {
+      description: 'type이 checkbox일 때, 선택여부를 지정합니다.',
+    },
+  },
 } satisfies Meta<typeof Input>;
 
 export default meta;
