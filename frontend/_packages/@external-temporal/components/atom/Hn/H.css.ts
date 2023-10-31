@@ -2,6 +2,7 @@ import { style, styleVariants } from '@vanilla-extract/css';
 
 export const BOLD = style({
   fontFamily: 'bold',
+  fontWeight: '700'
 });
 export const VARIANTS = styleVariants({
   '1': [

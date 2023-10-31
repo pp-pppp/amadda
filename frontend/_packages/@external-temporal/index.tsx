@@ -18,3 +18,4 @@ export * from './components/atom/Textarea/Textarea';
 
 export * from './components/molecule/FAB/FAB';
 export * from './components/molecule/Tooltip/Tooltip';
+export * from './components/molecule/Filter/Filter';

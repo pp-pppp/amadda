@@ -1,15 +1,15 @@
-import type { HTMLAttributes } from 'react';
-import React from 'react';
-import { BASE } from './Label.css';
+import type { HTMLAttributes } from "react";
+import React from "react";
+import { BASE } from "./Label.css";
 
 export interface LabelProps extends HTMLAttributes<HTMLLabelElement> {
-  id: string;
+  htmlFor: string;
   children: string;
 }
 
-export function Label({ id, children }: LabelProps) {
+export function Label({ htmlFor, children }: LabelProps) {
   return (
-    <label className={BASE} htmlFor={id}>
+    <label className={BASE} htmlFor={htmlFor}>
       {children}
     </label>
   );
