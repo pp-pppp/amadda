@@ -1,6 +1,6 @@
 // import dynamic from 'next/dynamic';
-import { lazy } from "react";
-import "#/util/global.css";
+import { lazy } from 'react';
+import '#/util/global.css';
 
 function App({ Component, pageProps }) {
   return (

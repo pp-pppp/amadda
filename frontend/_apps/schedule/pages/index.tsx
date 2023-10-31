@@ -1,4 +1,4 @@
-import { P } from "external-temporal";
+import { P } from 'external-temporal';
 
 export default function Page() {
   return (
