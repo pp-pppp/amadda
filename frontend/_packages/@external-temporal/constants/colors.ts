@@ -42,6 +42,7 @@ const colors = {
     orange: '#e89863',
     hotpink: '#e86391',
     green: '#72D06C',
+    blue: '#44a0eb',
     grey: GREY_600,
   },
 };

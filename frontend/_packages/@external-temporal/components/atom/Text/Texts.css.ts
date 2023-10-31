@@ -9,4 +9,5 @@ export const COLOR = styleVariants({
   white: { color: colors.white },
   warn: { color: colors.category.salmon },
   ok: { color: colors.category.green },
+  blue: { color: colors.category.blue },
 });
