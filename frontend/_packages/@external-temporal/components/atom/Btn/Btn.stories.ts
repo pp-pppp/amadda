@@ -8,9 +8,33 @@ const meta = {
   component: Btn,
   parameters: {
     layout: 'centered',
+    componentSubtitle: '사각형 버튼',
+    docs: {
+      description: {
+        component: '사각형 버튼입니다.',
+      },
+    },
   },
   tags: ['autodocs'],
-  argTypes: {},
+  argTypes: {
+    type: {
+      description:
+        '버튼의 타입을 선택합니다. form 태그 내부의 button은 submit을 선택해주세요.',
+    },
+    variant: {
+      description: '버튼의 색상을 지정할 수 있습니다.',
+    },
+    disabled: {
+      description:
+        '버튼의 작동 여부를 정합니다. 클릭을 막고 싶다면 true를 선택해주세요.',
+    },
+    children: {
+      description: '자식 노드를 받습니다. 텍스트 노드 사용을 권고합니다.',
+    },
+    onClick: {
+      description: '클릭 시 실행될 함수입니다.',
+    },
+  },
 } satisfies Meta<typeof Btn>;
 
 export default meta;
