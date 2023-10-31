@@ -18,7 +18,8 @@ export function Btn({ type, variant, disabled, onClick, children }: BtnProps) {
       className={className}
       disabled={disabled}
       type={type}
-      onClick={e => onClick(e)}>
+      onClick={e => onClick(e)}
+    >
       {children}
     </button>
   );

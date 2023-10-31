@@ -9,9 +9,7 @@ export interface LabelProps extends HTMLAttributes<HTMLLabelElement> {
 
 export function Label({ id, children }: LabelProps) {
   return (
-    <label
-      className={BASE}
-      htmlFor={id}>
+    <label className={BASE} htmlFor={id}>
       {children}
     </label>
   );

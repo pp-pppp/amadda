@@ -1,7 +1,6 @@
 // component exports
 export * from './components/atom/Btn/Btn';
 export * from './components/atom/BtnRound/BtnRound';
-export * from './components/atom/Caption/Caption';
 export * from './components/atom/Hn/H1';
 export * from './components/atom/Hn/H2';
 export * from './components/atom/Hn/H3';

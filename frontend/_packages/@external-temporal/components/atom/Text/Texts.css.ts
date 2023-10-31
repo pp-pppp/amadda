@@ -1,5 +1,5 @@
-import colors from "#/constants/colors";
-import { styleVariants } from "@vanilla-extract/css";
+import colors from '#/constants/colors';
+import { styleVariants } from '@vanilla-extract/css';
 
 export const COLOR = styleVariants({
   key: { color: colors.key },
