@@ -6,6 +6,7 @@ import com.pppppp.amadda.friend.entity.UserGroup;
 import com.pppppp.amadda.friend.repository.GroupMemberRepository;
 import com.pppppp.amadda.friend.repository.UserGroupRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
+import com.pppppp.amadda.global.entity.exception.errorcode.GroupErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
@@ -35,7 +36,7 @@ public class GroupMemberService {
 
     public void createGroupMember(GroupCreateRequest request, Long groupSeq) {
         UserGroup ug = getGroup(groupSeq)
-                .orElseThrow(/* () -> GROUP_NOT_FOUND */);
+                .orElseThrow(() -> new RestApiException(GroupErrorCode.GROUP_NOT_FOUND));
 
         request.userSeqs().stream()
                 .map(this::findUserBySeq)

@@ -106,5 +106,24 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
                 .hasMessage("USER_NOT_FOUND");
     }
 
+    @DisplayName("유저그룹이 존재하지 않는 그룹멤버를 만들면 예외처리. ")
+    @Test
+    void userGroupNotFound() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1", false);
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2", true);
+        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3", true);
+        List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
+        GroupCreateRequest gcr = GroupCreateRequest.builder()
+                .ownerSeq(1111L)
+                .groupName("그룹명1")
+                .userSeqs(List.of(1234L, 2222L))
+                .build();
+
+        // when // then
+        assertThatThrownBy(() -> groupMemberService.createGroupMember(gcr, 0L))
+                .isInstanceOf(RestApiException.class)
+                .hasMessage("GROUP_NOT_FOUND");
+    }
 }
