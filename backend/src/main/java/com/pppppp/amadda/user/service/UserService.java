@@ -19,7 +19,7 @@ public class UserService {
         return findUserByUserSeq(userSeq).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
     }
 
-    public Optional<User> findUserByUserSeq(Long userSeq) {
+    private Optional<User> findUserByUserSeq(Long userSeq) {
         return Optional.ofNullable(userSeq).flatMap(userRepository::findByUserSeq);
     }
 

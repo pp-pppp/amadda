@@ -1,9 +1,10 @@
 package com.pppppp.amadda.friend.controller;
 
 import com.pppppp.amadda.friend.dto.request.FriendRequestRequest;
-import com.pppppp.amadda.friend.dto.response.FriendRequestResponse;
+import com.pppppp.amadda.friend.dto.request.GroupCreateRequest;
 import com.pppppp.amadda.friend.service.FriendRequestService;
-import com.pppppp.amadda.friend.service.FriendService;
+import com.pppppp.amadda.friend.service.GroupMemberService;
+import com.pppppp.amadda.friend.service.UserGroupService;
 import com.pppppp.amadda.global.dto.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 public class FriendController {
 
     private final FriendRequestService friendRequestService;
+    private final UserGroupService userGroupService;
+    private final GroupMemberService groupMemberService;
 
     @GetMapping
     public void getFriendList(@RequestParam String searchKey) {
@@ -26,35 +29,33 @@ public class FriendController {
     }
 
     @PostMapping("/request")
-    public ApiResponse<FriendRequestResponse> sendFriendRequest(@Valid @RequestBody FriendRequestRequest request) {
-        log.info("친구 요청 보내기");
-        return ApiResponse.ok(friendRequestService.createFriendRequest(request));
+    public ApiResponse sendFriendRequest(@Valid @RequestBody FriendRequestRequest request) {
+        friendRequestService.createFriendRequest(request);
+        return ApiResponse.ok("친구 신청 보내기 완료");
     }
 
     @PostMapping("/request/{requestSeq}")
-    public ApiResponse<FriendRequestResponse> acceptFriendRequest(@PathVariable Long requestSeq) {
-        log.info("친구 요청 수락");
+    public ApiResponse acceptFriendRequest(@PathVariable Long requestSeq) {
         // TODO 추후 JWT 토큰으로 사용자 seq 디코딩 추가
         Long userSeq = 0L; // request.getHeader("Auth");
-        return ApiResponse.ok(friendRequestService.acceptFriendRequest(userSeq, requestSeq));
+        friendRequestService.acceptFriendRequest(userSeq, requestSeq);
+        return ApiResponse.ok("받은 친구 신청 수락");
     }
 
     @PatchMapping("/request/{requestSeq}")
-    public ApiResponse<FriendRequestResponse> declineFriendRequest(
+    public ApiResponse declineFriendRequest(
             HttpServletRequest request,
-            @PathVariable Long requestSeq
-    ) {
-        log.info("친구 요청 거절");
+            @PathVariable Long requestSeq) {
         // TODO 추후 JWT 토큰으로 사용자 seq 디코딩 추가
         Long userSeq = 0L; // request.getHeader("Auth");
-        return ApiResponse.ok(friendRequestService.declineFriendRequest(userSeq, requestSeq));
+        friendRequestService.declineFriendRequest(userSeq, requestSeq);
+        return ApiResponse.ok("받은 친구 신청 거절");
     }
 
     @DeleteMapping("/{friendUserSeq}")
     public ApiResponse deleteFriend(
             HttpServletRequest request,
             @PathVariable Long friendUserSeq) {
-        log.info("절연하기");
         // TODO 추후 JWT 토큰으로 사용자 seq 디코딩 추가
         Long userSeq = 0L; // request.getHeader("Auth");
         friendRequestService.deleteFriendAndRequest(userSeq, friendUserSeq);
@@ -66,5 +67,12 @@ public class FriendController {
 
     // ==================== 그룹 관련은 아래 ====================
 
+    @PostMapping("/group")
+    public ApiResponse makeGroup(@Valid @RequestBody GroupCreateRequest request) {
 
+        groupMemberService.isUserValid(request); // 전부 존재하는 유저들인지 검증
+        Long groupSeq = userGroupService.createUserGroup(request); // 유저 그룹 만들기
+        groupMemberService.createGroupMember(request, groupSeq); // 그룹 멤버 만들기
+        return ApiResponse.ok("그룹 만들기 완료");
+    }
 }
