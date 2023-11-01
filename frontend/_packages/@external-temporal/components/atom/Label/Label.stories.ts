@@ -8,7 +8,7 @@ const meta = {
   component: Label,
   parameters: {
     layout: 'centered',
-    componentSubtitle: 'input label',
+    componentSubtitle: 'input label입니다.',
     docs: {
       description: {
         component: '바인딩 될 input 태그의 상단에 보여질 label입니다.',

@@ -7,12 +7,7 @@ const meta = {
   component: BtnRound,
   parameters: {
     layout: 'centered',
-    componentSubtitle: '둥근 버튼',
-    docs: {
-      description: {
-        component: '둥근 버튼입니다.',
-      },
-    },
+    componentSubtitle: '둥근 버튼입니다.',
   },
   tags: ['autodocs'],
   argTypes: {

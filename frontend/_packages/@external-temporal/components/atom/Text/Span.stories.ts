@@ -7,12 +7,7 @@ const meta = {
   component: Span,
   parameters: {
     layout: 'centered',
-    componentSubtitle: 'Span',
-    docs: {
-      description: {
-        component: '커스텀 된 span 태그입니다.',
-      },
-    },
+    componentSubtitle: '기본 텍스트 입력 시 사용되는 span 태그입니다.',
   },
   tags: ['autodocs'],
   argTypes: {

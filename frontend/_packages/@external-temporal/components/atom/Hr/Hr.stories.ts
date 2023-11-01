@@ -6,12 +6,7 @@ const meta = {
   title: 'atom/Hr',
   component: Hr,
   parameters: {
-    componentSubtitle: '구분선',
-    docs: {
-      description: {
-        component: '커스텀한 구분선입니다.',
-      },
-    },
+    componentSubtitle: '커스텀한 구분선입니다.',
   },
   tags: ['autodocs'],
   argTypes: {},

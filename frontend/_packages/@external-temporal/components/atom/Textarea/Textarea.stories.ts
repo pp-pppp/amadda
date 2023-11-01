@@ -7,12 +7,7 @@ const meta = {
   component: Textarea,
   parameters: {
     layout: 'centered',
-    componentSubtitle: 'Textarea',
-    docs: {
-      description: {
-        component: '보다 긴 입력값을 받을 수 있는 Textarea 입니다.',
-      },
-    },
+    componentSubtitle: 'input 보다 긴 입력값을 받는 Textarea입니다.',
   },
   tags: ['autodocs'],
   argTypes: {

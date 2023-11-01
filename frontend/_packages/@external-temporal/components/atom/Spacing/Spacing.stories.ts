@@ -7,7 +7,7 @@ const meta = {
   component: Spacing,
   parameters: {
     layout: 'centered',
-    componentSubtitle: '여백',
+    componentSubtitle: '여백입니다.',
     docs: {
       description: {
         component:

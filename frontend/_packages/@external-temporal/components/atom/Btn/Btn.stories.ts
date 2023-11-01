@@ -8,12 +8,7 @@ const meta = {
   component: Btn,
   parameters: {
     layout: 'centered',
-    componentSubtitle: '사각형 버튼',
-    docs: {
-      description: {
-        component: '사각형 버튼입니다.',
-      },
-    },
+    componentSubtitle: '사각형 버튼입니다.',
   },
   tags: ['autodocs'],
   argTypes: {

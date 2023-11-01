@@ -6,12 +6,7 @@ const meta = {
   title: 'atom/Icon',
   component: Icon,
   parameters: {
-    componentSubtitle: '아이콘',
-    docs: {
-      description: {
-        component: 'svg로 구성된 아이콘입니다.',
-      },
-    },
+    componentSubtitle: 'svg로 구성된 아이콘입니다.',
   },
   tags: ['autodocs'],
   argTypes: {

@@ -6,7 +6,7 @@ const meta = {
   title: 'atom/Headings/H6',
   component: H6,
   parameters: {
-    componentSubtitle: 'H6 요소',
+    componentSubtitle: 'H6 요소입니다.',
     docs: {
       description: {
         component: '커스텀한 h6 태그입니다.',

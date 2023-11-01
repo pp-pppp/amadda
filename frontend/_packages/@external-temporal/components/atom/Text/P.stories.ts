@@ -7,12 +7,7 @@ const meta = {
   component: P,
   parameters: {
     layout: 'centered',
-    componentSubtitle: 'Paragraph',
-    docs: {
-      description: {
-        component: '커스텀 된 p 태그입니다. 문단을 입력할 때 사용합니다.',
-      },
-    },
+    componentSubtitle: '문단 입력 시 사용하는 P 태그입니다.',
   },
   tags: ['autodocs'],
   argTypes: {
