@@ -2,26 +2,30 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { Icon } from './Icon';
 
-// More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
   title: 'atom/Icon',
   component: Icon,
   parameters: {
-    // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/react/configure/story-layout
-    // layout: 'centered',
+    componentSubtitle: 'svg로 구성된 아이콘입니다.',
   },
-  // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: ['autodocs'],
-  // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
-    // backgroundColor: { control: 'color' },
+    type: {
+      description: '사용하려는 아이콘을 선택할 수 있습니다.',
+    },
+    color: {
+      description: '아이콘의 색상을 선택할 수 있습니다.',
+    },
+    cursor: {
+      description:
+        '커서 종류를 선택할 수 있습니다. 기본은 화살표로, pointer를 선택하면 손가락 모양으로 커서가 변경됩니다.',
+    },
   },
 } satisfies Meta<typeof Icon>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Primary: Story = {
   args: {
     type: 'cal',

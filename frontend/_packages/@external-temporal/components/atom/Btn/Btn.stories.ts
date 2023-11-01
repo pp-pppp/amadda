@@ -3,26 +3,38 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Btn } from './Btn';
 import React from 'react';
 
-// More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
   title: 'atom/Buttons/Btn',
   component: Btn,
   parameters: {
-    // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/react/configure/story-layout
     layout: 'centered',
+    componentSubtitle: '사각형 버튼입니다.',
   },
-  // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: ['autodocs'],
-  // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
-    // backgroundColor: { control: 'color' },
+    type: {
+      description:
+        '버튼의 타입을 선택합니다. form 태그 내부의 button은 submit을 선택해주세요.',
+    },
+    variant: {
+      description: '버튼의 색상을 지정할 수 있습니다.',
+    },
+    disabled: {
+      description:
+        '버튼의 작동 여부를 정합니다. 클릭을 막고 싶다면 true를 선택해주세요.',
+    },
+    children: {
+      description: '자식 노드를 받습니다. 텍스트 노드 사용을 권고합니다.',
+    },
+    onClick: {
+      description: '클릭 시 실행될 함수입니다.',
+    },
   },
 } satisfies Meta<typeof Btn>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Primary: Story = {
   args: {
     type: 'button',
