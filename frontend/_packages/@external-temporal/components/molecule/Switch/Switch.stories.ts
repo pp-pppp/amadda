@@ -7,15 +7,27 @@ const meta = {
   component: Switch,
   parameters: {
     layout: 'centered',
-    componentSubtitle: '한 줄 요약',
+    componentSubtitle: '선택 여부를 알 수 있는 스위치입니다.',
     docs: {
       description: {
-        component: '컴파운드 컴포넌트인 경우 여기서 설명합니다.',
+        component:
+          'input의 checkbox로 구현되었으며 기본 로직은 checkbox와 유사합니다.',
       },
     },
   },
   tags: ['autodocs'],
-  argTypes: {},
+  argTypes: {
+    id: {
+      description: 'input 태그의 id값입니다.',
+    },
+    selected: {
+      description:
+        '스위치의 선택 여부입니다. true 값이 선택이 된 상태를 의미합니다.',
+    },
+    value: {
+      description: 'input 태그에 바인딩됩니다.',
+    },
+  },
 } satisfies Meta<typeof Switch>;
 
 export default meta;
