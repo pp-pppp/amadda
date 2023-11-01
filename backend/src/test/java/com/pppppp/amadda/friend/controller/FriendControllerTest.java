@@ -210,6 +210,19 @@ class FriendControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @DisplayName("")
+    @Test
+    void test() throws Exception {
+        // given
+        String key = "aaa";
+
+        // when // then
+        mockMvc.perform(
+                get("/api/friend?searchKey="+key)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print());
+    }
 
 
 }

@@ -2,6 +2,8 @@ package com.pppppp.amadda.user.service;
 
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
+import com.pppppp.amadda.user.dto.request.UserJwtRequest;
+import com.pppppp.amadda.user.dto.response.UserJwtResponse;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -20,6 +22,8 @@ class UserServiceTest extends IntegrationTestSupport {
     private UserRepository userRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private TokenProvider tokenProvider;
 
     @AfterEach
     void tearDown() {
@@ -39,8 +43,8 @@ class UserServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(u).isNotNull();
-        assertThat(u).extracting("userSeq", "userName", "userId", "imageUrl", "isInited")
-                .containsExactlyInAnyOrder(1111L, "유저1", "id1", "imageUrl1", false);
+        assertThat(u).extracting("userName", "userId", "imageUrl", "isInited")
+                .containsExactlyInAnyOrder( "유저1", "id1", "imageUrl1", false);
     }
 
     @DisplayName("존재하지 않는 userSeq로 유저를 조회하면 예외가 발생한다. ")
@@ -52,4 +56,31 @@ class UserServiceTest extends IntegrationTestSupport {
                 .isInstanceOf(RestApiException.class)
                 .hasMessage("USER_NOT_FOUND");
     }
+
+    @DisplayName("로그인 후 토큰이랑 isInited 값을 잘 받아온다. ")
+    @Test
+    void getTokensAndCheckInit() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1", false);
+        List<User> users = userRepository.saveAll(List.of(u1));
+
+        UserJwtRequest request = UserJwtRequest.builder()
+                .userSeq(1111L)
+                .imageUrl("url1")
+                .build();
+
+        // when
+        UserJwtResponse response = userService.getTokensAndCheckInit(request);
+        boolean at = tokenProvider.verifyToken(response.accessToken());
+        boolean rt = tokenProvider.verifyToken(response.refreshToken());
+        Long rak = tokenProvider.decodeRefreshAccessKey(response.refreshAccessKey());
+        boolean isInited = response.isInited();
+
+        // then
+        assertThat(at).isTrue();
+        assertThat(rt).isTrue();
+        assertThat(rak).isEqualTo(1111L);
+        assertThat(isInited).isFalse();
+    }
+
 }

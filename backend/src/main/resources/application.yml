@@ -14,6 +14,9 @@ spring:
   jackson:
     time-zone: Asia/Seoul
 
+  jwt:
+    secret-key: ${jwt.secret-key}
+
 server:
   port: 8080
   
