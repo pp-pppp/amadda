@@ -4,6 +4,8 @@ import com.pppppp.amadda.global.entity.BaseEntity;
 import com.pppppp.amadda.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -42,12 +44,13 @@ public class Participation extends BaseEntity {
     @Column
     private String scheduleMemo;
 
-    @Column
-    private Integer alarmTime;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private AlarmTime alarmTime;
 
     @Builder
     public Participation(User user, Schedule schedule, Category category, String scheduleName,
-        String scheduleMemo, Integer alarmTime) {
+        String scheduleMemo, AlarmTime alarmTime) {
         this.user = user;
         this.schedule = schedule;
         this.category = category;
