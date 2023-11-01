@@ -9,6 +9,7 @@
     "test:ci": "jest --ci --passWithNoTests"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^1.9.7",
     "@vanilla-extract/css": "1.13.0",
     "external-temporal": "workspace:*",
     "next": "13.4.12",
