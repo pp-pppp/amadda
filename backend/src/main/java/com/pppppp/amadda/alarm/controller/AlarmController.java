@@ -1,9 +1,12 @@
 package com.pppppp.amadda.alarm.controller;
 
+import com.pppppp.amadda.alarm.dto.request.AlarmRequest;
 import com.pppppp.amadda.alarm.service.AlarmService;
+import com.pppppp.amadda.alarm.service.KafkaProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,16 +16,18 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class AlarmController {
 
-    private final AlarmService alarmService;
+    private final KafkaProducer kafkaProducer;
 
     @PostMapping("/subscribe")
-    public void subscribeAlarm() {
+    public void subscribeAlarm(@RequestBody AlarmRequest request) {
         log.info("POST /api/alarm/subscribe");
+        kafkaProducer.turnOnGlobalAlarm(request.alarmType(), request.userSeq());
     }
 
     @PostMapping("/unsubscribe")
-    public void unsubscribeAlarm() {
+    public void unsubscribeAlarm(@RequestBody AlarmRequest request) {
         log.info("POST /api/alarm/unsubscribe");
+        kafkaProducer.turnOffGlobalAlarm(request.alarmType(), request.userSeq());
     }
 
 }
