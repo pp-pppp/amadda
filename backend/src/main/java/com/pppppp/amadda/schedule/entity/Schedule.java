@@ -50,10 +50,6 @@ public class Schedule extends BaseEntity {
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
     @ColumnDefault("0")
-    private boolean isAlarmed;
-
-    @Column(nullable = false, columnDefinition = "TINYINT(1)")
-    @ColumnDefault("0")
     private boolean isFinished;
 
     @Column
@@ -73,7 +69,6 @@ public class Schedule extends BaseEntity {
         this.isAllDay = isAllDay;
         this.scheduleStartAt = scheduleStartAt;
         this.scheduleEndAt = scheduleEndAt;
-        this.isAlarmed = isAlarmed;
         this.isFinished = isFinished;
         this.scheduleContent = scheduleContent;
         this.isAuthorizedAll = isAuthorizedAll;

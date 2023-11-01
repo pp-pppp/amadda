@@ -13,26 +13,36 @@ spring:
 
   jackson:
     time-zone: Asia/Seoul
-
+    
   jwt:
     secret-key: ${jwt.secret-key}
+    
+  kafka:
+    producer:
+      bootstrap-servers: ${kafka.server.kafka1}, ${kafka.server.kafka2}, ${kafka.server.kafka3}
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      bootstrap-servers: ${kafka.server.kafka1}, ${kafka.server.kafka2}, ${kafka.server.kafka3}
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: ${kafka.group}
 
 server:
   port: 8080
-  
-# TODO: S3 설정 추가 필요 => aws.yml
-#cloud:
-#  aws:
-#    s3:
-#      bucket: ${aws.s3.bucket}
-#    credentials:
-#      access-key: ${aws.s3.key.access}
-#      secret-key: ${aws.s3.key.secret}
-#    region:
-#      static: ${aws.s3.region}
-#      auto: false
-#    stack:
-#      auto: false
+
+cloud:
+  aws:
+    s3:
+      bucket: ${amadda-s3.bucket}
+    credentials:
+      access-key: ${amadda-s3.access}
+      secret-key: ${amadda-s3.secret}
+    region:
+      static: ${amadda-s3.region}
+      auto: false
+    stack:
+      auto: false
 ---
 spring:
   config:
