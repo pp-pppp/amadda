@@ -6,7 +6,7 @@ import lombok.Builder;
 
 @Builder
 public record AlarmRequest(
-    @NotNull(message = "유저값은 필수값입니다.") Long userSeq,
-    @NotNull(message = "알림 타입은 필수값입니다.") AlarmType alarmType) {
+    @NotNull(message = "유저값을 입력해주세요") Long userSeq,
+    @NotNull(message = "알림 타입을 입력해주세요.") AlarmType alarmType) {
 
 }
