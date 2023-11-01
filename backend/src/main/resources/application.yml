@@ -14,6 +14,17 @@ spring:
   jackson:
     time-zone: Asia/Seoul
 
+  kafka:
+    producer:
+      bootstrap-servers: ${kafka.server.kafka1}
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      bootstrap-servers: ${kafka.server.kafka1}
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: ${kafka.group}
+
 server:
   port: 8080
 
