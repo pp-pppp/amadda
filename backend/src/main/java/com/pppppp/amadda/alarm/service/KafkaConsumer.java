@@ -1,5 +1,6 @@
 package com.pppppp.amadda.alarm.service;
 
+import com.pppppp.amadda.alarm.dto.topic.BaseTopicValue;
 import com.pppppp.amadda.alarm.entity.Alarm;
 import com.pppppp.amadda.alarm.entity.KafkaTopic;
 import com.pppppp.amadda.alarm.repository.AlarmRepository;
@@ -23,37 +24,37 @@ public class KafkaConsumer {
     // TODO: consume 받으면 save alarm
 
     @KafkaListener(topics = KafkaTopic.ALARM_FRIEND_REQUEST, groupId = "${spring.kafka.consumer.group-id}")
-    public void consumeFriendRequest(ConsumerRecord<String, String> record) throws IOException {
+    public void consumeFriendRequest(ConsumerRecord<String, BaseTopicValue> record) throws IOException {
         printRecoreInfo(record);
     }
 
     @KafkaListener(topics = KafkaTopic.ALARM_FRIEND_ACCEPT, groupId = "${spring.kafka.consumer.group-id}")
-    public void consumeFriendAccept(ConsumerRecord<String, String> record) throws IOException {
+    public void consumeFriendAccept(ConsumerRecord<String, BaseTopicValue> record) throws IOException {
         printRecoreInfo(record);
     }
 
     @KafkaListener(topics = KafkaTopic.ALARM_SCHEDULE_ASSIGNED, groupId = "${spring.kafka.consumer.group-id}")
-    public void consumeScheduleAssigned(ConsumerRecord<String, String> record) throws IOException {
+    public void consumeScheduleAssigned(ConsumerRecord<String, BaseTopicValue> record) throws IOException {
         printRecoreInfo(record);
     }
 
     @KafkaListener(topics = KafkaTopic.ALARM_MENTIONED, groupId = "${spring.kafka.consumer.group-id}")
-    public void consumeMentioned(ConsumerRecord<String, String> record) throws IOException {
+    public void consumeMentioned(ConsumerRecord<String, BaseTopicValue> record) throws IOException {
         printRecoreInfo(record);
     }
 
     @KafkaListener(topics = KafkaTopic.ALARM_SCHEDULE_UPDATE, groupId = "${spring.kafka.consumer.group-id}")
-    public void consumeScheduleUpdate(ConsumerRecord<String, String> record) throws IOException {
+    public void consumeScheduleUpdate(ConsumerRecord<String, BaseTopicValue> record) throws IOException {
         printRecoreInfo(record);
     }
 
     @KafkaListener(topics = KafkaTopic.ALARM_SCHEDULE_NOTIFICATION, groupId = "${spring.kafka.consumer.group-id}")
-    public void consumeScheduleNotification(ConsumerRecord<String, String> record) throws IOException {
+    public void consumeScheduleNotification(ConsumerRecord<String, BaseTopicValue> record) throws IOException {
         printRecoreInfo(record);
     }
 
 
-    private static void printRecoreInfo(ConsumerRecord<String, String> record) {
+    private static void printRecoreInfo(ConsumerRecord<String, BaseTopicValue> record) {
         log.info("Kafka Consume ===============");
         log.info("topic : {}", record.topic());
         log.info("partition : {}", record.partition());
