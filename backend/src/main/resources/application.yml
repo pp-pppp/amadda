@@ -17,7 +17,7 @@ spring:
   kafka:
     producer:
       bootstrap-servers: ${kafka.server.kafka1}, ${kafka.server.kafka2}, ${kafka.server.kafka3}
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      key-serializer: org.apache.kafka.common.serialization.LongSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     consumer:
       bootstrap-servers: ${kafka.server.kafka1}, ${kafka.server.kafka2}, ${kafka.server.kafka3}
@@ -28,14 +28,15 @@ spring:
           deserializer:
             key:
               delegate:
-                class: org.apache.kafka.common.serialization.StringDeserializer
+                class: org.apache.kafka.common.serialization.LongDeserializer
             value:
               delegate:
                 class: org.springframework.kafka.support.serializer.JsonDeserializer
           json:
             trusted:
-              packages: com.pppppp.amadda.alarm.dto.topic
+              packages: com.pppppp.amadda.alarm.dto.topic, com.pppppp.amadda.alarm.dto.topic.alarm, com.pppppp.amadda.alarm.dto.topic.setting
       group-id: ${kafka.group}
+      auto-offset-reset: earliest
 
 server:
   port: 8080
