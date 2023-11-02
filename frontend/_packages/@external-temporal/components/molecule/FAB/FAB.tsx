@@ -1,4 +1,3 @@
-import React from 'react';
 import { BASE } from './FAB.css';
 import { Icon } from '#/components/atom/Icon/Icon';
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { BASE } from './Tooltip.css';
 import { P } from '#/components/atom/Text/P';
 

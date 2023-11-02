@@ -1,4 +1,3 @@
-import React from 'react';
 import { HTMLAttributes } from 'react';
 export interface FormProps extends HTMLAttributes<HTMLFormElement> {
   formName: string;
