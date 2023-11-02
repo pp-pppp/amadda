@@ -1,9 +1,9 @@
-import React, { HTMLAttributes } from "react";
-import { Icon } from "#/components/atom/Icon/Icon";
-import { Input } from "#/components/atom/Input/Input";
-import { Label } from "#/components/atom/Label/Label";
-import { H5 } from "#/components/atom/Hn/H5";
-import { STATUS } from "./Filter.css";
+import React, { HTMLAttributes } from 'react';
+import { Icon } from '#/components/atom/Icon/Icon';
+import { Input } from '#/components/atom/Input/Input';
+import { Label } from '#/components/atom/Label/Label';
+import { H5 } from '#/components/atom/Hn/H5';
+import { STATUS } from './Filter.css';
 
 export interface FilterProps extends HTMLAttributes<HTMLSelectElement> {
   isOpen: boolean;
@@ -21,10 +21,10 @@ export interface OptionProps {
 }
 
 export function Filter({ isOpen, onClick, main, children }: FilterProps) {
-  const iconType = isOpen ? "up" : "down";
-  const status = isOpen ? "open" : "close";
-  const mainStatus = isOpen ? "openMain" : "closeMain";
-  const optionStatus = isOpen ? "openOptions" : "closeOptions";
+  const iconType = isOpen ? 'up' : 'down';
+  const status = isOpen ? 'open' : 'close';
+  const mainStatus = isOpen ? 'openMain' : 'closeMain';
+  const optionStatus = isOpen ? 'openOptions' : 'closeOptions';
   return (
     <div className={STATUS[status]}>
       <div className={STATUS[mainStatus]} onClick={onClick}>
@@ -44,7 +44,7 @@ Filter.FilterOption = function FilterOption({
   children,
 }: OptionProps) {
   return (
-    <li className={STATUS["option"]}>
+    <li className={STATUS['option']}>
       <Label htmlFor={id}>{children}</Label>
       <Input
         type="checkbox"
