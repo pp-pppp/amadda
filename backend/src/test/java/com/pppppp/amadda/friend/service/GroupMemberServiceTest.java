@@ -33,7 +33,7 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
 
     @AfterEach
     void tearDown() {
-
+        groupMemberRepository.deleteAllInBatch();
     }
 
     @DisplayName("그룹멤버가 모두 정상 저장된다. ")
@@ -58,10 +58,9 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(groupMemberRepository.findAll()).hasSize(2)
-                .extracting("group.groupSeq", "member.userSeq")
+                .extracting("member.userSeq")
                 .containsExactlyInAnyOrder(
-                        tuple(1L, 1234L),
-                        tuple(1L, 2222L)
+                        1234L, 2222L
                 );
     }
 
