@@ -1,4 +1,3 @@
-import React from 'react';
 import { createContext, useContext, useState } from 'react';
 import {
   CONTENTS,
@@ -45,7 +44,8 @@ Segments.Triggers = function ({ titles }: SegmentTriggerProps) {
         <button
           key={idx}
           className={TRIGGER_VARIANT[page === idx ? 'selected' : 'unselected']}
-          onClick={() => setPage(idx)}>
+          onClick={() => setPage(idx)}
+        >
           {titles[idx]}
         </button>
       ))}

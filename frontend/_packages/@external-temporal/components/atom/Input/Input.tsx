@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type { HTMLAttributes } from 'react';
-import React from 'react';
+
 import { ChangeEvent } from 'react';
 import { TYPE } from './Input.css';
 

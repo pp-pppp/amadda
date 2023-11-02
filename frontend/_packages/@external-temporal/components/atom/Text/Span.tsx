@@ -1,4 +1,3 @@
-import React from 'react';
 import type { HTMLAttributes } from 'react';
 import { COLOR } from './Texts.css';
 

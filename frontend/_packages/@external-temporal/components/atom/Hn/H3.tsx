@@ -1,4 +1,3 @@
-import React from 'react';
 import type { HTMLAttributes } from 'react';
 import { VARIANTS } from './H.css';
 import { HnProps } from './H1';

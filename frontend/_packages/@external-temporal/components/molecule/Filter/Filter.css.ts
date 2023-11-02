@@ -1,17 +1,17 @@
-import colors from "#/constants/colors";
-import { style, styleVariants } from "@vanilla-extract/css";
+import colors from '#/constants/colors';
+import { style, styleVariants } from '@vanilla-extract/css';
 
 // 기본 CSS
 const BASE = style({
-  width: "100%",
+  width: '100%',
   // padding: '0.2rem 0.4rem',
 });
 
 // 배치 관련 CSS
 const FRAME = style({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
 });
 
 // 배경 색상
@@ -26,9 +26,9 @@ export const STATUS = styleVariants({
     BASE,
     BGCOLOR,
     {
-      borderRadius: "0.75rem",
+      borderRadius: '0.75rem',
       outline: `0.1rem solid ${colors.key}`,
-      paddingBottom: "0.25rem",
+      paddingBottom: '0.25rem',
     },
   ],
 
@@ -36,9 +36,8 @@ export const STATUS = styleVariants({
   close: [
     BASE,
     {
-      border: "none",
+      border: 'none',
     },
-    
   ],
 
   // main(뷰 선택하기) div : 열린 상태
@@ -47,8 +46,8 @@ export const STATUS = styleVariants({
     FRAME,
     BGCOLOR,
     {
-      borderRadius: "0.75rem",
-      padding: "0.5rem",
+      borderRadius: '0.75rem',
+      padding: '0.5rem',
     },
   ],
 
@@ -58,8 +57,8 @@ export const STATUS = styleVariants({
     FRAME,
     BGCOLOR,
     {
-      borderRadius: "0.5rem",
-      padding: "0.5rem",
+      borderRadius: '0.5rem',
+      padding: '0.5rem',
       ':hover': {
         outline: `0.1rem solid ${colors.key}`,
       },
@@ -72,8 +71,8 @@ export const STATUS = styleVariants({
     FRAME,
     BGCOLOR,
     {
-      borderRadius: "0.75rem",
-      flexDirection: "column",
+      borderRadius: '0.75rem',
+      flexDirection: 'column',
     },
   ],
 
@@ -82,7 +81,7 @@ export const STATUS = styleVariants({
     BASE,
     FRAME,
     {
-      visibility: "hidden",
+      visibility: 'hidden',
     },
   ],
 
@@ -91,7 +90,7 @@ export const STATUS = styleVariants({
     BASE,
     FRAME,
     {
-      padding: "0.5rem",
+      padding: '0.5rem',
     },
   ],
 });
