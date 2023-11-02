@@ -15,4 +15,6 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
 
     List<Participation> findBySchedule_ScheduleSeqAndIsDeletedFalse(Long scheduleSeq);
 
+    List<Participation> findByUser_UserSeqAndCategory_CategorySeqAndIsDeletedFalse(
+        Long userSeq, Long categorySeq);
 }
