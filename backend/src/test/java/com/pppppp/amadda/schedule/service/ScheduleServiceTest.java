@@ -7,12 +7,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
+import com.pppppp.amadda.schedule.dto.request.CategoryCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.ScheduleCreateRequest;
+import com.pppppp.amadda.schedule.dto.response.CategoryReadResponse;
+import com.pppppp.amadda.schedule.dto.response.CommentReadResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleCreateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleDetailReadResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleListReadResponse;
 import com.pppppp.amadda.schedule.entity.AlarmTime;
 import com.pppppp.amadda.schedule.entity.Schedule;
+import com.pppppp.amadda.schedule.repository.CategoryRepository;
+import com.pppppp.amadda.schedule.repository.CommentRepository;
 import com.pppppp.amadda.schedule.repository.ParticipationRepository;
 import com.pppppp.amadda.schedule.repository.ScheduleRepository;
 import com.pppppp.amadda.user.dto.response.UserReadResponse;
@@ -32,6 +37,12 @@ class ScheduleServiceTest extends IntegrationTestSupport {
     private ScheduleService scheduleService;
 
     @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
     private ParticipationRepository participationRepository;
 
     @Autowired
@@ -39,6 +50,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private UserRepository userRepository;
+
 
     @BeforeEach
     void setUp() {
@@ -49,7 +61,9 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
     @AfterEach
     void tearDown() {
+        categoryRepository.deleteAllInBatch();
         participationRepository.deleteAllInBatch();
+        commentRepository.deleteAllInBatch();
         scheduleRepository.deleteAllInBatch();
         userRepository.deleteAllInBatch();
     }
@@ -266,7 +280,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .extracting("scheduleName", "isAuthorizedAll",
                 "alarmTime")
             .containsExactly(tuple("안녕 내가 일정 이름이야", false,
-                AlarmTime.NONE));
+                AlarmTime.NONE.getContent()));
         assertThat(user2Schedules)
             .hasSize(2)
             .extracting("scheduleName",
@@ -274,9 +288,10 @@ class ScheduleServiceTest extends IntegrationTestSupport {
                 "alarmTime", "isAuthorizedAll")
             .containsExactlyInAnyOrder(
                 tuple("안녕 내가 일정 이름이야", false, false, false,
-                    "", "", AlarmTime.NONE, false),
+                    "", "", AlarmTime.NONE.getContent(), false),
                 tuple("나도 일정이야", true, true, false,
-                    "2023-11-01 08:59:30", "2023-11-01 09:00:00", AlarmTime.ON_TIME, false));
+                    "2023-11-01 08:59:30", "2023-11-01 09:00:00", AlarmTime.ON_TIME.getContent(),
+                    false));
     }
 
     @DisplayName("일정의 상세 정보를 불러온다.")
@@ -313,6 +328,92 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         assertEquals(u1Response.scheduleSeq(), u2Response.scheduleSeq());
     }
 
+    // TODO: 동적 쿼리를 통한 일정 검색 메소드 테스트 구현
+
+    // =================== 댓글 등록, 삭제 ===================
+    @DisplayName("해당 일정에 댓글을 단다.")
+    @Transactional
+    @Test
+    void createCommentOnSchedule() {
+        // given
+        User user = userRepository.findAll().get(0);
+
+        ScheduleCreateRequest request = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(false)
+            .participants(List.of(
+                UserReadResponse.of(user)))
+            .build();
+        scheduleService.createSchedule(user, request);
+
+        Schedule s = scheduleRepository.findAll().get(0);
+
+        // when
+        CommentReadResponse response = scheduleService.createCommentsOnSchedule(
+            s.getScheduleSeq(), user, "세상에서 제일 불행한 사람임");
+
+        // then
+        assertThat(response).isNotNull()
+            .extracting("commentContent", "user")
+            .containsExactly("세상에서 제일 불행한 사람임", UserReadResponse.of(user));
+    }
+
+    // =================== 카테고리 ===================
+
+    @DisplayName("새로운 카테고리를 생성한다.")
+    @Test
+    void createNewCategory() {
+        // given
+        User user = userRepository.findAll().get(0);
+        CategoryCreateRequest request = CategoryCreateRequest.of("자율기절", "HOTPINK");
+
+        // when
+        CategoryReadResponse response = scheduleService.createCategory(user, request);
+
+        // then
+        assertThat(response).isNotNull()
+            .extracting("categoryName", "categoryColor")
+            .containsExactly("자율기절", "HOTPINK");
+    }
+
+    @DisplayName("사용자의 카테고리 목록을 조회한다.")
+    @Test
+    void getCategoriesForUser() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+        User u2 = userRepository.findAll().get(1);
+        CategoryCreateRequest r1 = CategoryCreateRequest.of("자율기절", "HOTPINK");
+        CategoryCreateRequest r2 = CategoryCreateRequest.of("합창단", "GREEN");
+        scheduleService.createCategory(u1, r1);
+        scheduleService.createCategory(u1, r2);
+        scheduleService.createCategory(u2, r1);
+
+        // when
+        List<CategoryReadResponse> u1Categories = scheduleService.getCategoryList(u1);
+        List<CategoryReadResponse> u2Categories = scheduleService.getCategoryList(u2);
+
+        // then
+        assertThat(u1Categories)
+            .hasSize(2)
+            .extracting("categoryName", "categoryColor")
+            .containsExactlyInAnyOrder(
+                tuple("자율기절", "HOTPINK"),
+                tuple("합창단", "GREEN"));
+        assertThat(u2Categories)
+            .hasSize(1)
+            .extracting("categoryName", "categoryColor")
+            .containsExactlyInAnyOrder(
+                tuple("자율기절", "HOTPINK"));
+    }
+
+    // =================== 실패 테스트 ===================
+
     @DisplayName("유효하지 않은 일정 seq로 인해 일정 조회에 실패한다.")
     @Test
     void noScheduleSeq() {
@@ -323,5 +424,20 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         assertThatThrownBy(() -> scheduleService.getScheduleDetail(scheduleSeq, user))
             .isInstanceOf(RestApiException.class)
             .hasMessage("SCHEDULE_NOT_FOUND");
+    }
+
+    @DisplayName("기존에 있던 카테고리 이름으로 카테고리 생성에 실패한다.")
+    @Test
+    void categoryAlreadyExists() {
+        // given
+        User user = userRepository.findAll().get(0);
+        CategoryCreateRequest r1 = CategoryCreateRequest.of("자율기절", "HOTPINK");
+        CategoryCreateRequest r2 = CategoryCreateRequest.of("자율기절", "GREEN");
+        scheduleService.createCategory(user, r1);
+
+        // when, then
+        assertThatThrownBy(() -> scheduleService.createCategory(user, r2))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("CATEGORY_ALREADY_EXISTS");
     }
 }

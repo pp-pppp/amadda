@@ -1,6 +1,5 @@
 package com.pppppp.amadda.schedule.dto.response;
 
-import com.pppppp.amadda.schedule.entity.AlarmTime;
 import com.pppppp.amadda.schedule.entity.Participation;
 import com.pppppp.amadda.schedule.entity.Schedule;
 import com.pppppp.amadda.user.dto.response.UserReadResponse;
@@ -22,14 +21,21 @@ public record ScheduleDetailReadResponse(
 
     // ================ Participation =================
 
-    AlarmTime alarmTime,
+    String alarmTime,
     String scheduleName,
-    String scheduleMemo
+    String scheduleMemo,
+    CategoryReadResponse category,
+
+    // ================= Comment ===================
+
+    List<CommentReadResponse> comments
 ) {
 
+    // TODO: 카테고리 관련 로직 수정 필요
     public static ScheduleDetailReadResponse of(Schedule schedule,
         List<UserReadResponse> participants,
-        Participation participation) {
+        Participation participation,
+        List<CommentReadResponse> comments) {
         return ScheduleDetailReadResponse.builder()
             .scheduleSeq(schedule.getScheduleSeq())
             .scheduleContent(schedule.getScheduleContent())
@@ -40,9 +46,12 @@ public record ScheduleDetailReadResponse(
             .scheduleStartAt(String.valueOf(schedule.getScheduleStartAt()))
             .scheduleEndAt(String.valueOf(schedule.getScheduleEndAt()))
             .participants(participants)
-            .alarmTime(participation.getAlarmTime())
+            .alarmTime(participation.getAlarmTime().getContent())
             .scheduleName(participation.getScheduleName())
             .scheduleMemo(participation.getScheduleMemo())
+            .category((participation.getCategory() != null) ? CategoryReadResponse.of(
+                participation.getCategory()) : null)
+            .comments(comments)
             .build();
     }
 }

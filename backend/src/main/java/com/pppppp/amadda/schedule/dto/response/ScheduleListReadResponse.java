@@ -1,6 +1,5 @@
 package com.pppppp.amadda.schedule.dto.response;
 
-import com.pppppp.amadda.schedule.entity.AlarmTime;
 import com.pppppp.amadda.schedule.entity.Participation;
 import com.pppppp.amadda.schedule.entity.Schedule;
 import com.pppppp.amadda.user.dto.response.UserReadResponse;
@@ -19,11 +18,13 @@ public record ScheduleListReadResponse(
     Boolean isAllDay,
     Boolean isTimeSelected,
     Boolean isDateSelected,
-    AlarmTime alarmTime,
+    String alarmTime,
     Boolean isAuthorizedAll,
-    UserReadResponse authorizedUser
+    UserReadResponse authorizedUser,
+    CategoryReadResponse category
 ) {
 
+    // TODO: 카테고리 관련 로직 개선 필요
     public static ScheduleListReadResponse of(Schedule schedule,
         UserReadResponse authorizedUser, List<UserReadResponse> participants,
         Participation participation) {
@@ -41,9 +42,11 @@ public record ScheduleListReadResponse(
                 (schedule.isDateSelected()) ? schedule.getScheduleStartAt().format(formatter) : "")
             .scheduleEndAt(
                 (schedule.isTimeSelected()) ? schedule.getScheduleEndAt().format(formatter) : "")
-            .alarmTime(participation.getAlarmTime())
+            .alarmTime(participation.getAlarmTime().getContent())
             .isAuthorizedAll(schedule.isAuthorizedAll())
             .authorizedUser(authorizedUser)
+            .category((participation.getCategory() != null) ? CategoryReadResponse.of(
+                participation.getCategory()) : null)
             .build();
     }
 

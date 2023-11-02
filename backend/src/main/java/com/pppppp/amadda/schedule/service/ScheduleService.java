@@ -1,14 +1,23 @@
 package com.pppppp.amadda.schedule.service;
 
 import com.pppppp.amadda.global.entity.exception.RestApiException;
+import com.pppppp.amadda.global.entity.exception.errorcode.CategoryErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.ScheduleErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
+import com.pppppp.amadda.schedule.dto.request.CategoryCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.ScheduleCreateRequest;
+import com.pppppp.amadda.schedule.dto.response.CategoryReadResponse;
+import com.pppppp.amadda.schedule.dto.response.CommentReadResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleCreateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleDetailReadResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleListReadResponse;
+import com.pppppp.amadda.schedule.entity.Category;
+import com.pppppp.amadda.schedule.entity.CategoryColor;
+import com.pppppp.amadda.schedule.entity.Comment;
 import com.pppppp.amadda.schedule.entity.Participation;
 import com.pppppp.amadda.schedule.entity.Schedule;
+import com.pppppp.amadda.schedule.repository.CategoryRepository;
+import com.pppppp.amadda.schedule.repository.CommentRepository;
 import com.pppppp.amadda.schedule.repository.ParticipationRepository;
 import com.pppppp.amadda.schedule.repository.ScheduleRepository;
 import com.pppppp.amadda.user.dto.response.UserReadResponse;
@@ -31,6 +40,10 @@ public class ScheduleService {
 
     private final UserRepository userRepository;
 
+    private final CommentRepository commentRepository;
+
+    private final CategoryRepository categoryRepository;
+
     @Transactional
     public ScheduleCreateResponse createSchedule(User user, ScheduleCreateRequest request) {
 
@@ -40,7 +53,7 @@ public class ScheduleService {
 
         List<Participation> newParticipations = new LinkedList<>();
 
-        request.participants().stream().forEach(response -> {
+        request.participants().forEach(response -> {
             // seq로 user 찾기, 없으면 예외 던짐
             User participant = userRepository.findById(response.userSeq())
                 .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
@@ -78,7 +91,14 @@ public class ScheduleService {
                 scheduleSeq, user.getUserSeq())
             .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
 
-        return ScheduleDetailReadResponse.of(schedule, participants, participation);
+        // 댓글 가져오기
+        List<CommentReadResponse> comments = commentRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
+                scheduleSeq)
+            .stream()
+            .map(comment -> CommentReadResponse.of(comment, UserReadResponse.of(comment.getUser())))
+            .collect(Collectors.toList());
+
+        return ScheduleDetailReadResponse.of(schedule, participants, participation, comments);
     }
 
     public List<ScheduleListReadResponse> getScheduleList(User user) {
@@ -86,8 +106,8 @@ public class ScheduleService {
         List<Participation> participations = participationRepository
             .findByUser_UserSeqAndIsDeletedFalse(user.getUserSeq());
 
-        // 참가 정보를 바탕으로 일정 리스트 가져오기
-        List<ScheduleListReadResponse> schedules = participations.stream()
+        // 참가 정보를 바탕으로 일정 리스트 만들어서 반환
+        return participations.stream()
             .map(participation -> {
 
                 // 1. 참가하는 일정
@@ -112,7 +132,56 @@ public class ScheduleService {
                     UserReadResponse.of(schedule.getUser()), participants, participation);
             })
             .collect(Collectors.toList());
+    }
 
-        return schedules;
+    // TODO: 동적 쿼리를 통한 일정 검색 메소드 테스트 구현
+
+    @Transactional
+    public CommentReadResponse createCommentsOnSchedule(Long scheduleSeq,
+        User user, String commentContext) {
+        Schedule schedule = scheduleRepository.findByScheduleSeqAndIsDeletedFalse(scheduleSeq)
+            .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
+
+        Comment comment = Comment.builder()
+            .user(user)
+            .schedule(schedule)
+            .commentContent(commentContext)
+            .build();
+
+        commentRepository.save(comment);
+
+        return CommentReadResponse.of(comment, UserReadResponse.of(user));
+    }
+
+    public CategoryReadResponse createCategory(User user, CategoryCreateRequest request) {
+
+        Category category = Category.builder()
+            .user(user)
+            .categoryName(request.categoryName())
+            .categoryColor(CategoryColor.valueOf(request.categoryColor()))
+            .build();
+
+        // 중복체크
+        List<Category> categories = categoryRepository.findByUser_UserSeqAndIsDeletedFalse(
+            user.getUserSeq());
+
+        categories.forEach(c -> {
+            if (c.getCategoryName().equals(category.getCategoryName())) {
+                throw new RestApiException(CategoryErrorCode.CATEGORY_ALREADY_EXISTS);
+            }
+        });
+
+        categoryRepository.save(category);
+
+        return CategoryReadResponse.of(category);
+    }
+
+    public List<CategoryReadResponse> getCategoryList(User user) {
+        List<Category> categories = categoryRepository.findByUser_UserSeqAndIsDeletedFalse(
+            user.getUserSeq());
+
+        return categories.stream()
+            .map(CategoryReadResponse::of)
+            .collect(Collectors.toList());
     }
 }
