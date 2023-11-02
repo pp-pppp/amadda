@@ -18,13 +18,16 @@ class UserGroupRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
     private UserGroupRepository userGroupRepository;
-
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private GroupMemberRepository groupMemberRepository;
 
     @AfterEach
     void tearDown() {
+        groupMemberRepository.deleteAllInBatch();
         userGroupRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
     }
 
     @DisplayName("유저그룹을 저장하고 조회한다. ")
