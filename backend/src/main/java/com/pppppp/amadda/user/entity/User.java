@@ -27,26 +27,20 @@ public class User extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String imageUrl;
 
-    @Column(nullable = false, columnDefinition = "TINYINT(1)")
-    @ColumnDefault(value = "0")
-    private boolean isInited;
-
     @Builder
-    private User(Long userSeq, String userName, String userId, String imageUrl, boolean isInited) {
+    private User(Long userSeq, String userName, String userId, String imageUrl) {
         this.userSeq = userSeq;
         this.userName = userName;
         this.userId = userId;
         this.imageUrl = imageUrl;
-        this.isInited = isInited;
     }
 
-    public static User create(Long userSeq, String userName, String userId, String imageUrl, boolean isInited) {
+    public static User create(Long userSeq, String userName, String userId, String imageUrl) {
         return User.builder()
                 .userSeq(userSeq)
                 .userName(userName)
                 .userId(userId)
                 .imageUrl(imageUrl)
-                .isInited(isInited)
                 .build();
     }
 }

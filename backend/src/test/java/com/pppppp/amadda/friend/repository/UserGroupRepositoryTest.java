@@ -34,7 +34,7 @@ class UserGroupRepositoryTest extends IntegrationTestSupport {
     @Test
     void createUserGroup() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1", false);
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
         List<User> users = userRepository.saveAll(List.of(u1));
         UserGroup ug = UserGroup.create("그룹명1", u1);
 
