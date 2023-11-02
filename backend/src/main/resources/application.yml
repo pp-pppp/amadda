@@ -21,8 +21,20 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     consumer:
       bootstrap-servers: ${kafka.server.kafka1}, ${kafka.server.kafka2}, ${kafka.server.kafka3}
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring:
+          deserializer:
+            key:
+              delegate:
+                class: org.apache.kafka.common.serialization.StringDeserializer
+            value:
+              delegate:
+                class: org.springframework.kafka.support.serializer.JsonDeserializer
+          json:
+            trusted:
+              packages: com.pppppp.amadda.alarm.dto.topic
       group-id: ${kafka.group}
 
 server:
