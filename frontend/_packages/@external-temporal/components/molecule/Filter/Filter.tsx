@@ -1,11 +1,11 @@
-import React, { HTMLAttributes } from 'react';
+import { HTMLAttributes } from 'react';
 import { Icon } from '#/components/atom/Icon/Icon';
 import { Input } from '#/components/atom/Input/Input';
 import { Label } from '#/components/atom/Label/Label';
 import { H5 } from '#/components/atom/Hn/H5';
 import { STATUS } from './Filter.css';
 
-export interface FilterProps extends HTMLAttributes<HTMLSelectElement> {
+export interface FilterProps {
   isOpen: boolean;
   onClick?(e: React.MouseEvent): void;
   main: string;
