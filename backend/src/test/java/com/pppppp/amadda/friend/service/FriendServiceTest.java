@@ -45,8 +45,8 @@ class FriendServiceTest extends IntegrationTestSupport {
     @Test
     void beFriends() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1", false);
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2", true);
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         // 친구 요청을 만들고 ACCEPTED 상태로 바꿔줘 친구 요청을 수락한 상황으로 가정
@@ -74,8 +74,8 @@ class FriendServiceTest extends IntegrationTestSupport {
     @Test
     void cantBeFriends() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1", false);
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2", true);
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         FriendRequestRequest request = FriendRequestRequest.builder()
@@ -94,8 +94,8 @@ class FriendServiceTest extends IntegrationTestSupport {
     @Test
     void alreadyFriends() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1", false);
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2", true);
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         FriendRequest fr = FriendRequest.create(u1, u2);
@@ -113,8 +113,8 @@ class FriendServiceTest extends IntegrationTestSupport {
     @Test
     void notFriends() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1", false);
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2", true);
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         // when
@@ -129,8 +129,8 @@ class FriendServiceTest extends IntegrationTestSupport {
     @Test
     void deleteFriend() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1", false);
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2", true);
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         FriendRequest fr = FriendRequest.create(u1, u2);

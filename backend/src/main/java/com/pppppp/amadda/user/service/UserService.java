@@ -2,7 +2,10 @@ package com.pppppp.amadda.user.service;
 
 import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
+import com.pppppp.amadda.user.dto.request.UserInitRequest;
 import com.pppppp.amadda.user.dto.request.UserJwtRequest;
+import com.pppppp.amadda.user.dto.request.UserRefreshRequest;
+import com.pppppp.amadda.user.dto.response.UserJwtInitResponse;
 import com.pppppp.amadda.user.dto.response.UserJwtResponse;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
@@ -25,7 +28,17 @@ public class UserService {
     }
 
     public boolean checkIsInited(Long userSeq) {
-        return getUserInfoBySeq(userSeq).isInited();
+        try{
+            getUserInfoBySeq(userSeq);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public void saveUser(UserInitRequest request) {
+        User u = User.create(request.userSeq(), request.userName(), request.userId(), request.imageUrl());
+        saveUser(u);
     }
 
 
@@ -35,19 +48,33 @@ public class UserService {
         return Optional.ofNullable(userSeq).flatMap(userRepository::findByUserSeq);
     }
 
+    private void saveUser(User user) {
+        userRepository.save(user);
+    }
 
     // =================== 유저 인증 관련 메소드들 ===================
 
-    public UserJwtResponse getTokensAndCheckInit(UserJwtRequest request) {
+    public UserJwtInitResponse getTokensAndCheckInit(UserJwtRequest request) {
 
-        List<String> tokens = tokenProvider.createTokens(request);
+        List<String> tokens = tokenProvider.createTokens(request.userSeq());
         boolean isInited = checkIsInited(request.userSeq());
 
-        return UserJwtResponse.of(
+        return UserJwtInitResponse.of(
                 tokens.get(0),
                 tokens.get(1),
                 tokens.get(2),
                 isInited
+        );
+    }
+
+    public UserJwtResponse getNewTokens(UserRefreshRequest request, Long userSeq) {
+        tokenProvider.verifyToken(request.refreshToken());
+        List<String> tokens = tokenProvider.createTokens(userSeq);
+
+        return UserJwtResponse.of(
+                tokens.get(0),
+                tokens.get(1),
+                tokens.get(2)
         );
     }
 

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TokenProviderTest extends IntegrationTestSupport {
 
@@ -23,7 +24,7 @@ class TokenProviderTest extends IntegrationTestSupport {
                 .userSeq(1111L)
                 .imageUrl("url1")
                 .build();
-        List<String> l = tokenProvider.createTokens(request);
+        List<String> l = tokenProvider.createTokens(request.userSeq());
 
 //        Thread.sleep(1000L);
 
@@ -37,5 +38,31 @@ class TokenProviderTest extends IntegrationTestSupport {
         assertThat(rt).isTrue();
         assertThat(rak).isEqualTo(1111L);
     }
+
+    @DisplayName("잘못된 refresh 토큰은 예외를 발생시킨다. ")
+    @Test
+    void verifyTokenFalse() {
+        // given
+        String token = "assfasdf";
+
+        // when // then
+        assertThatThrownBy(() -> tokenProvider.verifyToken(token))
+                .isInstanceOf(Exception.class);
+    }
+
+    @DisplayName("특정 유저의 rat는 언제나 동일하다. ")
+    @Test
+    void chkRefreshAccessKey() {
+        // given
+        Long userSeq = 1111l;
+
+        // when
+        String t1 = tokenProvider.generateRefreshAccessKey(userSeq);
+        String t2 = tokenProvider.generateRefreshAccessKey(userSeq);
+
+        // then
+        assertThat(t1).isEqualTo(t2);
+    }
+
 
 }

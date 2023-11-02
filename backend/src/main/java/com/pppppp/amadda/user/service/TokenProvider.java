@@ -1,6 +1,9 @@
 package com.pppppp.amadda.user.service;
 
+import com.pppppp.amadda.global.entity.exception.RestApiException;
+import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
 import com.pppppp.amadda.user.dto.request.UserJwtRequest;
+import com.pppppp.amadda.user.dto.request.UserRefreshRequest;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -24,39 +27,23 @@ public class TokenProvider {
     @Value("${spring.jwt.refresh-length}")
     private Long refreshLength;
 
-    public List<String> createTokens(UserJwtRequest request) {
+    public List<String> createTokens(Long userSeq) {
         return List.of(
-                generateAccessToken(request.userSeq()),
-                generateRefreshToken(request.userSeq()),
-                generateRefreshAccessKey(request.userSeq())
+                generateAccessToken(userSeq),
+                generateRefreshToken(userSeq),
+                generateRefreshAccessKey(userSeq)
         );
     }
 
     public boolean verifyToken(String token) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         Key key = Keys.hmacShaKeyFor(keyBytes);
-        try {
-            // JWT 토큰 파싱
-            Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token);
-            return true;
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            log.error(">>> 잘못된 JWT 서명입니다.");
-            // TODO 각 exception에 대한 처리 추후 추가 예정
 
-        } catch (ExpiredJwtException e) {
-            log.error(">>> 만료된 JWT 토큰입니다.");
-
-        } catch (UnsupportedJwtException e) {
-            log.error(">>> 지원되지 않는 JWT 토큰입니다.");
-
-        } catch (IllegalArgumentException e) {
-            log.error(">>> JWT 토큰이 잘못되었습니다.");
-
-        }
-        return false;
+        Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token);
+        return true;
     }
 
     private String generateAccessToken(Long userSeq) {
@@ -85,7 +72,7 @@ public class TokenProvider {
                 .compact();
     }
 
-    private String generateRefreshAccessKey(Long userSeq) {
+    public String generateRefreshAccessKey(Long userSeq) {
         return Base64.encodeBase64String(userSeq.toString().getBytes());
     }
 

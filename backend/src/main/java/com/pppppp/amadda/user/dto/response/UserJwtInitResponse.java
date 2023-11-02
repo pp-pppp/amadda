@@ -3,16 +3,18 @@ package com.pppppp.amadda.user.dto.response;
 import lombok.Builder;
 
 @Builder
-public record UserJwtResponse(
+public record UserJwtInitResponse(
         String accessToken,
         String refreshToken,
-        String refreshAccessKey) {
+        String refreshAccessKey,
+        boolean isInited) {
 
-    public static UserJwtResponse of(String at, String rf, String rak) {
-        return UserJwtResponse.builder()
+    public static UserJwtInitResponse of(String at, String rf, String rak, boolean isInited) {
+        return UserJwtInitResponse.builder()
                 .accessToken(at)
                 .refreshToken(rf)
                 .refreshAccessKey(rak)
+                .isInited(isInited)
                 .build();
     }
 }
