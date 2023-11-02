@@ -25,6 +25,11 @@ spring:
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       group-id: ${kafka.group}
 
+  jwt:
+    secret-key: ${jwt.secret-key}
+    access-length: ${jwt.access-length}
+    refresh-length: ${jwt.refresh-length}
+
 server:
   port: 8080
 

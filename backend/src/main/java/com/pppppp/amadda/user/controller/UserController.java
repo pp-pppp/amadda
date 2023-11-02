@@ -1,6 +1,10 @@
 package com.pppppp.amadda.user.controller;
 
+import com.pppppp.amadda.global.dto.ApiResponse;
+import com.pppppp.amadda.user.dto.request.UserJwtRequest;
+import com.pppppp.amadda.user.dto.response.UserJwtResponse;
 import com.pppppp.amadda.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +16,12 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+
+    @GetMapping("/login")
+    public ApiResponse<UserJwtResponse> getTokenAfterLogin(@Valid @RequestBody UserJwtRequest request) {
+        UserJwtResponse response = userService.getTokensAndCheckInit(request);
+        return ApiResponse.ok(response);
+    }
 
     @DeleteMapping("")
     public void deleteUser() {
