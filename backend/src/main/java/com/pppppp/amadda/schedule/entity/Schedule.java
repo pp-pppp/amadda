@@ -61,8 +61,8 @@ public class Schedule extends BaseEntity {
 
     @Builder
     public Schedule(User user, boolean isTimeSelected, boolean isDateSelected, boolean isAllDay,
-        LocalDateTime scheduleStartAt, LocalDateTime scheduleEndAt, boolean isAlarmed,
-        boolean isFinished, String scheduleContent, boolean isAuthorizedAll) {
+        LocalDateTime scheduleStartAt, LocalDateTime scheduleEndAt, boolean isFinished,
+        String scheduleContent, boolean isAuthorizedAll) {
         this.user = user;
         this.isTimeSelected = isTimeSelected;
         this.isDateSelected = isDateSelected;
