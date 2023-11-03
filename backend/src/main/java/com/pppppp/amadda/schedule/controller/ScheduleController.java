@@ -9,7 +9,6 @@ import com.pppppp.amadda.schedule.dto.response.CommentReadResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleCreateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleDetailReadResponse;
 import com.pppppp.amadda.schedule.service.ScheduleService;
-import com.pppppp.amadda.user.entity.User;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +29,8 @@ public class ScheduleController {
 
     private final ScheduleService scheduleService;
 
+    private final Long mockUserSeq = 1111L;
+
     // TODO: 로그인 구현 후 코드 수정
     // TODO: 동적쿼리 구현 후 코드 수정
 
@@ -39,15 +40,13 @@ public class ScheduleController {
     public ApiResponse<ScheduleCreateResponse> createSchedule(
         @Valid @RequestBody ScheduleCreateRequest request) {
         log.info("POST /api/schedule");
-        User mockUser = User.create(1111L, "박동건", "icebearrrr", "imgUrl1");
-        return ApiResponse.ok(scheduleService.createSchedule(mockUser, request));
+        return ApiResponse.ok(scheduleService.createSchedule(mockUserSeq, request));
     }
 
     @GetMapping("/{scheduleSeq}")
     public ApiResponse<ScheduleDetailReadResponse> getSchedule(@PathVariable Long scheduleSeq) {
         log.info("GET /api/schedule/" + scheduleSeq);
-        User mockUser = User.create(1111L, "박동건", "icebearrrr", "imgUrl1");
-        return ApiResponse.ok(scheduleService.getScheduleDetail(scheduleSeq, mockUser));
+        return ApiResponse.ok(scheduleService.getScheduleDetail(scheduleSeq, mockUserSeq));
     }
 
     @GetMapping("")
@@ -57,8 +56,7 @@ public class ScheduleController {
         @RequestParam(value = "unscheduled", required = false) Long unscheduled) {
         log.info("GET /api/schedule?category={}&searchKey={}&unscheduled={}", categorySeq,
             searchKey, unscheduled);
-        User mockUser = User.create(1111L, "박동건", "icebearrrr", "imgUrl1");
-        // return ApiResponse.ok(scheduleService.getScheduleList(mockUser));
+        // return ApiResponse.ok(scheduleService.getScheduleList(mockUserSeq));
     }
 
     @GetMapping("/{scheduleSeq}/participation")
@@ -75,9 +73,8 @@ public class ScheduleController {
     public ApiResponse<CommentReadResponse> createComment(@PathVariable Long scheduleSeq,
         @Valid @RequestBody CommentCreateRequest request) {
         log.info("POST /api/schedule/{}/comment", scheduleSeq);
-        User mockUser = User.create(1111L, "박동건", "icebearrrr", "imgUrl1");
         return ApiResponse.ok(
-            scheduleService.createCommentsOnSchedule(scheduleSeq, mockUser, request));
+            scheduleService.createCommentsOnSchedule(scheduleSeq, mockUserSeq, request));
     }
 
     // ==================== 카테고리 ====================
@@ -86,14 +83,12 @@ public class ScheduleController {
     public ApiResponse<CategoryReadResponse> createCategory(
         @Valid @RequestBody CategoryCreateRequest request) {
         log.info("POST /api/schedule/user/category");
-        User mockUser = User.create(1111L, "박동건", "icebearrrr", "imgUrl1");
-        return ApiResponse.ok(scheduleService.createCategory(mockUser, request));
+        return ApiResponse.ok(scheduleService.createCategory(mockUserSeq, request));
     }
 
     @GetMapping("/user/category")
     public ApiResponse<List<CategoryReadResponse>> getCategoryList() {
         log.info("GET /api/schedule/user/category");
-        User mockUser = User.create(1111L, "박동건", "icebearrrr", "imgUrl1");
-        return ApiResponse.ok(scheduleService.getCategoryList(mockUser));
+        return ApiResponse.ok(scheduleService.getCategoryList(mockUserSeq));
     }
 }
