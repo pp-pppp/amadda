@@ -6,15 +6,13 @@ import com.pppppp.amadda.friend.entity.FriendRequest;
 import com.pppppp.amadda.friend.entity.FriendRequestStatus;
 import com.pppppp.amadda.friend.repository.FriendRequestRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
-import com.pppppp.amadda.global.entity.exception.errorcode.FriendErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.FriendRequestErrorCode;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.service.UserService;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +23,7 @@ public class FriendRequestService {
     private final UserService userService;
     private final FriendService friendService;
 
+    @Transactional
     public FriendRequestResponse createFriendRequest(FriendRequestRequest request) {
 
         Long userSeq = request.userSeq();
@@ -44,6 +43,7 @@ public class FriendRequestService {
         return FriendRequestResponse.of(fr);
     }
 
+    @Transactional
     public FriendRequestResponse declineFriendRequest(Long userSeq, Long requestSeq) {
 
         FriendRequest chk = findFriendRequestBySeq(requestSeq).orElse(null);
@@ -56,6 +56,7 @@ public class FriendRequestService {
         else throw new RestApiException(FriendRequestErrorCode.FRIEND_REQUEST_INVALID);
     }
 
+    @Transactional
     public FriendRequestResponse acceptFriendRequest(Long userSeq, Long requestSeq) {
 
         FriendRequest chk = findFriendRequestBySeq(requestSeq).orElse(null);
