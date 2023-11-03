@@ -6,6 +6,7 @@ import com.pppppp.amadda.schedule.entity.Schedule;
 import com.pppppp.amadda.user.dto.response.UserReadResponse;
 import com.pppppp.amadda.user.entity.User;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -15,17 +16,17 @@ import lombok.Builder;
 public record ScheduleCreateRequest(
     // ================= Schedule ===================
     String scheduleContent,
-    Boolean isTimeSelected,
-    Boolean isDateSelected,
-    Boolean isAllDay,
-    Boolean isAuthorizedAll,
+    @NotNull(message = "시간 확정 여부가 결정되지 않았어요!") Boolean isTimeSelected,
+    @NotNull(message = "날짜 확정 여부가 결정되지 않았어요!") Boolean isDateSelected,
+    @NotNull(message = "하루종일 지속되는 일정인지 알려주세요!") Boolean isAllDay,
+    @NotNull(message = "일정에 대한 수정 권한이 필요해요!") Boolean isAuthorizedAll,
     String scheduleStartAt,
     String scheduleEndAt,
     List<UserReadResponse> participants,
 
     // ================ Participation =================
 
-    AlarmTime alarmTime,
+    @NotNull(message = "알림 시간 설정이 필요해요!") AlarmTime alarmTime,
     @NotBlank(message = "일정 이름을 입력해주세요!") String scheduleName,
     String scheduleMemo
 ) {
