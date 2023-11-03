@@ -52,7 +52,10 @@ public class FriendController {
     public ApiResponse acceptFriendRequest(@PathVariable Long requestSeq) {
         // TODO 추후 JWT 토큰으로 사용자 seq 디코딩 추가
         Long userSeq = 0L; // request.getHeader("Auth");
-        friendRequestService.acceptFriendRequest(userSeq, requestSeq);
+        FriendRequestResponse friendRequestResponse = friendRequestService.acceptFriendRequest(
+            userSeq, requestSeq);
+        alarmService.sendFriendAccept(friendRequestResponse.ownerSeq(),
+            friendRequestResponse.friendSeq());
         return ApiResponse.ok("받은 친구 신청 수락");
     }
 

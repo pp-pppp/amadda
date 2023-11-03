@@ -1,6 +1,7 @@
 package com.pppppp.amadda.alarm.service;
 
 import com.pppppp.amadda.alarm.dto.topic.BaseTopicValue;
+import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendAccept;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendRequest;
 import com.pppppp.amadda.alarm.entity.Alarm;
 import com.pppppp.amadda.alarm.entity.AlarmContent;
@@ -34,9 +35,11 @@ public class KafkaConsumer {
     }
 
     @KafkaListener(topics = KafkaTopic.ALARM_FRIEND_ACCEPT, groupId = "${spring.kafka.consumer.group-id}")
-    public void consumeFriendAccept(ConsumerRecord<String, BaseTopicValue> record)
+    public void consumeFriendAccept(ConsumerRecord<String, AlarmFriendAccept> record)
         throws IOException {
-        printRecoreInfo(record);
+        Long userSeq = Long.valueOf(String.valueOf(record.key()));
+        String friendUserName = record.value().getFriendUserName();
+        saveAlarm(userSeq, AlarmContent.FRIEND_ACCEPT.getMessage(friendUserName));
     }
 
     @KafkaListener(topics = KafkaTopic.ALARM_SCHEDULE_ASSIGNED, groupId = "${spring.kafka.consumer.group-id}")

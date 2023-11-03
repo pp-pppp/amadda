@@ -72,4 +72,26 @@ class AlarmServiceTest extends IntegrationTestSupport {
         Long key = 1234L;
         verify(kafkaTemplate, times(1)).send(eq(topic), eq(key), any());
     }
+
+    @DisplayName("친구 수락 알람")
+    @Test
+    void friend_accept() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
+        User owner = users.get(0);
+        User friend = users.get(1);
+
+        FriendRequest friendRequest = FriendRequest.create(owner, friend);
+        FriendRequest savedFriendRequest = friendRequestRepository.save(friendRequest);
+
+        // when
+        alarmService.sendFriendAccept(owner.getUserSeq(), friend.getUserSeq());
+
+        // then
+        String topic = KafkaTopic.ALARM_FRIEND_ACCEPT;
+        Long key = 1111L;
+        verify(kafkaTemplate, times(1)).send(eq(topic), eq(key), any());
+    }
 }

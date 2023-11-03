@@ -6,6 +6,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.pppppp.amadda.IntegrationTestSupport;
+import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendAccept;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendRequest;
 import com.pppppp.amadda.alarm.entity.KafkaTopic;
 import com.pppppp.amadda.alarm.repository.AlarmRepository;
@@ -73,6 +74,34 @@ class KafkaConsumerTest extends IntegrationTestSupport {
 
         // when
         kafkaConsumer.consumeFriendRequest(consumerRecord);
+
+        // then
+        verify(alarmRepository, times(1)).save(any());
+
+    }
+
+    @DisplayName("alarm.friend-accept consume 검증")
+    @Test
+    public void alarm_friend_accept() throws IOException {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
+        User owner = users.get(0);
+        User friend = users.get(1);
+
+        FriendRequest friendRequest = FriendRequest.create(owner, friend);
+        FriendRequest savedFriendRequest = friendRequestRepository.save(friendRequest);
+
+        String topic = KafkaTopic.ALARM_FRIEND_ACCEPT;
+        String key = String.valueOf(owner.getUserSeq());
+        AlarmFriendAccept value = AlarmFriendAccept.create(friend.getUserSeq(),
+            friend.getUserName());
+        ConsumerRecord<String, AlarmFriendAccept> consumerRecord = new ConsumerRecord<>(topic, 0,
+            0, key, value);
+
+        // when
+        kafkaConsumer.consumeFriendAccept(consumerRecord);
 
         // then
         verify(alarmRepository, times(1)).save(any());
