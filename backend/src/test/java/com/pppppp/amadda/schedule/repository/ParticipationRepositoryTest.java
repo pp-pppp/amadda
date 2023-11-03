@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 import com.pppppp.amadda.IntegrationTestSupport;
+import com.pppppp.amadda.schedule.entity.Category;
+import com.pppppp.amadda.schedule.entity.CategoryColor;
 import com.pppppp.amadda.schedule.entity.Participation;
 import com.pppppp.amadda.schedule.entity.Schedule;
 import com.pppppp.amadda.user.entity.User;
@@ -21,6 +23,9 @@ class ParticipationRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
     private ParticipationRepository participationRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Autowired
     private ScheduleRepository scheduleRepository;
@@ -55,6 +60,7 @@ class ParticipationRepositoryTest extends IntegrationTestSupport {
     @AfterEach
     void tearDown() {
         participationRepository.deleteAllInBatch();
+        categoryRepository.deleteAllInBatch();
         scheduleRepository.deleteAllInBatch();
         userRepository.deleteAllInBatch();
     }
@@ -138,5 +144,52 @@ class ParticipationRepositoryTest extends IntegrationTestSupport {
             .get()
             .extracting("user", "schedule", "scheduleName", "scheduleMemo")
             .containsExactly(user2, schedule2, "싸피", "좋아");
+    }
+
+    @DisplayName("유저가 보려는 카테고리에 맞는 참석정보 목록을 가져온다.")
+    @Transactional
+    @Test
+    void test() {
+        // given
+        User user = userRepository.findAll().get(0);
+
+        Schedule s1 = scheduleRepository.findAll().get(0);
+        Schedule s2 = scheduleRepository.findAll().get(1);
+
+        Category category = Category.builder()
+            .user(user)
+            .categoryName("자율기절")
+            .categoryColor(CategoryColor.HOTPINK)
+            .build();
+        categoryRepository.save(category);
+
+        Participation p1 = Participation.builder()
+            .user(user)
+            .schedule(s1)
+            .scheduleName("싸피")
+            .scheduleMemo("가기 싫다")
+            .category(category)
+            .build();
+        Participation p2 = Participation.builder()
+            .user(user)
+            .schedule(s2)
+            .scheduleName("싸피")
+            .scheduleMemo("좋아")
+            .category(category)
+            .build();
+        participationRepository.saveAll(List.of(p1, p2));
+
+        // when
+        List<Participation> participations = participationRepository.findByUser_UserSeqAndCategory_CategorySeqAndIsDeletedFalse(
+            user.getUserSeq(), category.getCategorySeq());
+
+        // then
+        assertThat(participations)
+            .hasSize(2)
+            .extracting("user", "schedule", "scheduleName", "scheduleMemo", "category")
+            .containsExactlyInAnyOrder(
+                tuple(user, s1, "싸피", "가기 싫다", category),
+                tuple(user, s2, "싸피", "좋아", category)
+            );
     }
 }
