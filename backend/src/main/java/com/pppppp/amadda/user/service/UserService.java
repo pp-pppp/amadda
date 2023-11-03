@@ -5,10 +5,12 @@ import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
 import com.pppppp.amadda.user.dto.request.UserInitRequest;
 import com.pppppp.amadda.user.dto.request.UserJwtRequest;
 import com.pppppp.amadda.user.dto.request.UserRefreshRequest;
+import com.pppppp.amadda.user.dto.response.UserAccessResponse;
 import com.pppppp.amadda.user.dto.response.UserJwtInitResponse;
 import com.pppppp.amadda.user.dto.response.UserJwtResponse;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +41,19 @@ public class UserService {
     public void saveUser(UserInitRequest request) {
         User u = User.create(request.userSeq(), request.userName(), request.userId(), request.imageUrl());
         saveUser(u);
+    }
+
+    public UserAccessResponse validateUser(String token) {
+        try {
+            tokenProvider.verifyToken(token);
+            return UserAccessResponse.of(false, false, "-");
+        } catch (ExpiredJwtException e1) {
+            Long userSeq = tokenProvider.parseUserSeq(token);
+            String rak = tokenProvider.generateRefreshAccessKey(userSeq);
+            return UserAccessResponse.of(true, false, rak);
+        } catch (Exception e2) {
+            return UserAccessResponse.of(true, true, "-");
+        }
     }
 
 
