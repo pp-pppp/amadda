@@ -76,7 +76,6 @@ public class KafkaConsumer {
             .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         Alarm alarm = Alarm.create(user, message);
         alarmRepository.save(alarm);
-        log.info("===========save alarm=============");
     }
 
 }
