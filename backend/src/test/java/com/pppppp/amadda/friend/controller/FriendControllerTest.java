@@ -1,6 +1,7 @@
 package com.pppppp.amadda.friend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pppppp.amadda.alarm.service.AlarmService;
 import com.pppppp.amadda.friend.dto.request.FriendRequestRequest;
 import com.pppppp.amadda.friend.dto.request.GroupCreateRequest;
 import com.pppppp.amadda.friend.service.FriendRequestService;
@@ -36,6 +37,8 @@ class FriendControllerTest {
     private UserGroupService userGroupService;
     @MockBean
     private GroupMemberService groupMemberService;
+    @MockBean
+    private AlarmService alarmService;
 
     @DisplayName("친구 요청을 보낸다. ")
     @Test
