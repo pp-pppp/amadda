@@ -1,8 +1,11 @@
 package com.pppppp.amadda.alarm.service;
 
-import com.pppppp.amadda.alarm.dto.topic.BaseTopicValue;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendAccept;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendRequest;
+import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmMentioned;
+import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleAssigned;
+import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleNotification;
+import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleUpdate;
 import com.pppppp.amadda.alarm.entity.Alarm;
 import com.pppppp.amadda.alarm.entity.AlarmContent;
 import com.pppppp.amadda.alarm.entity.KafkaTopic;
@@ -43,35 +46,23 @@ public class KafkaConsumer {
     }
 
     @KafkaListener(topics = KafkaTopic.ALARM_SCHEDULE_ASSIGNED, groupId = "${spring.kafka.consumer.group-id}")
-    public void consumeScheduleAssigned(ConsumerRecord<String, BaseTopicValue> record)
+    public void consumeScheduleAssigned(ConsumerRecord<String, AlarmScheduleAssigned> record)
         throws IOException {
-        printRecoreInfo(record);
     }
 
     @KafkaListener(topics = KafkaTopic.ALARM_MENTIONED, groupId = "${spring.kafka.consumer.group-id}")
-    public void consumeMentioned(ConsumerRecord<String, BaseTopicValue> record) throws IOException {
-        printRecoreInfo(record);
+    public void consumeMentioned(ConsumerRecord<String, AlarmMentioned> record) throws IOException {
     }
 
     @KafkaListener(topics = KafkaTopic.ALARM_SCHEDULE_UPDATE, groupId = "${spring.kafka.consumer.group-id}")
-    public void consumeScheduleUpdate(ConsumerRecord<String, BaseTopicValue> record)
+    public void consumeScheduleUpdate(ConsumerRecord<String, AlarmScheduleUpdate> record)
         throws IOException {
-        printRecoreInfo(record);
     }
 
     @KafkaListener(topics = KafkaTopic.ALARM_SCHEDULE_NOTIFICATION, groupId = "${spring.kafka.consumer.group-id}")
-    public void consumeScheduleNotification(ConsumerRecord<String, BaseTopicValue> record)
+    public void consumeScheduleNotification(
+        ConsumerRecord<String, AlarmScheduleNotification> record)
         throws IOException {
-        printRecoreInfo(record);
-    }
-
-    private static void printRecoreInfo(ConsumerRecord<String, BaseTopicValue> record) {
-        log.info("Kafka Consume ===============");
-        log.info("topic : {}", record.topic());
-        log.info("partition : {}", record.partition());
-        log.info("offset : {}", record.offset());
-        log.info("key : {}", record.key());
-        log.info("value : {}", record.value());
     }
 
     public void saveAlarm(Long userSeq, String message) {
