@@ -5,6 +5,7 @@ import com.pppppp.amadda.global.entity.exception.errorcode.CategoryErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.ScheduleErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
 import com.pppppp.amadda.schedule.dto.request.CategoryCreateRequest;
+import com.pppppp.amadda.schedule.dto.request.CommentCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.ScheduleCreateRequest;
 import com.pppppp.amadda.schedule.dto.response.CategoryReadResponse;
 import com.pppppp.amadda.schedule.dto.response.CommentReadResponse;
@@ -138,14 +139,14 @@ public class ScheduleService {
 
     @Transactional
     public CommentReadResponse createCommentsOnSchedule(Long scheduleSeq,
-        User user, String commentContext) {
+        User user, CommentCreateRequest request) {
         Schedule schedule = scheduleRepository.findByScheduleSeqAndIsDeletedFalse(scheduleSeq)
             .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
 
         Comment comment = Comment.builder()
             .user(user)
             .schedule(schedule)
-            .commentContent(commentContext)
+            .commentContent(request.commentContent())
             .build();
 
         commentRepository.save(comment);
@@ -162,14 +163,10 @@ public class ScheduleService {
             .build();
 
         // 중복체크
-        List<Category> categories = categoryRepository.findByUser_UserSeqAndIsDeletedFalse(
-            user.getUserSeq());
-
-        categories.forEach(c -> {
-            if (c.getCategoryName().equals(category.getCategoryName())) {
-                throw new RestApiException(CategoryErrorCode.CATEGORY_ALREADY_EXISTS);
-            }
-        });
+        if (categoryRepository.existsByUser_UserSeqAndCategoryNameAndIsDeletedFalse(
+            user.getUserSeq(), category.getCategoryName())) {
+            throw new RestApiException(CategoryErrorCode.CATEGORY_ALREADY_EXISTS);
+        }
 
         categoryRepository.save(category);
 

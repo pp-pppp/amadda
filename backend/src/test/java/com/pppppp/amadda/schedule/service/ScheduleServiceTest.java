@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.schedule.dto.request.CategoryCreateRequest;
+import com.pppppp.amadda.schedule.dto.request.CommentCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.ScheduleCreateRequest;
 import com.pppppp.amadda.schedule.dto.response.CategoryReadResponse;
 import com.pppppp.amadda.schedule.dto.response.CommentReadResponse;
@@ -330,7 +331,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
     // TODO: 동적 쿼리를 통한 일정 검색 메소드 테스트 구현
 
-    // =================== 댓글 등록, 삭제 ===================
+    // =================== 댓글 ===================
     @DisplayName("해당 일정에 댓글을 단다.")
     @Transactional
     @Test
@@ -356,7 +357,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
         // when
         CommentReadResponse response = scheduleService.createCommentsOnSchedule(
-            s.getScheduleSeq(), user, "세상에서 제일 불행한 사람임");
+            s.getScheduleSeq(), user, CommentCreateRequest.of("세상에서 제일 불행한 사람임"));
 
         // then
         assertThat(response).isNotNull()
