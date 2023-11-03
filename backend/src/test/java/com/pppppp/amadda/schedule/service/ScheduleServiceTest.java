@@ -91,7 +91,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .build();
 
         // when
-        ScheduleCreateResponse response = scheduleService.createSchedule(u1, request);
+        ScheduleCreateResponse response = scheduleService.createSchedule(u1.getUserSeq(), request);
 
         // then
         assertThat(response).isNotNull()
@@ -133,7 +133,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .build();
 
         // when
-        ScheduleCreateResponse response = scheduleService.createSchedule(u1, request);
+        ScheduleCreateResponse response = scheduleService.createSchedule(u1.getUserSeq(), request);
 
         // then
         assertThat(response).isNotNull()
@@ -176,7 +176,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .build();
 
         // when
-        ScheduleCreateResponse response = scheduleService.createSchedule(u1, request);
+        ScheduleCreateResponse response = scheduleService.createSchedule(u1.getUserSeq(), request);
 
         // then
         assertThat(response).isNotNull()
@@ -218,7 +218,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .build();
 
         // when
-        ScheduleCreateResponse response = scheduleService.createSchedule(u1, request);
+        ScheduleCreateResponse response = scheduleService.createSchedule(u1.getUserSeq(), request);
 
         // then
         assertThat(response).isNotNull()
@@ -268,12 +268,14 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .alarmTime(AlarmTime.ON_TIME)
             .participants(List.of(UserReadResponse.of(u2)))
             .build();
-        scheduleService.createSchedule(u1, r1);
-        scheduleService.createSchedule(u2, r2);
+        scheduleService.createSchedule(u1.getUserSeq(), r1);
+        scheduleService.createSchedule(u2.getUserSeq(), r2);
 
         // when
-        List<ScheduleListReadResponse> user1Schedules = scheduleService.getScheduleList(u1);
-        List<ScheduleListReadResponse> user2Schedules = scheduleService.getScheduleList(u2);
+        List<ScheduleListReadResponse> user1Schedules = scheduleService.getScheduleList(
+            u1.getUserSeq());
+        List<ScheduleListReadResponse> user2Schedules = scheduleService.getScheduleList(
+            u2.getUserSeq());
 
         // then
         assertThat(user1Schedules)
@@ -314,14 +316,14 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
-        scheduleService.createSchedule(u1, r1);
+        scheduleService.createSchedule(u1.getUserSeq(), r1);
         Schedule schedule = scheduleRepository.findAll().get(0);
 
         // when
         ScheduleDetailReadResponse u1Response = scheduleService.getScheduleDetail(
-            schedule.getScheduleSeq(), u1);
+            schedule.getScheduleSeq(), u1.getUserSeq());
         ScheduleDetailReadResponse u2Response = scheduleService.getScheduleDetail(
-            schedule.getScheduleSeq(), u2);
+            schedule.getScheduleSeq(), u2.getUserSeq());
 
         // then
         assertThat(u1Response).isNotNull();
@@ -351,13 +353,13 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .participants(List.of(
                 UserReadResponse.of(user)))
             .build();
-        scheduleService.createSchedule(user, request);
+        scheduleService.createSchedule(user.getUserSeq(), request);
 
         Schedule s = scheduleRepository.findAll().get(0);
 
         // when
         CommentReadResponse response = scheduleService.createCommentsOnSchedule(
-            s.getScheduleSeq(), user, CommentCreateRequest.of("세상에서 제일 불행한 사람임"));
+            s.getScheduleSeq(), user.getUserSeq(), CommentCreateRequest.of("세상에서 제일 불행한 사람임"));
 
         // then
         assertThat(response).isNotNull()
@@ -375,7 +377,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         CategoryCreateRequest request = CategoryCreateRequest.of("자율기절", "HOTPINK");
 
         // when
-        CategoryReadResponse response = scheduleService.createCategory(user, request);
+        CategoryReadResponse response = scheduleService.createCategory(user.getUserSeq(), request);
 
         // then
         assertThat(response).isNotNull()
@@ -391,13 +393,13 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         User u2 = userRepository.findAll().get(1);
         CategoryCreateRequest r1 = CategoryCreateRequest.of("자율기절", "HOTPINK");
         CategoryCreateRequest r2 = CategoryCreateRequest.of("합창단", "GREEN");
-        scheduleService.createCategory(u1, r1);
-        scheduleService.createCategory(u1, r2);
-        scheduleService.createCategory(u2, r1);
+        scheduleService.createCategory(u1.getUserSeq(), r1);
+        scheduleService.createCategory(u1.getUserSeq(), r2);
+        scheduleService.createCategory(u2.getUserSeq(), r1);
 
         // when
-        List<CategoryReadResponse> u1Categories = scheduleService.getCategoryList(u1);
-        List<CategoryReadResponse> u2Categories = scheduleService.getCategoryList(u2);
+        List<CategoryReadResponse> u1Categories = scheduleService.getCategoryList(u1.getUserSeq());
+        List<CategoryReadResponse> u2Categories = scheduleService.getCategoryList(u2.getUserSeq());
 
         // then
         assertThat(u1Categories)
@@ -422,7 +424,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         Long scheduleSeq = 3L;
         User user = userRepository.findAll().get(0);
 
-        assertThatThrownBy(() -> scheduleService.getScheduleDetail(scheduleSeq, user))
+        assertThatThrownBy(() -> scheduleService.getScheduleDetail(scheduleSeq, user.getUserSeq()))
             .isInstanceOf(RestApiException.class)
             .hasMessage("SCHEDULE_NOT_FOUND");
     }
@@ -434,10 +436,10 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         User user = userRepository.findAll().get(0);
         CategoryCreateRequest r1 = CategoryCreateRequest.of("자율기절", "HOTPINK");
         CategoryCreateRequest r2 = CategoryCreateRequest.of("자율기절", "GREEN");
-        scheduleService.createCategory(user, r1);
+        scheduleService.createCategory(user.getUserSeq(), r1);
 
         // when, then
-        assertThatThrownBy(() -> scheduleService.createCategory(user, r2))
+        assertThatThrownBy(() -> scheduleService.createCategory(user.getUserSeq(), r2))
             .isInstanceOf(RestApiException.class)
             .hasMessage("CATEGORY_ALREADY_EXISTS");
     }

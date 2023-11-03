@@ -73,4 +73,17 @@ public class Schedule extends BaseEntity {
         this.scheduleContent = scheduleContent;
         this.isAuthorizedAll = isAuthorizedAll;
     }
+
+    public static Schedule create(User user,
+        String scheduleContent) {
+        return Schedule.builder()
+            .user(user)
+            .isTimeSelected(false)
+            .isDateSelected(false)
+            .isAllDay(false)
+            .isFinished(false)
+            .scheduleContent(scheduleContent)
+            .isAuthorizedAll(true)
+            .build();
+    }
 }

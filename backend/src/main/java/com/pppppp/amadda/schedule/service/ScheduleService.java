@@ -45,7 +45,10 @@ public class ScheduleService {
     private final CategoryRepository categoryRepository;
 
     @Transactional
-    public ScheduleCreateResponse createSchedule(User user, ScheduleCreateRequest request) {
+    public ScheduleCreateResponse createSchedule(Long userSeq, ScheduleCreateRequest request) {
+
+        User user = userRepository.findById(userSeq)
+            .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
 
         Schedule newSchedule = request.toEntity(user);
 
@@ -77,9 +80,12 @@ public class ScheduleService {
         return ScheduleCreateResponse.of(newSchedule, request.participants(), creatorParticipation);
     }
 
-    public ScheduleDetailReadResponse getScheduleDetail(Long scheduleSeq, User user) {
+    public ScheduleDetailReadResponse getScheduleDetail(Long scheduleSeq, Long userSeq) {
         Schedule schedule = scheduleRepository.findById(scheduleSeq)
             .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
+
+        User user = userRepository.findByUserSeq(userSeq)
+            .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
 
         List<UserReadResponse> participants = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
                 scheduleSeq)
@@ -101,7 +107,10 @@ public class ScheduleService {
         return ScheduleDetailReadResponse.of(schedule, participants, participation, comments);
     }
 
-    public List<ScheduleListReadResponse> getScheduleList(User user) {
+    public List<ScheduleListReadResponse> getScheduleList(Long userSeq) {
+        User user = userRepository.findByUserSeq(userSeq)
+            .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+
         // 요청한 사용자의 참가 정보 모두 가져오기
         List<Participation> participations = participationRepository
             .findByUser_UserSeqAndIsDeletedFalse(user.getUserSeq());
@@ -138,9 +147,12 @@ public class ScheduleService {
 
     @Transactional
     public CommentReadResponse createCommentsOnSchedule(Long scheduleSeq,
-        User user, CommentCreateRequest request) {
+        Long userSeq, CommentCreateRequest request) {
         Schedule schedule = scheduleRepository.findByScheduleSeqAndIsDeletedFalse(scheduleSeq)
             .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
+
+        User user = userRepository.findByUserSeq(userSeq)
+            .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
 
         Comment comment = request.toEntity(user, schedule);
 
@@ -149,7 +161,10 @@ public class ScheduleService {
         return CommentReadResponse.of(comment, UserReadResponse.of(user));
     }
 
-    public CategoryReadResponse createCategory(User user, CategoryCreateRequest request) {
+    public CategoryReadResponse createCategory(Long userSeq, CategoryCreateRequest request) {
+
+        User user = userRepository.findByUserSeq(userSeq)
+            .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
 
         Category category = request.toEntity(user);
 
@@ -164,9 +179,10 @@ public class ScheduleService {
         return CategoryReadResponse.of(category);
     }
 
-    public List<CategoryReadResponse> getCategoryList(User user) {
+    public List<CategoryReadResponse> getCategoryList(Long userSeq) {
+
         List<Category> categories = categoryRepository.findByUser_UserSeqAndIsDeletedFalse(
-            user.getUserSeq());
+            userSeq);
 
         return categories.stream()
             .map(CategoryReadResponse::of)
