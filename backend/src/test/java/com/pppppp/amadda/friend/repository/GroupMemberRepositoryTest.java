@@ -1,18 +1,17 @@
 package com.pppppp.amadda.friend.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.friend.entity.GroupMember;
 import com.pppppp.amadda.friend.entity.UserGroup;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
+import java.util.List;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class GroupMemberRepositoryTest extends IntegrationTestSupport {
 
@@ -23,8 +22,10 @@ class GroupMemberRepositoryTest extends IntegrationTestSupport {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
+    @AfterEach
     void tearDown() {
+        groupMemberRepository.deleteAllInBatch();
+        userGroupRepository.deleteAllInBatch();
         userRepository.deleteAllInBatch();
     }
 
@@ -45,8 +46,8 @@ class GroupMemberRepositoryTest extends IntegrationTestSupport {
 
         // then
         assertThat(gm)
-                .extracting("group", "member")
-                .containsExactly(ug, u2);
+            .extracting("group", "member")
+            .containsExactly(ug, u2);
     }
 
 }
