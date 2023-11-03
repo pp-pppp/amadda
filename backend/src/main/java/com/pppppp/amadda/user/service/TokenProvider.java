@@ -81,4 +81,16 @@ public class TokenProvider {
                 new String(Base64.decodeBase64(rak))
         );
     }
+
+    public Long parseUserSeq(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(secretKey) // key는 토큰을 생성할 때 사용한 키와 동일해야 함
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        // userSeq 값을 추출
+        Long userSeq = claims.get("userSeq", Long.class);
+        return userSeq;
+    }
 }

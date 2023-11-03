@@ -5,6 +5,7 @@ import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.user.dto.request.UserInitRequest;
 import com.pppppp.amadda.user.dto.request.UserJwtRequest;
 import com.pppppp.amadda.user.dto.request.UserRefreshRequest;
+import com.pppppp.amadda.user.dto.response.UserAccessResponse;
 import com.pppppp.amadda.user.dto.response.UserJwtInitResponse;
 import com.pppppp.amadda.user.dto.response.UserJwtResponse;
 import com.pppppp.amadda.user.entity.User;
@@ -149,5 +150,34 @@ class UserServiceTest extends IntegrationTestSupport {
                 );
     }
 
+    @DisplayName("정상 토큰인 경우 ")
+    @Test
+    void validateUser1() {
+        // given
+        String token = tokenProvider.createTokens(1111L).get(0);
 
+        // when
+        UserAccessResponse response = userService.validateUser(token);
+
+        // then
+        assertThat(response)
+                .extracting("isExpired", "isBroken", "refreshAccessKey")
+                .containsExactly(false, false, "-");
+
+    }
+
+    @DisplayName("망가진 토큰인 경우 ")
+    @Test
+    void validateUser3() {
+        // given
+        String token = "broken-token";
+
+        // when
+        UserAccessResponse response = userService.validateUser(token);
+
+        // then
+        assertThat(response)
+                .extracting("isExpired", "isBroken", "refreshAccessKey")
+                .containsExactly(true, true, "-");
+    }
 }

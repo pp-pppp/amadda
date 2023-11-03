@@ -20,11 +20,7 @@ class TokenProviderTest extends IntegrationTestSupport {
     @Test
     void generateTokens() throws InterruptedException {
         // given
-        UserJwtRequest request = UserJwtRequest.builder()
-                .userSeq(1111L)
-                .imageUrl("url1")
-                .build();
-        List<String> l = tokenProvider.createTokens(request.userSeq());
+        List<String> l = tokenProvider.createTokens(1111L);
 
 //        Thread.sleep(1000L);
 
@@ -64,5 +60,17 @@ class TokenProviderTest extends IntegrationTestSupport {
         assertThat(t1).isEqualTo(t2);
     }
 
+    @DisplayName("토큰으로 userSeq를 가져온다. ")
+    @Test
+    void parseUserSeq() {
+        // given
+        List<String> l = tokenProvider.createTokens(1111L);
+
+        // when
+        Long userSeq = tokenProvider.parseUserSeq(l.get(0));
+
+        // then
+        assertThat(userSeq).isEqualTo(1111L);
+    }
 
 }
