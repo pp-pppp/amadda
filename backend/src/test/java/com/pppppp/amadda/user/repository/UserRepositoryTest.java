@@ -29,18 +29,18 @@ class UserRepositoryTest extends IntegrationTestSupport {
     @Test
     void saveUser() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1", false);
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2", true);
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
 
         // when
         List<User> savedUsers = userRepository.saveAll(List.of(u1, u2));
 
         //then
         assertThat(savedUsers).hasSize(2)
-                .extracting("userSeq", "userName", "userId", "imageUrl", "isInited")
+                .extracting("userSeq", "userName", "userId", "imageUrl")
                 .containsExactlyInAnyOrder(
-                        tuple(1111L, "유저1", "id1", "imageUrl1", false),
-                        tuple(1234L, "유저2", "id2", "imageUrl2", true)
+                        tuple(1111L, "유저1", "id1", "imageUrl1"),
+                        tuple(1234L, "유저2", "id2", "imageUrl2")
                 );
     }
 
@@ -48,8 +48,8 @@ class UserRepositoryTest extends IntegrationTestSupport {
     @Test
     void findUserByUserSeq() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1", false);
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2", true);
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
         userRepository.saveAll(List.of(u1, u2));
 
         // when
@@ -57,8 +57,8 @@ class UserRepositoryTest extends IntegrationTestSupport {
 
         //then
         assertThat(u).isNotNull();
-        assertThat(u).extracting("userSeq", "userName", "userId", "imageUrl", "isInited")
-                .containsExactlyInAnyOrder(1111L, "유저1", "id1", "imageUrl1", false);
+        assertThat(u).extracting("userSeq", "userName", "userId", "imageUrl")
+                .containsExactlyInAnyOrder(1111L, "유저1", "id1", "imageUrl1");
     }
 
 }

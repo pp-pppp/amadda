@@ -33,12 +33,12 @@ public class Comment extends BaseEntity {
     private Schedule schedule;
 
     @Column(nullable = false)
-    private String comment_content;
+    private String commentContent;
 
     @Builder
-    public Comment(User user, Schedule schedule, String comment_content) {
+    public Comment(User user, Schedule schedule, String commentContent) {
         this.user = user;
         this.schedule = schedule;
-        this.comment_content = comment_content;
+        this.commentContent = commentContent;
     }
 }

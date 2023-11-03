@@ -1,6 +1,6 @@
-import type { HTMLAttributes } from "react";
-import React from "react";
-import { BASE } from "./Label.css";
+import type { HTMLAttributes } from 'react';
+import React from 'react';
+import { BASE } from './Label.css';
 
 export interface LabelProps extends HTMLAttributes<HTMLLabelElement> {
   htmlFor: string;

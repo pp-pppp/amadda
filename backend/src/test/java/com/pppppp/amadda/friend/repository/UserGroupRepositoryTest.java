@@ -18,20 +18,23 @@ class UserGroupRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
     private UserGroupRepository userGroupRepository;
-
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private GroupMemberRepository groupMemberRepository;
 
     @AfterEach
     void tearDown() {
+        groupMemberRepository.deleteAllInBatch();
         userGroupRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
     }
 
     @DisplayName("유저그룹을 저장하고 조회한다. ")
     @Test
     void createUserGroup() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1", false);
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
         List<User> users = userRepository.saveAll(List.of(u1));
         UserGroup ug = UserGroup.create("그룹명1", u1);
 

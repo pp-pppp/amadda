@@ -1,13 +1,13 @@
-import React from "react";
-import type { HTMLAttributes } from "react";
-import { COLOR, CURSOR } from "./Icon.css";
+import React from 'react';
+import type { HTMLAttributes } from 'react';
+import { COLOR, CURSOR } from './Icon.css';
 
 export interface IconProps extends HTMLAttributes<HTMLDivElement> {
   type: keyof typeof ICON;
   color: keyof typeof COLOR;
   cursor?: keyof typeof CURSOR;
 }
-export function Icon({ type, color, cursor = "default" }: IconProps) {
+export function Icon({ type, color, cursor = 'default' }: IconProps) {
   const className = `${COLOR[color]} ${CURSOR[cursor]}`;
   return (
     <div className={className}>

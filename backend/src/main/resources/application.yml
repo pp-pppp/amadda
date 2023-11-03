@@ -38,6 +38,11 @@ spring:
       group-id: ${kafka.group}
       auto-offset-reset: earliest
 
+  jwt:
+    secret-key: ${jwt.secret-key}
+    access-length: ${jwt.access-length}
+    refresh-length: ${jwt.refresh-length}
+
 server:
   port: 8080
 
