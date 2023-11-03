@@ -14,8 +14,6 @@ import org.springframework.stereotype.Component;
 public class KafkaProducer {
     /*
      * TODO: turn on/off 시 AlarmConfigRepository 수정
-     * TODO: 유저 닉네임 등록 시 produce + AlarmConfigRepository
-     * TODO: 일정 이름 변경 시 produce + AlarmConfigRepository
      * */
 
     private final KafkaTemplate<Long, BaseTopicValue> kafkaTemplate;
