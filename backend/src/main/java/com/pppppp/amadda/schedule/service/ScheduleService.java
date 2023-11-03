@@ -13,7 +13,6 @@ import com.pppppp.amadda.schedule.dto.response.ScheduleCreateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleDetailReadResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleListReadResponse;
 import com.pppppp.amadda.schedule.entity.Category;
-import com.pppppp.amadda.schedule.entity.CategoryColor;
 import com.pppppp.amadda.schedule.entity.Comment;
 import com.pppppp.amadda.schedule.entity.Participation;
 import com.pppppp.amadda.schedule.entity.Schedule;
@@ -143,11 +142,7 @@ public class ScheduleService {
         Schedule schedule = scheduleRepository.findByScheduleSeqAndIsDeletedFalse(scheduleSeq)
             .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
 
-        Comment comment = Comment.builder()
-            .user(user)
-            .schedule(schedule)
-            .commentContent(request.commentContent())
-            .build();
+        Comment comment = request.toEntity(user, schedule);
 
         commentRepository.save(comment);
 
@@ -156,11 +151,7 @@ public class ScheduleService {
 
     public CategoryReadResponse createCategory(User user, CategoryCreateRequest request) {
 
-        Category category = Category.builder()
-            .user(user)
-            .categoryName(request.categoryName())
-            .categoryColor(CategoryColor.valueOf(request.categoryColor()))
-            .build();
+        Category category = request.toEntity(user);
 
         // 중복체크
         if (categoryRepository.existsByUser_UserSeqAndCategoryNameAndIsDeletedFalse(
