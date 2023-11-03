@@ -54,8 +54,8 @@ class KafkaConsumerTest extends IntegrationTestSupport {
     @Test
     public void alarm_friend_request() throws IOException {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1", false);
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2", true);
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
         User owner = users.get(0);
         User friend = users.get(1);
