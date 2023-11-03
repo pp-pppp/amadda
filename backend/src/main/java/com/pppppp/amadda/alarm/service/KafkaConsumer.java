@@ -1,8 +1,13 @@
 package com.pppppp.amadda.alarm.service;
 
+import com.pppppp.amadda.alarm.dto.topic.BaseTopicValue;
+import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendRequest;
 import com.pppppp.amadda.alarm.entity.Alarm;
+import com.pppppp.amadda.alarm.entity.AlarmContent;
 import com.pppppp.amadda.alarm.entity.KafkaTopic;
 import com.pppppp.amadda.alarm.repository.AlarmRepository;
+import com.pppppp.amadda.global.entity.exception.RestApiException;
+import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
 import java.io.IOException;
@@ -10,9 +15,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 @RequiredArgsConstructor
 @Slf4j
 public class KafkaConsumer {
@@ -20,40 +25,44 @@ public class KafkaConsumer {
     private final AlarmRepository alarmRepository;
     private final UserRepository userRepository;
 
-    // TODO: consume 받으면 save alarm
-
     @KafkaListener(topics = KafkaTopic.ALARM_FRIEND_REQUEST, groupId = "${spring.kafka.consumer.group-id}")
-    public void consumeFriendRequest(ConsumerRecord<String, String> record) throws IOException {
-        printRecoreInfo(record);
+    public void consumeFriendRequest(ConsumerRecord<String, AlarmFriendRequest> record)
+        throws IOException {
+        Long userSeq = Long.valueOf(String.valueOf(record.key()));
+        String requestedUserName = record.value().getRequestedUserName();
+        saveAlarm(userSeq, AlarmContent.FRIEND_REQUEST.getMessage(requestedUserName));
     }
 
     @KafkaListener(topics = KafkaTopic.ALARM_FRIEND_ACCEPT, groupId = "${spring.kafka.consumer.group-id}")
-    public void consumeFriendAccept(ConsumerRecord<String, String> record) throws IOException {
+    public void consumeFriendAccept(ConsumerRecord<String, BaseTopicValue> record)
+        throws IOException {
         printRecoreInfo(record);
     }
 
     @KafkaListener(topics = KafkaTopic.ALARM_SCHEDULE_ASSIGNED, groupId = "${spring.kafka.consumer.group-id}")
-    public void consumeScheduleAssigned(ConsumerRecord<String, String> record) throws IOException {
+    public void consumeScheduleAssigned(ConsumerRecord<String, BaseTopicValue> record)
+        throws IOException {
         printRecoreInfo(record);
     }
 
     @KafkaListener(topics = KafkaTopic.ALARM_MENTIONED, groupId = "${spring.kafka.consumer.group-id}")
-    public void consumeMentioned(ConsumerRecord<String, String> record) throws IOException {
+    public void consumeMentioned(ConsumerRecord<String, BaseTopicValue> record) throws IOException {
         printRecoreInfo(record);
     }
 
     @KafkaListener(topics = KafkaTopic.ALARM_SCHEDULE_UPDATE, groupId = "${spring.kafka.consumer.group-id}")
-    public void consumeScheduleUpdate(ConsumerRecord<String, String> record) throws IOException {
+    public void consumeScheduleUpdate(ConsumerRecord<String, BaseTopicValue> record)
+        throws IOException {
         printRecoreInfo(record);
     }
 
     @KafkaListener(topics = KafkaTopic.ALARM_SCHEDULE_NOTIFICATION, groupId = "${spring.kafka.consumer.group-id}")
-    public void consumeScheduleNotification(ConsumerRecord<String, String> record) throws IOException {
+    public void consumeScheduleNotification(ConsumerRecord<String, BaseTopicValue> record)
+        throws IOException {
         printRecoreInfo(record);
     }
 
-
-    private static void printRecoreInfo(ConsumerRecord<String, String> record) {
+    private static void printRecoreInfo(ConsumerRecord<String, BaseTopicValue> record) {
         log.info("Kafka Consume ===============");
         log.info("topic : {}", record.topic());
         log.info("partition : {}", record.partition());
@@ -64,8 +73,9 @@ public class KafkaConsumer {
 
     public void saveAlarm(Long userSeq, String message) {
         User user = userRepository.findByUserSeq(userSeq)
-            .orElseThrow(IllegalArgumentException::new); // TODO: exception custom
+            .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         Alarm alarm = Alarm.create(user, message);
         alarmRepository.save(alarm);
     }
+
 }
