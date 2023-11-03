@@ -7,14 +7,8 @@ module.exports = withVanillaExtract({
     if (!options.isServer) {
       config.plugins.push(
         new NextFederationPlugin({
-          name: 'shell',
+          name: 'schedule',
           filename: 'static/chunks/entry.js',
-          remotes: {
-            schedule:
-              'schedule@http://localhost:3001/_next/static/chunks/entry.js',
-            user: 'user@http://localhost:3002/_next/static/chunks/entry.js',
-            notice: 'notice@http://localhost:3003/_next/static/chunks/entry.js',
-          },
           exposes: {},
           shared: {},
         })
