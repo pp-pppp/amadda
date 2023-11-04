@@ -1,7 +1,7 @@
 package com.pppppp.amadda.alarm.controller;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -39,7 +39,7 @@ class AlarmControllerTest extends ControllerTestSupport {
             .userSeq(1L).alarmType(alarmType).build();
 
         // stubbing
-        when(alarmService.setGlobalAlarm(any(), anyBoolean()))
+        when(alarmService.setGlobalAlarm(any(), eq(true)))
             .thenReturn(AlarmConfig.builder().alarmType(alarmType).build());
 
         // when + then
@@ -54,6 +54,34 @@ class AlarmControllerTest extends ControllerTestSupport {
             .andExpect(jsonPath("$.status").value("OK"))
             .andExpect(jsonPath("$.message").value("OK"))
             .andExpect(jsonPath("$.data").value(String.format("%s 알림 설정", alarmType.getContent())));
+    }
+
+    @DisplayName("글로벌 설정이 가능한 알림에 대해 Off")
+    @ParameterizedTest
+    @ValueSource(strings = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
+        "SCHEDULE_UPDATE"})
+    void setGlobalAlarmOff(String type) throws Exception {
+        // given
+        AlarmType alarmType = AlarmType.of(type);
+        AlarmConfigRequest request = AlarmConfigRequest.builder()
+            .userSeq(1L).alarmType(alarmType).build();
+
+        // stubbing
+        when(alarmService.setGlobalAlarm(any(), eq(false)))
+            .thenReturn(AlarmConfig.builder().alarmType(alarmType).build());
+
+        // when + then
+        mockMvc.perform(
+                post("/api/alarm/unsubscribe")
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"))
+            .andExpect(jsonPath("$.data").value(String.format("%s 알림 해제", alarmType.getContent())));
     }
 
 }

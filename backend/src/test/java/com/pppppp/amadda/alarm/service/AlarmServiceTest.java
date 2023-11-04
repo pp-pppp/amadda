@@ -2,6 +2,7 @@ package com.pppppp.amadda.alarm.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -100,7 +101,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         assertThat(alarmConfig.getAlarmType()).isEqualTo(alarmType);
     }
 
-    @DisplayName("글로벌 설정이 가능한 알림에 대해 AlarmConfig 생성 후 On")
+    @DisplayName("글로벌 설정이 가능한 알림에 대해 AlarmConfig 확인 후 On")
     @ParameterizedTest
     @ValueSource(strings = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
         "SCHEDULE_UPDATE"})
@@ -122,6 +123,53 @@ class AlarmServiceTest extends IntegrationTestSupport {
         // then
         assertThat(savedAlarmConfig.getUser().getUserSeq()).isEqualTo(user.getUserSeq());
         assertTrue(savedAlarmConfig.isEnabled());
+        assertThat(savedAlarmConfig.getAlarmType()).isEqualTo(alarmType);
+    }
+
+    @DisplayName("글로벌 설정이 가능한 알림에 대해 AlarmConfig 생성 후 Off")
+    @ParameterizedTest
+    @ValueSource(strings = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
+        "SCHEDULE_UPDATE"})
+    void forGlobalSettingCreateAlarmConfigAndOff(String type) {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User user = userRepository.save(u1);
+        AlarmType alarmType = AlarmType.of(type);
+
+        AlarmConfigRequest request = AlarmConfigRequest.builder()
+            .userSeq(user.getUserSeq()).alarmType(alarmType).build();
+
+        // when
+        AlarmConfig alarmConfig = alarmService.setGlobalAlarm(request, false);
+
+        // then
+        assertThat(alarmConfig.getUser().getUserSeq()).isEqualTo(user.getUserSeq());
+        assertFalse(alarmConfig.isEnabled());
+        assertThat(alarmConfig.getAlarmType()).isEqualTo(alarmType);
+    }
+
+    @DisplayName("글로벌 설정이 가능한 알림에 대해 AlarmConfig 확인 후 Off")
+    @ParameterizedTest
+    @ValueSource(strings = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
+        "SCHEDULE_UPDATE"})
+    void forGlobalSettingFindAlarmConfigAndOff(String type) {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User user = userRepository.save(u1);
+
+        AlarmType alarmType = AlarmType.of(type);
+        AlarmConfig alarmConfig = AlarmConfig.create(user, alarmType, true);
+        alarmConfigRepository.save(alarmConfig);
+
+        AlarmConfigRequest request = AlarmConfigRequest.builder()
+            .userSeq(user.getUserSeq()).alarmType(alarmType).build();
+
+        // when
+        AlarmConfig savedAlarmConfig = alarmService.setGlobalAlarm(request, false);
+
+        // then
+        assertThat(savedAlarmConfig.getUser().getUserSeq()).isEqualTo(user.getUserSeq());
+        assertFalse(savedAlarmConfig.isEnabled());
         assertThat(savedAlarmConfig.getAlarmType()).isEqualTo(alarmType);
     }
 

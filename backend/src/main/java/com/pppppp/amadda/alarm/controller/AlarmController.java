@@ -31,9 +31,9 @@ public class AlarmController {
     }
 
     @PostMapping("/unsubscribe")
-    public void unsubscribeAlarm(@Valid @RequestBody AlarmRequest request) {
-        log.info("POST /api/alarm/unsubscribe");
-        kafkaProducer.turnOffGlobalAlarm(request.alarmType(), request.userSeq());
+    public ApiResponse<String> unsubscribeAlarm(@Valid @RequestBody AlarmConfigRequest request) {
+        AlarmConfig alarmConfig = alarmService.setGlobalAlarm(request, false);
+        return ApiResponse.ok(String.format("%s 알림 해제", alarmConfig.getAlarmType().getContent()));
     }
 
     @PostMapping("/data")

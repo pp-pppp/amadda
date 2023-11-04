@@ -50,7 +50,7 @@ public class AlarmService {
         Optional<AlarmConfig> config = alarmConfigRepository.findByUser_UserSeqAndAlarmTypeAndIsDeletedFalse(
             user.getUserSeq(), request.alarmType());
 
-        config.ifPresent(alarmConfig -> alarmConfig.updateIsEnabled(true));
+        config.ifPresent(alarmConfig -> alarmConfig.updateIsEnabled(isEnabled));
         if (config.isEmpty()) {
             config = Optional.of(AlarmConfig.create(user, request.alarmType(), isEnabled));
         }
