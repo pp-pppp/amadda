@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder
-public record AlarmRequest(
+public record AlarmConfigRequest(
     @NotNull(message = "유저값을 입력해주세요") Long userSeq,
     @NotNull(message = "알림 타입을 입력해주세요.") AlarmType alarmType) {
 
