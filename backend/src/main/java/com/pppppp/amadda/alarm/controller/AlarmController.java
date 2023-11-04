@@ -27,7 +27,7 @@ public class AlarmController {
     @PostMapping("/subscribe")
     public ApiResponse<String> subscribeAlarm(@Valid @RequestBody AlarmConfigRequest request) {
         AlarmConfig alarmConfig = alarmService.setGlobalAlarm(request, true);
-        return ApiResponse.ok(String.format("%s 알림 설정", alarmConfig.getAlarmType()));
+        return ApiResponse.ok(String.format("%s 알림 설정", alarmConfig.getAlarmType().getContent()));
     }
 
     @PostMapping("/unsubscribe")
