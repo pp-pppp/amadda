@@ -87,8 +87,8 @@ class AlarmServiceTest extends IntegrationTestSupport {
         // given
         User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
-        AlarmType alarmType = AlarmType.of(type);
 
+        AlarmType alarmType = AlarmType.of(type);
         AlarmConfigRequest request = AlarmConfigRequest.builder()
             .userSeq(user.getUserSeq()).alarmType(alarmType).build();
 
@@ -194,7 +194,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
     @Test
     void friend_request() {
         // given
-        List<User> users = createUser();
+        List<User> users = create2users();
         User owner = users.get(0);
         User friend = users.get(1);
 
@@ -214,7 +214,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
     @Test
     void friend_accept() {
         // given
-        List<User> users = createUser();
+        List<User> users = create2users();
         User owner = users.get(0);
         User friend = users.get(1);
 
@@ -234,7 +234,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
     @Test
     void schedule_assigned() {
         // given
-        List<User> users = createUser();
+        List<User> users = create2users();
         User user1 = users.get(0);
         User user2 = users.get(1);
 
@@ -263,7 +263,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
     }
 
     @NotNull
-    private List<User> createUser() {
+    private List<User> create2users() {
         User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
         User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
         return userRepository.saveAll(List.of(u1, u2));

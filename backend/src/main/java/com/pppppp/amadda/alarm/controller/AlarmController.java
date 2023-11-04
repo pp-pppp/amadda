@@ -27,13 +27,13 @@ public class AlarmController {
     @PostMapping("/subscribe")
     public ApiResponse<String> subscribeAlarm(@Valid @RequestBody AlarmConfigRequest request) {
         AlarmConfig alarmConfig = alarmService.setGlobalAlarm(request, true);
-        return ApiResponse.ok(String.format("%s 알림 설정", alarmConfig.getAlarmType().getContent()));
+        return ApiResponse.ok(String.format("%s 알림을 설정합니다.", alarmConfig.getAlarmType().getContent()));
     }
 
     @PostMapping("/unsubscribe")
     public ApiResponse<String> unsubscribeAlarm(@Valid @RequestBody AlarmConfigRequest request) {
         AlarmConfig alarmConfig = alarmService.setGlobalAlarm(request, false);
-        return ApiResponse.ok(String.format("%s 알림 해제", alarmConfig.getAlarmType().getContent()));
+        return ApiResponse.ok(String.format("%s 알림이 해제되었습니다.", alarmConfig.getAlarmType().getContent()));
     }
 
     @PostMapping("/data")

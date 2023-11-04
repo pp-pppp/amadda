@@ -53,7 +53,7 @@ class AlarmControllerTest extends ControllerTestSupport {
             .andExpect(jsonPath("$.code").value("200"))
             .andExpect(jsonPath("$.status").value("OK"))
             .andExpect(jsonPath("$.message").value("OK"))
-            .andExpect(jsonPath("$.data").value(String.format("%s 알림 설정", alarmType.getContent())));
+            .andExpect(jsonPath("$.data").value(String.format("%s 알림을 설정합니다.", alarmType.getContent())));
     }
 
     @DisplayName("글로벌 설정이 가능한 알림에 대해 Off")
@@ -81,7 +81,7 @@ class AlarmControllerTest extends ControllerTestSupport {
             .andExpect(jsonPath("$.code").value("200"))
             .andExpect(jsonPath("$.status").value("OK"))
             .andExpect(jsonPath("$.message").value("OK"))
-            .andExpect(jsonPath("$.data").value(String.format("%s 알림 해제", alarmType.getContent())));
+            .andExpect(jsonPath("$.data").value(String.format("%s 알림이 해제되었습니다.", alarmType.getContent())));
     }
 
 }

@@ -60,14 +60,14 @@ class AlarmContentTest {
     @DisplayName("파라미터가 1개인데 0개가 들어왔을 때")
     @Test
     void no_parameter() {
-        assertThatThrownBy(() -> AlarmContent.FRIEND_REQUEST.getMessage()).isInstanceOf(
-            MissingFormatArgumentException.class);
+        assertThatThrownBy(AlarmContent.FRIEND_REQUEST::getMessage)
+            .isInstanceOf(MissingFormatArgumentException.class);
     }
 
     @DisplayName("파라미터가 2개인데 1개가 들어왔을 때")
     @Test
     void not_enough_parameter() {
-        assertThatThrownBy(() -> AlarmContent.MENTIONED.getMessage()).isInstanceOf(
-            MissingFormatArgumentException.class);
+        assertThatThrownBy(AlarmContent.MENTIONED::getMessage)
+            .isInstanceOf(MissingFormatArgumentException.class);
     }
 }
