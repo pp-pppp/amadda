@@ -64,8 +64,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         FriendRequest savedFriendRequest = friendRequestRepository.save(friendRequest);
 
         // when
-        alarmService.sendFriendRequest(savedFriendRequest.getRequestSeq(), owner.getUserSeq(),
-            friend.getUserSeq());
+        alarmService.sendFriendRequest(owner.getUserSeq(), friend.getUserSeq());
 
         // then
         String topic = KafkaTopic.ALARM_FRIEND_REQUEST;

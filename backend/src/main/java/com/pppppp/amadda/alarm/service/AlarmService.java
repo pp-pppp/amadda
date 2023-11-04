@@ -24,10 +24,10 @@ public class AlarmService {
     private final KafkaProducer kafkaProducer;
 
     @Transactional
-    public void sendFriendRequest(Long friendRequestSeq, Long ownerSeq, Long friendSeq) {
+    public void sendFriendRequest(Long ownerSeq, Long friendSeq) {
         User owner = getUser(ownerSeq);
         User friend = getUser(friendSeq);
-        FriendRequest friendRequest = getFriendRequest(friendRequestSeq, owner, friend);
+        FriendRequest friendRequest = getFriendRequest(owner, friend);
 
         AlarmFriendRequest value = AlarmFriendRequest.create(friendRequest.getRequestSeq(),
             owner.getUserSeq(), owner.getUserName());
@@ -51,16 +51,10 @@ public class AlarmService {
             .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
     }
 
-    private FriendRequest getFriendRequest(Long friendRequestSeq, User owner, User friend) {
-        FriendRequest friendRequest = friendRequestRepository.findByOwnerAndFriend(owner, friend)
+    private FriendRequest getFriendRequest(User owner, User friend) {
+        return friendRequestRepository.findByOwnerAndFriend(owner, friend)
             .orElseThrow(() -> new RestApiException(
                 FriendRequestErrorCode.FRIEND_REQUEST_NOT_FOUND));
-
-        if (!friendRequestSeq.equals(friendRequest.getRequestSeq())) {
-            throw new RestApiException(FriendRequestErrorCode.FRIEND_REQUEST_INVALID);
-        }
-
-        return friendRequest;
     }
 
 }
