@@ -1,91 +1,143 @@
-import { tokenValidation } from '@/pages/middleware';
-import { NextApiResponse } from 'next';
+/**
+ * @jest-environment node
+ */
+
 import { NextRequest, NextResponse } from 'next/server';
+import { injectCookie, tokenValidation } from '@/pages/middleware'; // tokenValidation 함수의 경로를 임포트해야 합니다.
+import axios from 'axios';
+import { createClient } from 'redis';
+import { REDIS } from '@/connection/connection';
 
-describe('미들웨어가 잘 작동하는지 테스트합니다', () => {
-  const mockNextRequest1 = {
-    cookies: {},
-  } as unknown as NextRequest;
+jest.mock('axios', () => ({
+  get: jest.fn(),
+}));
+jest.mock('@/connection/connection', () => ({
+  REDIS: {
+    getRefreshToken: jest.fn(),
+    setRefreshToken: jest.fn(),
+  },
+}));
 
-  const mockNextRequest2 = {
-    cookies: {
-      at: 'broken-access-token',
-    },
-    isBroken: true,
-  } as unknown as NextRequest;
-
-  const brokenATReq = {
-    cookies: {
-      at: 'broken-access-token',
-    },
-  } as unknown as NextRequest;
-
-  const brokenATRes = {
-    headers: {
-      Auth: 'broken-access-token',
-    },
-    isBroken: true,
-  } as unknown as NextResponse;
-
-  const mockNextResponse1 = {
-    headers: {
-      Auth: 'valid-access-token',
-    },
-    isBroken: false,
-    isExpired: true,
-  } as unknown as NextResponse;
-
-  const mockNextResponse2 = {
-    cookies: {
-      at: 'valid-access-token',
-    },
-    headers: {
-      Auth: 'valid-access-token',
-    },
-  } as unknown as NextResponse;
-
+describe('I. 클라이언트 요청에 대한 토큰 검증 로직을 테스트합니다.', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  test('쿠키에 토큰이 없으면 로그아웃되어야 합니다.', async () => {
-    (mockNextRequest1.cookies.has as jest.Mock).mockReturnValue(false); //쿠키에 토큰이 없음이 확인된 상황이면
-    const req = tokenValidation(mockNextRequest1);
-    expect(await req).toBeInstanceOf(NextRequest);
-    expect((await req).headers.get('at')).toBe('valid-access-token');
-  });
-
-  test('Access Token이 유효하다면, request가 그대로 리턴되어서 Spring으로 전달되어야 합니다.', async () => {
-    (tokenValidation as jest.Mock).mockReturnValue;
-    const req = tokenValidation(mockNextRequest2);
-    expect(await req).toBeInstanceOf(NextRequest);
-    expect((await req).headers.get('at')).toBe('valid-access-token');
-  });
-  test('확인받은 Access Token이 Broken이라면, 로그아웃하도록 해야 합니다.', async () => {
-    // const data = await gateway();
-    // expect(data).toBe('')
-    (tokenValidation as jest.Mock).mockReturnValue(brokenATRes);
-    const res = tokenValidation(brokenATReq);
-    expect(await res).toBeInstanceOf(NextResponse);
-    // expect((await res).isBroken).toBe(true);
-    expect((await res).headers.get('x-middleware-rewrite')).toBe(
-      'http://localhost:3000/api/auth/signout'
+  test('1. 요청 쿠키에 액세스 토큰이 없을 경우 로그아웃 API로 rewrite해야 합니다.', async () => {
+    const req = new NextRequest('http://exampleapiroute.com', {
+      headers: new Headers(),
+      method: 'GET',
+    });
+    const res = await tokenValidation(req);
+    expect(res).toBeInstanceOf(NextResponse);
+    expect(res.headers.get('x-middleware-rewrite')).toContain(
+      '/api/auth/signout'
     );
   });
-  test('확인받은 Refresh Token이 유효하다면, 재발급받은 Access Token을 주입해 API 응답 결과를 리턴해야 합니다.', async () => {
-    // const data = await gateway();
-    // expect(data).toBe('')
-    const res = tokenValidation(mockNextRequest2);
-    // expect(res.headers.get('Auth')).toBe('new-valid-access-token');
-    // expect(res.status).toBe(200);
+
+  test('2. 프리플라이트 요청 결과 Access Token에 이상이 없다면 요청을 Spring 서버로 전송해야 합니다.', async () => {
+    const req = new NextRequest('http://exampleapiroute.com', {
+      headers: new Headers(),
+      method: 'GET',
+    });
+    req.cookies.set('at', 'valid-access-token');
+    (axios.get as jest.Mock).mockReturnValue(
+      Promise.resolve({ data: { isBroken: false, isExpired: false } })
+    );
+    const res = await tokenValidation(req);
+    expect(res).toBeInstanceOf(NextRequest);
+    expect(res.url).toBe('http://exampleapiroute.com/');
   });
 
-  test('Refresh Token의 확인 결과가 Unauthrorized라면, 로그아웃하도록 해야 합니다.', async () => {
-    // const data = await gateway();
-    // expect(data).toBe('')
-    // expect(res.status).toBe(302);
-    // expect(res.headers.get('x-middleware-rewrite')).toBe(
-    //   'http://localhost:3000/api/auth/signout'
-    // );
+  test('3. 프리플라이트 요청 결과 Access Token이 손상(Broken)되었을 경우 로그아웃 API로 rewrite해야 합니다.', async () => {
+    const req = new NextRequest('http://exampleapiroute.com', {
+      headers: new Headers(),
+      method: 'GET',
+    });
+    req.cookies.set('at', 'broken-access-token');
+    (axios.get as jest.Mock).mockReturnValue(
+      Promise.resolve({ data: { isBroken: true } })
+    );
+    const res = await tokenValidation(req);
+    expect(res).toBeInstanceOf(NextResponse);
+    expect(res.headers.get('x-middleware-rewrite')).toContain(
+      '/api/auth/signout'
+    );
+  });
+
+  test('4. 프리플라이트 요청 결과 Access Token이 만료(Expired)되었을 경우 Refresh Token으로 다시 프리플라이트 요청을 보내야 합니다. 성공한 경우 새 액세스 토큰으로 요청을 다시 보내야 합니다.', async () => {
+    const req = new NextRequest('http://exampleapiroute.com', {
+      headers: new Headers(),
+      method: 'GET',
+    });
+    req.cookies.set('at', 'expired-access-token');
+    (axios.get as jest.Mock).mockReturnValueOnce(
+      Promise.resolve({
+        data: {
+          isExpired: true,
+          isBroken: false,
+          refreshAccessKey: 'refresh-key',
+        },
+      })
+    );
+    (REDIS.getRefreshToken as jest.Mock).mockReturnValue('valid-refresh-token');
+    (axios.get as jest.Mock).mockReturnValueOnce(
+      Promise.resolve({
+        status: 200,
+        data: {
+          accessToken: 'new-access-token',
+          refreshToken: 'new-refresh-token',
+          refreshAccessKey: 'new-refresh-key',
+        },
+      })
+    );
+
+    const res = await tokenValidation(req);
+
+    expect(res).toBeInstanceOf(NextRequest);
+    expect(res.headers.get('Auth')).toBe('new-access-token');
+  });
+
+  test('5. 리프레시 토큰으로 보낸 프리플라이트 요청이 실패한 경우 로그아웃 API로 rewrite해야 합니다.', async () => {
+    const req = new NextRequest('http://exampleapiroute.com', {
+      headers: new Headers(),
+      method: 'GET',
+    });
+    req.cookies.set('at', 'expired-access-token');
+    (axios.get as jest.Mock).mockReturnValueOnce(
+      Promise.resolve({
+        data: {
+          isExpired: true,
+          isBroken: false,
+          refreshAccessKey: 'refresh-key',
+        },
+      })
+    );
+    (REDIS.getRefreshToken as jest.Mock).mockReturnValue('weird-refresh-token');
+    (axios.get as jest.Mock).mockReturnValueOnce(
+      Promise.resolve({
+        status: 401,
+        data: {},
+      })
+    );
+    const res = await tokenValidation(req);
+    expect(res).toBeInstanceOf(NextResponse);
+    expect(res.headers.get('x-middleware-rewrite')).toContain(
+      '/api/auth/signout'
+    );
+  });
+});
+
+describe('II. Spring 서버로부터 오는 토큰을 httpOnly 쿠키에 넣어 클라이언트로 내려보내는 로직을 테스트합니다.', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('1. 서버로부터 온 토큰이 HttpOnly 쿠키로 옮겨져야 합니다.', async () => {
+    const response = NextResponse.rewrite('http://some-url');
+    response.headers.set('Auth', 'access-token');
+    const result = await injectCookie(response);
+    expect(result.cookies.get('at')?.httpOnly).toBe(true);
+    expect(result.cookies.get('at')?.value).toBe('access-token');
   });
 });
