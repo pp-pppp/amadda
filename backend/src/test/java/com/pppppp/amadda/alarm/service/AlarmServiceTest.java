@@ -17,6 +17,7 @@ import com.pppppp.amadda.schedule.repository.ScheduleRepository;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,21 +67,19 @@ class AlarmServiceTest extends IntegrationTestSupport {
     @Test
     void friend_request() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        List<User> users = userRepository.saveAll(List.of(u1, u2));
+        List<User> users = createUser();
         User owner = users.get(0);
         User friend = users.get(1);
 
         FriendRequest friendRequest = FriendRequest.create(owner, friend);
-        FriendRequest savedFriendRequest = friendRequestRepository.save(friendRequest);
+        friendRequestRepository.save(friendRequest);
 
         // when
         alarmService.sendFriendRequest(owner.getUserSeq(), friend.getUserSeq());
 
         // then
         String topic = KafkaTopic.ALARM_FRIEND_REQUEST;
-        Long key = 1234L;
+        Long key = friend.getUserSeq();
         verify(kafkaTemplate, times(1)).send(eq(topic), eq(key), any());
     }
 
@@ -88,21 +87,19 @@ class AlarmServiceTest extends IntegrationTestSupport {
     @Test
     void friend_accept() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        List<User> users = userRepository.saveAll(List.of(u1, u2));
+        List<User> users = createUser();
         User owner = users.get(0);
         User friend = users.get(1);
 
         FriendRequest friendRequest = FriendRequest.create(owner, friend);
-        FriendRequest savedFriendRequest = friendRequestRepository.save(friendRequest);
+        friendRequestRepository.save(friendRequest);
 
         // when
         alarmService.sendFriendAccept(owner.getUserSeq(), friend.getUserSeq());
 
         // then
         String topic = KafkaTopic.ALARM_FRIEND_ACCEPT;
-        Long key = 1111L;
+        Long key = owner.getUserSeq();
         verify(kafkaTemplate, times(1)).send(eq(topic), eq(key), any());
     }
 
@@ -110,14 +107,13 @@ class AlarmServiceTest extends IntegrationTestSupport {
     @Test
     void schedule_assigned() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        List<User> users = userRepository.saveAll(List.of(u1, u2));
+        List<User> users = createUser();
         User user1 = users.get(0);
         User user2 = users.get(1);
 
         Schedule schedule = Schedule.builder().user(user1).build();
         Schedule savedSchedule = scheduleRepository.save(schedule);
+
         Participation participation1 = Participation.builder()
             .user(user1)
             .schedule(savedSchedule)
@@ -128,8 +124,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
             .schedule(savedSchedule)
             .scheduleName("밥밥")
             .build();
-        List<Participation> participations = participationRepository.saveAll(
-            List.of(participation1, participation2));
+        participationRepository.saveAll(List.of(participation1, participation2));
 
         // when
         alarmService.sendScheduleAssigned(savedSchedule.getScheduleSeq());
@@ -138,5 +133,12 @@ class AlarmServiceTest extends IntegrationTestSupport {
         String topic = KafkaTopic.ALARM_SCHEDULE_ASSIGNED;
         Long key = user2.getUserSeq();
         verify(kafkaTemplate, times(1)).send(eq(topic), eq(key), any());
+    }
+
+    @NotNull
+    private List<User> createUser() {
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        return userRepository.saveAll(List.of(u1, u2));
     }
 }
