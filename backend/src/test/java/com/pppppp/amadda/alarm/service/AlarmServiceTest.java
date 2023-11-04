@@ -10,6 +10,10 @@ import com.pppppp.amadda.alarm.dto.topic.BaseTopicValue;
 import com.pppppp.amadda.alarm.entity.KafkaTopic;
 import com.pppppp.amadda.friend.entity.FriendRequest;
 import com.pppppp.amadda.friend.repository.FriendRequestRepository;
+import com.pppppp.amadda.schedule.entity.Participation;
+import com.pppppp.amadda.schedule.entity.Schedule;
+import com.pppppp.amadda.schedule.repository.ParticipationRepository;
+import com.pppppp.amadda.schedule.repository.ScheduleRepository;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
 import java.util.List;
@@ -41,11 +45,19 @@ class AlarmServiceTest extends IntegrationTestSupport {
     @Autowired
     private FriendRequestRepository friendRequestRepository;
 
+    @Autowired
+    private ScheduleRepository scheduleRepository;
+
+    @Autowired
+    private ParticipationRepository participationRepository;
+
     @MockBean
     KafkaTemplate<Long, BaseTopicValue> kafkaTemplate;
 
     @AfterEach
     void tearDown() {
+        participationRepository.deleteAllInBatch();
+        scheduleRepository.deleteAllInBatch();
         friendRequestRepository.deleteAllInBatch();
         userRepository.deleteAllInBatch();
     }
@@ -91,6 +103,40 @@ class AlarmServiceTest extends IntegrationTestSupport {
         // then
         String topic = KafkaTopic.ALARM_FRIEND_ACCEPT;
         Long key = 1111L;
+        verify(kafkaTemplate, times(1)).send(eq(topic), eq(key), any());
+    }
+
+    @DisplayName("일정 할당 알람")
+    @Test
+    void schedule_assigned() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
+        User user1 = users.get(0);
+        User user2 = users.get(1);
+
+        Schedule schedule = Schedule.builder().user(user1).build();
+        Schedule savedSchedule = scheduleRepository.save(schedule);
+        Participation participation1 = Participation.builder()
+            .user(user1)
+            .schedule(savedSchedule)
+            .scheduleName("밥")
+            .build();
+        Participation participation2 = Participation.builder()
+            .user(user2)
+            .schedule(savedSchedule)
+            .scheduleName("밥밥")
+            .build();
+        List<Participation> participations = participationRepository.saveAll(
+            List.of(participation1, participation2));
+
+        // when
+        alarmService.sendScheduleAssigned(savedSchedule.getScheduleSeq());
+
+        // then
+        String topic = KafkaTopic.ALARM_SCHEDULE_ASSIGNED;
+        Long key = user2.getUserSeq();
         verify(kafkaTemplate, times(1)).send(eq(topic), eq(key), any());
     }
 }

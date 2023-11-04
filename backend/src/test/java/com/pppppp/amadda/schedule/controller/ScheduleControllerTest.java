@@ -1,5 +1,8 @@
 package com.pppppp.amadda.schedule.controller;
 
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -7,10 +10,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pppppp.amadda.alarm.service.AlarmService;
 import com.pppppp.amadda.schedule.dto.request.CategoryCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.CommentCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.ScheduleCreateRequest;
 import com.pppppp.amadda.schedule.dto.response.CategoryReadResponse;
+import com.pppppp.amadda.schedule.dto.response.ScheduleCreateResponse;
 import com.pppppp.amadda.schedule.entity.AlarmTime;
 import com.pppppp.amadda.schedule.service.ScheduleService;
 import com.pppppp.amadda.user.dto.response.UserReadResponse;
@@ -36,6 +41,9 @@ class ScheduleControllerTest {
     @MockBean
     private ScheduleService scheduleService;
 
+    @MockBean
+    private AlarmService alarmService;
+
     // TODO: 동적쿼리 구현 후 테스트 코드 추가 작성 필요
 
     @DisplayName("일정을 생성한다.")
@@ -59,6 +67,10 @@ class ScheduleControllerTest {
             .scheduleMemo("수원역에서 걸어서 10분")
             .alarmTime(AlarmTime.ONE_DAY_BEFORE)
             .build();
+
+        // stubbing
+        when(scheduleService.createSchedule(anyLong(), eq(request)))
+            .thenReturn(ScheduleCreateResponse.builder().scheduleSeq(1L).build());
 
         // when  // then
         mockMvc.perform(

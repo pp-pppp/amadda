@@ -48,6 +48,11 @@ public class KafkaConsumer {
     @KafkaListener(topics = KafkaTopic.ALARM_SCHEDULE_ASSIGNED, groupId = "${spring.kafka.consumer.group-id}")
     public void consumeScheduleAssigned(ConsumerRecord<String, AlarmScheduleAssigned> record)
         throws IOException {
+        Long userSeq = Long.valueOf(String.valueOf(record.key()));
+        String scheduleOwnerUserName = record.value().getScheduleOwnerUserName();
+        String scheduleName = record.value().getScheduleName();
+        saveAlarm(userSeq,
+            AlarmContent.SCHEDULE_ASSIGNED.getMessage(scheduleOwnerUserName, scheduleName));
     }
 
     @KafkaListener(topics = KafkaTopic.ALARM_MENTIONED, groupId = "${spring.kafka.consumer.group-id}")
