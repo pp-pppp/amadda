@@ -11,7 +11,7 @@ public enum AlarmType {
     SCHEDULE_ASSIGNED("SCHEDULE_ASSIGNED", "일정 할당"),
     MENTIONED("MENTIONED", "댓글 멘션"),
     SCHEDULE_UPDATE("SCHEDULE_UPDATE", "일정 수정"),
-    SCHEDULE_NOTI("SCHEDULE_NOTI", "일정 예정"),
+    SCHEDULE_NOTIFICATION("SCHEDULE_NOTIFICATION", "일정 예정"),
     ;
 
     private final String code;

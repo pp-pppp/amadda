@@ -49,11 +49,11 @@ class AlarmContentTest {
         assertThat(actual).isEqualTo(expected);
     }
 
-    @DisplayName("schedule_noti")
+    @DisplayName("schedule_notification")
     @Test
-    void schedule_noti() {
+    void schedule_notification() {
         String expected = "'밥먹자' 일정이 한 시간 뒤에 예정되어 있어요.";
-        String actual = AlarmContent.SCHEDULE_NOTI.getMessage("밥먹자", "한 시간 뒤에");
+        String actual = AlarmContent.SCHEDULE_NOTIFICATION.getMessage("밥먹자", "한 시간 뒤에");
         assertThat(actual).isEqualTo(expected);
     }
 
