@@ -4,10 +4,12 @@ import com.pppppp.amadda.alarm.dto.request.AlarmConfigRequest;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendAccept;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendRequest;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleAssigned;
+import com.pppppp.amadda.alarm.entity.Alarm;
 import com.pppppp.amadda.alarm.entity.AlarmConfig;
 import com.pppppp.amadda.alarm.entity.AlarmType;
 import com.pppppp.amadda.alarm.entity.KafkaTopic;
 import com.pppppp.amadda.alarm.repository.AlarmConfigRepository;
+import com.pppppp.amadda.alarm.repository.AlarmRepository;
 import com.pppppp.amadda.friend.entity.FriendRequest;
 import com.pppppp.amadda.friend.repository.FriendRequestRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
@@ -37,7 +39,22 @@ public class AlarmService {
     private final ScheduleRepository scheduleRepository;
     private final ParticipationRepository participationRepository;
     private final AlarmConfigRepository alarmConfigRepository;
+    private final AlarmRepository alarmRepository;
     private final KafkaProducer kafkaProducer;
+
+    @Transactional
+    public void readAlarm(Long alarmSeq, Long userSeq) {
+        Alarm alarm = alarmRepository.findById(alarmSeq)
+            .orElseThrow(() -> new RestApiException(AlarmErrorCode.ALARM_NOT_EXIST));
+
+        User user = getUser(userSeq);
+        if (!user.equals(alarm.getUser())) {
+            throw new RestApiException(AlarmErrorCode.ALARM_FORBIDDEN);
+        }
+
+        alarm.markAsRead();
+        alarmRepository.save(alarm);
+    }
 
     @Transactional
     public AlarmConfig setGlobalAlarm(AlarmConfigRequest request, boolean isEnabled) {
