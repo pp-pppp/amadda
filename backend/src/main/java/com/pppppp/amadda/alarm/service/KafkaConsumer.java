@@ -35,7 +35,8 @@ public class KafkaConsumer {
         throws IOException {
         Long userSeq = Long.valueOf(String.valueOf(record.key()));
         String requestedUserName = record.value().getRequestedUserName();
-        saveAlarm(userSeq, AlarmContent.FRIEND_REQUEST.getMessage(requestedUserName), AlarmType.FRIEND_REQUEST);
+        saveAlarm(userSeq, AlarmContent.FRIEND_REQUEST.getMessage(requestedUserName),
+            AlarmType.FRIEND_REQUEST);
     }
 
     @KafkaListener(topics = KafkaTopic.ALARM_FRIEND_ACCEPT, groupId = "${spring.kafka.consumer.group-id}")
@@ -43,7 +44,8 @@ public class KafkaConsumer {
         throws IOException {
         Long userSeq = Long.valueOf(String.valueOf(record.key()));
         String friendUserName = record.value().getFriendUserName();
-        saveAlarm(userSeq, AlarmContent.FRIEND_ACCEPT.getMessage(friendUserName), AlarmType.FRIEND_ACCEPT);
+        saveAlarm(userSeq, AlarmContent.FRIEND_ACCEPT.getMessage(friendUserName),
+            AlarmType.FRIEND_ACCEPT);
     }
 
     @KafkaListener(topics = KafkaTopic.ALARM_SCHEDULE_ASSIGNED, groupId = "${spring.kafka.consumer.group-id}")
@@ -53,7 +55,8 @@ public class KafkaConsumer {
         String scheduleOwnerUserName = record.value().getScheduleOwnerUserName();
         String scheduleName = record.value().getScheduleName();
         saveAlarm(userSeq,
-            AlarmContent.SCHEDULE_ASSIGNED.getMessage(scheduleOwnerUserName, scheduleName), AlarmType.SCHEDULE_ASSIGNED);
+            AlarmContent.SCHEDULE_ASSIGNED.getMessage(scheduleOwnerUserName, scheduleName),
+            AlarmType.SCHEDULE_ASSIGNED);
     }
 
     @KafkaListener(topics = KafkaTopic.ALARM_MENTIONED, groupId = "${spring.kafka.consumer.group-id}")

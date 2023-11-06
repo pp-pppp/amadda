@@ -1,11 +1,5 @@
 package com.pppppp.amadda.alarm.entity;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
-
 import com.pppppp.amadda.global.entity.BaseEntity;
 import com.pppppp.amadda.user.entity.User;
 import jakarta.persistence.Column;
@@ -18,6 +12,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
