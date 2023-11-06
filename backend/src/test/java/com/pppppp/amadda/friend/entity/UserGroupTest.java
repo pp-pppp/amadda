@@ -1,4 +1,4 @@
-package com.pppppp.amadda.friend.service;
+package com.pppppp.amadda.friend.entity;
 
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.friend.dto.request.GroupCreateRequest;
@@ -14,13 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.tuple;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserGroupServiceTest extends IntegrationTestSupport {
+class UserGroupTest extends IntegrationTestSupport {
 
-    @Autowired
-    private UserGroupService userGroupService;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -32,33 +30,26 @@ class UserGroupServiceTest extends IntegrationTestSupport {
         userRepository.deleteAllInBatch();
     }
 
-    @DisplayName("유저 그룹을 생성한다. ")
+    @DisplayName("그룹의 이름을 변경하고 조회한다. ")
     @Test
     @Transactional
-    void createGroup() {
+    void updateGroupName() {
         // given
         User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
-        List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
+        List<User> users = userRepository.saveAll(List.of(u1));
 
-        GroupCreateRequest gcr = GroupCreateRequest.builder()
-                .ownerSeq(1111L)
-                .groupName("그룹명1")
-                .userSeqs(List.of(1234L, 2222L))
-                .build();
+        UserGroup group = UserGroup.create("group1", u1);
+        userGroupRepository.save(group);
 
         // when
-        Long groupSeq = userGroupService.createUserGroup(gcr);
+        userGroupRepository.findAll().get(0).updateGroupName("aaa");
 
         // then
         assertThat(userGroupRepository.findAll()).hasSize(1)
-                .extracting("groupName", "owner")
+                .extracting("groupName", "owner.userSeq")
                 .containsExactlyInAnyOrder(
-                        tuple("그룹명1", users.get(0))
+                        tuple("aaa", 1111L)
                 );
     }
-
-
 
 }

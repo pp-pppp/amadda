@@ -2,6 +2,7 @@ package com.pppppp.amadda.friend.service;
 
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.friend.dto.request.GroupCreateRequest;
+import com.pppppp.amadda.friend.dto.request.GroupPatchRequest;
 import com.pppppp.amadda.friend.repository.GroupMemberRepository;
 import com.pppppp.amadda.friend.repository.UserGroupRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
@@ -30,10 +31,14 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
     private UserRepository userRepository;
     @Autowired
     private GroupMemberRepository groupMemberRepository;
+    @Autowired
+    private UserGroupRepository userGroupRepository;
 
     @AfterEach
     void tearDown() {
         groupMemberRepository.deleteAllInBatch();
+        userGroupRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
     }
 
     @DisplayName("그룹멤버가 모두 정상 저장된다. ")
@@ -80,7 +85,7 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
                 .build();
 
         // when // then
-        groupMemberService.isUserValid(gcr);
+        groupMemberService.isUserValid(gcr.userSeqs());
 
     }
 
@@ -100,7 +105,7 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
                 .build();
 
         // when // then
-        assertThatThrownBy(() -> groupMemberService.isUserValid(gcr))
+        assertThatThrownBy(() -> groupMemberService.isUserValid(gcr.userSeqs()))
                 .isInstanceOf(RestApiException.class)
                 .hasMessage("USER_NOT_FOUND");
     }
@@ -125,4 +130,46 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
                 .isInstanceOf(RestApiException.class)
                 .hasMessage("GROUP_NOT_FOUND");
     }
+
+    @DisplayName("그룹의 이름과 멤버를 수정한다. ")
+    @Test
+    void editGroup() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
+        User u4 = User.create(3456L, "유저4", "id4", "imageUrl4");
+        List<User> users = userRepository.saveAll(List.of(u1, u2, u3, u4));
+
+        GroupCreateRequest gcr = GroupCreateRequest.builder()
+                .ownerSeq(1111L)
+                .groupName("그룹명1")
+                .userSeqs(List.of(1234L, 2222L))
+                .build();
+        Long groupSeq = userGroupService.createUserGroup(gcr);
+        groupMemberService.createGroupMember(gcr, groupSeq);
+
+        GroupPatchRequest gpr = GroupPatchRequest.builder()
+                .groupSeq(groupSeq)
+                .groupName("새로운 이름")
+                .userSeqs(List.of(2222L, 3456L))
+                .build();
+
+        // when
+        groupMemberService.editGroup(gpr);
+
+        // then
+        assertThat(groupMemberRepository.findAll()).hasSize(2)
+                .extracting("group.groupSeq", "member.userSeq")
+                .containsExactly(
+                        tuple(groupSeq, 2222L),
+                        tuple(groupSeq, 3456L)
+                );
+        assertThat(userGroupRepository.findAll()).hasSize(1)
+                .extracting("groupName", "owner.userSeq")
+                .containsExactly(
+                        tuple("새로운 이름", 1111L)
+                );
+    }
+
 }
