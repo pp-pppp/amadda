@@ -366,7 +366,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .categorySeq(categories.get(0).getCategorySeq())
             .build();
         ScheduleCreateRequest r2 = ScheduleCreateRequest.builder()
-            .scheduleName("자율 플젝 발표")
+            .scheduleName("프로젝트 발표")
             .scheduleContent("멀티캠퍼스 역삼")
             .scheduleMemo("미리 연습해보기")
             .isDateSelected(false)
@@ -399,7 +399,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
                 tuple("합창단 가을 공연",
                     List.of(UserReadResponse.of(u1)), UserReadResponse.of(u1), false, false, false,
                     "", "", AlarmTime.NONE.getContent(), false, CategoryReadResponse.of(c1)),
-                tuple("자율 플젝 발표",
+                tuple("프로젝트 발표",
                     List.of(UserReadResponse.of(u1)), UserReadResponse.of(u1), false, false, false,
                     "", "", AlarmTime.NONE.getContent(), false, CategoryReadResponse.of(c2))
             );
