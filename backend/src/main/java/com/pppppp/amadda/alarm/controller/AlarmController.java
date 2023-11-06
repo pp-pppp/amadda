@@ -1,8 +1,11 @@
 package com.pppppp.amadda.alarm.controller;
 
-import com.pppppp.amadda.alarm.dto.request.AlarmRequest;
+import com.pppppp.amadda.alarm.dto.request.AlarmConfigRequest;
 import com.pppppp.amadda.alarm.dto.topic.TestTopic;
+import com.pppppp.amadda.alarm.entity.AlarmConfig;
+import com.pppppp.amadda.alarm.service.AlarmService;
 import com.pppppp.amadda.alarm.service.KafkaProducer;
+import com.pppppp.amadda.global.dto.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,17 +22,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class AlarmController {
 
     private final KafkaProducer kafkaProducer;
+    private final AlarmService alarmService;
 
     @PostMapping("/subscribe")
-    public void subscribeAlarm(@Valid @RequestBody AlarmRequest request) {
-        log.info("POST /api/alarm/subscribe");
-        kafkaProducer.turnOnGlobalAlarm(request.alarmType(), request.userSeq());
+    public ApiResponse<String> subscribeAlarm(@Valid @RequestBody AlarmConfigRequest request) {
+        AlarmConfig alarmConfig = alarmService.setGlobalAlarm(request, true);
+        return ApiResponse.ok(String.format("%s 알림을 설정합니다.", alarmConfig.getAlarmType().getContent()));
     }
 
     @PostMapping("/unsubscribe")
-    public void unsubscribeAlarm(@Valid @RequestBody AlarmRequest request) {
-        log.info("POST /api/alarm/unsubscribe");
-        kafkaProducer.turnOffGlobalAlarm(request.alarmType(), request.userSeq());
+    public ApiResponse<String> unsubscribeAlarm(@Valid @RequestBody AlarmConfigRequest request) {
+        AlarmConfig alarmConfig = alarmService.setGlobalAlarm(request, false);
+        return ApiResponse.ok(String.format("%s 알림이 해제되었습니다.", alarmConfig.getAlarmType().getContent()));
     }
 
     @PostMapping("/data")

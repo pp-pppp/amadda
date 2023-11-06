@@ -49,25 +49,25 @@ class AlarmContentTest {
         assertThat(actual).isEqualTo(expected);
     }
 
-    @DisplayName("schedule_noti")
+    @DisplayName("schedule_notification")
     @Test
-    void schedule_noti() {
+    void schedule_notification() {
         String expected = "'밥먹자' 일정이 한 시간 뒤에 예정되어 있어요.";
-        String actual = AlarmContent.SCHEDULE_NOTI.getMessage("밥먹자", "한 시간 뒤에");
+        String actual = AlarmContent.SCHEDULE_NOTIFICATION.getMessage("밥먹자", "한 시간 뒤에");
         assertThat(actual).isEqualTo(expected);
     }
 
     @DisplayName("파라미터가 1개인데 0개가 들어왔을 때")
     @Test
     void no_parameter() {
-        assertThatThrownBy(() -> AlarmContent.FRIEND_REQUEST.getMessage()).isInstanceOf(
-            MissingFormatArgumentException.class);
+        assertThatThrownBy(AlarmContent.FRIEND_REQUEST::getMessage)
+            .isInstanceOf(MissingFormatArgumentException.class);
     }
 
     @DisplayName("파라미터가 2개인데 1개가 들어왔을 때")
     @Test
     void not_enough_parameter() {
-        assertThatThrownBy(() -> AlarmContent.MENTIONED.getMessage()).isInstanceOf(
-            MissingFormatArgumentException.class);
+        assertThatThrownBy(AlarmContent.MENTIONED::getMessage)
+            .isInstanceOf(MissingFormatArgumentException.class);
     }
 }

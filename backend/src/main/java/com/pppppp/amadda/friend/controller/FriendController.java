@@ -43,8 +43,8 @@ public class FriendController {
     public ApiResponse sendFriendRequest(@Valid @RequestBody FriendRequestRequest request) {
         FriendRequestResponse friendRequestResponse = friendRequestService.createFriendRequest(
             request);
-        alarmService.sendFriendRequest(friendRequestResponse.requestSeq(),
-            friendRequestResponse.ownerSeq(), friendRequestResponse.friendSeq());
+        alarmService.sendFriendRequest(friendRequestResponse.ownerSeq(),
+            friendRequestResponse.friendSeq());
         return ApiResponse.ok("친구 신청 보내기 완료");
     }
 

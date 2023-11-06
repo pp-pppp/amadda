@@ -12757,6 +12757,7 @@ packages:
       strip-indent: 3.0.0
     dev: true
 
+
   /redis@4.6.10:
     resolution: {integrity: sha512-mmbyhuKgDiJ5TWUhiKhBssz+mjsuSI/lSZNPI9QvZOYzWvYGejtb+W3RlDDf8LD6Bdl5/mZeG8O1feUGhXTxEg==}
     dependencies:
@@ -12767,6 +12768,7 @@ packages:
       '@redis/search': 1.1.5(@redis/client@1.5.11)
       '@redis/time-series': 1.0.5(@redis/client@1.5.11)
     dev: false
+
 
   /redux-thunk@2.4.2(redux@4.2.1):
     resolution: {integrity: sha512-+P3TjtnP0k/FEjcBL5FZpoovtvrTNT/UXd4/sluaSyrURlSlhLSzEdfsTBW7WsKB6yPvgd7q/iZPICFjW4o57Q==}

@@ -1,5 +1,9 @@
 package com.pppppp.amadda.alarm.entity;
 
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import com.pppppp.amadda.global.entity.BaseEntity;
@@ -16,6 +20,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AlarmConfig extends BaseEntity {
 
     @Id
@@ -33,4 +39,24 @@ public class AlarmConfig extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
     @ColumnDefault("1")
     private boolean isEnabled;
+
+    @Builder
+    private AlarmConfig(User user, AlarmType alarmType, boolean isEnabled) {
+        this.user = user;
+        this.alarmType = alarmType;
+        this.isEnabled = isEnabled;
+    }
+
+    public static AlarmConfig create(User user, AlarmType alarmType, boolean isEnabled) {
+        return AlarmConfig.builder()
+            .user(user)
+            .alarmType(alarmType)
+            .isEnabled(isEnabled)
+            .build();
+    }
+
+    public void updateIsEnabled(boolean isEnabled) {
+        this.isEnabled = isEnabled;
+    }
+
 }
