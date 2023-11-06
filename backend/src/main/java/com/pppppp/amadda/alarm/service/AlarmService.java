@@ -42,6 +42,11 @@ public class AlarmService {
     private final AlarmRepository alarmRepository;
     private final KafkaProducer kafkaProducer;
 
+    public List<Alarm> readAlarms(Long userSeq) {
+        User user = getUser(userSeq);
+        return alarmRepository.findAllByUserAndIsReadFalseAndIsDeletedFalse(user);
+    }
+
     @Transactional
     public void readAlarm(Long alarmSeq, Long userSeq) {
         Alarm alarm = alarmRepository.findById(alarmSeq)

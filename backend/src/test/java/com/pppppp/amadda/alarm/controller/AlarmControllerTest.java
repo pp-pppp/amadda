@@ -3,6 +3,7 @@ package com.pppppp.amadda.alarm.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -28,6 +29,20 @@ class AlarmControllerTest extends ControllerTestSupport {
 
     @MockBean
     private AlarmService alarmService;
+
+    @DisplayName("알림 목록 가져오기")
+    @Test
+    void readAlarms() throws Exception {
+        mockMvc.perform(
+                get("/api/alarm")
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"));
+    }
 
     @DisplayName("알림 읽기")
     @Test

@@ -1,14 +1,19 @@
 package com.pppppp.amadda.alarm.controller;
 
 import com.pppppp.amadda.alarm.dto.request.AlarmConfigRequest;
+import com.pppppp.amadda.alarm.dto.response.AlarmReadResponse;
 import com.pppppp.amadda.alarm.dto.topic.TestTopic;
+import com.pppppp.amadda.alarm.entity.Alarm;
 import com.pppppp.amadda.alarm.entity.AlarmConfig;
 import com.pppppp.amadda.alarm.service.AlarmService;
 import com.pppppp.amadda.alarm.service.KafkaProducer;
 import com.pppppp.amadda.global.dto.ApiResponse;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +29,14 @@ public class AlarmController {
 
     private final KafkaProducer kafkaProducer;
     private final AlarmService alarmService;
+
+    @GetMapping
+    public ApiResponse<List<AlarmReadResponse>> readAlarms() {
+        Long userSeq = 1L;
+        List<Alarm> alarms = alarmService.readAlarms(userSeq);
+        List<AlarmReadResponse> data = alarms.stream().map(AlarmReadResponse::of).toList();
+        return ApiResponse.of(HttpStatus.OK, data);
+    }
 
     @PostMapping("/{alarmSeq}")
     public ApiResponse<String> readAlarm(@PathVariable(required = true) Long alarmSeq) {
