@@ -30,7 +30,6 @@ import com.pppppp.amadda.schedule.repository.ScheduleRepository;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -383,7 +382,6 @@ class AlarmServiceTest extends IntegrationTestSupport {
         verify(kafkaTemplate, times(1)).send(eq(topic), eq(key), any());
     }
 
-    @NotNull
     private List<User> create2users() {
         User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
         User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
