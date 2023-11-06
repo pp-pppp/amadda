@@ -3,7 +3,8 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { injectCookie, tokenValidation } from '@/pages/middleware'; // tokenValidation 함수의 경로를 임포트해야 합니다.
+import { injectCookie } from '@/middleware';
+import tokenValidation from '@/middleware';
 import axios from 'axios';
 import { REDIS } from '@/connection/connection';
 
