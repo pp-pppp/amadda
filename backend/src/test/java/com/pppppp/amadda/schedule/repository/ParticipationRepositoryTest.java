@@ -146,6 +146,59 @@ class ParticipationRepositoryTest extends IntegrationTestSupport {
             .containsExactly(user2, schedule2, "싸피", "좋아");
     }
 
+    @DisplayName("일정 제목으로 해당하는 단어를 포함하는 참석정보 목록을 가져온다.")
+    @Transactional
+    @Test
+    void getParticipationByScheduleNameContaining() {
+        // given
+        User user = userRepository.findAll().get(0);
+
+        Schedule s1 = scheduleRepository.findAll().get(0);
+        Schedule s2 = scheduleRepository.findAll().get(1);
+
+        Participation p1 = Participation.builder()
+            .user(user)
+            .schedule(s1)
+            .scheduleName("싸피")
+            .scheduleMemo("가기 싫다")
+            .build();
+        Participation p2 = Participation.builder()
+            .user(user)
+            .schedule(s2)
+            .scheduleName("싸피")
+            .scheduleMemo("좋아")
+            .build();
+        Participation p3 = Participation.builder()
+            .user(user)
+            .schedule(s2)
+            .scheduleName("일타싸피는")
+            .scheduleMemo("왜 했던 걸까")
+            .build();
+        participationRepository.saveAll(List.of(p1, p2, p3));
+
+        // when
+        List<Participation> result1 = participationRepository.findByUser_UserSeqAndScheduleNameContainingAndIsDeletedFalse(
+            user.getUserSeq(), "싸피");
+        List<Participation> result2 = participationRepository.findByUser_UserSeqAndScheduleNameContainingAndIsDeletedFalse(
+            user.getUserSeq(), "싸피는");
+
+        // then
+        assertThat(result1)
+            .hasSize(3)
+            .extracting("user", "schedule", "scheduleName", "scheduleMemo")
+            .containsExactlyInAnyOrder(
+                tuple(user, s1, "싸피", "가기 싫다"),
+                tuple(user, s2, "싸피", "좋아"),
+                tuple(user, s2, "일타싸피는", "왜 했던 걸까")
+            );
+        assertThat(result2)
+            .hasSize(1)
+            .extracting("user", "schedule", "scheduleName", "scheduleMemo")
+            .containsExactlyInAnyOrder(
+                tuple(user, s2, "일타싸피는", "왜 했던 걸까")
+            );
+    }
+
     @DisplayName("유저가 보려는 카테고리에 맞는 참석정보 목록을 가져온다.")
     @Transactional
     @Test
