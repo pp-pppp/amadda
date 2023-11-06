@@ -2,7 +2,9 @@ package com.pppppp.amadda.friend.service;
 
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.friend.dto.request.GroupCreateRequest;
+import com.pppppp.amadda.friend.repository.GroupMemberRepository;
 import com.pppppp.amadda.friend.repository.UserGroupRepository;
+import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,9 +28,14 @@ class UserGroupServiceTest extends IntegrationTestSupport {
     private UserRepository userRepository;
     @Autowired
     private UserGroupRepository userGroupRepository;
+    @Autowired
+    private GroupMemberService groupMemberService;
+    @Autowired
+    private GroupMemberRepository groupMemberRepository;
 
     @AfterEach
     void tearDown() {
+        groupMemberRepository.deleteAllInBatch();
         userGroupRepository.deleteAllInBatch();
         userRepository.deleteAllInBatch();
     }
@@ -59,6 +67,52 @@ class UserGroupServiceTest extends IntegrationTestSupport {
                 );
     }
 
+    @DisplayName("그룹과 해당 멤버들을 삭제한다. ")
+    @Test
+    void deleteNotExistingGroup() {
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
+        List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
+        GroupCreateRequest gcr = GroupCreateRequest.builder()
+                .ownerSeq(1111L)
+                .groupName("그룹명1")
+                .userSeqs(List.of(1234L, 2222L))
+                .build();
+
+        Long groupSeq = userGroupService.createUserGroup(gcr);
+        groupMemberService.createGroupMember(gcr, groupSeq);
+
+        // when
+        userGroupService.deleteGroupAndMembers(groupSeq);
+
+        // then
+        assertThat(userGroupRepository.findAll()).hasSize(0);
+        assertThat(groupMemberRepository.findAll()).hasSize(0);
+    }
+
+    @DisplayName("존재하지 않는 그룹을 삭제하면 예외가 발생한다. ")
+    @Test
+    void deleteGroupAndMembers() {
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
+        List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
+
+        GroupCreateRequest gcr = GroupCreateRequest.builder()
+                .ownerSeq(1111L)
+                .groupName("그룹명1")
+                .userSeqs(List.of(1234L, 2222L))
+                .build();
+
+        Long groupSeq = userGroupService.createUserGroup(gcr);
+        groupMemberService.createGroupMember(gcr, groupSeq);
+
+        // when // then
+        assertThatThrownBy(() -> userGroupService.deleteGroupAndMembers(0L))
+                .isInstanceOf(RestApiException.class)
+                .hasMessage("GROUP_NOT_FOUND");
+    }
 
 }
