@@ -26,7 +26,8 @@ import com.pppppp.amadda.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -44,157 +45,70 @@ public class ScheduleService {
 
     private final CategoryRepository categoryRepository;
 
-    // TODO: 다중 조회 시 participation -> schedulelist 변환과정 리팩토링 필요. 메소드로 분리할 것
 
     @Transactional
     public ScheduleCreateResponse createSchedule(Long userSeq, ScheduleCreateRequest request) {
 
-        // 유효한 사용자인지 확인
-        User user = userRepository.findByUserSeq(userSeq)
-            .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        // 사용자 유효 체크
+        User user = getUserInfo(userSeq);
 
         // request to entity
         Schedule newSchedule = scheduleRepository.save(request.toEntity(user));
 
-        Long categorySeq = request.categorySeq();
-
         // 참가정보 바탕으로 참가자별 참석 정보 생성
-        request.participants().forEach(response -> {
-            // seq로 user 찾기, 없으면 예외 던짐
-            User participant = userRepository.findById(response.userSeq())
-                .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
-
-            // 참석자가 생성자라면 카테고리 정보가 있는 경우 카테고리 정보 입력
-            Participation p = Participation.builder()
-                .scheduleName(request.scheduleName())
-                .scheduleMemo(request.scheduleMemo())
-                .alarmTime(request.alarmTime())
-                .user(participant)
-                .schedule(newSchedule)
-                .category((participant.getUserSeq() == userSeq && categorySeq != null) ?
-                    categoryRepository.findByCategorySeqAndIsDeletedFalse(categorySeq).orElseThrow(
-                        () -> new RestApiException(CategoryErrorCode.CATEGORY_NOT_FOUND)) : null)
-                .build();
-
-            participationRepository.save(p);
-        });
+        createParticipation(userSeq, request, newSchedule);
 
         // 생성한 사람의 일정의 개인 기록 가져오기
-        Participation creatorParticipation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
-                newSchedule.getScheduleSeq(), userSeq)
-            .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
+        Participation creatorParticipation = getParticipationInfo(newSchedule.getScheduleSeq(),
+            userSeq);
 
         return ScheduleCreateResponse.of(newSchedule, request.participants(),
             creatorParticipation);
     }
 
     public ScheduleDetailReadResponse getScheduleDetail(Long scheduleSeq, Long userSeq) {
-        Schedule schedule = scheduleRepository.findById(scheduleSeq)
-            .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
 
-        User user = userRepository.findByUserSeq(userSeq)
-            .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        // 사용자, 일정 유효 체크
+        getUserInfo(userSeq);
+        Schedule schedule = getScheduleInfo(scheduleSeq);
 
-        List<UserReadResponse> participants = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
-                scheduleSeq)
-            .stream()
-            .map(participation -> UserReadResponse.of(participation.getUser()))
-            .collect(Collectors.toList());
+        // 명단 가져오기
+        List<UserReadResponse> participants = getParticipatingUserList(scheduleSeq);
 
-        Participation participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
-                scheduleSeq, user.getUserSeq())
-            .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
+        // 일정 생성
+        Participation participation = getParticipationInfo(scheduleSeq, userSeq);
 
         // 댓글 가져오기
-        List<CommentReadResponse> comments = commentRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
-                scheduleSeq)
-            .stream()
-            .map(comment -> CommentReadResponse.of(comment, UserReadResponse.of(comment.getUser())))
-            .collect(Collectors.toList());
+        List<CommentReadResponse> comments = getCommentListBySchedule(scheduleSeq);
 
         return ScheduleDetailReadResponse.of(schedule, participants, participation, comments);
     }
 
     public List<ScheduleListReadResponse> getScheduleList(Long userSeq) {
-        User user = userRepository.findByUserSeq(userSeq)
-            .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+
+        // 사용자 체크
+        getUserInfo(userSeq);
 
         // 요청한 사용자의 참가 정보 모두 가져오기
-        List<Participation> participations = participationRepository
-            .findByUser_UserSeqAndIsDeletedFalse(user.getUserSeq());
-
-        // 참가 정보를 바탕으로 일정 리스트 만들어서 반환
-        return participations.stream()
-            .map(participation -> {
-
-                // 1. 참가하는 일정
-                Long scheduleSeq = participation.getSchedule().getScheduleSeq();
-                Schedule schedule = scheduleRepository.findByScheduleSeqAndIsDeletedFalse(
-                        scheduleSeq)
-                    .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
-
-                // 2. 참가자 명단
-                List<UserReadResponse> participants = participationRepository
-                    .findBySchedule_ScheduleSeqAndIsDeletedFalse(scheduleSeq)
-                    .stream()
-                    .map(p -> UserReadResponse.of(p.getUser()))
-                    .collect(Collectors.toList());
-
-                // 3. 전체에게 권한이 있는 경우 authorizedUser 필드는 null로 만들어 response 반환
-                if (schedule.isAuthorizedAll()) {
-                    return ScheduleListReadResponse.of(schedule, null, participants,
-                        participation);
-                }
-                return ScheduleListReadResponse.of(schedule,
-                    UserReadResponse.of(schedule.getUser()), participants, participation);
-            })
-            .collect(Collectors.toList());
+        return getScheduleListByUser(userSeq);
     }
 
-    public List<ScheduleListReadResponse> getScheduleByCategories(Long userSeq, String categories) {
+    public List<ScheduleListReadResponse> getScheduleByCategoryList(Long userSeq,
+        String categories) {
         // 카테고리 seq 목록
-        List<Long> seqs = List.of(categories.split(","))
-            .stream()
+        List<Long> categorySeqs = Stream.of(categories.split(","))
             .map(Long::parseLong)
-            .collect(Collectors.toList());
+            .toList();
 
-        // 해당하는 일정들 모아보기, 중복된 결과 피하기 위해 set으로 만듦
         List<ScheduleListReadResponse> schedules = new LinkedList<>();
 
-        seqs.forEach(categorySeq -> {
+        categorySeqs.forEach(categorySeq -> {
             // 1. 해당 카테고리 seq가 유효한지 확인
-            if (!categoryRepository.existsByUser_UserSeqAndCategorySeqAndIsDeletedFalse(userSeq,
-                categorySeq)) {
-                throw new RestApiException(CategoryErrorCode.CATEGORY_NOT_FOUND);
-            }
-            // 2. 카테고리에 포함된 애들 가져오기
-            List<ScheduleListReadResponse> categorySchedules = participationRepository.findByUser_UserSeqAndCategory_CategorySeqAndIsDeletedFalse(
-                    userSeq, categorySeq)
-                .stream()
-                .map(participation -> {
-                    // 2-1. 참가하는 일정
-                    Long scheduleSeq = participation.getSchedule().getScheduleSeq();
-                    Schedule schedule = scheduleRepository.findByScheduleSeqAndIsDeletedFalse(
-                            scheduleSeq)
-                        .orElseThrow(() -> new RestApiException(
-                            ScheduleErrorCode.SCHEDULE_NOT_FOUND));
+            checkCategoryExistsByUser(userSeq, categorySeq);
 
-                    // 2-2. 참가자 명단
-                    List<UserReadResponse> participants = participationRepository
-                        .findBySchedule_ScheduleSeqAndIsDeletedFalse(scheduleSeq)
-                        .stream()
-                        .map(p -> UserReadResponse.of(p.getUser()))
-                        .collect(Collectors.toList());
-
-                    // 2-3. 전체에게 권한이 있는 경우 authorizedUser 필드는 null로 만들어 response 반환
-                    if (schedule.isAuthorizedAll()) {
-                        return ScheduleListReadResponse.of(schedule, null, participants,
-                            participation);
-                    }
-                    return ScheduleListReadResponse.of(schedule,
-                        UserReadResponse.of(schedule.getUser()), participants, participation);
-                })
-                .collect(Collectors.toList());
+            // 2. 카테고리에 포함된 일정 가져오기
+            List<ScheduleListReadResponse> categorySchedules = getScheduleListByCategory(userSeq,
+                categorySeq);
 
             // 3. 목록에 추가
             schedules.addAll(categorySchedules);
@@ -204,51 +118,22 @@ public class ScheduleService {
         return schedules;
     }
 
-    public List<ScheduleListReadResponse> getScheduleListByScheduleName(Long userSeq,
+    public List<ScheduleListReadResponse> getSearchResultByScheduleName(Long userSeq,
         String searchKey) {
 
-        User user = userRepository.findByUserSeq(userSeq)
-            .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        // 사용자 체크
+        getUserInfo(userSeq);
 
         // 요청한 사용자의 참가 정보 중에 searchKey를 포함하는 일정들 가져오고, 참가 정보를 바탕으로 일정 리스트 만들어서 반환
-        return participationRepository.findByUser_UserSeqAndScheduleNameContainingAndIsDeletedFalse(
-                userSeq, searchKey)
-            .stream()
-            .map(participation -> {
-                // 1. 참가하는 일정
-                Long scheduleSeq = participation.getSchedule().getScheduleSeq();
-                Schedule schedule = scheduleRepository.findByScheduleSeqAndIsDeletedFalse(
-                        scheduleSeq)
-                    .orElseThrow(() -> new RestApiException(
-                        ScheduleErrorCode.SCHEDULE_NOT_FOUND));
-
-                // 2-2. 참가자 명단
-                List<UserReadResponse> participants = participationRepository
-                    .findBySchedule_ScheduleSeqAndIsDeletedFalse(scheduleSeq)
-                    .stream()
-                    .map(p -> UserReadResponse.of(p.getUser()))
-                    .collect(Collectors.toList());
-
-                // 2-3. 전체에게 권한이 있는 경우 authorizedUser 필드는 null로 만들어 response 반환
-                if (schedule.isAuthorizedAll()) {
-                    return ScheduleListReadResponse.of(schedule, null, participants,
-                        participation);
-                }
-                return ScheduleListReadResponse.of(schedule,
-                    UserReadResponse.of(schedule.getUser()), participants, participation);
-
-            })
-            .collect(Collectors.toList());
+        return findScheduleListByScheduleName(userSeq, searchKey);
     }
 
-    @Transactional
-    public CommentReadResponse createCommentsOnSchedule(Long scheduleSeq,
+    public CommentReadResponse createCommentOnSchedule(Long scheduleSeq,
         Long userSeq, CommentCreateRequest request) {
-        Schedule schedule = scheduleRepository.findByScheduleSeqAndIsDeletedFalse(scheduleSeq)
-            .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
 
-        User user = userRepository.findByUserSeq(userSeq)
-            .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        Schedule schedule = getScheduleInfo(scheduleSeq);
+
+        User user = getUserInfo(userSeq);
 
         Comment comment = commentRepository.save(request.toEntity(user, schedule));
 
@@ -257,14 +142,11 @@ public class ScheduleService {
 
     public CategoryReadResponse createCategory(Long userSeq, CategoryCreateRequest request) {
 
-        User user = userRepository.findByUserSeq(userSeq)
-            .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        // 사용자 체크
+        User user = getUserInfo(userSeq);
 
-        // 중복체크
-        if (categoryRepository.existsByUser_UserSeqAndCategoryNameAndIsDeletedFalse(
-            user.getUserSeq(), request.categoryName())) {
-            throw new RestApiException(CategoryErrorCode.CATEGORY_ALREADY_EXISTS);
-        }
+        // 중복 체크
+        checkCategoryNameAlreadyExists(userSeq, request.categoryName());
 
         Category category = categoryRepository.save(request.toEntity(user));
 
@@ -273,11 +155,135 @@ public class ScheduleService {
 
     public List<CategoryReadResponse> getCategoryList(Long userSeq) {
 
-        List<Category> categories = categoryRepository.findByUser_UserSeqAndIsDeletedFalse(
-            userSeq);
+        return findCategoryListByUser(userSeq);
+    }
 
-        return categories.stream()
+
+    // ================== private methods ==================
+    private void createParticipation(Long userSeq, ScheduleCreateRequest request,
+        Schedule newSchedule) {
+        request.participants().forEach(response -> {
+            // seq로 user 찾기
+            User participant = getUserInfo(response.userSeq());
+
+            // 카테고리 정보가 있는 경우 참석자가 생성자라면 카테고리 정보 입력
+            Category category = null;
+            if ((request.categorySeq() != null) && Objects.equals(participant.getUserSeq(),
+                userSeq)) {
+                category = getCategoryInfo(request.categorySeq());
+            }
+
+            Participation participation = Participation.create(request, participant, newSchedule,
+                category);
+
+            participationRepository.save(participation);
+        });
+    }
+
+    private User getUserInfo(Long userSeq) {
+        return userRepository.findByUserSeq(userSeq).orElseThrow(
+            () -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+    }
+
+    private Schedule getScheduleInfo(Long scheduleSeq) {
+        return scheduleRepository.findByScheduleSeqAndIsDeletedFalse(scheduleSeq)
+            .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
+    }
+
+    private Participation getParticipationInfo(Long scheduleSeq, Long userSeq) {
+        return participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+                scheduleSeq, userSeq)
+            .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
+    }
+
+    private Category getCategoryInfo(Long categorySeq) {
+        return categoryRepository.findByCategorySeqAndIsDeletedFalse(categorySeq)
+            .orElseThrow(() -> new RestApiException(CategoryErrorCode.CATEGORY_NOT_FOUND));
+    }
+
+    private ScheduleListReadResponse findScheduleByParticipation(
+        Participation participation) {
+
+        // 1. 참가하는 일정
+        Long scheduleSeq = participation.getSchedule().getScheduleSeq();
+        Schedule schedule = scheduleRepository.findByScheduleSeqAndIsDeletedFalse(
+                scheduleSeq)
+            .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
+
+        // 2. 참가자 명단
+        List<UserReadResponse> participants = participationRepository
+            .findBySchedule_ScheduleSeqAndIsDeletedFalse(scheduleSeq)
+            .stream()
+            .map(p -> UserReadResponse.of(p.getUser()))
+            .toList();
+
+        // 3. 전체에게 권한이 있는 경우 authorizedUser 필드는 null로 만들어 response 반환
+        if (schedule.isAuthorizedAll()) {
+            return ScheduleListReadResponse.of(schedule, null, participants,
+                participation);
+        }
+        return ScheduleListReadResponse.of(schedule,
+            UserReadResponse.of(schedule.getUser()), participants, participation);
+    }
+
+    private List<ScheduleListReadResponse> getScheduleListByUser(Long userSeq) {
+        return participationRepository.findByUser_UserSeqAndIsDeletedFalse(userSeq)
+            .stream()
+            .map(this::findScheduleByParticipation)
+            .toList();
+    }
+
+    private List<ScheduleListReadResponse> findScheduleListByScheduleName(Long userSeq,
+        String searchKey) {
+        return participationRepository.findByUser_UserSeqAndScheduleNameContainingAndIsDeletedFalse(
+                userSeq, searchKey)
+            .stream()
+            .map(this::findScheduleByParticipation)
+            .toList();
+    }
+
+    private List<ScheduleListReadResponse> getScheduleListByCategory(Long userSeq,
+        Long categorySeq) {
+        return participationRepository.findByUser_UserSeqAndCategory_CategorySeqAndIsDeletedFalse(
+                userSeq, categorySeq)
+            .stream()
+            .map(this::findScheduleByParticipation)
+            .toList();
+    }
+
+    private List<UserReadResponse> getParticipatingUserList(Long scheduleSeq) {
+        return participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
+                scheduleSeq)
+            .stream()
+            .map(participation -> UserReadResponse.of(participation.getUser()))
+            .toList();
+    }
+
+    private List<CommentReadResponse> getCommentListBySchedule(Long scheduleSeq) {
+        return commentRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(scheduleSeq)
+            .stream()
+            .map(comment -> CommentReadResponse.of(comment, UserReadResponse.of(comment.getUser())))
+            .toList();
+    }
+
+    private List<CategoryReadResponse> findCategoryListByUser(Long userSeq) {
+        return categoryRepository.findByUser_UserSeqAndIsDeletedFalse(userSeq)
+            .stream()
             .map(CategoryReadResponse::of)
-            .collect(Collectors.toList());
+            .toList();
+    }
+
+    private void checkCategoryExistsByUser(Long userSeq, Long categorySeq) {
+        if (!categoryRepository.existsByUser_UserSeqAndCategorySeqAndIsDeletedFalse(userSeq,
+            categorySeq)) {
+            throw new RestApiException(CategoryErrorCode.CATEGORY_NOT_FOUND);
+        }
+    }
+
+    private void checkCategoryNameAlreadyExists(Long userSeq, String categoryName) {
+        if (categoryRepository.existsByUser_UserSeqAndCategoryNameAndIsDeletedFalse(userSeq,
+            categoryName)) {
+            throw new RestApiException(CategoryErrorCode.CATEGORY_ALREADY_EXISTS);
+        }
     }
 }

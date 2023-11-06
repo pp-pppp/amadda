@@ -382,10 +382,10 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         scheduleService.createSchedule(u1.getUserSeq(), r2);
 
         // when
-        List<ScheduleListReadResponse> result1 = scheduleService.getScheduleByCategories(
+        List<ScheduleListReadResponse> result1 = scheduleService.getScheduleByCategoryList(
             u1.getUserSeq(),
             categories.get(0).getCategorySeq() + "," + categories.get(1).getCategorySeq());
-        List<ScheduleListReadResponse> result2 = scheduleService.getScheduleByCategories(
+        List<ScheduleListReadResponse> result2 = scheduleService.getScheduleByCategoryList(
             u1.getUserSeq(),
             categories.get(0).getCategorySeq() + "");
 
@@ -447,7 +447,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         scheduleService.createSchedule(u1.getUserSeq(), r2);
 
         // when
-        List<ScheduleListReadResponse> schedules = scheduleService.getScheduleListByScheduleName(
+        List<ScheduleListReadResponse> schedules = scheduleService.getSearchResultByScheduleName(
             u1.getUserSeq(), "일정");
 
         // then
@@ -492,7 +492,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         Schedule s = scheduleRepository.findAll().get(0);
 
         // when
-        CommentReadResponse response = scheduleService.createCommentsOnSchedule(
+        CommentReadResponse response = scheduleService.createCommentOnSchedule(
             s.getScheduleSeq(), user.getUserSeq(), CommentCreateRequest.of("세상에서 제일 불행한 사람임"));
 
         // then

@@ -42,7 +42,8 @@ public class ScheduleController {
     public ApiResponse<ScheduleCreateResponse> createSchedule(
         @Valid @RequestBody ScheduleCreateRequest request) {
         log.info("POST /api/schedule");
-        ScheduleCreateResponse scheduleCreateResponse = scheduleService.createSchedule(mockUserSeq, request);
+        ScheduleCreateResponse scheduleCreateResponse = scheduleService.createSchedule(mockUserSeq,
+            request);
         alarmService.sendScheduleAssigned(scheduleCreateResponse.scheduleSeq());
         return ApiResponse.ok(scheduleCreateResponse);
     }
@@ -78,7 +79,7 @@ public class ScheduleController {
         @Valid @RequestBody CommentCreateRequest request) {
         log.info("POST /api/schedule/{}/comment", scheduleSeq);
         return ApiResponse.ok(
-            scheduleService.createCommentsOnSchedule(scheduleSeq, mockUserSeq, request));
+            scheduleService.createCommentOnSchedule(scheduleSeq, mockUserSeq, request));
     }
 
     // ==================== 카테고리 ====================
