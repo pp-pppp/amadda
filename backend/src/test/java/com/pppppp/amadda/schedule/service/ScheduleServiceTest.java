@@ -59,7 +59,8 @@ class ScheduleServiceTest extends IntegrationTestSupport {
     void setUp() {
         User user1 = User.create(1L, "박동건", "icebearrrr", "url1");
         User user2 = User.create(2L, "정민영", "minyoung", "url2");
-        userRepository.saveAll(List.of(user1, user2));
+        User user3 = User.create(3L, "김민정", "mindy0414", "url3");
+        userRepository.saveAll(List.of(user1, user2, user3));
     }
 
     @AfterEach
@@ -467,7 +468,94 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             );
     }
 
+    @DisplayName("사용자의 미확정인 일정 목록을 조회한다.")
+    @Transactional
+    @Test
+    void getUnscheduledScheduleList() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+
+        ScheduleCreateRequest r1 = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .isTimeSelected(false)
+            .isDateSelected(false)
+            .isAllDay(false)
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.NONE)
+            .participants(List.of(
+                UserReadResponse.of(u1)))
+            .build();
+        ScheduleCreateRequest r2 = ScheduleCreateRequest.builder()
+            .scheduleName("나도 일정이야")
+            .isTimeSelected(true)
+            .isDateSelected(true)
+            .isAllDay(false)
+            .scheduleStartAt("2023-11-01 08:59:30")
+            .scheduleEndAt("2023-11-01 09:00:00")
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.ON_TIME)
+            .participants(List.of(UserReadResponse.of(u1)))
+            .build();
+        scheduleService.createSchedule(u1.getUserSeq(), r1);
+        scheduleService.createSchedule(u1.getUserSeq(), r2);
+
+        // when
+        List<ScheduleListReadResponse> result = scheduleService.getUnscheduledScheduleList(
+            u1.getUserSeq());
+
+        // then
+        assertThat(result)
+            .hasSize(1)
+            .extracting("scheduleName", "participants", "authorizedUser",
+                "isDateSelected", "isTimeSelected", "isAllDay", "scheduleStartAt", "scheduleEndAt",
+                "alarmTime", "isAuthorizedAll", "category")
+            .containsExactlyInAnyOrder(
+                tuple("안녕 내가 일정 이름이야",
+                    List.of(UserReadResponse.of(u1)), UserReadResponse.of(u1), false, false, false,
+                    "", "", AlarmTime.NONE.getContent(), false, null)
+            );
+    }
+
+    @DisplayName("일정 참가자 명단에서 이름으로 유저를 검색한다.")
+    @Transactional
+    @Test
+    void getParticipatingUserListBySearchKey() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+        User u2 = userRepository.findAll().get(1);
+        User u3 = userRepository.findAll().get(2);
+
+        ScheduleCreateRequest request = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(false)
+            .participants(List.of(
+                UserReadResponse.of(u1), UserReadResponse.of(u2), UserReadResponse.of(u3)))
+            .build();
+
+        Long scheduleSeq = scheduleService.createSchedule(u1.getUserSeq(), request).scheduleSeq();
+
+        // when
+        List<UserReadResponse> result = scheduleService.getParticipatingUserListBySearchKey(
+            scheduleSeq, "민");
+
+        // then
+        assertThat(result)
+            .hasSize(2)
+            .extracting("userId", "userName", "imageUrl")
+            .containsExactlyInAnyOrder(
+                tuple("minyoung", "정민영", "url2"),
+                tuple("mindy0414", "김민정", "url3")
+            );
+    }
+
     // =================== 댓글 ===================
+
     @DisplayName("해당 일정에 댓글을 단다.")
     @Transactional
     @Test

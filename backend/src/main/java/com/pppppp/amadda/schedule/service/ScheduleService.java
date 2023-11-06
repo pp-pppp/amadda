@@ -50,7 +50,7 @@ public class ScheduleService {
     public ScheduleCreateResponse createSchedule(Long userSeq, ScheduleCreateRequest request) {
 
         // 사용자 유효 체크
-        User user = getUserInfo(userSeq);
+        User user = findUserInfo(userSeq);
 
         // request to entity
         Schedule newSchedule = scheduleRepository.save(request.toEntity(user));
@@ -59,7 +59,7 @@ public class ScheduleService {
         createParticipation(userSeq, request, newSchedule);
 
         // 생성한 사람의 일정의 개인 기록 가져오기
-        Participation creatorParticipation = getParticipationInfo(newSchedule.getScheduleSeq(),
+        Participation creatorParticipation = findParticipationInfo(newSchedule.getScheduleSeq(),
             userSeq);
 
         return ScheduleCreateResponse.of(newSchedule, request.participants(),
@@ -69,28 +69,46 @@ public class ScheduleService {
     public ScheduleDetailReadResponse getScheduleDetail(Long scheduleSeq, Long userSeq) {
 
         // 사용자, 일정 유효 체크
-        getUserInfo(userSeq);
-        Schedule schedule = getScheduleInfo(scheduleSeq);
+        findUserInfo(userSeq);
+        Schedule schedule = findScheduleInfo(scheduleSeq);
 
         // 명단 가져오기
         List<UserReadResponse> participants = getParticipatingUserList(scheduleSeq);
 
         // 일정 생성
-        Participation participation = getParticipationInfo(scheduleSeq, userSeq);
+        Participation participation = findParticipationInfo(scheduleSeq, userSeq);
 
         // 댓글 가져오기
-        List<CommentReadResponse> comments = getCommentListBySchedule(scheduleSeq);
+        List<CommentReadResponse> comments = findCommentListBySchedule(scheduleSeq);
 
         return ScheduleDetailReadResponse.of(schedule, participants, participation, comments);
+    }
+
+    public List<UserReadResponse> getParticipatingUserList(Long scheduleSeq) {
+        return participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
+                scheduleSeq)
+            .stream()
+            .map(participation -> UserReadResponse.of(participation.getUser()))
+            .toList();
     }
 
     public List<ScheduleListReadResponse> getScheduleList(Long userSeq) {
 
         // 사용자 체크
-        getUserInfo(userSeq);
+        findUserInfo(userSeq);
 
         // 요청한 사용자의 참가 정보 모두 가져오기
-        return getScheduleListByUser(userSeq);
+        return findScheduleListByUser(userSeq);
+    }
+
+    public List<ScheduleListReadResponse> getSearchResultByScheduleName(Long userSeq,
+        String searchKey) {
+
+        // 사용자 체크
+        findUserInfo(userSeq);
+
+        // 요청한 사용자의 참가 정보 중에 searchKey를 포함하는 일정들 가져오고, 참가 정보를 바탕으로 일정 리스트 만들어서 반환
+        return findScheduleListByScheduleName(userSeq, searchKey);
     }
 
     public List<ScheduleListReadResponse> getScheduleByCategoryList(Long userSeq,
@@ -107,7 +125,7 @@ public class ScheduleService {
             checkCategoryExistsByUser(userSeq, categorySeq);
 
             // 2. 카테고리에 포함된 일정 가져오기
-            List<ScheduleListReadResponse> categorySchedules = getScheduleListByCategory(userSeq,
+            List<ScheduleListReadResponse> categorySchedules = findScheduleListByCategory(userSeq,
                 categorySeq);
 
             // 3. 목록에 추가
@@ -118,22 +136,23 @@ public class ScheduleService {
         return schedules;
     }
 
-    public List<ScheduleListReadResponse> getSearchResultByScheduleName(Long userSeq,
+    public List<UserReadResponse> getParticipatingUserListBySearchKey(Long scheduleSeq,
         String searchKey) {
 
-        // 사용자 체크
-        getUserInfo(userSeq);
+        return findParticipatorListByUserName(scheduleSeq, searchKey);
+    }
 
-        // 요청한 사용자의 참가 정보 중에 searchKey를 포함하는 일정들 가져오고, 참가 정보를 바탕으로 일정 리스트 만들어서 반환
-        return findScheduleListByScheduleName(userSeq, searchKey);
+    public List<ScheduleListReadResponse> getUnscheduledScheduleList(Long userSeq) {
+
+        return findUnscheduledScheduleList(userSeq);
     }
 
     public CommentReadResponse createCommentOnSchedule(Long scheduleSeq,
         Long userSeq, CommentCreateRequest request) {
 
-        Schedule schedule = getScheduleInfo(scheduleSeq);
+        Schedule schedule = findScheduleInfo(scheduleSeq);
 
-        User user = getUserInfo(userSeq);
+        User user = findUserInfo(userSeq);
 
         Comment comment = commentRepository.save(request.toEntity(user, schedule));
 
@@ -143,7 +162,7 @@ public class ScheduleService {
     public CategoryReadResponse createCategory(Long userSeq, CategoryCreateRequest request) {
 
         // 사용자 체크
-        User user = getUserInfo(userSeq);
+        User user = findUserInfo(userSeq);
 
         // 중복 체크
         checkCategoryNameAlreadyExists(userSeq, request.categoryName());
@@ -164,13 +183,13 @@ public class ScheduleService {
         Schedule newSchedule) {
         request.participants().forEach(response -> {
             // seq로 user 찾기
-            User participant = getUserInfo(response.userSeq());
+            User participant = findUserInfo(response.userSeq());
 
             // 카테고리 정보가 있는 경우 참석자가 생성자라면 카테고리 정보 입력
             Category category = null;
             if ((request.categorySeq() != null) && Objects.equals(participant.getUserSeq(),
                 userSeq)) {
-                category = getCategoryInfo(request.categorySeq());
+                category = findCategoryInfo(request.categorySeq());
             }
 
             Participation participation = Participation.create(request, participant, newSchedule,
@@ -180,23 +199,23 @@ public class ScheduleService {
         });
     }
 
-    private User getUserInfo(Long userSeq) {
+    private User findUserInfo(Long userSeq) {
         return userRepository.findByUserSeq(userSeq).orElseThrow(
             () -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
     }
 
-    private Schedule getScheduleInfo(Long scheduleSeq) {
+    private Schedule findScheduleInfo(Long scheduleSeq) {
         return scheduleRepository.findByScheduleSeqAndIsDeletedFalse(scheduleSeq)
             .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
     }
 
-    private Participation getParticipationInfo(Long scheduleSeq, Long userSeq) {
+    private Participation findParticipationInfo(Long scheduleSeq, Long userSeq) {
         return participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
                 scheduleSeq, userSeq)
             .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
     }
 
-    private Category getCategoryInfo(Long categorySeq) {
+    private Category findCategoryInfo(Long categorySeq) {
         return categoryRepository.findByCategorySeqAndIsDeletedFalse(categorySeq)
             .orElseThrow(() -> new RestApiException(CategoryErrorCode.CATEGORY_NOT_FOUND));
     }
@@ -226,7 +245,20 @@ public class ScheduleService {
             UserReadResponse.of(schedule.getAuthorizedUser()), participants, participation);
     }
 
-    private List<ScheduleListReadResponse> getScheduleListByUser(Long userSeq) {
+    private List<UserReadResponse> findParticipatorListByUserName(Long scheduleSeq,
+        String searchKey) {
+        // 1. 일정 유효 체크
+        findScheduleInfo(scheduleSeq);
+
+        // 2. 참가자 명단 가져오기
+        return participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(scheduleSeq)
+            .stream()
+            .map(participation -> UserReadResponse.of(participation.getUser()))
+            .filter(user -> user.userName().contains(searchKey))
+            .toList();
+    }
+
+    private List<ScheduleListReadResponse> findScheduleListByUser(Long userSeq) {
         return participationRepository.findByUser_UserSeqAndIsDeletedFalse(userSeq)
             .stream()
             .map(this::findScheduleByParticipation)
@@ -242,7 +274,7 @@ public class ScheduleService {
             .toList();
     }
 
-    private List<ScheduleListReadResponse> getScheduleListByCategory(Long userSeq,
+    private List<ScheduleListReadResponse> findScheduleListByCategory(Long userSeq,
         Long categorySeq) {
         return participationRepository.findByUser_UserSeqAndCategory_CategorySeqAndIsDeletedFalse(
                 userSeq, categorySeq)
@@ -251,15 +283,16 @@ public class ScheduleService {
             .toList();
     }
 
-    private List<UserReadResponse> getParticipatingUserList(Long scheduleSeq) {
-        return participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
-                scheduleSeq)
+    private List<ScheduleListReadResponse> findUnscheduledScheduleList(Long userSeq) {
+
+        return participationRepository.findByUser_UserSeqAndIsDeletedFalse(userSeq)
             .stream()
-            .map(participation -> UserReadResponse.of(participation.getUser()))
+            .filter(participation -> !participation.getSchedule().isDateSelected())
+            .map(this::findScheduleByParticipation)
             .toList();
     }
 
-    private List<CommentReadResponse> getCommentListBySchedule(Long scheduleSeq) {
+    private List<CommentReadResponse> findCommentListBySchedule(Long scheduleSeq) {
         return commentRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(scheduleSeq)
             .stream()
             .map(comment -> CommentReadResponse.of(comment, UserReadResponse.of(comment.getUser())))
