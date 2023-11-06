@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface GroupMemberRepository extends JpaRepository<GroupMember, Long> {
 
-    Optional<List<GroupMember>> findAllByGroup_GroupSeq(Long groupSeq);
+    List<GroupMember> findAllByGroup_GroupSeq(Long groupSeq);
     void deleteByGroup_GroupSeqAndMember_UserSeq(Long groupSeq, Long userSeq);
 }

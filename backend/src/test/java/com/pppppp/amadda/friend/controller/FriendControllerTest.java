@@ -250,7 +250,7 @@ class FriendControllerTest {
                 .andExpect(jsonPath("$.message").value("OK"));
     }
 
-    @DisplayName("그룹을 만들때 선택된 유저가 없으면 예외처리. ")
+    @DisplayName("그룹을 수정할 때 선택된 유저가 없으면 예외처리. ")
     @Test
     void editGroupWithoutUsers() throws Exception {
         // given
@@ -270,13 +270,13 @@ class FriendControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @DisplayName("그룹을 만들때 그룹명이 없으면 예외처리. ")
+    @DisplayName("그룹을 수정할 때 그룹명이 없으면 예외처리. ")
     @Test
     void editGroupWithoutName() throws Exception {
         // given
         GroupPatchRequest request = GroupPatchRequest.builder()
                 .groupSeq(0L)
-                .groupName("")
+                .groupName(" ")
                 .userSeqs(List.of(1234L, 2222L))
                 .build();
         // when // then
@@ -289,7 +289,7 @@ class FriendControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @DisplayName("그룹을 만들때 그룹seq이 없으면 예외처리. ")
+    @DisplayName("그룹을 수정할 때 그룹seq이 없으면 예외처리. ")
     @Test
     void editGroupWithoutGroupSeq() throws Exception {
         // given

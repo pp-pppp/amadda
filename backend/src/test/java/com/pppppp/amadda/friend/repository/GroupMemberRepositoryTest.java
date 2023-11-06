@@ -70,7 +70,7 @@ class GroupMemberRepositoryTest extends IntegrationTestSupport {
 
         // when
         List<GroupMember> members =
-                groupMemberRepository.findAllByGroup_GroupSeq(groupSeq).get();
+                groupMemberRepository.findAllByGroup_GroupSeq(groupSeq);
 
         // then
         assertThat(members)

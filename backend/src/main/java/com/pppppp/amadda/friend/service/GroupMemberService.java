@@ -51,8 +51,7 @@ public class GroupMemberService {
 
         UserGroup ug = getGroup(request.groupSeq())
                 .orElseThrow(() -> new RestApiException(GroupErrorCode.GROUP_NOT_FOUND));
-        List<GroupMember> members = getMembers(request.groupSeq())
-                .orElseThrow(() -> new RestApiException(GroupErrorCode.MEMBER_NOT_FOUND));
+        List<GroupMember> members = getMembers(request.groupSeq());
         List<Long> newMems = request.userSeqs();
 
         // 그룹 이름 수정
@@ -64,9 +63,10 @@ public class GroupMemberService {
         members.stream().forEach(u -> hs.add(u.getMember().getUserSeq()));
 
         for (int i = 0; i < newMems.size(); i++) {
-            if(hs.contains(newMems.get(i))) hs.remove(newMems.get(i));
+            Long mem = newMems.get(i);
+            if(hs.contains(mem)) hs.remove(mem);
             else toAdd.add(
-                    GroupMember.create(ug, findUserBySeq(newMems.get(i)))
+                    GroupMember.create(ug, findUserBySeq(mem))
             );
         }
 
@@ -96,7 +96,7 @@ public class GroupMemberService {
                 .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
     }
 
-    private Optional<List<GroupMember>> getMembers(Long seq) {
+    private List<GroupMember> getMembers(Long seq) {
         return groupMemberRepository.findAllByGroup_GroupSeq(seq);
     }
 
