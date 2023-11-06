@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verify;
 
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.alarm.dto.request.AlarmConfigRequest;
+import com.pppppp.amadda.alarm.dto.response.AlarmReadResponse;
 import com.pppppp.amadda.alarm.dto.topic.BaseTopicValue;
 import com.pppppp.amadda.alarm.entity.Alarm;
 import com.pppppp.amadda.alarm.entity.AlarmConfig;
@@ -106,7 +107,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         alarmRepository.saveAll(alarms);
 
         // when
-        List<Alarm> result = alarmService.readAlarms(user.getUserSeq());
+        List<AlarmReadResponse> result = alarmService.readAlarms(user.getUserSeq());
 
         // then
         assertThat(result).hasSize(3)
@@ -133,7 +134,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         alarmRepository.saveAll(alarms);
 
         // when
-        List<Alarm> result = alarmService.readAlarms(user.getUserSeq());
+        List<AlarmReadResponse> result = alarmService.readAlarms(user.getUserSeq());
 
         // then
         assertThat(result).hasSize(0);
