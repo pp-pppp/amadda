@@ -1,9 +1,18 @@
-import { P } from 'external-temporal';
+import { IndexLayout } from '@/layout/IndexLayout';
+import { H1, Flex, Spacing } from 'external-temporal';
+import { signIn } from 'next-auth/react';
 
 export default function Page() {
   return (
-    <div>
-      <P>Shell Module(port: 3000)</P>
-    </div>
+    <IndexLayout>
+      <Flex justifyContents="center" alignItems="center" flexDirection="column">
+        <H1>Amadda</H1>
+        <Spacing size="5" />
+        <img
+          src="image/kakao_login.png"
+          onClick={() => signIn('kakao', { callbackUrl: '/main' })}
+        />
+      </Flex>
+    </IndexLayout>
   );
 }
