@@ -39,4 +39,7 @@ public class UserGroup extends BaseEntity {
                 .build();
     }
 
+    public void updateGroupName(String name) {
+        this.groupName = name;
+    }
 }
