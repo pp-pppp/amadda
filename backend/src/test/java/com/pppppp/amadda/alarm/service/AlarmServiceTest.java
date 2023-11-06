@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verify;
 
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.alarm.dto.request.AlarmConfigRequest;
+import com.pppppp.amadda.alarm.dto.response.AlarmReadResponse;
 import com.pppppp.amadda.alarm.dto.topic.BaseTopicValue;
 import com.pppppp.amadda.alarm.entity.Alarm;
 import com.pppppp.amadda.alarm.entity.AlarmConfig;
@@ -85,6 +86,69 @@ class AlarmServiceTest extends IntegrationTestSupport {
         userRepository.deleteAllInBatch();
     }
 
+    @DisplayName("알림 목록 가져오기")
+    @Test
+    void getAlarms() {
+        // given
+        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User user = userRepository.save(u1);
+
+        Alarm a1 = Alarm.create(user, "알람 테스트", AlarmType.FRIEND_REQUEST);
+        Alarm a2 = Alarm.create(user, "알람 테스트", AlarmType.FRIEND_ACCEPT);
+        Alarm a3 = Alarm.create(user, "알람 테스트", AlarmType.SCHEDULE_ASSIGNED);
+        Alarm a4 = Alarm.create(user, "알람 테스트", AlarmType.MENTIONED);
+        Alarm a5 = Alarm.create(user, "알람 테스트", AlarmType.SCHEDULE_UPDATE);
+        Alarm a6 = Alarm.create(user, "알람 테스트", AlarmType.SCHEDULE_NOTIFICATION);
+        List<Alarm> alarms = alarmRepository.saveAll(List.of(a1, a2, a3, a4, a5, a6));
+
+        alarms.get(0).markAsRead();
+        alarms.get(1).markAsRead();
+        alarms.get(2).markAsRead();
+        alarmRepository.saveAll(alarms);
+
+        // when
+        List<AlarmReadResponse> result = alarmService.readAlarms(user.getUserSeq());
+
+        // then
+        assertThat(result).hasSize(3)
+            .extracting("alarmType")
+            .containsExactlyInAnyOrder(AlarmType.MENTIONED, AlarmType.SCHEDULE_UPDATE,
+                AlarmType.SCHEDULE_NOTIFICATION);
+    }
+
+    @DisplayName("모든 알림을 읽은 경우 길이가 0인 리스트를 반환한다.")
+    @Test
+    void getAlarms_allRead() {
+        // given
+        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User user = userRepository.save(u1);
+
+        Alarm a1 = Alarm.create(user, "알람 테스트", AlarmType.FRIEND_REQUEST);
+        Alarm a2 = Alarm.create(user, "알람 테스트", AlarmType.FRIEND_ACCEPT);
+        Alarm a3 = Alarm.create(user, "알람 테스트", AlarmType.SCHEDULE_ASSIGNED);
+        List<Alarm> alarms = alarmRepository.saveAll(List.of(a1, a2, a3));
+
+        alarms.get(0).markAsRead();
+        alarms.get(1).markAsRead();
+        alarms.get(2).markAsRead();
+        alarmRepository.saveAll(alarms);
+
+        // when
+        List<AlarmReadResponse> result = alarmService.readAlarms(user.getUserSeq());
+
+        // then
+        assertThat(result).hasSize(0);
+    }
+
+    @DisplayName("존재하지 않는 유저의 알림을 읽으려고 하는 경우 에러가 발생한다.")
+    @Test
+    void getAlarms_wrongUser() {
+        // when + then
+        assertThatThrownBy(() -> alarmService.readAlarms(2L))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("USER_NOT_FOUND");
+    }
+
     @DisplayName("알림 읽음 처리")
     @Test
     void readAlarm() {
@@ -92,7 +156,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
-        Alarm a = Alarm.create(user, "알람 테스트");
+        Alarm a = Alarm.create(user, "알람 테스트", AlarmType.FRIEND_ACCEPT);
         Alarm alarm = alarmRepository.save(a);
 
         // when
@@ -110,7 +174,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
-        Alarm a = Alarm.create(user, "알람 테스트");
+        Alarm a = Alarm.create(user, "알람 테스트", AlarmType.SCHEDULE_ASSIGNED);
         Alarm alarm = alarmRepository.save(a);
 
         // when + then
@@ -127,7 +191,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User user1 = users.get(0);
         User user2 = users.get(1);
 
-        Alarm a = Alarm.create(user1, "알람 테스트");
+        Alarm a = Alarm.create(user1, "알람 테스트", AlarmType.FRIEND_REQUEST);
         Alarm alarm = alarmRepository.save(a);
 
         // when + then

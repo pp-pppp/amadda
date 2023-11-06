@@ -3,6 +3,7 @@ package com.pppppp.amadda.alarm.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -29,6 +30,20 @@ class AlarmControllerTest extends ControllerTestSupport {
     @MockBean
     private AlarmService alarmService;
 
+    @DisplayName("알림 목록 가져오기")
+    @Test
+    void readAlarms() throws Exception {
+        mockMvc.perform(
+                get("/api/alarm")
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"));
+    }
+
     @DisplayName("알림 읽기")
     @Test
     void readAlarm() throws Exception {
@@ -41,7 +56,7 @@ class AlarmControllerTest extends ControllerTestSupport {
             .andExpect(jsonPath("$.code").value("200"))
             .andExpect(jsonPath("$.status").value("OK"))
             .andExpect(jsonPath("$.message").value("OK"))
-            .andExpect(jsonPath("$.data").value("OK"));
+            .andExpect(jsonPath("$.data").value("해당 알림을 읽음 처리하였습니다."));
     }
 
     @DisplayName("글로벌 설정이 가능한 알림에 대해 On")
@@ -69,7 +84,8 @@ class AlarmControllerTest extends ControllerTestSupport {
             .andExpect(jsonPath("$.code").value("200"))
             .andExpect(jsonPath("$.status").value("OK"))
             .andExpect(jsonPath("$.message").value("OK"))
-            .andExpect(jsonPath("$.data").value(String.format("%s 알림을 설정합니다.", alarmType.getContent())));
+            .andExpect(
+                jsonPath("$.data").value(String.format("%s 알림을 설정합니다.", alarmType.getContent())));
     }
 
     @DisplayName("글로벌 설정이 가능한 알림에 대해 Off")
@@ -97,7 +113,8 @@ class AlarmControllerTest extends ControllerTestSupport {
             .andExpect(jsonPath("$.code").value("200"))
             .andExpect(jsonPath("$.status").value("OK"))
             .andExpect(jsonPath("$.message").value("OK"))
-            .andExpect(jsonPath("$.data").value(String.format("%s 알림이 해제되었습니다.", alarmType.getContent())));
+            .andExpect(
+                jsonPath("$.data").value(String.format("%s 알림이 해제되었습니다.", alarmType.getContent())));
     }
 
 }

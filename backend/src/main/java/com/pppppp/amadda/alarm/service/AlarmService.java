@@ -1,6 +1,7 @@
 package com.pppppp.amadda.alarm.service;
 
 import com.pppppp.amadda.alarm.dto.request.AlarmConfigRequest;
+import com.pppppp.amadda.alarm.dto.response.AlarmReadResponse;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendAccept;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendRequest;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleAssigned;
@@ -41,6 +42,12 @@ public class AlarmService {
     private final AlarmConfigRepository alarmConfigRepository;
     private final AlarmRepository alarmRepository;
     private final KafkaProducer kafkaProducer;
+
+    public List<AlarmReadResponse> readAlarms(Long userSeq) {
+        User user = getUser(userSeq);
+        List<Alarm> alarms = alarmRepository.findAllByUserAndIsReadFalseAndIsDeletedFalse(user);
+        return alarms.stream().map(AlarmReadResponse::of).toList();
+    }
 
     @Transactional
     public void readAlarm(Long alarmSeq, Long userSeq) {
