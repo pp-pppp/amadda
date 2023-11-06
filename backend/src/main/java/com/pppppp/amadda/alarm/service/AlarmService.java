@@ -1,12 +1,17 @@
 package com.pppppp.amadda.alarm.service;
 
+import com.pppppp.amadda.alarm.dto.request.AlarmConfigRequest;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendAccept;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendRequest;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleAssigned;
+import com.pppppp.amadda.alarm.entity.AlarmConfig;
+import com.pppppp.amadda.alarm.entity.AlarmType;
 import com.pppppp.amadda.alarm.entity.KafkaTopic;
+import com.pppppp.amadda.alarm.repository.AlarmConfigRepository;
 import com.pppppp.amadda.friend.entity.FriendRequest;
 import com.pppppp.amadda.friend.repository.FriendRequestRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
+import com.pppppp.amadda.global.entity.exception.errorcode.AlarmErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.FriendRequestErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.ScheduleErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
@@ -17,6 +22,7 @@ import com.pppppp.amadda.schedule.repository.ScheduleRepository;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +36,27 @@ public class AlarmService {
     private final FriendRequestRepository friendRequestRepository;
     private final ScheduleRepository scheduleRepository;
     private final ParticipationRepository participationRepository;
+    private final AlarmConfigRepository alarmConfigRepository;
     private final KafkaProducer kafkaProducer;
+
+    @Transactional
+    public AlarmConfig setGlobalAlarm(AlarmConfigRequest request, boolean isEnabled) {
+        if (request.alarmType().equals(AlarmType.SCHEDULE_NOTIFICATION)) {
+            throw new RestApiException(AlarmErrorCode.CANNOT_SET_GLOBAL_CONFIG);
+        }
+
+        User user = getUser(request.userSeq());
+
+        Optional<AlarmConfig> config = alarmConfigRepository.findByUser_UserSeqAndAlarmTypeAndIsDeletedFalse(
+            user.getUserSeq(), request.alarmType());
+
+        config.ifPresent(alarmConfig -> alarmConfig.updateIsEnabled(isEnabled));
+        if (config.isEmpty()) {
+            config = Optional.of(AlarmConfig.create(user, request.alarmType(), isEnabled));
+        }
+
+        return alarmConfigRepository.save(config.get());
+    }
 
     @Transactional
     public void sendFriendRequest(Long ownerSeq, Long friendSeq) {
@@ -87,5 +113,4 @@ public class AlarmService {
             .orElseThrow(() -> new RestApiException(
                 FriendRequestErrorCode.FRIEND_REQUEST_NOT_FOUND));
     }
-
 }
