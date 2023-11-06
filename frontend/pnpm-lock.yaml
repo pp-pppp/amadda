@@ -26,6 +26,9 @@ importers:
       '@vanilla-extract/css':
         specifier: ^1.13.0
         version: 1.13.0
+      babel-plugin-react-require:
+        specifier: ^4.0.2
+        version: 4.0.2
       eslint-config-prettier:
         specifier: ^9.0.0
         version: 9.0.0(eslint@8.48.0)
@@ -6749,6 +6752,10 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /babel-plugin-react-require@4.0.2:
+    resolution: {integrity: sha512-gIq6yj9TkPeEfhzhi5kHXuE4q6Z2lvizktnES+G0AP2aPDmrPLcPkjK2cSM89UPnxfJHubEZv12evOKjocD10w==}
+    dev: false
 
   /babel-plugin-transform-react-remove-prop-types@0.4.24:
     resolution: {integrity: sha512-eqj0hVcJUR57/Ug2zE1Yswsw4LhuqqHhD+8v120T1cl3kjg76QwtyBrdIk4WVwK+lAhBJVYCd/v+4nc4y+8JsA==}

@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@vanilla-extract/css": "^1.13.0",
+    "babel-plugin-react-require": "^4.0.2",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.1",
     "react": "^18.2.0",
