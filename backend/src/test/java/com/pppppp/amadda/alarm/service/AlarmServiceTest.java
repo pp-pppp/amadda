@@ -12,10 +12,12 @@ import static org.mockito.Mockito.verify;
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.alarm.dto.request.AlarmConfigRequest;
 import com.pppppp.amadda.alarm.dto.topic.BaseTopicValue;
+import com.pppppp.amadda.alarm.entity.Alarm;
 import com.pppppp.amadda.alarm.entity.AlarmConfig;
 import com.pppppp.amadda.alarm.entity.AlarmType;
 import com.pppppp.amadda.alarm.entity.KafkaTopic;
 import com.pppppp.amadda.alarm.repository.AlarmConfigRepository;
+import com.pppppp.amadda.alarm.repository.AlarmRepository;
 import com.pppppp.amadda.friend.entity.FriendRequest;
 import com.pppppp.amadda.friend.repository.FriendRequestRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
@@ -67,16 +69,71 @@ class AlarmServiceTest extends IntegrationTestSupport {
     @Autowired
     private AlarmConfigRepository alarmConfigRepository;
 
+    @Autowired
+    private AlarmRepository alarmRepository;
+
     @MockBean
     KafkaTemplate<Long, BaseTopicValue> kafkaTemplate;
 
     @AfterEach
     void tearDown() {
+        alarmRepository.deleteAllInBatch();
         alarmConfigRepository.deleteAllInBatch();
         participationRepository.deleteAllInBatch();
         scheduleRepository.deleteAllInBatch();
         friendRequestRepository.deleteAllInBatch();
         userRepository.deleteAllInBatch();
+    }
+
+    @DisplayName("알림 읽음 처리")
+    @Test
+    void readAlarm() {
+        // given
+        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User user = userRepository.save(u1);
+
+        Alarm a = Alarm.create(user, "알람 테스트");
+        Alarm alarm = alarmRepository.save(a);
+
+        // when
+        alarmService.readAlarm(alarm.getAlarmSeq(), user.getUserSeq());
+
+        // then
+        Alarm result = alarmRepository.findById(alarm.getAlarmSeq()).get();
+        assertTrue(result.isRead());
+    }
+
+    @DisplayName("알림 읽음 처리 - 존재하지 않는 유저로 요청")
+    @Test
+    void readAlarm_unauthorized() {
+        // given
+        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User user = userRepository.save(u1);
+
+        Alarm a = Alarm.create(user, "알람 테스트");
+        Alarm alarm = alarmRepository.save(a);
+
+        // when + then
+        assertThatThrownBy(() -> alarmService.readAlarm(alarm.getAlarmSeq(), 2L))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("USER_NOT_FOUND");
+    }
+
+    @DisplayName("알림 읽음 처리 - 본인 알림이 아닌 경우")
+    @Test
+    void readAlarm_forbidden() {
+        // given
+        List<User> users = create2users();
+        User user1 = users.get(0);
+        User user2 = users.get(1);
+
+        Alarm a = Alarm.create(user1, "알람 테스트");
+        Alarm alarm = alarmRepository.save(a);
+
+        // when + then
+        assertThatThrownBy(() -> alarmService.readAlarm(alarm.getAlarmSeq(), user2.getUserSeq()))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("ALARM_FORBIDDEN");
     }
 
     @DisplayName("글로벌 설정이 가능한 알림에 대해 AlarmConfig 생성 후 On")

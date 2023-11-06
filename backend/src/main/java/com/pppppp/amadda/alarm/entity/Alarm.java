@@ -12,10 +12,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Alarm extends BaseEntity {
 
@@ -47,5 +49,9 @@ public class Alarm extends BaseEntity {
             .content(content)
             .isRead(false)
             .build();
+    }
+
+    public void markAsRead() {
+        this.isRead = true;
     }
 }

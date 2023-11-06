@@ -15,6 +15,7 @@ import com.pppppp.amadda.alarm.entity.AlarmType;
 import com.pppppp.amadda.alarm.service.AlarmService;
 import com.pppppp.amadda.alarm.service.KafkaProducer;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,6 +28,21 @@ class AlarmControllerTest extends ControllerTestSupport {
 
     @MockBean
     private AlarmService alarmService;
+
+    @DisplayName("알림 읽기")
+    @Test
+    void readAlarm() throws Exception {
+        mockMvc.perform(
+                post("/api/alarm/1")
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"))
+            .andExpect(jsonPath("$.data").value("OK"));
+    }
 
     @DisplayName("글로벌 설정이 가능한 알림에 대해 On")
     @ParameterizedTest

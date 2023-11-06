@@ -9,6 +9,7 @@ import com.pppppp.amadda.global.dto.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,13 @@ public class AlarmController {
 
     private final KafkaProducer kafkaProducer;
     private final AlarmService alarmService;
+
+    @PostMapping("/{alarmSeq}")
+    public ApiResponse<String> readAlarm(@PathVariable(required = true) Long alarmSeq) {
+        Long userSeq = 1L;
+        alarmService.readAlarm(alarmSeq, userSeq);
+        return ApiResponse.ok("해당 알람을 읽음 처리하였습니다.");
+    }
 
     @PostMapping("/subscribe")
     public ApiResponse<String> subscribeAlarm(@Valid @RequestBody AlarmConfigRequest request) {
