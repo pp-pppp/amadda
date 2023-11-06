@@ -196,9 +196,6 @@ public class ScheduleService {
                 })
                 .collect(Collectors.toList());
 
-            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> result: "
-                + categorySchedules.size());
-
             // 3. 목록에 추가
             schedules.addAll(categorySchedules);
         });
