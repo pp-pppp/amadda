@@ -31,9 +31,8 @@ public class AlarmController {
     @GetMapping
     public ApiResponse<List<AlarmReadResponse>> readAlarms() {
         Long userSeq = 1L;
-        List<Alarm> alarms = alarmService.readAlarms(userSeq);
-        List<AlarmReadResponse> data = alarms.stream().map(AlarmReadResponse::of).toList();
-        return ApiResponse.of(HttpStatus.OK, data);
+        List<AlarmReadResponse> alarms = alarmService.readAlarms(userSeq);
+        return ApiResponse.of(HttpStatus.OK, alarms);
     }
 
     @PostMapping("/{alarmSeq}")
