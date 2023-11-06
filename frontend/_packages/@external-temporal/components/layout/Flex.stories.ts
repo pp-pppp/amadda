@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Flex } from './Flex';
 
 const meta = {
-  title: 'layout/Flex',
+  title: 'External-temporal/Layout/Flex',
   component: Flex,
   parameters: {
     layout: 'centered',

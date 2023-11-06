@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   ALIGN_VARIANT,
   DIRECTION_VARIANT,
