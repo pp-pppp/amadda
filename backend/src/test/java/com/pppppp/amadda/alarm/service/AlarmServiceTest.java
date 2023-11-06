@@ -92,7 +92,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
-        Alarm a = Alarm.create(user, "알람 테스트");
+        Alarm a = Alarm.create(user, "알람 테스트", AlarmType.FRIEND_ACCEPT);
         Alarm alarm = alarmRepository.save(a);
 
         // when
@@ -110,7 +110,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
-        Alarm a = Alarm.create(user, "알람 테스트");
+        Alarm a = Alarm.create(user, "알람 테스트", AlarmType.SCHEDULE_ASSIGNED);
         Alarm alarm = alarmRepository.save(a);
 
         // when + then
@@ -127,7 +127,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User user1 = users.get(0);
         User user2 = users.get(1);
 
-        Alarm a = Alarm.create(user1, "알람 테스트");
+        Alarm a = Alarm.create(user1, "알람 테스트", AlarmType.FRIEND_REQUEST);
         Alarm alarm = alarmRepository.save(a);
 
         // when + then

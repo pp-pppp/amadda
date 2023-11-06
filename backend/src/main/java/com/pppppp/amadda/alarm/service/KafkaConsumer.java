@@ -8,6 +8,7 @@ import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleNotification;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleUpdate;
 import com.pppppp.amadda.alarm.entity.Alarm;
 import com.pppppp.amadda.alarm.entity.AlarmContent;
+import com.pppppp.amadda.alarm.entity.AlarmType;
 import com.pppppp.amadda.alarm.entity.KafkaTopic;
 import com.pppppp.amadda.alarm.repository.AlarmRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
@@ -34,7 +35,7 @@ public class KafkaConsumer {
         throws IOException {
         Long userSeq = Long.valueOf(String.valueOf(record.key()));
         String requestedUserName = record.value().getRequestedUserName();
-        saveAlarm(userSeq, AlarmContent.FRIEND_REQUEST.getMessage(requestedUserName));
+        saveAlarm(userSeq, AlarmContent.FRIEND_REQUEST.getMessage(requestedUserName), AlarmType.FRIEND_REQUEST);
     }
 
     @KafkaListener(topics = KafkaTopic.ALARM_FRIEND_ACCEPT, groupId = "${spring.kafka.consumer.group-id}")
@@ -42,7 +43,7 @@ public class KafkaConsumer {
         throws IOException {
         Long userSeq = Long.valueOf(String.valueOf(record.key()));
         String friendUserName = record.value().getFriendUserName();
-        saveAlarm(userSeq, AlarmContent.FRIEND_ACCEPT.getMessage(friendUserName));
+        saveAlarm(userSeq, AlarmContent.FRIEND_ACCEPT.getMessage(friendUserName), AlarmType.FRIEND_ACCEPT);
     }
 
     @KafkaListener(topics = KafkaTopic.ALARM_SCHEDULE_ASSIGNED, groupId = "${spring.kafka.consumer.group-id}")
@@ -52,7 +53,7 @@ public class KafkaConsumer {
         String scheduleOwnerUserName = record.value().getScheduleOwnerUserName();
         String scheduleName = record.value().getScheduleName();
         saveAlarm(userSeq,
-            AlarmContent.SCHEDULE_ASSIGNED.getMessage(scheduleOwnerUserName, scheduleName));
+            AlarmContent.SCHEDULE_ASSIGNED.getMessage(scheduleOwnerUserName, scheduleName), AlarmType.SCHEDULE_ASSIGNED);
     }
 
     @KafkaListener(topics = KafkaTopic.ALARM_MENTIONED, groupId = "${spring.kafka.consumer.group-id}")
@@ -70,10 +71,10 @@ public class KafkaConsumer {
         throws IOException {
     }
 
-    public void saveAlarm(Long userSeq, String message) {
+    public void saveAlarm(Long userSeq, String message, AlarmType alarmType) {
         User user = userRepository.findByUserSeq(userSeq)
             .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
-        Alarm alarm = Alarm.create(user, message);
+        Alarm alarm = Alarm.create(user, message, alarmType);
         alarmRepository.save(alarm);
     }
 
