@@ -2,13 +2,16 @@
 import { lazy } from 'react';
 import '#/util/global.css';
 import { AppLayout } from '@/layout/AppLayout';
+import { SessionProvider } from 'next-auth/react';
 
-function App({ Component, pageProps }) {
+function App({ Component, pageProps: { session, ...pageProps } }) {
   return (
-    <AppLayout>
-      {/* <Nav /> */}
-      <Component {...pageProps} />
-    </AppLayout>
+    <SessionProvider session={session}>
+      <AppLayout>
+        {/* <Nav /> */}
+        <Component {...pageProps} />
+      </AppLayout>
+    </SessionProvider>
   );
 }
 
