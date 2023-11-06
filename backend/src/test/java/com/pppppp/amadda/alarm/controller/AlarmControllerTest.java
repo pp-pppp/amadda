@@ -41,7 +41,7 @@ class AlarmControllerTest extends ControllerTestSupport {
             .andExpect(jsonPath("$.code").value("200"))
             .andExpect(jsonPath("$.status").value("OK"))
             .andExpect(jsonPath("$.message").value("OK"))
-            .andExpect(jsonPath("$.data").value("OK"));
+            .andExpect(jsonPath("$.data").value("해당 알림을 읽음 처리하였습니다."));
     }
 
     @DisplayName("글로벌 설정이 가능한 알림에 대해 On")

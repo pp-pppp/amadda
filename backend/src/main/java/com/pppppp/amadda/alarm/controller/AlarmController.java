@@ -29,7 +29,7 @@ public class AlarmController {
     public ApiResponse<String> readAlarm(@PathVariable(required = true) Long alarmSeq) {
         Long userSeq = 1L;
         alarmService.readAlarm(alarmSeq, userSeq);
-        return ApiResponse.ok("해당 알람을 읽음 처리하였습니다.");
+        return ApiResponse.ok("해당 알림을 읽음 처리하였습니다.");
     }
 
     @PostMapping("/subscribe")
