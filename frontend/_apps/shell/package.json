@@ -11,10 +11,12 @@
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.7",
     "@vanilla-extract/css": "1.13.0",
+    "axios": "^1.6.0",
     "external-temporal": "workspace:*",
     "next": "13.4.12",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "redis": "^4.6.10"
   },
   "devDependencies": {
     "@module-federation/nextjs-mf": "^7.0.8",
