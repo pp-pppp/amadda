@@ -1,11 +1,12 @@
 import { REDIS } from '@/connection/connection';
 import axios, { Axios, AxiosResponse } from 'axios';
 import { NextRequest, NextResponse } from 'next/server';
-export const config = {
-  matcher: ['/'],
-}; //아래 두 미들웨어 모두, signin, signout을 제외한 모든 api 요청에 대해 적용되어야 합니다.
 
 export const tokenValidation = async (req: NextRequest) => {
+  const { pathname } = req.nextUrl;
+  const excludePath = ['/api/auth/signin', '/api/auth/signout'];
+  if (excludePath.includes(pathname)) return NextResponse.next();
+  // 현재 경로가 제외 목록에 있으면 그대로 요청을 진행합니다
   if (req.cookies.has('at') === false)
     return NextResponse.rewrite(
       new URL(
@@ -54,27 +55,33 @@ export const tokenValidation = async (req: NextRequest) => {
         re_preflight.data.refreshToken
       ); //리프레시 토큰을 레디스에 저장하고,
       const new_AT = re_preflight.data.accessToken; //새로운 액세스 토큰을 넣어서
-      req.headers.set('Auth', new_AT);
-      return req; //원래 요청을 재시도합니다.
+      const response = NextResponse.next();
+      response.headers.set('Auth', new_AT);
+      return response; //원래 요청을 재시도합니다.
     } else {
       //리프레시 토큰이 만료되었거나 손상되었다면 로그아웃시킵니다.
       return NextResponse.rewrite(
         new URL('http://localhost:3000/api/auth/signout')
       ); //logout API
     }
-  } else {
-    //만약 처음에 받았던 액세스 토큰에 문제가 없었다면
-    req.headers.set('Auth', AT);
-    return req;
-    //헤더만 바꿔 요청을 그대로 통과시킵니다.
   }
+  console.log('통과');
+  //만약 처음에 받았던 액세스 토큰에 문제가 없었다면
+  const response = NextResponse.next();
+  response.headers.set('Auth', AT);
+  return response;
+  //헤더만 바꿔 요청을 그대로 통과시킵니다.
 };
 
 export const injectCookie = async (res: NextResponse) => {
-  //모든 응답에 대해 Auth 헤더를 떼고 httpOnly 쿠키로 변환해 클라이언트로 보냅니다
   const AT = res.headers.get('Auth');
-  res.headers.delete('Auth');
-  if (AT) res.cookies.set({ name: 'at', value: AT, httpOnly: true });
+  if (AT) {
+    res.cookies.set('at', AT, {
+      httpOnly: true,
+      sameSite: 'strict',
+    });
+    res.headers.delete('Auth');
+  }
   return res;
 };
 

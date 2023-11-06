@@ -37,15 +37,14 @@ describe('I. 클라이언트 요청에 대한 토큰 검증 로직을 테스트�
   test('2. 프리플라이트 요청 결과 Access Token에 이상이 없다면 요청을 Spring 서버로 전송해야 합니다.', async () => {
     const req = new NextRequest('http://exampleapiroute.com', {
       headers: new Headers(),
-      method: 'GET',
+      method: 'POST',
     });
     req.cookies.set('at', 'valid-access-token');
     (axios.get as jest.Mock).mockReturnValue(
       Promise.resolve({ data: { isBroken: false, isExpired: false } })
     );
     const res = await tokenValidation(req);
-    expect(res).toBeInstanceOf(NextRequest);
-    expect(res.url).toBe('http://exampleapiroute.com/');
+    expect(res).toBeInstanceOf(NextResponse);
   });
 
   test('3. 프리플라이트 요청 결과 Access Token이 손상(Broken)되었을 경우 로그아웃 API로 rewrite해야 합니다.', async () => {
@@ -93,7 +92,7 @@ describe('I. 클라이언트 요청에 대한 토큰 검증 로직을 테스트�
 
     const res = await tokenValidation(req);
 
-    expect(res).toBeInstanceOf(NextRequest);
+    expect(res).toBeInstanceOf(NextResponse);
     expect(res.headers.get('Auth')).toBe('new-access-token');
   });
 
