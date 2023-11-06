@@ -2,7 +2,7 @@ import { REDIS } from '@/connection/connection';
 import axios, { Axios, AxiosResponse } from 'axios';
 import { NextRequest, NextResponse } from 'next/server';
 
-export const tokenValidation = async (req: NextRequest) => {
+export default async function tokenValidation(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const excludePath = ['/api/auth/signin', '/api/auth/signout'];
   if (excludePath.includes(pathname) || pathname === '/')
@@ -71,7 +71,7 @@ export const tokenValidation = async (req: NextRequest) => {
   response.headers.set('Auth', AT);
   return response;
   //헤더만 바꿔 요청을 그대로 통과시킵니다.
-};
+}
 
 export const injectCookie = async (res: NextResponse) => {
   const AT = res.headers.get('Auth');
