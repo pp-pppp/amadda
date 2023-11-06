@@ -5,7 +5,8 @@ import { NextRequest, NextResponse } from 'next/server';
 export const tokenValidation = async (req: NextRequest) => {
   const { pathname } = req.nextUrl;
   const excludePath = ['/api/auth/signin', '/api/auth/signout'];
-  if (excludePath.includes(pathname)) return NextResponse.next();
+  if (excludePath.includes(pathname) || pathname === '/')
+    return NextResponse.next();
   // 현재 경로가 제외 목록에 있으면 그대로 요청을 진행합니다
   if (req.cookies.has('at') === false)
     return NextResponse.rewrite(
