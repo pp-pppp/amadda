@@ -16,6 +16,8 @@ import com.pppppp.amadda.schedule.dto.response.ScheduleCreateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleDetailReadResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleListReadResponse;
 import com.pppppp.amadda.schedule.entity.AlarmTime;
+import com.pppppp.amadda.schedule.entity.Category;
+import com.pppppp.amadda.schedule.entity.CategoryColor;
 import com.pppppp.amadda.schedule.entity.Schedule;
 import com.pppppp.amadda.schedule.repository.CategoryRepository;
 import com.pppppp.amadda.schedule.repository.CommentRepository;
@@ -62,8 +64,8 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
     @AfterEach
     void tearDown() {
-        categoryRepository.deleteAllInBatch();
         participationRepository.deleteAllInBatch();
+        categoryRepository.deleteAllInBatch();
         commentRepository.deleteAllInBatch();
         scheduleRepository.deleteAllInBatch();
         userRepository.deleteAllInBatch();
@@ -331,7 +333,139 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         assertEquals(u1Response.scheduleSeq(), u2Response.scheduleSeq());
     }
 
-    // TODO: 동적 쿼리를 통한 일정 검색 메소드 테스트 구현
+    @DisplayName("카테고리 seq로 해당하는 일정 목록을 조회한다.")
+    @Transactional
+    @Test
+    void getSchedulesByCategories() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+
+        Category c1 = Category.builder()
+            .categoryName("자율기절")
+            .categoryColor(CategoryColor.valueOf("HOTPINK"))
+            .user(u1)
+            .build();
+        Category c2 = Category.builder()
+            .categoryName("합창단")
+            .categoryColor(CategoryColor.valueOf("GREEN"))
+            .user(u1)
+            .build();
+        List<Category> categories = categoryRepository.saveAll(List.of(c1, c2));
+
+        ScheduleCreateRequest r1 = ScheduleCreateRequest.builder()
+            .scheduleName("합창단 가을 공연")
+            .scheduleContent("수원 시민회관")
+            .scheduleMemo("미리 가서 꽃 사놓기")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(false)
+            .participants(List.of(
+                UserReadResponse.of(u1)))
+            .categorySeq(categories.get(0).getCategorySeq())
+            .build();
+        ScheduleCreateRequest r2 = ScheduleCreateRequest.builder()
+            .scheduleName("자율 플젝 발표")
+            .scheduleContent("멀티캠퍼스 역삼")
+            .scheduleMemo("미리 연습해보기")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(false)
+            .participants(List.of(
+                UserReadResponse.of(u1)))
+            .categorySeq(categories.get(1).getCategorySeq())
+            .build();
+        scheduleService.createSchedule(u1.getUserSeq(), r1);
+        scheduleService.createSchedule(u1.getUserSeq(), r2);
+
+        // when
+        List<ScheduleListReadResponse> result1 = scheduleService.getScheduleByCategories(
+            u1.getUserSeq(),
+            categories.get(0).getCategorySeq() + "," + categories.get(1).getCategorySeq());
+        List<ScheduleListReadResponse> result2 = scheduleService.getScheduleByCategories(
+            u1.getUserSeq(),
+            categories.get(0).getCategorySeq() + "");
+
+        // then
+        assertThat(result1)
+            .hasSize(2)
+            .extracting("scheduleName", "participants", "authorizedUser",
+                "isDateSelected", "isTimeSelected", "isAllDay", "scheduleStartAt", "scheduleEndAt",
+                "alarmTime", "isAuthorizedAll", "category")
+            .containsExactlyInAnyOrder(
+                tuple("합창단 가을 공연",
+                    List.of(UserReadResponse.of(u1)), UserReadResponse.of(u1), false, false, false,
+                    "", "", AlarmTime.NONE.getContent(), false, CategoryReadResponse.of(c1)),
+                tuple("자율 플젝 발표",
+                    List.of(UserReadResponse.of(u1)), UserReadResponse.of(u1), false, false, false,
+                    "", "", AlarmTime.NONE.getContent(), false, CategoryReadResponse.of(c2))
+            );
+        assertThat(result2)
+            .hasSize(1)
+            .extracting("scheduleName", "participants", "authorizedUser",
+                "isDateSelected", "isTimeSelected", "isAllDay", "scheduleStartAt", "scheduleEndAt",
+                "alarmTime", "isAuthorizedAll", "category")
+            .containsExactlyInAnyOrder(
+                tuple("합창단 가을 공연",
+                    List.of(UserReadResponse.of(u1)), UserReadResponse.of(u1), false, false, false,
+                    "", "", AlarmTime.NONE.getContent(), false, CategoryReadResponse.of(c1))
+            );
+    }
+
+    @DisplayName("일정 이름으로 일정을 검색한다.")
+    @Transactional
+    @Test
+    void getSchedulesByScheduleName() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+
+        ScheduleCreateRequest r1 = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .isTimeSelected(false)
+            .isDateSelected(false)
+            .isAllDay(false)
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.NONE)
+            .participants(List.of(
+                UserReadResponse.of(u1)))
+            .build();
+        ScheduleCreateRequest r2 = ScheduleCreateRequest.builder()
+            .scheduleName("나도 일정이야")
+            .isTimeSelected(true)
+            .isDateSelected(true)
+            .isAllDay(false)
+            .scheduleStartAt("2023-11-01 08:59:30")
+            .scheduleEndAt("2023-11-01 09:00:00")
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.ON_TIME)
+            .participants(List.of(UserReadResponse.of(u1)))
+            .build();
+        scheduleService.createSchedule(u1.getUserSeq(), r1);
+        scheduleService.createSchedule(u1.getUserSeq(), r2);
+
+        // when
+        List<ScheduleListReadResponse> schedules = scheduleService.getScheduleListByScheduleName(
+            u1.getUserSeq(), "일정");
+
+        // then
+        assertThat(schedules)
+            .hasSize(2)
+            .extracting("scheduleName", "participants", "authorizedUser",
+                "isDateSelected", "isTimeSelected", "isAllDay", "scheduleStartAt", "scheduleEndAt",
+                "alarmTime", "isAuthorizedAll", "category")
+            .containsExactlyInAnyOrder(
+                tuple("안녕 내가 일정 이름이야",
+                    List.of(UserReadResponse.of(u1)), UserReadResponse.of(u1), false, false, false,
+                    "", "", AlarmTime.NONE.getContent(), false, null),
+                tuple("나도 일정이야",
+                    List.of(UserReadResponse.of(u1)), UserReadResponse.of(u1), true, true, false,
+                    "2023-11-01 08:59:30", "2023-11-01 09:00:00", AlarmTime.ON_TIME.getContent(),
+                    false, null)
+            );
+    }
 
     // =================== 댓글 ===================
     @DisplayName("해당 일정에 댓글을 단다.")
