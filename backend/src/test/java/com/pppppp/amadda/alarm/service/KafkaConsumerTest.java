@@ -41,7 +41,6 @@ class KafkaConsumerTest extends IntegrationTestSupport {
     void setUp() {
         alarmRepository = mock(AlarmRepository.class);
         kafkaConsumer = new KafkaConsumer(alarmRepository, userRepository);
-
     }
 
     @AfterEach
@@ -91,7 +90,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         User friend = users.get(1);
 
         FriendRequest friendRequest = FriendRequest.create(owner, friend);
-        FriendRequest savedFriendRequest = friendRequestRepository.save(friendRequest);
+        friendRequestRepository.save(friendRequest);
 
         String topic = KafkaTopic.ALARM_FRIEND_ACCEPT;
         String key = String.valueOf(owner.getUserSeq());

@@ -1,13 +1,25 @@
 package com.pppppp.amadda.friend.controller;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pppppp.amadda.alarm.service.AlarmService;
 import com.pppppp.amadda.friend.dto.request.FriendRequestRequest;
 import com.pppppp.amadda.friend.dto.request.GroupCreateRequest;
 import com.pppppp.amadda.friend.dto.request.GroupPatchRequest;
+import com.pppppp.amadda.friend.dto.response.FriendRequestResponse;
 import com.pppppp.amadda.friend.service.FriendRequestService;
 import com.pppppp.amadda.friend.service.GroupMemberService;
 import com.pppppp.amadda.friend.service.UserGroupService;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +27,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.List;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = FriendController.class)
 class FriendControllerTest {
@@ -49,6 +54,11 @@ class FriendControllerTest {
                 .userSeq(1111L)
                 .targetSeq(1234L)
                 .build();
+
+        // stubbing
+        when(friendRequestService.createFriendRequest(any()))
+            .thenReturn(FriendRequestResponse.builder().ownerSeq(request.userSeq())
+                .friendSeq(request.targetSeq()).build());
 
         // when // then
         mockMvc.perform(
@@ -123,6 +133,10 @@ class FriendControllerTest {
     void acceptFriendRequest() throws Exception {
         // given
         Long requestSeq = 1L;
+
+        // stubbing
+        when(friendRequestService.acceptFriendRequest(anyLong(), anyLong()))
+            .thenReturn(FriendRequestResponse.builder().ownerSeq(1L).friendSeq(2L).build());
 
         // when // then
         mockMvc.perform(
