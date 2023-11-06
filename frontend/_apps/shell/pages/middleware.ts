@@ -66,7 +66,6 @@ export const tokenValidation = async (req: NextRequest) => {
       ); //logout API
     }
   }
-  console.log('통과');
   //만약 처음에 받았던 액세스 토큰에 문제가 없었다면
   const response = NextResponse.next();
   response.headers.set('Auth', AT);
