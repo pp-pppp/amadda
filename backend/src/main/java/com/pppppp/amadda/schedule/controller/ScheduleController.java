@@ -1,5 +1,6 @@
 package com.pppppp.amadda.schedule.controller;
 
+import com.pppppp.amadda.alarm.service.AlarmService;
 import com.pppppp.amadda.global.dto.ApiResponse;
 import com.pppppp.amadda.schedule.dto.request.CategoryCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.CommentCreateRequest;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
+    private final AlarmService alarmService;
 
     private final Long mockUserSeq = 1111L;
 
@@ -40,7 +42,9 @@ public class ScheduleController {
     public ApiResponse<ScheduleCreateResponse> createSchedule(
         @Valid @RequestBody ScheduleCreateRequest request) {
         log.info("POST /api/schedule");
-        return ApiResponse.ok(scheduleService.createSchedule(mockUserSeq, request));
+        ScheduleCreateResponse scheduleCreateResponse = scheduleService.createSchedule(mockUserSeq, request);
+        alarmService.sendScheduleAssigned(scheduleCreateResponse.scheduleSeq());
+        return ApiResponse.ok(scheduleCreateResponse);
     }
 
     @GetMapping("/{scheduleSeq}")
