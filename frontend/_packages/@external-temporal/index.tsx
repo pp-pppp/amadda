@@ -20,4 +20,6 @@ export * from './components/molecule/FAB/FAB';
 export * from './components/molecule/Tooltip/Tooltip';
 export * from './components/molecule/Filter/Filter';
 
+export * from './components/layout/Flex';
+
 export * from './util/http';
