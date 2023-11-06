@@ -102,4 +102,9 @@ public class FriendController {
         return ApiResponse.ok("그룹 수정 완료");
     }
 
+    @DeleteMapping("/group/{groupSeq}")
+    public ApiResponse deleteGroup(@PathVariable Long groupSeq) {
+        userGroupService.deleteGroupAndMembers(groupSeq);
+        return ApiResponse.ok("그룹 삭제 완료");
+    }
 }

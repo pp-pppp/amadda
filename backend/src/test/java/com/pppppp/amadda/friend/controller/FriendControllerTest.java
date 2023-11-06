@@ -307,4 +307,21 @@ class FriendControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @DisplayName("그룹을 삭제한다. ")
+    @Test
+    void deleteGroup() throws Exception {
+        // given
+        Long groupSeq = 1L;
+
+        // when // then
+        mockMvc.perform(
+                        delete("/api/friend/group/"+groupSeq)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("200"))
+                .andExpect(jsonPath("$.status").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"));
+    }
+
 }
