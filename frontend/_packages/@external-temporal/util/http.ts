@@ -8,10 +8,8 @@ const axios = Axios.create({
 export const http = {
   get: <Response = unknown>(url: string) =>
     axios.get<Response>(url).then(res => res.data),
-  post: <Request = unknown, Response = AxiosResponse>(
-    url: string,
-    body?: Request
-  ) => axios.post<Response>(url, body).then(res => res.data),
+  post: <Request = unknown, Response = unknown>(url: string, body?: Request) =>
+    axios.post<Response>(url, body).then(res => res.data),
   patch: <Request = unknown, Response = unknown>(url: string, body?: Request) =>
     axios.patch<Response>(url, body).then(res => res.data),
   delete: <Response = unknown>(url: string) =>
