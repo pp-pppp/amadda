@@ -40,17 +40,17 @@ class ParticipationRepositoryTest extends IntegrationTestSupport {
         userRepository.saveAll(List.of(user1, user2));
 
         Schedule schedule1 = Schedule.builder()
-            .user(user1)
+            .authorizedUser(user1)
             .isTimeSelected(false)
             .isDateSelected(false)
             .build();
         Schedule schedule2 = Schedule.builder()
-            .user(user2)
+            .authorizedUser(user2)
             .isTimeSelected(false)
             .isDateSelected(false)
             .build();
         Schedule schedule3 = Schedule.builder()
-            .user(user1)
+            .authorizedUser(user1)
             .isTimeSelected(false)
             .isDateSelected(false)
             .build();

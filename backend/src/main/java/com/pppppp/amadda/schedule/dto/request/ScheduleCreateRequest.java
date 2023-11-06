@@ -68,7 +68,7 @@ public record ScheduleCreateRequest(
                 (isTimeSelected) ? LocalDateTime.parse(scheduleEndAt, formatter) : null)
             .isAuthorizedAll(isAuthorizedAll)
             // 생성한 사용자 정보, isAuthorizedAll == false일 때 authorizedUser로 사용
-            .user(user)
+            .authorizedUser(user)
             .build();
     }
 }

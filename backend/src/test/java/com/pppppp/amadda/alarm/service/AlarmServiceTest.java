@@ -52,29 +52,22 @@ import org.springframework.test.annotation.DirtiesContext;
 )
 class AlarmServiceTest extends IntegrationTestSupport {
 
-    @Autowired
-    private AlarmService alarmService;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private FriendRequestRepository friendRequestRepository;
-
-    @Autowired
-    private ScheduleRepository scheduleRepository;
-
-    @Autowired
-    private ParticipationRepository participationRepository;
-
-    @Autowired
-    private AlarmConfigRepository alarmConfigRepository;
-
-    @Autowired
-    private AlarmRepository alarmRepository;
-
     @MockBean
     KafkaTemplate<Long, BaseTopicValue> kafkaTemplate;
+    @Autowired
+    private AlarmService alarmService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private FriendRequestRepository friendRequestRepository;
+    @Autowired
+    private ScheduleRepository scheduleRepository;
+    @Autowired
+    private ParticipationRepository participationRepository;
+    @Autowired
+    private AlarmConfigRepository alarmConfigRepository;
+    @Autowired
+    private AlarmRepository alarmRepository;
 
     @AfterEach
     void tearDown() {
@@ -359,7 +352,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User user1 = users.get(0);
         User user2 = users.get(1);
 
-        Schedule schedule = Schedule.builder().user(user1).build();
+        Schedule schedule = Schedule.builder().authorizedUser(user1).build();
         Schedule savedSchedule = scheduleRepository.save(schedule);
 
         Participation participation1 = Participation.builder()

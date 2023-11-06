@@ -223,7 +223,7 @@ public class ScheduleService {
                 participation);
         }
         return ScheduleListReadResponse.of(schedule,
-            UserReadResponse.of(schedule.getUser()), participants, participation);
+            UserReadResponse.of(schedule.getAuthorizedUser()), participants, participation);
     }
 
     private List<ScheduleListReadResponse> getScheduleListByUser(Long userSeq) {

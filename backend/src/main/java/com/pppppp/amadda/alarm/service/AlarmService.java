@@ -108,7 +108,7 @@ public class AlarmService {
     @Transactional
     public void sendScheduleAssigned(Long scheduleSeq) {
         Schedule schedule = getSchedule(scheduleSeq);
-        User owner = schedule.getUser();
+        User owner = schedule.getAuthorizedUser();
 
         List<Participation> participations = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
             scheduleSeq);

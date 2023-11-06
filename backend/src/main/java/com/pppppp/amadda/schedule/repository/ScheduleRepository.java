@@ -10,11 +10,12 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     Optional<Schedule> findByScheduleSeqAndIsDeletedFalse(Long scheduleSeq);
 
-    List<Schedule> findAllByUser_UserSeqAndIsDeletedFalse(Long userSeq);
+    List<Schedule> findAllByAuthorizedUser_UserSeqAndIsDeletedFalse(Long userSeq);
 
-    List<Schedule> findAllByUser_UserSeqAndScheduleStartAtBeforeAndIsDeletedFalse(
+
+    List<Schedule> findAllByAuthorizedUser_UserSeqAndScheduleStartAtBeforeAndIsDeletedFalse(
         Long userSeq, LocalDateTime time);
 
-    List<Schedule> findAllByUser_UserSeqAndScheduleStartAtAfterAndIsDeletedFalse(
+    List<Schedule> findAllByAuthorizedUser_UserSeqAndScheduleStartAtAfterAndIsDeletedFalse(
         Long userSeq, LocalDateTime time);
 }

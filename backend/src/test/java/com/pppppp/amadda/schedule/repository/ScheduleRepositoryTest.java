@@ -47,7 +47,7 @@ class ScheduleRepositoryTest extends IntegrationTestSupport {
         // given
         User user = userRepository.findAll().get(0);
         Schedule schedule = Schedule.builder()
-            .user(user)
+            .authorizedUser(user)
             .isTimeSelected(false)
             .isDateSelected(false)
             .build();
@@ -68,7 +68,7 @@ class ScheduleRepositoryTest extends IntegrationTestSupport {
         User user = userRepository.findAll().get(0);
         LocalDateTime startAt = LocalDateTime.of(1998, 7, 27, 14, 0, 0);
         Schedule schedule = Schedule.builder()
-            .user(user)
+            .authorizedUser(user)
             .isTimeSelected(false)
             .isDateSelected(true)
             .scheduleStartAt(startAt)
@@ -93,7 +93,7 @@ class ScheduleRepositoryTest extends IntegrationTestSupport {
         LocalDateTime startAt = LocalDateTime.of(1998, 7, 27, 14, 0, 0);
         LocalDateTime endAt = startAt.plusHours(2L);
         Schedule schedule = Schedule.builder()
-            .user(user)
+            .authorizedUser(user)
             .isTimeSelected(true)
             .isDateSelected(true)
             .scheduleStartAt(startAt)
@@ -118,7 +118,7 @@ class ScheduleRepositoryTest extends IntegrationTestSupport {
         // given
         User user = userRepository.findAll().get(0);
         Schedule schedule = Schedule.builder()
-            .user(user)
+            .authorizedUser(user)
             .isTimeSelected(false)
             .isDateSelected(true)
             .isAllDay(true)
@@ -147,28 +147,29 @@ class ScheduleRepositoryTest extends IntegrationTestSupport {
         User user2 = userRepository.findAll().get(1);
 
         Schedule schedule1 = Schedule.builder()
-            .user(user)
+            .authorizedUser(user)
             .isTimeSelected(false)
             .isDateSelected(false)
             .build();
         Schedule schedule2 = Schedule.builder()
-            .user(user2)
+            .authorizedUser(user2)
             .isTimeSelected(false)
             .isDateSelected(false)
             .build();
         Schedule schedule3 = Schedule.builder()
-            .user(user)
+            .authorizedUser(user)
             .isTimeSelected(false)
             .isDateSelected(false)
             .build();
         scheduleRepository.saveAll(List.of(schedule1, schedule2, schedule3));
 
         // when
-        List<Schedule> schedules = scheduleRepository.findAllByUser_UserSeqAndIsDeletedFalse(1L);
+        List<Schedule> schedules = scheduleRepository.findAllByAuthorizedUser_UserSeqAndIsDeletedFalse(
+            1L);
 
         // then
         assertThat(schedules).hasSize(2)
-            .extracting("user")
+            .extracting("authorizedUser")
             .contains(user);
     }
 
@@ -181,19 +182,19 @@ class ScheduleRepositoryTest extends IntegrationTestSupport {
 
         // when
         Schedule schedule1 = Schedule.builder()
-            .user(user)
+            .authorizedUser(user)
             .isTimeSelected(false)
             .isDateSelected(false)
             .scheduleStartAt(LocalDateTime.of(2022, 7, 27, 14, 0, 0))
             .build();
         Schedule schedule2 = Schedule.builder()
-            .user(user)
+            .authorizedUser(user)
             .isTimeSelected(false)
             .isDateSelected(false)
             .scheduleStartAt(LocalDateTime.of(2023, 7, 28, 14, 0, 0))
             .build();
         Schedule schedule3 = Schedule.builder()
-            .user(user)
+            .authorizedUser(user)
             .isTimeSelected(false)
             .isDateSelected(false)
             .scheduleStartAt(LocalDateTime.of(2023, 10, 29, 14, 0, 0))
@@ -207,13 +208,13 @@ class ScheduleRepositoryTest extends IntegrationTestSupport {
         int pivotHour = pivot.getHour();
         int pivotMinute = pivot.getMinute();
 
-        List<Schedule> schedules = scheduleRepository.findAllByUser_UserSeqAndScheduleStartAtBeforeAndIsDeletedFalse(
+        List<Schedule> schedules = scheduleRepository.findAllByAuthorizedUser_UserSeqAndScheduleStartAtBeforeAndIsDeletedFalse(
             1L, pivot);
 
         // then
         assertThat(schedules).hasSize(1)
-            .extracting("user").contains(user);
-        schedules.stream().forEach(schedule -> {
+            .extracting("authorizedUser").contains(user);
+        schedules.forEach(schedule -> {
             LocalDateTime startAt = schedule.getScheduleStartAt();
 
             // java의 조건문 단축 평가 방식을 활용해서 검증
@@ -234,19 +235,19 @@ class ScheduleRepositoryTest extends IntegrationTestSupport {
 
         // when
         Schedule schedule1 = Schedule.builder()
-            .user(user)
+            .authorizedUser(user)
             .isTimeSelected(false)
             .isDateSelected(false)
             .scheduleStartAt(LocalDateTime.of(2022, 7, 27, 14, 0, 0))
             .build();
         Schedule schedule2 = Schedule.builder()
-            .user(user)
+            .authorizedUser(user)
             .isTimeSelected(false)
             .isDateSelected(false)
             .scheduleStartAt(LocalDateTime.of(2023, 7, 28, 14, 0, 0))
             .build();
         Schedule schedule3 = Schedule.builder()
-            .user(user)
+            .authorizedUser(user)
             .isTimeSelected(false)
             .isDateSelected(false)
             .scheduleStartAt(LocalDateTime.of(2023, 10, 29, 14, 0, 0))
@@ -260,15 +261,15 @@ class ScheduleRepositoryTest extends IntegrationTestSupport {
         int pivotHour = pivot.getHour();
         int pivotMinute = pivot.getMinute();
 
-        List<Schedule> schedules = scheduleRepository.findAllByUser_UserSeqAndScheduleStartAtAfterAndIsDeletedFalse(
+        List<Schedule> schedules = scheduleRepository.findAllByAuthorizedUser_UserSeqAndScheduleStartAtAfterAndIsDeletedFalse(
             1L, pivot);
 
         // then
         assertThat(schedules).hasSize(1)
-            .extracting("user")
+            .extracting("authorizedUser")
             .contains(user);
 
-        schedules.stream().forEach(schedule -> {
+        schedules.forEach(schedule -> {
             LocalDateTime startAt = schedule.getScheduleStartAt();
 
             // java의 조건문 단축 평가 방식을 활용해서 검증
