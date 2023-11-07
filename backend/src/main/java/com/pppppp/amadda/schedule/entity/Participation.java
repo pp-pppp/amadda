@@ -2,6 +2,7 @@ package com.pppppp.amadda.schedule.entity;
 
 import com.pppppp.amadda.global.entity.BaseEntity;
 import com.pppppp.amadda.schedule.dto.request.ScheduleCreateRequest;
+import com.pppppp.amadda.schedule.dto.request.SchedulePatchRequest;
 import com.pppppp.amadda.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,6 +18,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -70,5 +72,21 @@ public class Participation extends BaseEntity {
             .schedule(schedule)
             .category(category)
             .build();
+    }
+
+    public void updateParticipationInfo(SchedulePatchRequest request) {
+        if (StringUtils.hasText(request.scheduleName())) {
+            this.scheduleName = request.scheduleName();
+        }
+        if (StringUtils.hasText(request.scheduleMemo())) {
+            this.scheduleMemo = request.scheduleMemo();
+        }
+        if (request.alarmTime() != null) {
+            this.alarmTime = request.alarmTime();
+        }
+    }
+
+    public void updateCategory(Category category) {
+        this.category = category;
     }
 }

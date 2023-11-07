@@ -1,6 +1,7 @@
 package com.pppppp.amadda.schedule.entity;
 
 import com.pppppp.amadda.global.entity.BaseEntity;
+import com.pppppp.amadda.schedule.dto.request.CategoryPatchRequest;
 import com.pppppp.amadda.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,6 +17,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -42,5 +44,14 @@ public class Category extends BaseEntity {
         this.user = user;
         this.categoryName = categoryName;
         this.categoryColor = categoryColor;
+    }
+
+    public void updateCategoryInfo(CategoryPatchRequest request) {
+        if (StringUtils.hasText(request.categoryName())) {
+            this.categoryName = request.categoryName();
+        }
+        if (StringUtils.hasText(request.categoryColor())) {
+            this.categoryColor = CategoryColor.valueOf(request.categoryColor());
+        }
     }
 }
