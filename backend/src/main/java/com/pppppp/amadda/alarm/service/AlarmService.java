@@ -123,16 +123,17 @@ public class AlarmService {
             scheduleSeq);
 
         participations.stream()
-            .filter(participation -> !owner.equals(participation.getUser()))
-            .forEach(participation -> {
+            .filter(participation -> {
                 User user = participation.getUser();
-                if (checkAlarmSetting(user.getUserSeq(), AlarmType.SCHEDULE_ASSIGNED)) {
+                return !owner.equals(user) && checkAlarmSetting(user.getUserSeq(),
+                    AlarmType.SCHEDULE_ASSIGNED);
+            })
+            .forEach(participation -> {
                     AlarmScheduleAssigned value = AlarmScheduleAssigned.create(
                         schedule.getScheduleSeq(), participation.getScheduleName(),
                         owner.getUserSeq(), owner.getUserName());
                     kafkaProducer.sendAlarm(KafkaTopic.ALARM_SCHEDULE_ASSIGNED,
-                        user.getUserSeq(), value);
-                }
+                        participation.getUser().getUserSeq(), value);
             });
     }
 
