@@ -8,20 +8,8 @@ public record UserReadResponse(
     Long userSeq,
     String userName,
     String userId,
-    String imageUrl,
-    Boolean isFriend
+    String imageUrl
 ) {
-
-    public static UserReadResponse of(User user, Boolean isFriend) {
-        return UserReadResponse.builder()
-            .userSeq(user.getUserSeq())
-            .userName(user.getUserName())
-            .userId(user.getUserId())
-            .imageUrl(user.getImageUrl())
-            .isFriend(isFriend)
-            .build();
-    }
-
 
     public static UserReadResponse of(User user) {
         return UserReadResponse.builder()
