@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -362,7 +363,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
             .hasMessage(AlarmErrorCode.CANNOT_SET_GLOBAL_CONFIG.name());
     }
 
-    @DisplayName("친구 신청 알람")
+    @DisplayName("친구 신청 알람 - 설정 값이 없는 경우")
     @Test
     void friend_request() {
         // given
@@ -380,6 +381,52 @@ class AlarmServiceTest extends IntegrationTestSupport {
         String topic = KafkaTopic.ALARM_FRIEND_REQUEST;
         Long key = friend.getUserSeq();
         verify(kafkaTemplate, times(1)).send(eq(topic), eq(key), any());
+    }
+
+    @DisplayName("친구 신청 알람 - 설정 값이 On인 경우")
+    @Test
+    void friend_request_on() {
+        // given
+        List<User> users = create2users();
+        User owner = users.get(0);
+        User friend = users.get(1);
+
+        FriendRequest friendRequest = FriendRequest.create(owner, friend);
+        friendRequestRepository.save(friendRequest);
+
+        AlarmConfig ac = AlarmConfig.create(friend, AlarmType.FRIEND_REQUEST, true);
+        alarmConfigRepository.save(ac);
+
+        // when
+        alarmService.sendFriendRequest(owner.getUserSeq(), friend.getUserSeq());
+
+        // then
+        String topic = KafkaTopic.ALARM_FRIEND_REQUEST;
+        Long key = friend.getUserSeq();
+        verify(kafkaTemplate, times(1)).send(eq(topic), eq(key), any());
+    }
+
+    @DisplayName("친구 신청 알람 - 설정 값이 Off인 경우")
+    @Test
+    void friend_request_off() {
+        // given
+        List<User> users = create2users();
+        User owner = users.get(0);
+        User friend = users.get(1);
+
+        FriendRequest friendRequest = FriendRequest.create(owner, friend);
+        friendRequestRepository.save(friendRequest);
+
+        AlarmConfig ac = AlarmConfig.create(friend, AlarmType.FRIEND_REQUEST, false);
+        alarmConfigRepository.save(ac);
+
+        // when
+        alarmService.sendFriendRequest(owner.getUserSeq(), friend.getUserSeq());
+
+        // then
+        String topic = KafkaTopic.ALARM_FRIEND_REQUEST;
+        Long key = friend.getUserSeq();
+        verify(kafkaTemplate, never()).send(eq(topic), eq(key), any());
     }
 
     @DisplayName("친구 수락 알람")
