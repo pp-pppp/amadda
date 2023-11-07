@@ -40,6 +40,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class ScheduleServiceTest extends IntegrationTestSupport {
+    // TODO: 일정 수정 알림 service 테스트
 
     @Autowired
     private ScheduleService scheduleService;
