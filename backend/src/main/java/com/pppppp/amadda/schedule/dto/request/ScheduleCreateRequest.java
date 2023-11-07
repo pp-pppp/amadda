@@ -28,7 +28,9 @@ public record ScheduleCreateRequest(
 
     @NotNull(message = "알림 시간 설정이 필요해요!") AlarmTime alarmTime,
     @NotBlank(message = "일정 이름을 입력해주세요!") String scheduleName,
-    String scheduleMemo
+    String scheduleMemo,
+
+    Long categorySeq
 ) {
 
     public static ScheduleCreateRequest of(Schedule schedule,
@@ -46,6 +48,7 @@ public record ScheduleCreateRequest(
             .alarmTime(participation.getAlarmTime())
             .scheduleName(participation.getScheduleName())
             .scheduleMemo(participation.getScheduleMemo())
+            .categorySeq(participation.getCategory().getCategorySeq())
             .build();
     }
 
@@ -65,7 +68,7 @@ public record ScheduleCreateRequest(
                 (isTimeSelected) ? LocalDateTime.parse(scheduleEndAt, formatter) : null)
             .isAuthorizedAll(isAuthorizedAll)
             // 생성한 사용자 정보, isAuthorizedAll == false일 때 authorizedUser로 사용
-            .user(user)
+            .authorizedUser(user)
             .build();
     }
 }

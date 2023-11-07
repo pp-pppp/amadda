@@ -1,6 +1,7 @@
 package com.pppppp.amadda.schedule.entity;
 
 import com.pppppp.amadda.global.entity.BaseEntity;
+import com.pppppp.amadda.schedule.dto.request.ScheduleCreateRequest;
 import com.pppppp.amadda.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -57,5 +58,17 @@ public class Participation extends BaseEntity {
         this.scheduleName = scheduleName;
         this.scheduleMemo = scheduleMemo;
         this.alarmTime = alarmTime;
+    }
+
+    public static Participation create(ScheduleCreateRequest request, User participant,
+        Schedule schedule, Category category) {
+        return Participation.builder()
+            .scheduleName(request.scheduleName())
+            .scheduleMemo(request.scheduleMemo())
+            .alarmTime(request.alarmTime())
+            .user(participant)
+            .schedule(schedule)
+            .category(category)
+            .build();
     }
 }

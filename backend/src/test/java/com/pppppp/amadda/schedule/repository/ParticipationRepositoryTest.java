@@ -40,17 +40,17 @@ class ParticipationRepositoryTest extends IntegrationTestSupport {
         userRepository.saveAll(List.of(user1, user2));
 
         Schedule schedule1 = Schedule.builder()
-            .user(user1)
+            .authorizedUser(user1)
             .isTimeSelected(false)
             .isDateSelected(false)
             .build();
         Schedule schedule2 = Schedule.builder()
-            .user(user2)
+            .authorizedUser(user2)
             .isTimeSelected(false)
             .isDateSelected(false)
             .build();
         Schedule schedule3 = Schedule.builder()
-            .user(user1)
+            .authorizedUser(user1)
             .isTimeSelected(false)
             .isDateSelected(false)
             .build();
@@ -79,13 +79,13 @@ class ParticipationRepositoryTest extends IntegrationTestSupport {
         Participation participation1 = Participation.builder()
             .user(user1)
             .schedule(schedule)
-            .scheduleName("싸피")
+            .scheduleName("학교")
             .scheduleMemo("가기 싫다")
             .build();
         Participation participation2 = Participation.builder()
             .user(user2)
             .schedule(schedule)
-            .scheduleName("싸피")
+            .scheduleName("학교")
             .scheduleMemo("좋아")
             .build();
 
@@ -97,8 +97,8 @@ class ParticipationRepositoryTest extends IntegrationTestSupport {
         assertThat(participations).hasSize(2)
             .extracting("user", "schedule", "scheduleName", "scheduleMemo")
             .containsExactlyInAnyOrder(
-                tuple(user1, schedule, "싸피", "가기 싫다"),
-                tuple(user2, schedule, "싸피", "좋아")
+                tuple(user1, schedule, "학교", "가기 싫다"),
+                tuple(user2, schedule, "학교", "좋아")
             );
     }
 
@@ -118,13 +118,13 @@ class ParticipationRepositoryTest extends IntegrationTestSupport {
         Participation p1 = Participation.builder()
             .user(user1)
             .schedule(schedule1)
-            .scheduleName("싸피")
+            .scheduleName("학교")
             .scheduleMemo("가기 싫다")
             .build();
         Participation p2 = Participation.builder()
             .user(user2)
             .schedule(schedule2)
-            .scheduleName("싸피")
+            .scheduleName("학교")
             .scheduleMemo("좋아")
             .build();
         participationRepository.saveAll(List.of(p1, p2));
@@ -139,11 +139,64 @@ class ParticipationRepositoryTest extends IntegrationTestSupport {
         assertThat(participation1).isPresent()
             .get()
             .extracting("user", "schedule", "scheduleName", "scheduleMemo")
-            .containsExactly(user1, schedule1, "싸피", "가기 싫다");
+            .containsExactly(user1, schedule1, "학교", "가기 싫다");
         assertThat(participation2).isPresent()
             .get()
             .extracting("user", "schedule", "scheduleName", "scheduleMemo")
-            .containsExactly(user2, schedule2, "싸피", "좋아");
+            .containsExactly(user2, schedule2, "학교", "좋아");
+    }
+
+    @DisplayName("일정 제목으로 해당하는 단어를 포함하는 참석정보 목록을 가져온다.")
+    @Transactional
+    @Test
+    void getParticipationByScheduleNameContaining() {
+        // given
+        User user = userRepository.findAll().get(0);
+
+        Schedule s1 = scheduleRepository.findAll().get(0);
+        Schedule s2 = scheduleRepository.findAll().get(1);
+
+        Participation p1 = Participation.builder()
+            .user(user)
+            .schedule(s1)
+            .scheduleName("학교")
+            .scheduleMemo("가기 싫다")
+            .build();
+        Participation p2 = Participation.builder()
+            .user(user)
+            .schedule(s2)
+            .scheduleName("학교")
+            .scheduleMemo("좋아")
+            .build();
+        Participation p3 = Participation.builder()
+            .user(user)
+            .schedule(s2)
+            .scheduleName("학교는")
+            .scheduleMemo("왜 있는 걸까")
+            .build();
+        participationRepository.saveAll(List.of(p1, p2, p3));
+
+        // when
+        List<Participation> result1 = participationRepository.findByUser_UserSeqAndScheduleNameContainingAndIsDeletedFalse(
+            user.getUserSeq(), "학교");
+        List<Participation> result2 = participationRepository.findByUser_UserSeqAndScheduleNameContainingAndIsDeletedFalse(
+            user.getUserSeq(), "학교는");
+
+        // then
+        assertThat(result1)
+            .hasSize(3)
+            .extracting("user", "schedule", "scheduleName", "scheduleMemo")
+            .containsExactlyInAnyOrder(
+                tuple(user, s1, "학교", "가기 싫다"),
+                tuple(user, s2, "학교", "좋아"),
+                tuple(user, s2, "학교는", "왜 있는 걸까")
+            );
+        assertThat(result2)
+            .hasSize(1)
+            .extracting("user", "schedule", "scheduleName", "scheduleMemo")
+            .containsExactlyInAnyOrder(
+                tuple(user, s2, "학교는", "왜 있는 걸까")
+            );
     }
 
     @DisplayName("유저가 보려는 카테고리에 맞는 참석정보 목록을 가져온다.")
@@ -166,14 +219,14 @@ class ParticipationRepositoryTest extends IntegrationTestSupport {
         Participation p1 = Participation.builder()
             .user(user)
             .schedule(s1)
-            .scheduleName("싸피")
+            .scheduleName("학교")
             .scheduleMemo("가기 싫다")
             .category(category)
             .build();
         Participation p2 = Participation.builder()
             .user(user)
             .schedule(s2)
-            .scheduleName("싸피")
+            .scheduleName("학교")
             .scheduleMemo("좋아")
             .category(category)
             .build();
@@ -188,8 +241,8 @@ class ParticipationRepositoryTest extends IntegrationTestSupport {
             .hasSize(2)
             .extracting("user", "schedule", "scheduleName", "scheduleMemo", "category")
             .containsExactlyInAnyOrder(
-                tuple(user, s1, "싸피", "가기 싫다", category),
-                tuple(user, s2, "싸피", "좋아", category)
+                tuple(user, s1, "학교", "가기 싫다", category),
+                tuple(user, s2, "학교", "좋아", category)
             );
     }
 }

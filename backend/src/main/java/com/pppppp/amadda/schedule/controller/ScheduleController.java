@@ -9,9 +9,12 @@ import com.pppppp.amadda.schedule.dto.response.CategoryReadResponse;
 import com.pppppp.amadda.schedule.dto.response.CommentReadResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleCreateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleDetailReadResponse;
+import com.pppppp.amadda.schedule.dto.response.ScheduleListReadResponse;
 import com.pppppp.amadda.schedule.service.ScheduleService;
+import com.pppppp.amadda.user.dto.response.UserReadResponse;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +37,6 @@ public class ScheduleController {
     private final Long mockUserSeq = 1111L;
 
     // TODO: 로그인 구현 후 코드 수정
-    // TODO: 동적쿼리 구현 후 코드 수정
 
     // ==================== 일정 ====================
 
@@ -42,7 +44,8 @@ public class ScheduleController {
     public ApiResponse<ScheduleCreateResponse> createSchedule(
         @Valid @RequestBody ScheduleCreateRequest request) {
         log.info("POST /api/schedule");
-        ScheduleCreateResponse scheduleCreateResponse = scheduleService.createSchedule(mockUserSeq, request);
+        ScheduleCreateResponse scheduleCreateResponse = scheduleService.createSchedule(mockUserSeq,
+            request);
         alarmService.sendScheduleAssigned(scheduleCreateResponse.scheduleSeq());
         return ApiResponse.ok(scheduleCreateResponse);
     }
@@ -54,21 +57,42 @@ public class ScheduleController {
     }
 
     @GetMapping("")
-    public /*ApiResponse<List<ScheduleListReadResponse>>*/ void getScheduleList(
-        @RequestParam(value = "category", required = false) Long categorySeq,
-        @RequestParam(value = "searchKey", required = false) String searchKey,
-        @RequestParam(value = "unscheduled", required = false) Long unscheduled) {
-        log.info("GET /api/schedule?category={}&searchKey={}&unscheduled={}", categorySeq,
+    public ApiResponse<List<ScheduleListReadResponse>> getScheduleList(
+        @RequestParam(value = "category", required = false) Optional<String> categorySeqList,
+        @RequestParam(value = "searchKey", required = false) Optional<String> searchKey,
+        @RequestParam(value = "unscheduled", required = false) Optional<String> unscheduled) {
+        log.info("GET /api/schedule?category={}&searchKey={}&unscheduled={}", categorySeqList,
             searchKey, unscheduled);
-        // return ApiResponse.ok(scheduleService.getScheduleList(mockUserSeq));
+
+        if (categorySeqList.isPresent()) {
+            return ApiResponse.ok(
+                scheduleService.getScheduleByCategoryList(mockUserSeq, categorySeqList.get()));
+        }
+
+        if (searchKey.isPresent()) {
+            return ApiResponse.ok(
+                scheduleService.getSearchResultByScheduleName(mockUserSeq, searchKey.get()));
+        }
+
+        if (unscheduled.isPresent()) {
+            return ApiResponse.ok(scheduleService.getUnscheduledScheduleList(mockUserSeq));
+        }
+
+        return ApiResponse.ok(scheduleService.getScheduleList(mockUserSeq));
     }
 
     @GetMapping("/{scheduleSeq}/participation")
-    public /*ApiResponse<List<UserReadResponse>*/void getParticipatingUsers(
+    public ApiResponse<List<UserReadResponse>> getParticipatingUsers(
         @PathVariable Long scheduleSeq,
-        @RequestParam(value = "searchKey", required = false) String searchKey) {
-        log.info("GET /api/schedule/{}/participation?searchKey={}", scheduleSeq, searchKey);
-        // return ApiResponse.ok(scheduleService.(scheduleSeq));
+        @RequestParam(value = "userName", required = false) Optional<String> searchKey) {
+        log.info("GET /api/schedule/{}/participation?userName={}", scheduleSeq, searchKey);
+
+        if (searchKey.isPresent()) {
+            return ApiResponse.ok(
+                scheduleService.getParticipatingUserListBySearchKey(scheduleSeq, searchKey.get()));
+        }
+
+        return ApiResponse.ok(scheduleService.getParticipatingUserList(scheduleSeq));
     }
 
     // ==================== 댓글 ====================
@@ -78,7 +102,7 @@ public class ScheduleController {
         @Valid @RequestBody CommentCreateRequest request) {
         log.info("POST /api/schedule/{}/comment", scheduleSeq);
         return ApiResponse.ok(
-            scheduleService.createCommentsOnSchedule(scheduleSeq, mockUserSeq, request));
+            scheduleService.createCommentOnSchedule(scheduleSeq, mockUserSeq, request));
     }
 
     // ==================== 카테고리 ====================
