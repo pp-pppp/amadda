@@ -286,6 +286,22 @@ public class ScheduleService {
 
         categoryRepository.delete(category);
     }
+  
+    @Transactional
+    public void setMentionAlarm(Long userSeq, Long scheduleSeq, boolean isEnabled) {
+        User user = findUserInfo(userSeq);
+        Schedule schedule = findScheduleInfo(scheduleSeq);
+        Participation participation = findParticipationInfo(scheduleSeq, userSeq);
+        participation.updateIsMentionAlarmOn(isEnabled);
+    }
+
+    @Transactional
+    public void setUpdateAlarm(Long userSeq, Long scheduleSeq, boolean isEnabled) {
+        User user = findUserInfo(userSeq);
+        Schedule schedule = findScheduleInfo(scheduleSeq);
+        Participation participation = findParticipationInfo(scheduleSeq, userSeq);
+        participation.updateIsUpdateAlarmOn(isEnabled);
+    }
 
     // ================== private methods ==================
 
@@ -303,7 +319,7 @@ public class ScheduleService {
             }
 
             Participation participation = Participation.create(request, participant, newSchedule,
-                category);
+                category, true, true);
 
             participationRepository.save(participation);
         });
