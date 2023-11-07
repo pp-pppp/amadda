@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { Card } from './Card';
 import { Switch } from '#/components/interaction/Switch/Switch';
+import Spacing from '#/components/typography/Spacing/Spacing';
 
 const meta = {
   title: 'External-temporal/Views/Card',
@@ -32,7 +33,9 @@ export const Primary: Story = {
   args: {
     children: [
       <>아 이것은 카드입니다. 안쪽에 자유롭게 이것저것 넣을 수 있어요.</>,
+      <Spacing />,
       <Switch id="wow" selected={true} value={'wow'} />,
+      <Spacing />,
       <>이런 것도 넣을 수 있습니다</>,
     ],
   },
