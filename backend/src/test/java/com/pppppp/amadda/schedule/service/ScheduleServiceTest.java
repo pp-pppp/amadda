@@ -28,6 +28,7 @@ import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -275,10 +276,12 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         scheduleService.createSchedule(u2.getUserSeq(), r2);
 
         // when
-        List<ScheduleListReadResponse> user1Schedules = scheduleService.getScheduleList(
-            u1.getUserSeq());
-        List<ScheduleListReadResponse> user2Schedules = scheduleService.getScheduleList(
-            u2.getUserSeq());
+        Map<String, String> searchCondition = Map.of("categories", "", "searchKey", "",
+            "unscheduled", "");
+        List<ScheduleListReadResponse> user1Schedules = scheduleService.getScheduleListBySearchCondition(
+            u1.getUserSeq(), searchCondition);
+        List<ScheduleListReadResponse> user2Schedules = scheduleService.getScheduleListBySearchCondition(
+            u2.getUserSeq(), searchCondition);
 
         // then
         assertThat(user1Schedules)
@@ -383,12 +386,17 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         scheduleService.createSchedule(u1.getUserSeq(), r2);
 
         // when
-        List<ScheduleListReadResponse> result1 = scheduleService.getScheduleByCategoryList(
-            u1.getUserSeq(),
-            categories.get(0).getCategorySeq() + "," + categories.get(1).getCategorySeq());
-        List<ScheduleListReadResponse> result2 = scheduleService.getScheduleByCategoryList(
-            u1.getUserSeq(),
-            categories.get(0).getCategorySeq() + "");
+        Map<String, String> searchCondition1 = Map.of("categories",
+            categories.get(0).getCategorySeq() + "," + categories.get(1).getCategorySeq(),
+            "searchKey", "", "unscheduled", "");
+
+        Map<String, String> searchCondition2 = Map.of("categories",
+            String.valueOf(categories.get(0).getCategorySeq()), "searchKey", "", "unscheduled", "");
+
+        List<ScheduleListReadResponse> result1 = scheduleService.getScheduleListBySearchCondition(
+            u1.getUserSeq(), searchCondition1);
+        List<ScheduleListReadResponse> result2 = scheduleService.getScheduleListBySearchCondition(
+            u1.getUserSeq(), searchCondition2);
 
         // then
         assertThat(result1)
@@ -448,8 +456,10 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         scheduleService.createSchedule(u1.getUserSeq(), r2);
 
         // when
-        List<ScheduleListReadResponse> schedules = scheduleService.getSearchResultByScheduleName(
-            u1.getUserSeq(), "일정");
+        Map<String, String> searchCondition = Map.of("searchKey", "일정", "unscheduled", "",
+            "categories", "");
+        List<ScheduleListReadResponse> schedules = scheduleService.getScheduleListBySearchCondition(
+            u1.getUserSeq(), searchCondition);
 
         // then
         assertThat(schedules)
@@ -500,8 +510,10 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         scheduleService.createSchedule(u1.getUserSeq(), r2);
 
         // when
-        List<ScheduleListReadResponse> result = scheduleService.getUnscheduledScheduleList(
-            u1.getUserSeq());
+        Map<String, String> searchCondition = Map.of("categories", "", "searchKey", "",
+            "unscheduled", "true");
+        List<ScheduleListReadResponse> result = scheduleService.getScheduleListBySearchCondition(
+            u1.getUserSeq(), searchCondition);
 
         // then
         assertThat(result)

@@ -24,10 +24,10 @@ import com.pppppp.amadda.user.dto.response.UserReadResponse;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -92,59 +92,15 @@ public class ScheduleService {
             .toList();
     }
 
-    public List<ScheduleListReadResponse> getScheduleList(Long userSeq) {
-
-        // 사용자 체크
-        findUserInfo(userSeq);
-
-        // 요청한 사용자의 참가 정보 모두 가져오기
-        return findScheduleListByUser(userSeq);
-    }
-
-    public List<ScheduleListReadResponse> getSearchResultByScheduleName(Long userSeq,
-        String searchKey) {
-
-        // 사용자 체크
-        findUserInfo(userSeq);
-
-        // 요청한 사용자의 참가 정보 중에 searchKey를 포함하는 일정들 가져오고, 참가 정보를 바탕으로 일정 리스트 만들어서 반환
-        return findScheduleListByScheduleName(userSeq, searchKey);
-    }
-
-    public List<ScheduleListReadResponse> getScheduleByCategoryList(Long userSeq,
-        String categories) {
-        // 카테고리 seq 목록
-        List<Long> categorySeqs = Stream.of(categories.split(","))
-            .map(Long::parseLong)
-            .toList();
-
-        List<ScheduleListReadResponse> schedules = new LinkedList<>();
-
-        categorySeqs.forEach(categorySeq -> {
-            // 1. 해당 카테고리 seq가 유효한지 확인
-            checkCategoryExistsByUser(userSeq, categorySeq);
-
-            // 2. 카테고리에 포함된 일정 가져오기
-            List<ScheduleListReadResponse> categorySchedules = findScheduleListByCategory(userSeq,
-                categorySeq);
-
-            // 3. 목록에 추가
-            schedules.addAll(categorySchedules);
-        });
-
-        // 전체 일정 목록 반환
-        return schedules;
+    public List<ScheduleListReadResponse> getScheduleListBySearchCondition(Long userSeq,
+        Map<String, String> searchCondition) {
+        return findScheduleListBySearchCondition(userSeq, searchCondition);
     }
 
     public List<UserReadResponse> getParticipatingUserListBySearchKey(Long scheduleSeq,
         String searchKey) {
 
         return findParticipatorListByUserName(scheduleSeq, searchKey);
-    }
-
-    public List<ScheduleListReadResponse> getUnscheduledScheduleList(Long userSeq) {
-
-        return findUnscheduledScheduleList(userSeq);
     }
 
     public CommentReadResponse createCommentOnSchedule(Long scheduleSeq,
@@ -177,8 +133,8 @@ public class ScheduleService {
         return findCategoryListByUser(userSeq);
     }
 
-
     // ================== private methods ==================
+
     private void createParticipation(Long userSeq, ScheduleCreateRequest request,
         Schedule newSchedule) {
         request.participants().forEach(response -> {
@@ -258,40 +214,6 @@ public class ScheduleService {
             .toList();
     }
 
-    private List<ScheduleListReadResponse> findScheduleListByUser(Long userSeq) {
-        return participationRepository.findByUser_UserSeqAndIsDeletedFalse(userSeq)
-            .stream()
-            .map(this::findScheduleByParticipation)
-            .toList();
-    }
-
-    private List<ScheduleListReadResponse> findScheduleListByScheduleName(Long userSeq,
-        String searchKey) {
-        return participationRepository.findByUser_UserSeqAndScheduleNameContainingAndIsDeletedFalse(
-                userSeq, searchKey)
-            .stream()
-            .map(this::findScheduleByParticipation)
-            .toList();
-    }
-
-    private List<ScheduleListReadResponse> findScheduleListByCategory(Long userSeq,
-        Long categorySeq) {
-        return participationRepository.findByUser_UserSeqAndCategory_CategorySeqAndIsDeletedFalse(
-                userSeq, categorySeq)
-            .stream()
-            .map(this::findScheduleByParticipation)
-            .toList();
-    }
-
-    private List<ScheduleListReadResponse> findUnscheduledScheduleList(Long userSeq) {
-
-        return participationRepository.findByUser_UserSeqAndIsDeletedFalse(userSeq)
-            .stream()
-            .filter(participation -> !participation.getSchedule().isDateSelected())
-            .map(this::findScheduleByParticipation)
-            .toList();
-    }
-
     private List<CommentReadResponse> findCommentListBySchedule(Long scheduleSeq) {
         return commentRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(scheduleSeq)
             .stream()
@@ -306,17 +228,59 @@ public class ScheduleService {
             .toList();
     }
 
-    private void checkCategoryExistsByUser(Long userSeq, Long categorySeq) {
-        if (!categoryRepository.existsByUser_UserSeqAndCategorySeqAndIsDeletedFalse(userSeq,
-            categorySeq)) {
-            throw new RestApiException(CategoryErrorCode.CATEGORY_NOT_FOUND);
-        }
-    }
-
     private void checkCategoryNameAlreadyExists(Long userSeq, String categoryName) {
         if (categoryRepository.existsByUser_UserSeqAndCategoryNameAndIsDeletedFalse(userSeq,
             categoryName)) {
             throw new RestApiException(CategoryErrorCode.CATEGORY_ALREADY_EXISTS);
         }
+    }
+
+    private List<ScheduleListReadResponse> findScheduleListBySearchCondition(Long userSeq,
+        Map<String, String> searchCondition) {
+        // 사용자 체크
+        findUserInfo(userSeq);
+
+        // 검색조건 확인
+        String categorySeqList = searchCondition.get("categories");
+        String searchKey = searchCondition.get("searchKey");
+        String unscheduled = searchCondition.get("unscheduled");
+
+        return participationRepository.findByUser_UserSeqAndIsDeletedFalse(userSeq)
+            .stream()
+            // filter 1. 카테고리
+            .filter(participation -> {
+                if (!categorySeqList.isEmpty()) {
+
+                    // categorySeq 목록 가져오기
+                    List<Long> categorySeqs = Arrays.stream(
+                            categorySeqList.split(","))
+                        .map(Long::parseLong)
+                        .toList();
+
+                    // 해당 카테고리에 포함되는 경우만 반환
+                    return participation.getCategory() != null && categorySeqs.contains(
+                        participation.getCategory().getCategorySeq());
+                }
+                // false인 경우 모든 경우 반환
+                return true;
+            })
+            // filter 2. 일정명
+            .filter(participation -> {
+                if (!searchKey.isEmpty()) {
+                    return participation.getScheduleName()
+                        .contains(searchKey);
+                }
+                return true;
+            })
+            // filter 3. 미정 일정
+            .filter(participation -> {
+                if (!unscheduled.isEmpty()) {
+                    return !participation.getSchedule().isDateSelected();
+                }
+                return true;
+            })
+            // TODO: 월별, 주별 일정 반환할 시 필터 추가 필요
+            .map(this::findScheduleByParticipation)
+            .toList();
     }
 }

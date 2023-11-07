@@ -14,6 +14,7 @@ import com.pppppp.amadda.schedule.service.ScheduleService;
 import com.pppppp.amadda.user.dto.response.UserReadResponse;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,21 +65,11 @@ public class ScheduleController {
         log.info("GET /api/schedule?category={}&searchKey={}&unscheduled={}", categorySeqList,
             searchKey, unscheduled);
 
-        if (categorySeqList.isPresent()) {
-            return ApiResponse.ok(
-                scheduleService.getScheduleByCategoryList(mockUserSeq, categorySeqList.get()));
-        }
+        Map<String, String> searchCondition = Map.of("categories", categorySeqList.orElse(""),
+            "searchKey", searchKey.orElse(""), "unscheduled", unscheduled.orElse(""));
 
-        if (searchKey.isPresent()) {
-            return ApiResponse.ok(
-                scheduleService.getSearchResultByScheduleName(mockUserSeq, searchKey.get()));
-        }
-
-        if (unscheduled.isPresent()) {
-            return ApiResponse.ok(scheduleService.getUnscheduledScheduleList(mockUserSeq));
-        }
-
-        return ApiResponse.ok(scheduleService.getScheduleList(mockUserSeq));
+        return ApiResponse.ok(scheduleService.getScheduleListBySearchCondition(mockUserSeq,
+            searchCondition));
     }
 
     @GetMapping("/{scheduleSeq}/participation")
@@ -87,12 +78,10 @@ public class ScheduleController {
         @RequestParam(value = "userName", required = false) Optional<String> searchKey) {
         log.info("GET /api/schedule/{}/participation?userName={}", scheduleSeq, searchKey);
 
-        if (searchKey.isPresent()) {
-            return ApiResponse.ok(
-                scheduleService.getParticipatingUserListBySearchKey(scheduleSeq, searchKey.get()));
-        }
-
-        return ApiResponse.ok(scheduleService.getParticipatingUserList(scheduleSeq));
+        // searchKey가 존재하면 검색 결과를, 존재하지 않으면 전체 참여자 목록을 반환
+        return searchKey.map(s -> ApiResponse.ok(
+                scheduleService.getParticipatingUserListBySearchKey(scheduleSeq, s)))
+            .orElseGet(() -> ApiResponse.ok(scheduleService.getParticipatingUserList(scheduleSeq)));
     }
 
     // ==================== 댓글 ====================
