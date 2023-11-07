@@ -384,7 +384,7 @@ class ScheduleControllerTest {
                 print()
             )
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value("일정에 대한 수정 권한이 필요해요!"));
+            .andExpect(jsonPath("$.message").value("일정에 대한 수정 권한을 설정해 주세요!"));
     }
 
 
