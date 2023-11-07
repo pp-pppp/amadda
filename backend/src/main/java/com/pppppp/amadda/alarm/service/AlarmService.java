@@ -27,12 +27,14 @@ import com.pppppp.amadda.user.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class AlarmService {
 
     private final UserRepository userRepository;
@@ -84,25 +86,32 @@ public class AlarmService {
 
     @Transactional
     public void sendFriendRequest(Long ownerSeq, Long friendSeq) {
-        User owner = getUser(ownerSeq);
         User friend = getUser(friendSeq);
-        FriendRequest friendRequest = getFriendRequest(owner, friend);
 
-        AlarmFriendRequest value = AlarmFriendRequest.create(friendRequest.getRequestSeq(),
-            owner.getUserSeq(), owner.getUserName());
+        if (checkAlarmSetting(friend.getUserSeq(), AlarmType.FRIEND_REQUEST)) {
+            User owner = getUser(ownerSeq);
+            FriendRequest friendRequest = getFriendRequest(owner, friend);
 
-        kafkaProducer.sendAlarm(KafkaTopic.ALARM_FRIEND_REQUEST, friend.getUserSeq(), value);
+            AlarmFriendRequest value = AlarmFriendRequest.create(friendRequest.getRequestSeq(),
+                owner.getUserSeq(), owner.getUserName());
+
+            kafkaProducer.sendAlarm(KafkaTopic.ALARM_FRIEND_REQUEST, friend.getUserSeq(), value);
+        }
     }
 
     @Transactional
     public void sendFriendAccept(Long ownerSeq, Long friendSeq) {
         User owner = getUser(ownerSeq);
-        User friend = getUser(friendSeq);
 
-        AlarmFriendAccept value = AlarmFriendAccept.create(friend.getUserSeq(),
-            friend.getUserName());
+        if (checkAlarmSetting(owner.getUserSeq(), AlarmType.FRIEND_ACCEPT)) {
+            User friend = getUser(friendSeq);
 
-        kafkaProducer.sendAlarm(KafkaTopic.ALARM_FRIEND_ACCEPT, owner.getUserSeq(), value);
+            AlarmFriendAccept value = AlarmFriendAccept.create(friend.getUserSeq(),
+                friend.getUserName());
+
+            kafkaProducer.sendAlarm(KafkaTopic.ALARM_FRIEND_ACCEPT, owner.getUserSeq(), value);
+        }
+
     }
 
     @Transactional
@@ -112,13 +121,19 @@ public class AlarmService {
 
         List<Participation> participations = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
             scheduleSeq);
-        participations.stream().filter(participation -> !owner.equals(participation.getUser()))
+
+        participations.stream()
+            .filter(participation -> {
+                User user = participation.getUser();
+                return !owner.equals(user) && checkAlarmSetting(user.getUserSeq(),
+                    AlarmType.SCHEDULE_ASSIGNED);
+            })
             .forEach(participation -> {
-                AlarmScheduleAssigned value = AlarmScheduleAssigned.create(
-                    schedule.getScheduleSeq(), participation.getScheduleName(),
-                    owner.getUserSeq(), owner.getUserName());
-                kafkaProducer.sendAlarm(KafkaTopic.ALARM_SCHEDULE_ASSIGNED,
-                    participation.getUser().getUserSeq(), value);
+                    AlarmScheduleAssigned value = AlarmScheduleAssigned.create(
+                        schedule.getScheduleSeq(), participation.getScheduleName(),
+                        owner.getUserSeq(), owner.getUserName());
+                    kafkaProducer.sendAlarm(KafkaTopic.ALARM_SCHEDULE_ASSIGNED,
+                        participation.getUser().getUserSeq(), value);
             });
     }
 
@@ -136,5 +151,11 @@ public class AlarmService {
         return friendRequestRepository.findByOwnerAndFriend(owner, friend)
             .orElseThrow(() -> new RestApiException(
                 FriendRequestErrorCode.FRIEND_REQUEST_NOT_FOUND));
+    }
+
+    public boolean checkAlarmSetting(Long userSeq, AlarmType alarmType) {
+        Optional<AlarmConfig> config = alarmConfigRepository.findByUser_UserSeqAndAlarmTypeAndIsEnabledFalseAndIsDeletedFalse(
+            userSeq, alarmType);
+        return config.map(AlarmConfig::isEnabled).orElse(true);
     }
 }

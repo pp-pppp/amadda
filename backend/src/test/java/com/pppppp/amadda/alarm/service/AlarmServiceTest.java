@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -34,6 +35,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -76,6 +78,64 @@ class AlarmServiceTest extends IntegrationTestSupport {
         scheduleRepository.deleteAllInBatch();
         friendRequestRepository.deleteAllInBatch();
         userRepository.deleteAllInBatch();
+    }
+
+    @DisplayName("글로벌 알람 설정 테스트 - table에 값이 있고 on으로 설정된 경우")
+    @ParameterizedTest
+    @CsvSource(value = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
+        "SCHEDULE_UPDATE"})
+    void checkAlarmConfigOn(String type) {
+        // given
+        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User user = userRepository.save(u1);
+
+        AlarmType alarmType = AlarmType.of(type);
+        AlarmConfig ac = AlarmConfig.create(user, alarmType, true);
+        alarmConfigRepository.save(ac);
+
+        // when
+        boolean actual = alarmService.checkAlarmSetting(user.getUserSeq(), alarmType);
+
+        // then
+        assertTrue(actual);
+    }
+
+    @DisplayName("글로벌 알람 설정 테스트 - table에 값이 있고 off으로 설정된 경우")
+    @ParameterizedTest
+    @CsvSource(value = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
+        "SCHEDULE_UPDATE"})
+    void checkAlarmConfigOff(String type) {
+        // given
+        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User user = userRepository.save(u1);
+
+        AlarmType alarmType = AlarmType.of(type);
+        AlarmConfig ac = AlarmConfig.create(user, alarmType, false);
+        alarmConfigRepository.save(ac);
+
+        // when
+        boolean actual = alarmService.checkAlarmSetting(user.getUserSeq(), alarmType);
+
+        // then
+        assertFalse(actual);
+    }
+
+    @DisplayName("글로벌 알람 설정 테스트 - table에 값이 없는 경우")
+    @ParameterizedTest
+    @CsvSource(value = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
+        "SCHEDULE_UPDATE"})
+    void checkAlarmConfig(String type) {
+        // given
+        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User user = userRepository.save(u1);
+
+        AlarmType alarmType = AlarmType.of(type);
+
+        // when
+        boolean actual = alarmService.checkAlarmSetting(user.getUserSeq(), alarmType);
+
+        // then
+        assertTrue(actual);
     }
 
     @DisplayName("알림 목록 가져오기")
@@ -303,7 +363,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
             .hasMessage(AlarmErrorCode.CANNOT_SET_GLOBAL_CONFIG.name());
     }
 
-    @DisplayName("친구 신청 알람")
+    @DisplayName("친구 신청 알람 - 설정 값이 없는 경우")
     @Test
     void friend_request() {
         // given
@@ -323,7 +383,53 @@ class AlarmServiceTest extends IntegrationTestSupport {
         verify(kafkaTemplate, times(1)).send(eq(topic), eq(key), any());
     }
 
-    @DisplayName("친구 수락 알람")
+    @DisplayName("친구 신청 알람 - 설정 값이 On인 경우")
+    @Test
+    void friend_request_on() {
+        // given
+        List<User> users = create2users();
+        User owner = users.get(0);
+        User friend = users.get(1);
+
+        FriendRequest friendRequest = FriendRequest.create(owner, friend);
+        friendRequestRepository.save(friendRequest);
+
+        AlarmConfig ac = AlarmConfig.create(friend, AlarmType.FRIEND_REQUEST, true);
+        alarmConfigRepository.save(ac);
+
+        // when
+        alarmService.sendFriendRequest(owner.getUserSeq(), friend.getUserSeq());
+
+        // then
+        String topic = KafkaTopic.ALARM_FRIEND_REQUEST;
+        Long key = friend.getUserSeq();
+        verify(kafkaTemplate, times(1)).send(eq(topic), eq(key), any());
+    }
+
+    @DisplayName("친구 신청 알람 - 설정 값이 Off인 경우")
+    @Test
+    void friend_request_off() {
+        // given
+        List<User> users = create2users();
+        User owner = users.get(0);
+        User friend = users.get(1);
+
+        FriendRequest friendRequest = FriendRequest.create(owner, friend);
+        friendRequestRepository.save(friendRequest);
+
+        AlarmConfig ac = AlarmConfig.create(friend, AlarmType.FRIEND_REQUEST, false);
+        alarmConfigRepository.save(ac);
+
+        // when
+        alarmService.sendFriendRequest(owner.getUserSeq(), friend.getUserSeq());
+
+        // then
+        String topic = KafkaTopic.ALARM_FRIEND_REQUEST;
+        Long key = friend.getUserSeq();
+        verify(kafkaTemplate, never()).send(eq(topic), eq(key), any());
+    }
+
+    @DisplayName("친구 수락 알람 - 설정 값이 없는 경우")
     @Test
     void friend_accept() {
         // given
@@ -343,7 +449,53 @@ class AlarmServiceTest extends IntegrationTestSupport {
         verify(kafkaTemplate, times(1)).send(eq(topic), eq(key), any());
     }
 
-    @DisplayName("일정 할당 알람")
+    @DisplayName("친구 수락 알람 - 설정 값이 On인 경우")
+    @Test
+    void friend_accept_on() {
+        // given
+        List<User> users = create2users();
+        User owner = users.get(0);
+        User friend = users.get(1);
+
+        FriendRequest friendRequest = FriendRequest.create(owner, friend);
+        friendRequestRepository.save(friendRequest);
+
+        AlarmConfig ac = AlarmConfig.create(owner, AlarmType.FRIEND_ACCEPT, true);
+        alarmConfigRepository.save(ac);
+
+        // when
+        alarmService.sendFriendAccept(owner.getUserSeq(), friend.getUserSeq());
+
+        // then
+        String topic = KafkaTopic.ALARM_FRIEND_ACCEPT;
+        Long key = owner.getUserSeq();
+        verify(kafkaTemplate, times(1)).send(eq(topic), eq(key), any());
+    }
+
+    @DisplayName("친구 수락 알람 - 설정 값이 Off인 경우")
+    @Test
+    void friend_accept_off() {
+        // given
+        List<User> users = create2users();
+        User owner = users.get(0);
+        User friend = users.get(1);
+
+        FriendRequest friendRequest = FriendRequest.create(owner, friend);
+        friendRequestRepository.save(friendRequest);
+
+        AlarmConfig ac = AlarmConfig.create(owner, AlarmType.FRIEND_ACCEPT, false);
+        alarmConfigRepository.save(ac);
+
+        // when
+        alarmService.sendFriendAccept(owner.getUserSeq(), friend.getUserSeq());
+
+        // then
+        String topic = KafkaTopic.ALARM_FRIEND_ACCEPT;
+        Long key = owner.getUserSeq();
+        verify(kafkaTemplate, never()).send(eq(topic), eq(key), any());
+    }
+
+    @DisplayName("일정 할당 알람 - 설정 값이 없는 경우")
     @Test
     void schedule_assigned() {
         // given
@@ -372,7 +524,77 @@ class AlarmServiceTest extends IntegrationTestSupport {
         // then
         String topic = KafkaTopic.ALARM_SCHEDULE_ASSIGNED;
         Long key = user2.getUserSeq();
-        verify(kafkaTemplate, times(1)).send(eq(topic), eq(key), any());
+        verify(kafkaTemplate, times(1)).send(eq(topic), eq(user2.getUserSeq()), any());
+    }
+
+    @DisplayName("일정 할당 알람 - 설정 값이 On인 경우")
+    @Test
+    void schedule_assigned_on() {
+        // given
+        List<User> users = create2users();
+        User user1 = users.get(0);
+        User user2 = users.get(1);
+
+        Schedule schedule = Schedule.builder().authorizedUser(user1).build();
+        Schedule savedSchedule = scheduleRepository.save(schedule);
+
+        AlarmConfig ac = AlarmConfig.create(user2, AlarmType.SCHEDULE_ASSIGNED, true);
+        alarmConfigRepository.save(ac);
+
+        Participation participation1 = Participation.builder()
+            .user(user1)
+            .schedule(savedSchedule)
+            .scheduleName("밥")
+            .build();
+        Participation participation2 = Participation.builder()
+            .user(user2)
+            .schedule(savedSchedule)
+            .scheduleName("밥밥")
+            .build();
+        participationRepository.saveAll(List.of(participation1, participation2));
+
+        // when
+        alarmService.sendScheduleAssigned(savedSchedule.getScheduleSeq());
+
+        // then
+        String topic = KafkaTopic.ALARM_SCHEDULE_ASSIGNED;
+        Long key = user2.getUserSeq();
+        verify(kafkaTemplate, times(1)).send(eq(topic), eq(user2.getUserSeq()), any());
+    }
+
+    @DisplayName("일정 할당 알람 - 설정 값이 Off인 경우")
+    @Test
+    void schedule_assigned_off() {
+        // given
+        List<User> users = create2users();
+        User user1 = users.get(0);
+        User user2 = users.get(1);
+
+        Schedule schedule = Schedule.builder().authorizedUser(user1).build();
+        Schedule savedSchedule = scheduleRepository.save(schedule);
+
+        Participation participation1 = Participation.builder()
+            .user(user1)
+            .schedule(savedSchedule)
+            .scheduleName("밥")
+            .build();
+        Participation participation2 = Participation.builder()
+            .user(user2)
+            .schedule(savedSchedule)
+            .scheduleName("밥밥")
+            .build();
+        participationRepository.saveAll(List.of(participation1, participation2));
+
+        AlarmConfig ac = AlarmConfig.create(user2, AlarmType.SCHEDULE_ASSIGNED, false);
+        alarmConfigRepository.save(ac);
+
+        // when
+        alarmService.sendScheduleAssigned(savedSchedule.getScheduleSeq());
+
+        // then
+        String topic = KafkaTopic.ALARM_SCHEDULE_ASSIGNED;
+        Long key = user2.getUserSeq();
+        verify(kafkaTemplate, never()).send(eq(topic), eq(user2.getUserSeq()), any());
     }
 
     private List<User> create2users() {
