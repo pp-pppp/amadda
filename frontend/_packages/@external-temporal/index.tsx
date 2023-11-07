@@ -19,6 +19,7 @@ export * from './components/interaction/Textarea/Textarea';
 export * from './components/interaction/FAB/FAB';
 export * from './components/view/Tooltip/Tooltip';
 export * from './components/view/Filter/Filter';
+export * from './components/view/Card/Card';
 
 export * from './components/layout/Flex';
 
