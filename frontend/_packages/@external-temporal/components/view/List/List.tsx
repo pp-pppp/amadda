@@ -4,14 +4,14 @@ import { LI_BASE, UL_BASE } from './List.css';
 import { H3 } from '#/components/typography/Hn/H3';
 import Spacing from '#/components/typography/Spacing/Spacing';
 
-interface ListProps extends HTMLAttributes<HTMLDivElement> {
+export interface ListProps extends HTMLAttributes<HTMLDivElement> {
   title?: string;
   children: ReactNode;
 }
-interface UlProps extends HTMLAttributes<HTMLUListElement> {
+export interface UlProps extends HTMLAttributes<HTMLUListElement> {
   children: ReactNode;
 }
-interface LiProps extends HTMLAttributes<HTMLLIElement> {
+export interface LiProps extends HTMLAttributes<HTMLLIElement> {
   children: ReactNode;
 }
 
