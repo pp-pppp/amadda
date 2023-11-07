@@ -27,12 +27,14 @@ import com.pppppp.amadda.user.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class AlarmService {
 
     private final UserRepository userRepository;
@@ -119,13 +121,18 @@ public class AlarmService {
 
         List<Participation> participations = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
             scheduleSeq);
-        participations.stream().filter(participation -> !owner.equals(participation.getUser()))
+
+        participations.stream()
+            .filter(participation -> !owner.equals(participation.getUser()))
             .forEach(participation -> {
-                AlarmScheduleAssigned value = AlarmScheduleAssigned.create(
-                    schedule.getScheduleSeq(), participation.getScheduleName(),
-                    owner.getUserSeq(), owner.getUserName());
-                kafkaProducer.sendAlarm(KafkaTopic.ALARM_SCHEDULE_ASSIGNED,
-                    participation.getUser().getUserSeq(), value);
+                User user = participation.getUser();
+                if (checkAlarmSetting(user.getUserSeq(), AlarmType.SCHEDULE_ASSIGNED)) {
+                    AlarmScheduleAssigned value = AlarmScheduleAssigned.create(
+                        schedule.getScheduleSeq(), participation.getScheduleName(),
+                        owner.getUserSeq(), owner.getUserName());
+                    kafkaProducer.sendAlarm(KafkaTopic.ALARM_SCHEDULE_ASSIGNED,
+                        user.getUserSeq(), value);
+                }
             });
     }
 

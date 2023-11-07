@@ -495,7 +495,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         verify(kafkaTemplate, never()).send(eq(topic), eq(key), any());
     }
 
-    @DisplayName("일정 할당 알람")
+    @DisplayName("일정 할당 알람 - 설정 값이 없는 경우")
     @Test
     void schedule_assigned() {
         // given
@@ -524,7 +524,77 @@ class AlarmServiceTest extends IntegrationTestSupport {
         // then
         String topic = KafkaTopic.ALARM_SCHEDULE_ASSIGNED;
         Long key = user2.getUserSeq();
-        verify(kafkaTemplate, times(1)).send(eq(topic), eq(key), any());
+        verify(kafkaTemplate, times(1)).send(eq(topic), eq(user2.getUserSeq()), any());
+    }
+
+    @DisplayName("일정 할당 알람 - 설정 값이 On인 경우")
+    @Test
+    void schedule_assigned_on() {
+        // given
+        List<User> users = create2users();
+        User user1 = users.get(0);
+        User user2 = users.get(1);
+
+        Schedule schedule = Schedule.builder().authorizedUser(user1).build();
+        Schedule savedSchedule = scheduleRepository.save(schedule);
+
+        AlarmConfig ac = AlarmConfig.create(user2, AlarmType.SCHEDULE_ASSIGNED, true);
+        alarmConfigRepository.save(ac);
+
+        Participation participation1 = Participation.builder()
+            .user(user1)
+            .schedule(savedSchedule)
+            .scheduleName("밥")
+            .build();
+        Participation participation2 = Participation.builder()
+            .user(user2)
+            .schedule(savedSchedule)
+            .scheduleName("밥밥")
+            .build();
+        participationRepository.saveAll(List.of(participation1, participation2));
+
+        // when
+        alarmService.sendScheduleAssigned(savedSchedule.getScheduleSeq());
+
+        // then
+        String topic = KafkaTopic.ALARM_SCHEDULE_ASSIGNED;
+        Long key = user2.getUserSeq();
+        verify(kafkaTemplate, times(1)).send(eq(topic), eq(user2.getUserSeq()), any());
+    }
+
+    @DisplayName("일정 할당 알람 - 설정 값이 Off인 경우")
+    @Test
+    void schedule_assigned_off() {
+        // given
+        List<User> users = create2users();
+        User user1 = users.get(0);
+        User user2 = users.get(1);
+
+        Schedule schedule = Schedule.builder().authorizedUser(user1).build();
+        Schedule savedSchedule = scheduleRepository.save(schedule);
+
+        Participation participation1 = Participation.builder()
+            .user(user1)
+            .schedule(savedSchedule)
+            .scheduleName("밥")
+            .build();
+        Participation participation2 = Participation.builder()
+            .user(user2)
+            .schedule(savedSchedule)
+            .scheduleName("밥밥")
+            .build();
+        participationRepository.saveAll(List.of(participation1, participation2));
+
+        AlarmConfig ac = AlarmConfig.create(user2, AlarmType.SCHEDULE_ASSIGNED, false);
+        alarmConfigRepository.save(ac);
+
+        // when
+        alarmService.sendScheduleAssigned(savedSchedule.getScheduleSeq());
+
+        // then
+        String topic = KafkaTopic.ALARM_SCHEDULE_ASSIGNED;
+        Long key = user2.getUserSeq();
+        verify(kafkaTemplate, never()).send(eq(topic), eq(user2.getUserSeq()), any());
     }
 
     private List<User> create2users() {
