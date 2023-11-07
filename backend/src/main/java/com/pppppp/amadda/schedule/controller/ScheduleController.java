@@ -110,7 +110,7 @@ public class ScheduleController {
     }
 
     // ==================== 개별 알림 설정 ====================
-    // TODO: 댓글 알림 ON : POST /{seq}/subscribe/mention
+
     @PostMapping("/{scheduleSeq}/subscribe/mention")
     public ApiResponse<String> subscribeMention(@PathVariable Long scheduleSeq) {
         log.info("POST /api/schedule/{}/subscribe/mention", scheduleSeq);
@@ -119,7 +119,14 @@ public class ScheduleController {
         return ApiResponse.ok("일정의 댓글 멘션 알림을 설정합니다.");
     }
 
-    // TODO: 댓글 알림 OFF : POST /{seq}/unsubscribe/mention
+    @PostMapping("/{scheduleSeq}/unsubscribe/mention")
+    public ApiResponse<String> unsubscribeMention(@PathVariable Long scheduleSeq) {
+        log.info("POST /api/schedule/{}/subscribe/mention", scheduleSeq);
+        Long userSeq = 1L;
+        scheduleService.setMentionAlarm(userSeq, scheduleSeq, false);
+        return ApiResponse.ok("일정의 댓글 멘션 알림을 해제합니다.");
+    }
+
     // TODO: 수정 알림 ON : POST /{seq}/subscribe/update
     // TODO: 수정 알림 OFF : POST /{seq}/unsubscribe/update
 }
