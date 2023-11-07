@@ -1,6 +1,9 @@
 import { styleVariants } from '@vanilla-extract/css';
 
 export const VSIZE = styleVariants({
+  '0.25': {
+    height: '0.25rem',
+  },
   '0.5': {
     height: '0.5rem',
   },
@@ -21,6 +24,9 @@ export const VSIZE = styleVariants({
   },
 });
 export const HSIZE = styleVariants({
+  '0.25': {
+    width: '0.25rem',
+  },
   '0.5': {
     width: '0.5rem',
   },
