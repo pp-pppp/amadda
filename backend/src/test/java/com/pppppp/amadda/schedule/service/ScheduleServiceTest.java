@@ -792,6 +792,38 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         assertTrue(participation.get().isUpdateAlarmOn());
     }
 
+    @DisplayName("수정 알림 설정을 Off으로 설정한다.")
+    @Test
+    void update_alarm_off() {
+        // givne
+        User user = userRepository.findAll().get(0);
+
+        ScheduleCreateRequest request = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(false)
+            .participants(List.of(
+                UserReadResponse.of(user)))
+            .build();
+        scheduleService.createSchedule(user.getUserSeq(), request);
+
+        Schedule schedule = scheduleRepository.findAll().get(0);
+
+        // when
+        scheduleService.setUpdateAlarm(user.getUserSeq(), schedule.getScheduleSeq(), false);
+
+        // then
+        Optional<Participation> participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+            schedule.getScheduleSeq(), user.getUserSeq());
+        assertTrue(participation.isPresent());
+        assertFalse(participation.get().isUpdateAlarmOn());
+    }
+
     @DisplayName("존재하지 않는 일정의 수정 알림을 수정할 수 없다.")
     @Test
     void cannot_set_update_alram_if_schedule_not_exist() {

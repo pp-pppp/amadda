@@ -134,5 +134,12 @@ public class ScheduleController {
         scheduleService.setUpdateAlarm(userSeq, scheduleSeq, true);
         return ApiResponse.ok("일정의 수정 알림을 설정합니다.");
     }
-    // TODO: 수정 알림 OFF : POST /{seq}/unsubscribe/update
+
+    @PostMapping("/{scheduleSeq}/unsubscribe/update")
+    public ApiResponse<String> unsubscribeUpdate(@PathVariable Long scheduleSeq) {
+        log.info("POST /api/schedule/{}/unsubscribe/update", scheduleSeq);
+        Long userSeq = 1L;
+        scheduleService.setUpdateAlarm(userSeq, scheduleSeq, false);
+        return ApiResponse.ok("일정의 수정 알림을 해제합니다.");
+    }
 }
