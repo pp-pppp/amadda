@@ -141,6 +141,14 @@ public class ScheduleService {
         participation.updateIsMentionAlarmOn(isEnabled);
     }
 
+    @Transactional
+    public void setUpdateAlarm(Long userSeq, Long scheduleSeq, boolean isEnabled) {
+        User user = findUserInfo(userSeq);
+        Schedule schedule = findScheduleInfo(scheduleSeq);
+        Participation participation = findParticipationInfo(scheduleSeq, userSeq);
+        participation.updateIsUpdateAlarmOn(isEnabled);
+    }
+
     // ================== private methods ==================
 
     private void createParticipation(Long userSeq, ScheduleCreateRequest request,

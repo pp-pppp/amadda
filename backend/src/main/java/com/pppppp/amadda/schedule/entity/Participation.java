@@ -88,4 +88,8 @@ public class Participation extends BaseEntity {
     public void updateIsMentionAlarmOn(boolean isMentionAlarmOn) {
         this.isMentionAlarmOn = isMentionAlarmOn;
     }
+
+    public void updateIsUpdateAlarmOn(boolean isUpdateAlarmOn) {
+        this.isUpdateAlarmOn = isUpdateAlarmOn;
+    }
 }

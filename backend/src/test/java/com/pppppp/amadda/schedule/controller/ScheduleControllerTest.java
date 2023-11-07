@@ -474,7 +474,7 @@ class ScheduleControllerTest {
             .andExpect(jsonPath("$.message").value("카테고리 색을 선택해주세요!"));
     }
 
-    @DisplayName("일정의 댓글 알림을설정한다.")
+    @DisplayName("일정의 댓글 알림을 설정한다.")
     @Test
     void setMentionAlarmOnPerSchedule() throws Exception {
         mockMvc.perform(
@@ -502,6 +502,21 @@ class ScheduleControllerTest {
             .andExpect(jsonPath("$.status").value("OK"))
             .andExpect(jsonPath("$.message").value("OK"))
             .andExpect(jsonPath("$.data").value("일정의 댓글 멘션 알림을 해제합니다."));
+    }
+
+    @DisplayName("일정의 수정 알림을 설정한다.")
+    @Test
+    void setUpdateAlarmOnPerSchedule() throws Exception {
+        mockMvc.perform(
+                post("/api/schedule/1/subscribe/update")
+            ).andDo(
+                print()
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"))
+            .andExpect(jsonPath("$.data").value("일정의 수정 알림을 설정합니다."));
     }
 
 
