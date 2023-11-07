@@ -34,6 +34,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -76,6 +77,64 @@ class AlarmServiceTest extends IntegrationTestSupport {
         scheduleRepository.deleteAllInBatch();
         friendRequestRepository.deleteAllInBatch();
         userRepository.deleteAllInBatch();
+    }
+
+    @DisplayName("글로벌 알람 설정 테스트 - table에 값이 있고 on으로 설정된 경우")
+    @ParameterizedTest
+    @CsvSource(value = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
+        "SCHEDULE_UPDATE"})
+    void checkAlarmConfigOn(String type) {
+        // given
+        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User user = userRepository.save(u1);
+
+        AlarmType alarmType = AlarmType.of(type);
+        AlarmConfig ac = AlarmConfig.create(user, alarmType, true);
+        alarmConfigRepository.save(ac);
+
+        // when
+        boolean actual = alarmService.checkAlarmSetting(user.getUserSeq(), alarmType);
+
+        // then
+        assertTrue(actual);
+    }
+
+    @DisplayName("글로벌 알람 설정 테스트 - table에 값이 있고 off으로 설정된 경우")
+    @ParameterizedTest
+    @CsvSource(value = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
+        "SCHEDULE_UPDATE"})
+    void checkAlarmConfigOff(String type) {
+        // given
+        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User user = userRepository.save(u1);
+
+        AlarmType alarmType = AlarmType.of(type);
+        AlarmConfig ac = AlarmConfig.create(user, alarmType, false);
+        alarmConfigRepository.save(ac);
+
+        // when
+        boolean actual = alarmService.checkAlarmSetting(user.getUserSeq(), alarmType);
+
+        // then
+        assertFalse(actual);
+    }
+
+    @DisplayName("글로벌 알람 설정 테스트 - table에 값이 없는 경우")
+    @ParameterizedTest
+    @CsvSource(value = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
+        "SCHEDULE_UPDATE"})
+    void checkAlarmConfig(String type) {
+        // given
+        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User user = userRepository.save(u1);
+
+        AlarmType alarmType = AlarmType.of(type);
+
+        // when
+        boolean actual = alarmService.checkAlarmSetting(user.getUserSeq(), alarmType);
+
+        // then
+        assertTrue(actual);
     }
 
     @DisplayName("알림 목록 가져오기")

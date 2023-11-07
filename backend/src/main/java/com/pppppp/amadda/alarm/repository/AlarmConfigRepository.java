@@ -12,4 +12,7 @@ public interface AlarmConfigRepository extends JpaRepository<AlarmConfig, Long> 
     Optional<AlarmConfig> findByUser_UserSeqAndAlarmTypeAndIsDeletedFalse(Long userSeq,
         AlarmType alarmType);
 
+    Optional<AlarmConfig> findByUser_UserSeqAndAlarmTypeAndIsEnabledFalseAndIsDeletedFalse(
+        Long userSeq, AlarmType alarmType);
+
 }

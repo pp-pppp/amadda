@@ -137,4 +137,10 @@ public class AlarmService {
             .orElseThrow(() -> new RestApiException(
                 FriendRequestErrorCode.FRIEND_REQUEST_NOT_FOUND));
     }
+
+    public boolean checkAlarmSetting(Long userSeq, AlarmType alarmType) {
+        Optional<AlarmConfig> config = alarmConfigRepository.findByUser_UserSeqAndAlarmTypeAndIsEnabledFalseAndIsDeletedFalse(
+            userSeq, alarmType);
+        return config.map(AlarmConfig::isEnabled).orElse(true);
+    }
 }
