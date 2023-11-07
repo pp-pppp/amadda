@@ -3,7 +3,6 @@ const { createVanillaExtractPlugin } = require('@vanilla-extract/next-plugin');
 const withVanillaExtract = createVanillaExtractPlugin();
 module.exports = withVanillaExtract({
   images: {
-    domains: [k.kakaocdn.net],
     domains: [process.env.KAKAO_CDN_DOMAIN],
   },
   transpilePackages: ['ui'],
