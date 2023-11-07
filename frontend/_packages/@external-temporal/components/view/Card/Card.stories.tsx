@@ -2,24 +2,25 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Card } from './Card';
+import { Switch } from '#/components/interaction/Switch/Switch';
 
 const meta = {
   title: 'External-temporal/Views/Card',
   component: Card,
   parameters: {
     layout: 'centered',
-    componentSubtitle: '다중 선택이 가능한 드롭다운입니다.',
+    componentSubtitle: '여러 요소들을 넣을 수 있는 카드 컴포넌트입니다.',
     docs: {
       description: {
-        component: 'dropdown 안에 checkbox를 넣었습니다. ',
+        component:
+          '안쪽에 여러 요소들을 넣어 묶을 수 있습니다. 외곽선이 없는 카드와 있는 카드가 있고, 외곽선이 없는 경우는 padding 값도 설정되어있지 않습니다.',
       },
     },
   },
   tags: ['autodocs'],
   argTypes: {
     children: {
-      description:
-        '자식 노드를 받습니다. 기본적으로 블록 요소이므로 모든 다른 블록 요소를 사용할 수 있습니다.',
+      description: '자식 노드를 받습니다.',
     },
   },
 } satisfies Meta<typeof Card>;
@@ -29,6 +30,10 @@ type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
   args: {
-    children: [<>abcd</>],
+    children: [
+      <>아 이것은 카드입니다. 안쪽에 자유롭게 이것저것 넣을 수 있어요.</>,
+      <Switch id="wow" selected={true} value={'wow'} />,
+      <>이런 것도 넣을 수 있습니다</>,
+    ],
   },
 };
