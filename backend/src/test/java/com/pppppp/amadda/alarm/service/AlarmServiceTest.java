@@ -429,7 +429,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         verify(kafkaTemplate, never()).send(eq(topic), eq(key), any());
     }
 
-    @DisplayName("친구 수락 알람")
+    @DisplayName("친구 수락 알람 - 설정 값이 없는 경우")
     @Test
     void friend_accept() {
         // given
@@ -447,6 +447,52 @@ class AlarmServiceTest extends IntegrationTestSupport {
         String topic = KafkaTopic.ALARM_FRIEND_ACCEPT;
         Long key = owner.getUserSeq();
         verify(kafkaTemplate, times(1)).send(eq(topic), eq(key), any());
+    }
+
+    @DisplayName("친구 수락 알람 - 설정 값이 On인 경우")
+    @Test
+    void friend_accept_on() {
+        // given
+        List<User> users = create2users();
+        User owner = users.get(0);
+        User friend = users.get(1);
+
+        FriendRequest friendRequest = FriendRequest.create(owner, friend);
+        friendRequestRepository.save(friendRequest);
+
+        AlarmConfig ac = AlarmConfig.create(owner, AlarmType.FRIEND_ACCEPT, true);
+        alarmConfigRepository.save(ac);
+
+        // when
+        alarmService.sendFriendAccept(owner.getUserSeq(), friend.getUserSeq());
+
+        // then
+        String topic = KafkaTopic.ALARM_FRIEND_ACCEPT;
+        Long key = owner.getUserSeq();
+        verify(kafkaTemplate, times(1)).send(eq(topic), eq(key), any());
+    }
+
+    @DisplayName("친구 수락 알람 - 설정 값이 Off인 경우")
+    @Test
+    void friend_accept_off() {
+        // given
+        List<User> users = create2users();
+        User owner = users.get(0);
+        User friend = users.get(1);
+
+        FriendRequest friendRequest = FriendRequest.create(owner, friend);
+        friendRequestRepository.save(friendRequest);
+
+        AlarmConfig ac = AlarmConfig.create(owner, AlarmType.FRIEND_ACCEPT, false);
+        alarmConfigRepository.save(ac);
+
+        // when
+        alarmService.sendFriendAccept(owner.getUserSeq(), friend.getUserSeq());
+
+        // then
+        String topic = KafkaTopic.ALARM_FRIEND_ACCEPT;
+        Long key = owner.getUserSeq();
+        verify(kafkaTemplate, never()).send(eq(topic), eq(key), any());
     }
 
     @DisplayName("일정 할당 알람")

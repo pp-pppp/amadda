@@ -100,12 +100,16 @@ public class AlarmService {
     @Transactional
     public void sendFriendAccept(Long ownerSeq, Long friendSeq) {
         User owner = getUser(ownerSeq);
-        User friend = getUser(friendSeq);
 
-        AlarmFriendAccept value = AlarmFriendAccept.create(friend.getUserSeq(),
-            friend.getUserName());
+        if (checkAlarmSetting(owner.getUserSeq(), AlarmType.FRIEND_ACCEPT)) {
+            User friend = getUser(friendSeq);
 
-        kafkaProducer.sendAlarm(KafkaTopic.ALARM_FRIEND_ACCEPT, owner.getUserSeq(), value);
+            AlarmFriendAccept value = AlarmFriendAccept.create(friend.getUserSeq(),
+                friend.getUserName());
+
+            kafkaProducer.sendAlarm(KafkaTopic.ALARM_FRIEND_ACCEPT, owner.getUserSeq(), value);
+        }
+
     }
 
     @Transactional
