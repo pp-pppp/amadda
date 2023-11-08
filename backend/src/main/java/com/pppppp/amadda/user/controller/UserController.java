@@ -1,6 +1,7 @@
 package com.pppppp.amadda.user.controller;
 
 import com.pppppp.amadda.global.dto.ApiResponse;
+import com.pppppp.amadda.user.dto.request.UserCheckRequest;
 import com.pppppp.amadda.user.dto.request.UserInitRequest;
 import com.pppppp.amadda.user.dto.request.UserJwtRequest;
 import com.pppppp.amadda.user.dto.request.UserRefreshRequest;
@@ -79,6 +80,12 @@ public class UserController {
     public void hoverUserInfo(@RequestParam Long userSeq) {
         log.info("유저 정보. 호버용. ");
 
+    }
+
+    @PostMapping("/check")
+    public ApiResponse<UserCheckResponse> checkIfIdDuplicated(@Valid @RequestBody UserCheckRequest request) {
+        UserCheckResponse response = userService.chkIfIdDuplicated(request);
+        return ApiResponse.ok(response);
     }
 
 }
