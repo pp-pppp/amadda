@@ -13,10 +13,9 @@ module.exports = withVanillaExtract({
           name: 'shell',
           filename: 'static/chunks/entry.js',
           remotes: {
-            user: 'user@http://localhost:3001/_next/static/chunks/entry.js',
-            schedule:
-              'schedule@http://localhost:3002/_next/static/chunks/entry.js',
-            notice: 'notice@http://localhost:3003/_next/static/chunks/entry.js',
+            user: `user@${process.env.NEXT_PUBLIC_USER}/_next/static/chunks/entry.js`,
+            schedule: `schedule@${process.env.NEXT_PUBLIC_SCHEDULE}/_next/static/chunks/entry.js`,
+            notice: `notice@${process.env.NEXT_PUBLIC_NOTICE}/_next/static/chunks/entry.js`,
           },
           exposes: {},
           shared: {},
