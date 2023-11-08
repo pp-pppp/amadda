@@ -1,5 +1,5 @@
-import Axios, { AxiosResponse } from 'axios';
-export const ROOT = process.env.SPRINT_ROOT as string;
+import Axios from 'axios';
+export const ROOT = process.env.SPRING_API_ROOT as string;
 
 const axios = Axios.create({
   baseURL: ROOT,
