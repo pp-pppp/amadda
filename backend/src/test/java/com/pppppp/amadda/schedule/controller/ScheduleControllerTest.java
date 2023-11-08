@@ -113,11 +113,38 @@ class ScheduleControllerTest {
             .andExpect(jsonPath("$.data").isArray());
     }
 
+    @DisplayName("query string을 통해 입력받은 조건에 맞는 일정 목록을 조회한다.")
+    @Test
+    void getScheduleListByConditions() throws Exception {
+        // given
+        String categorySeqList = "1,2";
+        String searchKey = "합창단";
+        String unscheduled = "true";
+        String year = "2023";
+        String month = "11";
+        String day = "18";
+
+        mockMvc.perform(
+                get("/api/schedule?category={}&searchKey={}&unscheduled={}&year={}&month={}&day={}",
+                    categorySeqList, searchKey, unscheduled, year, month, day)
+                    .contentType(MediaType.APPLICATION_JSON)
+            ).andDo(
+                print()
+            ).andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.data").isArray());
+
+    }
+
     @DisplayName("카테고리에 해당하는 일정 목록을 조회한다.")
     @Test
     void getScheduleListByCategoryList() throws Exception {
+        // given
+        String categorySeqList = "1,2";
+
+        // when // then
         mockMvc.perform(
-                get("/api/schedule?category={}", "1,2")
+                get("/api/schedule?category={}", categorySeqList)
                     .contentType(MediaType.APPLICATION_JSON)
             ).andDo(
                 print()
@@ -130,8 +157,12 @@ class ScheduleControllerTest {
     @DisplayName("이름으로 일정을 검색한다.")
     @Test
     void getScheduleListByScheduleName() throws Exception {
+        // given
+        String searchKey = "합창단";
+
+        // when // then
         mockMvc.perform(
-                get("/api/schedule?searchKey={}", "합창단")
+                get("/api/schedule?searchKey={}", searchKey)
                     .contentType(MediaType.APPLICATION_JSON)
             ).andDo(
                 print()
@@ -144,13 +175,36 @@ class ScheduleControllerTest {
     @DisplayName("사용자의 미확정 일정을 조회한다.")
     @Test
     void getUnscheduledScheduleList() throws Exception {
+        // given
+        String unscheduled = "true";
+
+        // when // then
         mockMvc.perform(
-                get("/api/schedule?unscheduled=true")
+                get("/api/schedule?unscheduled={}", unscheduled)
                     .contentType(MediaType.APPLICATION_JSON)
             ).andDo(
                 print()
             )
             .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.data").isArray());
+    }
+
+    @DisplayName("날짜 조건에 맞는 일정 목록을 가져온다.")
+    @Test
+    void getScheduleListByDateCondition() throws Exception {
+        // given
+        String year = "2023";
+        String month = "11";
+        String day = "18";
+
+        // when // then
+        mockMvc.perform(
+                get("/api/schedule?year={}&month={}&day={}", year, month, day)
+                    .contentType(MediaType.APPLICATION_JSON)
+            ).andDo(
+                print()
+            ).andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"))
             .andExpect(jsonPath("$.data").isArray());
     }
@@ -167,7 +221,6 @@ class ScheduleControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"))
             .andExpect(jsonPath("$.data").isArray());
-
     }
 
     @DisplayName("새로운 댓글을 등록한다.")
