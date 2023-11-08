@@ -26,7 +26,9 @@ import com.pppppp.amadda.schedule.repository.ScheduleRepository;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -48,8 +50,22 @@ public class AlarmService {
 
     public List<AlarmReadResponse> readAlarms(Long userSeq) {
         User user = getUser(userSeq);
+
+        List<AlarmConfig> alarmConfigs = alarmConfigRepository.findAllByUser_UserSeqAndIsDeletedFalse(
+            user.getUserSeq());
+        Map<AlarmType, AlarmConfig> config = alarmConfigs.stream()
+            .collect(Collectors.toMap(AlarmConfig::getAlarmType, ac -> ac));
+
         List<Alarm> alarms = alarmRepository.findAllByUserAndIsReadFalseAndIsDeletedFalse(user);
-        return alarms.stream().map(AlarmReadResponse::of).toList();
+        return alarms.stream()
+            .map(alarm -> {
+                AlarmConfig alarmConfig = config.get(alarm.getAlarmType());
+                if (alarmConfig == null) {
+                    return AlarmReadResponse.of(alarm, true);
+                }
+                return AlarmReadResponse.of(alarm, alarmConfig.isEnabled());
+            })
+            .toList();
     }
 
     @Transactional
