@@ -63,11 +63,9 @@ public class UserService {
         }
     }
 
-    public UserRelationResponse getUserInfoAndIsFriend(Long userSeq) {
-        User target = findUserByUserSeq(userSeq)
-                .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
-        User owner = findUserByUserSeq(userSeq)
-                .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+    public UserRelationResponse getUserInfoAndIsFriend(Long mySeq, Long targetSeq) {
+        User target = getUserInfoBySeq(targetSeq);
+        User owner = getUserInfoBySeq(mySeq);
         boolean isFriend = isFriend(owner, target);
 
         return UserRelationResponse.of(target, isFriend);

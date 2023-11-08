@@ -78,7 +78,8 @@ public class UserController {
 
     @GetMapping("/{userSeq}")
     public ApiResponse<UserRelationResponse> getUserInfoForHover(@PathVariable Long userSeq) {
-        UserRelationResponse response = userService.getUserInfoAndIsFriend(userSeq);
+        Long mySeq = 0L;
+        UserRelationResponse response = userService.getUserInfoAndIsFriend(mySeq, userSeq);
         return ApiResponse.ok(response);
     }
 
