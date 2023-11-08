@@ -1,6 +1,7 @@
 package com.pppppp.amadda.schedule.entity;
 
 import com.pppppp.amadda.global.entity.BaseEntity;
+import com.pppppp.amadda.schedule.dto.request.SchedulePatchRequest;
 import com.pppppp.amadda.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,6 +17,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.util.StringUtils;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -86,5 +88,26 @@ public class Schedule extends BaseEntity {
             .scheduleContent(scheduleContent)
             .isAuthorizedAll(true)
             .build();
+    }
+
+    public void updateScheduleInfo(SchedulePatchRequest request) {
+        if (StringUtils.hasText(request.scheduleContent())) {
+            this.scheduleContent = request.scheduleContent();
+        }
+        if (request.isDateSelected() != null) {
+            this.isTimeSelected = request.isTimeSelected();
+        }
+        if (request.isTimeSelected() != null) {
+            this.isTimeSelected = request.isTimeSelected();
+        }
+        if (request.isAllDay() != null) {
+            this.isAllDay = request.isAllDay();
+        }
+        if (StringUtils.hasText(request.scheduleStartAt())) {
+            this.scheduleStartAt = LocalDateTime.parse(request.scheduleStartAt());
+        }
+        if (StringUtils.hasText(request.scheduleEndAt())) {
+            this.scheduleEndAt = LocalDateTime.parse(request.scheduleEndAt());
+        }
     }
 }

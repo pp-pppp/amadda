@@ -10,8 +10,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.schedule.dto.request.CategoryCreateRequest;
+import com.pppppp.amadda.schedule.dto.request.CategoryPatchRequest;
 import com.pppppp.amadda.schedule.dto.request.CommentCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.ScheduleCreateRequest;
+import com.pppppp.amadda.schedule.dto.request.SchedulePatchRequest;
 import com.pppppp.amadda.schedule.dto.response.CategoryReadResponse;
 import com.pppppp.amadda.schedule.dto.response.CommentReadResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleCreateResponse;
@@ -20,6 +22,7 @@ import com.pppppp.amadda.schedule.dto.response.ScheduleListReadResponse;
 import com.pppppp.amadda.schedule.entity.AlarmTime;
 import com.pppppp.amadda.schedule.entity.Category;
 import com.pppppp.amadda.schedule.entity.CategoryColor;
+import com.pppppp.amadda.schedule.entity.Comment;
 import com.pppppp.amadda.schedule.entity.Participation;
 import com.pppppp.amadda.schedule.entity.Schedule;
 import com.pppppp.amadda.schedule.repository.CategoryRepository;
@@ -571,6 +574,326 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             );
     }
 
+    @DisplayName("일정 정보를 수정한다. 이때 동기화되지 않는 부분에 대해서는 다른 참가자는 변경되지 않는다.")
+    @Transactional
+    @Test
+    void updateSchedule() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+        User u2 = userRepository.findAll().get(1);
+        ScheduleCreateRequest scheduleCreateRequest = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(false)
+            .participants(List.of(
+                UserReadResponse.of(u1), UserReadResponse.of(u2)))
+            .build();
+        scheduleService.createSchedule(u1.getUserSeq(),
+            scheduleCreateRequest);
+        Long scheduleSeq = scheduleRepository.findAll().get(0).getScheduleSeq();
+
+        SchedulePatchRequest schedulePatchRequest = SchedulePatchRequest.builder()
+            .scheduleSeq(scheduleSeq)
+            .scheduleName("안녕 나는 바뀐 일정 이름이야")
+            .participants(List.of(
+                UserReadResponse.of(u1), UserReadResponse.of(u2)))
+            .build();
+
+        // when
+        ScheduleDetailReadResponse response1 = scheduleService.updateSchedule(
+            u1.getUserSeq(), schedulePatchRequest);
+        ScheduleDetailReadResponse response2 = scheduleService.getScheduleDetail(scheduleSeq,
+            u2.getUserSeq());
+
+        // then
+        assertThat(response1.scheduleSeq()).isEqualTo(response2.scheduleSeq());
+        assertThat(response1)
+            .extracting("scheduleName", "scheduleMemo", "scheduleContent",
+                "isDateSelected", "isTimeSelected", "isAllDay", "scheduleStartAt", "scheduleEndAt",
+                "alarmTime", "isAuthorizedAll")
+            .containsExactly(
+                "안녕 나는 바뀐 일정 이름이야", "이거는 안되는 메모고", "여기는 동기화 되는 메모야", false, false, false,
+                "null", "null", "알림 없음", false);
+        assertThat(response2)
+            .extracting("scheduleName")
+            .isEqualTo("안녕 내가 일정 이름이야");
+    }
+
+    @DisplayName("기존 일정에 새로운 참가자를 할당한다. 이때 초기 정보는 할당한 참가자의 정보를 따른다.")
+    @Transactional
+    @Test
+    void addNewParticipants() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+        User u2 = userRepository.findAll().get(1);
+        User u3 = userRepository.findAll().get(2);
+        ScheduleCreateRequest scheduleCreateRequest = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(true)
+            .participants(List.of(
+                UserReadResponse.of(u1), UserReadResponse.of(u2)))
+            .build();
+        scheduleService.createSchedule(u1.getUserSeq(),
+            scheduleCreateRequest);
+        Long scheduleSeq = scheduleRepository.findAll().get(0).getScheduleSeq();
+
+        SchedulePatchRequest schedulePatchRequest = SchedulePatchRequest.builder()
+            .scheduleSeq(scheduleSeq)
+            .scheduleName("안녕 나는 바뀐 일정 이름이야")
+            .participants(List.of(
+                UserReadResponse.of(u1), UserReadResponse.of(u2), UserReadResponse.of(u3)))
+            .build();
+
+        // when
+        ScheduleDetailReadResponse response1 = scheduleService.updateSchedule(
+            u2.getUserSeq(), schedulePatchRequest);
+        ScheduleDetailReadResponse response2 = scheduleService.getScheduleDetail(scheduleSeq,
+            u3.getUserSeq());
+
+        // then
+        assertThat(response2).isNotNull();
+        assertThat(response1.scheduleSeq()).isEqualTo(response2.scheduleSeq());
+        assertThat(response1)
+            .extracting("scheduleName", "scheduleMemo", "scheduleContent",
+                "isDateSelected", "isTimeSelected", "isAllDay", "scheduleStartAt", "scheduleEndAt",
+                "alarmTime", "isAuthorizedAll")
+            .containsExactly(
+                "안녕 나는 바뀐 일정 이름이야", "이거는 안되는 메모고", "여기는 동기화 되는 메모야", false, false, false,
+                "null", "null", "알림 없음", true);
+        assertThat(response2)
+            .extracting("scheduleName", "alarmTime")
+            .containsExactly("안녕 나는 바뀐 일정 이름이야", "알림 없음");
+    }
+
+    @DisplayName("일정에서 참가자를 할당 취소하고 제외된 사람의 참가 정보는 삭제한다.")
+    @Transactional
+    @Test
+    void deleteParticipation() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+        User u2 = userRepository.findAll().get(1);
+        User u3 = userRepository.findAll().get(2);
+
+        ScheduleCreateRequest createRequest = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(false)
+            .participants(List.of(
+                UserReadResponse.of(u1), UserReadResponse.of(u2), UserReadResponse.of(u3)))
+            .build();
+        scheduleService.createSchedule(u1.getUserSeq(), createRequest);
+        Schedule s = scheduleRepository.findAll().get(0);
+
+        SchedulePatchRequest request = SchedulePatchRequest.builder()
+            .scheduleSeq(s.getScheduleSeq())
+            .scheduleName("안녕 나는 바뀐 일정 이름이야")
+            .participants(List.of(
+                UserReadResponse.of(u1), UserReadResponse.of(u3)))
+            .build();
+
+        // when
+        scheduleService.updateSchedule(u1.getUserSeq(), request);
+        List<Participation> result1 = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
+            s.getScheduleSeq());
+        Optional<Participation> result2 = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+            s.getScheduleSeq(), u2.getUserSeq());
+
+        // then
+        assertThat(result1)
+            .hasSize(2)
+            .extracting("user", "schedule.scheduleSeq")
+            .containsExactlyInAnyOrder(
+                tuple(u1, s.getScheduleSeq()),
+                tuple(u3, s.getScheduleSeq())
+            );
+        assertThat(result2).isEmpty();
+    }
+
+
+    @DisplayName("카테고리에 새로운 일정을 추가한다.")
+    @Transactional
+    @Test
+    void addScheduleToCategory() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+
+        ScheduleCreateRequest sr1 = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .isTimeSelected(false)
+            .isDateSelected(false)
+            .isAllDay(false)
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.NONE)
+            .participants(List.of(
+                UserReadResponse.of(u1)))
+            .build();
+        scheduleService.createSchedule(u1.getUserSeq(), sr1);
+        Schedule schedule = scheduleRepository.findAll().get(0);
+
+        CategoryCreateRequest r1 = CategoryCreateRequest.of("합창단", "GREEN");
+        scheduleService.createCategory(u1.getUserSeq(), r1);
+        Category category = categoryRepository.findAll().get(0);
+
+        // when
+        scheduleService.addScheduleToCategory(u1.getUserSeq(),
+            schedule.getScheduleSeq(),
+            category.getCategorySeq());
+        Optional<Participation> result1 = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+            schedule.getScheduleSeq(), u1.getUserSeq());
+        List<ScheduleListReadResponse> result2 = scheduleService.getScheduleListBySearchCondition(
+            u1.getUserSeq(), Map.of("categories", String.valueOf(category.getCategorySeq()),
+                "searchKey", "", "unscheduled", ""));
+
+        // then
+        assertThat(result1).isPresent();
+        assertThat(result1.get().getCategory()).isEqualTo(category);
+        assertThat(result2).hasSize(1)
+            .extracting("scheduleSeq")
+            .contains(schedule.getScheduleSeq());
+    }
+
+    @DisplayName("카테고리에서 일정을 삭제한다.")
+    @Transactional
+    @Test
+    void deleteScheduleFromCategory() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+
+        CategoryCreateRequest r1 = CategoryCreateRequest.of("합창단", "GREEN");
+        scheduleService.createCategory(u1.getUserSeq(), r1);
+        Category category = categoryRepository.findAll().get(0);
+
+        ScheduleCreateRequest sr1 = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .isTimeSelected(false)
+            .isDateSelected(false)
+            .isAllDay(false)
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.NONE)
+            .participants(List.of(
+                UserReadResponse.of(u1)))
+            .categorySeq(category.getCategorySeq())
+            .build();
+        ScheduleCreateRequest sr2 = ScheduleCreateRequest.builder()
+            .scheduleName("나도 일정이야")
+            .isTimeSelected(true)
+            .isDateSelected(true)
+            .isAllDay(false)
+            .scheduleStartAt("2023-11-01 08:59:30")
+            .scheduleEndAt("2023-11-01 09:00:00")
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.ON_TIME)
+            .participants(List.of(UserReadResponse.of(u1)))
+            .categorySeq(category.getCategorySeq())
+            .build();
+        scheduleService.createSchedule(u1.getUserSeq(), sr1);
+        scheduleService.createSchedule(u1.getUserSeq(), sr2);
+        Schedule s1 = scheduleRepository.findAll().get(0);
+        Schedule s2 = scheduleRepository.findAll().get(1);
+
+        // when
+        scheduleService.deleteScheduleFromCategory(u1.getUserSeq(), s1.getScheduleSeq(),
+            category.getCategorySeq());
+        List<ScheduleListReadResponse> result = scheduleService.getScheduleListBySearchCondition(
+            u1.getUserSeq(), Map.of("categories", String.valueOf(category.getCategorySeq()),
+                "searchKey", "", "unscheduled", ""));
+
+        // then
+        assertThat(result).hasSize(1)
+            .extracting("scheduleSeq", "category")
+            .containsExactly(
+                tuple(s2.getScheduleSeq(), CategoryReadResponse.of(category)));
+    }
+
+    @DisplayName("참가 정보를 삭제한다. 이때 나머지 인원의 참가 정보는 유지된다.")
+    @Transactional
+    @Test
+    void deleteSelfParticipation() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+        User u2 = userRepository.findAll().get(1);
+        User u3 = userRepository.findAll().get(2);
+
+        ScheduleCreateRequest createRequest = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(false)
+            .participants(List.of(
+                UserReadResponse.of(u1), UserReadResponse.of(u2), UserReadResponse.of(u3)))
+            .build();
+        scheduleService.createSchedule(u1.getUserSeq(), createRequest);
+        Schedule s = scheduleRepository.findAll().get(0);
+
+        // when
+        scheduleService.deleteParticipation(u2.getUserSeq(), s);
+        List<Participation> result1 = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
+            s.getScheduleSeq());
+        Optional<Participation> result2 = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+            s.getScheduleSeq(), u2.getUserSeq());
+
+        // then
+        assertThat(result1)
+            .hasSize(2)
+            .extracting("user", "schedule.scheduleSeq")
+            .containsExactlyInAnyOrder(
+                tuple(u1, s.getScheduleSeq()),
+                tuple(u3, s.getScheduleSeq())
+            );
+        assertThat(result2).isEmpty();
+    }
+
+    @DisplayName("일정 자체를 삭제한다. 이때 일정에 할당된 참가자들의 참가 정보도 같이 사라진다.")
+    @Test
+    void deleteSchedule() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+        User u2 = userRepository.findAll().get(1);
+
+        ScheduleCreateRequest request = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(false)
+            .participants(List.of(
+                UserReadResponse.of(u1), UserReadResponse.of(u2)))
+            .build();
+        scheduleService.createSchedule(u1.getUserSeq(), request);
+        Schedule s = scheduleRepository.findAll().get(0);
+
+        // when
+        scheduleService.deleteSchedule(u1.getUserSeq(), s.getScheduleSeq());
+        List<Participation> result = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
+            s.getScheduleSeq());
+
+        // then
+        assertThat(result).hasSize(0);
+    }
+
     // =================== 댓글 ===================
 
     @DisplayName("해당 일정에 댓글을 단다.")
@@ -604,6 +927,43 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         assertThat(response).isNotNull()
             .extracting("commentContent", "user")
             .containsExactly("세상에서 제일 불행한 사람임", UserReadResponse.of(user));
+    }
+
+    @DisplayName("댓글을 삭제한다.")
+    @Test
+    void deleteComment() {
+        // given
+        User user = userRepository.findAll().get(0);
+
+        ScheduleCreateRequest request = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(false)
+            .participants(List.of(
+                UserReadResponse.of(user)))
+            .build();
+        scheduleService.createSchedule(user.getUserSeq(), request);
+        Schedule s = scheduleRepository.findAll().get(0);
+
+        CommentReadResponse r1 = scheduleService.createCommentOnSchedule(
+            s.getScheduleSeq(), user.getUserSeq(), CommentCreateRequest.of("세상에서 제일 불행한 사람임"));
+        CommentReadResponse r2 = scheduleService.createCommentOnSchedule(s.getScheduleSeq(),
+            user.getUserSeq(), CommentCreateRequest.of("얘는 삭제될거임"));
+
+        // when
+        scheduleService.deleteComment(r2.commentSeq(), user.getUserSeq());
+        List<Comment> result = commentRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
+            s.getScheduleSeq());
+
+        // then
+        assertThat(result).hasSize(1)
+            .extracting("commentSeq")
+            .contains(r1.commentSeq());
     }
 
     // =================== 카테고리 ===================
@@ -654,9 +1014,116 @@ class ScheduleServiceTest extends IntegrationTestSupport {
                 tuple("자율기절", "HOTPINK"));
     }
 
+    @DisplayName("카테고리 정보를 수정한다. 변경되지 않는 사항에 대해서는 기존 값을 유지한다.")
+    @Test
+    void updateCategory() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+
+        CategoryCreateRequest r1 = CategoryCreateRequest.of("자율기절", "HOTPINK");
+        scheduleService.createCategory(u1.getUserSeq(), r1);
+        Category category = categoryRepository.findAll().get(0);
+
+        // when
+        CategoryPatchRequest request = CategoryPatchRequest.builder()
+            .categorySeq(category.getCategorySeq())
+            .categoryColor("GREEN")
+            .build();
+        CategoryReadResponse response = scheduleService.updateCategory(u1.getUserSeq(), request);
+
+        // then
+        assertThat(response)
+            .extracting("categorySeq", "categoryName", "categoryColor")
+            .containsExactly(category.getCategorySeq(), "자율기절", "GREEN");
+    }
+
+    @DisplayName("카테고리를 삭제하고 해당 카테고리에 속한 일정들을 미분류로 변경한다.")
+    @Test
+    void deleteCategory() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+
+        CategoryCreateRequest r1 = CategoryCreateRequest.of("자율기절", "HOTPINK");
+        scheduleService.createCategory(u1.getUserSeq(), r1);
+        Category category = categoryRepository.findAll().get(0);
+
+        ScheduleCreateRequest sr1 = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .isTimeSelected(false)
+            .isDateSelected(false)
+            .isAllDay(false)
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.NONE)
+            .participants(List.of(
+                UserReadResponse.of(u1)))
+            .categorySeq(category.getCategorySeq())
+            .build();
+        scheduleService.createSchedule(u1.getUserSeq(), sr1);
+
+        // when
+        scheduleService.deleteCategory(u1.getUserSeq(), category.getCategorySeq());
+        Schedule schedule = scheduleRepository.findAll().get(0);
+        Optional<Participation> participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+            schedule.getScheduleSeq(), u1.getUserSeq());
+
+        // then
+        assertThat(participation).isPresent();
+        assertThat(participation.get()).extracting("category").isNull();
+    }
+
     // =================== 실패 테스트 ===================
 
-    @DisplayName("유효하지 않은 일정 seq로 인해 일정 조회에 실패한다.")
+    @DisplayName("날짜가 설정된 일정에서 날짜가 입력되지 않으면 일정 생성에 실패한다.")
+    @Test
+    void noStartTime() {
+        // given
+        User user = userRepository.findAll().get(0);
+
+        ScheduleCreateRequest request = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .isDateSelected(true)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(true)
+            .participants(List.of(
+                UserReadResponse.of(user)))
+            .build();
+
+        // when // then
+        assertThatThrownBy(() -> scheduleService.createSchedule(user.getUserSeq(), request))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("SCHEDULE_DATE_NOT_SELECTED");
+
+    }
+
+    @DisplayName("시간이 설정된 일정에서 시간이 입력되지 않으면 일정 생성에 실패한다.")
+    @Test
+    void noEndTime() {
+        // given
+        User user = userRepository.findAll().get(0);
+
+        ScheduleCreateRequest request = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .isDateSelected(true)
+            .isTimeSelected(true)
+            .scheduleStartAt("2023-11-01 08:59:30")
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(true)
+            .participants(List.of(
+                UserReadResponse.of(user)))
+            .build();
+
+        // when // then
+        assertThatThrownBy(() -> scheduleService.createSchedule(user.getUserSeq(), request))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("SCHEDULE_TIME_NOT_SELECTED");
+    }
+
+    @DisplayName("유효하지 않은 일정에 접근해 일정 조회에 실패한다.")
     @Test
     void noScheduleSeq() {
         // given
@@ -666,6 +1133,213 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         assertThatThrownBy(() -> scheduleService.getScheduleDetail(scheduleSeq, user.getUserSeq()))
             .isInstanceOf(RestApiException.class)
             .hasMessage("SCHEDULE_NOT_FOUND");
+    }
+
+    @DisplayName("유효하지 않은 일정에 접근해 일정 수정에 실패한다.")
+    @Test
+    void invalidUpdateSchedule() {
+        // given
+        User user = userRepository.findAll().get(0);
+
+        ScheduleCreateRequest createRequest = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .isTimeSelected(false)
+            .isDateSelected(false)
+            .isAllDay(false)
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.NONE)
+            .participants(List.of(
+                UserReadResponse.of(user)))
+            .build();
+        scheduleService.createSchedule(user.getUserSeq(), createRequest);
+        Schedule schedule = scheduleRepository.findAll().get(0);
+
+        SchedulePatchRequest patchRequest = SchedulePatchRequest.builder()
+            .scheduleSeq(schedule.getScheduleSeq() + 1)
+            .scheduleName("안녕 나는 바뀐 일정 이름이야")
+            .build();
+
+        // when // then
+        assertThatThrownBy(
+            () -> scheduleService.updateSchedule(user.getUserSeq(), patchRequest))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("SCHEDULE_NOT_FOUND");
+    }
+
+    @DisplayName("일정 수정 시 수정 권한이 없으면 수정할 수 없다.")
+    @Test
+    void forbiddenToUpdateSchedule() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+        User u2 = userRepository.findAll().get(1);
+
+        ScheduleCreateRequest createRequest = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .isTimeSelected(false)
+            .isDateSelected(false)
+            .isAllDay(false)
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.NONE)
+            .participants(List.of(
+                UserReadResponse.of(u1), UserReadResponse.of(u2)))
+            .build();
+        scheduleService.createSchedule(u1.getUserSeq(), createRequest);
+        Schedule schedule = scheduleRepository.findAll().get(0);
+
+        SchedulePatchRequest patchRequest = SchedulePatchRequest.builder()
+            .scheduleSeq(schedule.getScheduleSeq())
+            .scheduleName("안녕 나는 바뀐 일정 이름이야")
+            .build();
+
+        // when // then
+        assertThatThrownBy(() -> scheduleService.updateSchedule(u2.getUserSeq(), patchRequest))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("SCHEDULE_FORBIDDEN");
+    }
+
+    @DisplayName("유효하지 않은 일정에 접근해 일정 삭제에 실패한다.")
+    @Test
+    void invalidDeleteSchedule() {
+        // given
+        User user = userRepository.findAll().get(0);
+        ScheduleCreateRequest createRequest = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .isTimeSelected(false)
+            .isDateSelected(false)
+            .isAllDay(false)
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.NONE)
+            .participants(List.of(
+                UserReadResponse.of(user)))
+            .build();
+        scheduleService.createSchedule(user.getUserSeq(), createRequest);
+        Schedule schedule = scheduleRepository.findAll().get(0);
+
+        // when // then
+        assertThatThrownBy(() -> scheduleService.deleteSchedule(user.getUserSeq(),
+            schedule.getScheduleSeq() + 1))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("SCHEDULE_NOT_FOUND");
+    }
+
+    @DisplayName("권한이 없는 경우 일정을 삭제할 수 없다.")
+    @Test
+    void forbiddenToDeleteSchedule() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+        User u2 = userRepository.findAll().get(1);
+
+        ScheduleCreateRequest createRequest = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .isTimeSelected(false)
+            .isDateSelected(false)
+            .isAllDay(false)
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.NONE)
+            .participants(List.of(
+                UserReadResponse.of(u1), UserReadResponse.of(u2)))
+            .build();
+        scheduleService.createSchedule(u1.getUserSeq(), createRequest);
+        Schedule schedule = scheduleRepository.findAll().get(0);
+
+        // when // then
+        assertThatThrownBy(() -> scheduleService.deleteSchedule(u2.getUserSeq(),
+            schedule.getScheduleSeq()))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("SCHEDULE_FORBIDDEN");
+    }
+
+    @DisplayName("유효하지 않은 일정에 접근해 댓글 생성에 실패한다.")
+    @Test
+    void noScheduleToComment() {
+        // given
+        User user = userRepository.findAll().get(0);
+
+        ScheduleCreateRequest request = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(false)
+            .participants(List.of(
+                UserReadResponse.of(user)))
+            .build();
+        scheduleService.createSchedule(user.getUserSeq(), request);
+
+        Schedule s = scheduleRepository.findAll().get(0);
+
+        // when // then
+        assertThatThrownBy(() -> scheduleService.createCommentOnSchedule(
+            s.getScheduleSeq() + 1, user.getUserSeq(),
+            CommentCreateRequest.of("세상에서 제일 불행한 사람임"))
+        ).isInstanceOf(RestApiException.class)
+            .hasMessage("SCHEDULE_NOT_FOUND");
+    }
+
+    @DisplayName("유효하지 않은 댓글에 접근해 삭제에 실패한다.")
+    @Test
+    void invalidDeleteComment() {
+        // given
+        User user = userRepository.findAll().get(0);
+
+        ScheduleCreateRequest request = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(false)
+            .participants(List.of(
+                UserReadResponse.of(user)))
+            .build();
+        scheduleService.createSchedule(user.getUserSeq(), request);
+        Schedule s = scheduleRepository.findAll().get(0);
+
+        CommentReadResponse response = scheduleService.createCommentOnSchedule(
+            s.getScheduleSeq(), user.getUserSeq(), CommentCreateRequest.of("세상에서 제일 불행한 사람임"));
+
+        // when // then
+        assertThatThrownBy(
+            () -> scheduleService.deleteComment(response.commentSeq() + 1, user.getUserSeq()))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("COMMENT_NOT_FOUND");
+    }
+
+    @DisplayName("본인의 댓글만 삭제할 수 있다.")
+    @Test
+    void forbiddenToDeleteComment() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+        User u2 = userRepository.findAll().get(1);
+
+        ScheduleCreateRequest request = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(false)
+            .participants(List.of(
+                UserReadResponse.of(u1)))
+            .build();
+        scheduleService.createSchedule(u1.getUserSeq(), request);
+        Schedule s = scheduleRepository.findAll().get(0);
+
+        CommentReadResponse response = scheduleService.createCommentOnSchedule(
+            s.getScheduleSeq(), u1.getUserSeq(), CommentCreateRequest.of("세상에서 제일 불행한 사람임"));
+
+        // when // then
+        assertThatThrownBy(
+            () -> scheduleService.deleteComment(response.commentSeq(), u2.getUserSeq()))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("COMMENT_FORBIDDEN");
     }
 
     @DisplayName("기존에 있던 카테고리 이름으로 카테고리 생성에 실패한다.")
@@ -683,6 +1357,88 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .hasMessage("CATEGORY_ALREADY_EXISTS");
     }
 
+    @DisplayName("유효하지 않은 카테고리에 접근해 수정에 실패한다.")
+    @Test
+    void invalidUpdateCategory() {
+        // given
+        User user = userRepository.findAll().get(0);
+        CategoryCreateRequest createRequest = CategoryCreateRequest.of("자율기절", "HOTPINK");
+        scheduleService.createCategory(user.getUserSeq(), createRequest);
+
+        Category category = categoryRepository.findAll().get(0);
+
+        CategoryPatchRequest patchRequest = CategoryPatchRequest.builder()
+            .categorySeq(category.getCategorySeq() + 1)
+            .categoryName("자율기절")
+            .categoryColor("GREEN")
+            .build();
+
+        // when // then
+        assertThatThrownBy(() -> scheduleService.updateCategory(user.getUserSeq(), patchRequest))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("CATEGORY_NOT_FOUND");
+    }
+
+    @DisplayName("본인의 카테고리만 수정할 수 있다.")
+    @Test
+    void forbiddenToUpdateCategory() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+        User u2 = userRepository.findAll().get(1);
+
+        CategoryCreateRequest createRequest = CategoryCreateRequest.of("자율기절", "HOTPINK");
+        scheduleService.createCategory(u1.getUserSeq(), createRequest);
+
+        Category category = categoryRepository.findAll().get(0);
+
+        CategoryPatchRequest patchRequest = CategoryPatchRequest.builder()
+            .categorySeq(category.getCategorySeq())
+            .categoryName("자율기절")
+            .categoryColor("GREEN")
+            .build();
+
+        // when // then
+        assertThatThrownBy(() -> scheduleService.updateCategory(u2.getUserSeq(), patchRequest))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("CATEGORY_FORBIDDEN");
+    }
+
+    @DisplayName("유효하지 않은 카테고리에 접근해 삭제에 실패한다.")
+    @Test
+    void invalidDeleteCategory() {
+        // given
+        User user = userRepository.findAll().get(0);
+        CategoryCreateRequest createRequest = CategoryCreateRequest.of("자율기절", "HOTPINK");
+        scheduleService.createCategory(user.getUserSeq(), createRequest);
+
+        Category category = categoryRepository.findAll().get(0);
+
+        // when // then
+        assertThatThrownBy(() -> scheduleService.deleteCategory(user.getUserSeq(),
+            category.getCategorySeq() + 1))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("CATEGORY_NOT_FOUND");
+    }
+
+    @DisplayName("본인의 카테고리만 삭제할 수 있다.")
+    @Test
+    void forbiddenToDeleteCategory() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+        User u2 = userRepository.findAll().get(1);
+
+        CategoryCreateRequest createRequest = CategoryCreateRequest.of("자율기절", "HOTPINK");
+        scheduleService.createCategory(u1.getUserSeq(), createRequest);
+
+        Category category = categoryRepository.findAll().get(0);
+
+        // when // then
+        assertThatThrownBy(() -> scheduleService.deleteCategory(u2.getUserSeq(),
+            category.getCategorySeq()))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("CATEGORY_FORBIDDEN");
+    }
+  
     // =================== 개별 일정 알림 설정 테스트 ===================
 
     @DisplayName("멘션 알림 설정을 On으로 설정한다.")

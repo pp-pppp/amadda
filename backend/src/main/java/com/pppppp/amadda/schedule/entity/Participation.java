@@ -2,6 +2,7 @@ package com.pppppp.amadda.schedule.entity;
 
 import com.pppppp.amadda.global.entity.BaseEntity;
 import com.pppppp.amadda.schedule.dto.request.ScheduleCreateRequest;
+import com.pppppp.amadda.schedule.dto.request.SchedulePatchRequest;
 import com.pppppp.amadda.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,6 +18,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.hibernate.annotations.ColumnDefault;
 
 @Getter
@@ -85,6 +88,22 @@ public class Participation extends BaseEntity {
             .build();
     }
 
+    public void updateParticipationInfo(SchedulePatchRequest request) {
+        if (StringUtils.hasText(request.scheduleName())) {
+            this.scheduleName = request.scheduleName();
+        }
+        if (StringUtils.hasText(request.scheduleMemo())) {
+            this.scheduleMemo = request.scheduleMemo();
+        }
+        if (!ObjectUtils.isEmpty(request.alarmTime())) {
+            this.alarmTime = request.alarmTime();
+        }
+    }
+
+    public void updateCategory(Category category) {
+        this.category = category;
+    }
+  
     public void updateIsMentionAlarmOn(boolean isMentionAlarmOn) {
         this.isMentionAlarmOn = isMentionAlarmOn;
     }
