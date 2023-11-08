@@ -15,6 +15,7 @@ import com.pppppp.amadda.schedule.dto.response.CommentReadResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleCreateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleDetailReadResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleListReadResponse;
+import com.pppppp.amadda.schedule.entity.AlarmTime;
 import com.pppppp.amadda.schedule.entity.Category;
 import com.pppppp.amadda.schedule.entity.Comment;
 import com.pppppp.amadda.schedule.entity.Participation;
@@ -31,7 +32,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -139,9 +139,7 @@ public class ScheduleService {
         Category category = findCategoryInfo(categorySeq);
 
         // 요청을 보낸 사람이 참가자가 아니면 안됨
-        if (!participation.getUser().getUserSeq().equals(userSeq)) {
-            throw new RestApiException(ScheduleErrorCode.SCHEDULE_FORBIDDEN);
-        }
+        checkUserParticipation(userSeq, participation);
 
         // 요청을 보낸 사람이 카테고리 주인이 아니면 안됨
         checkUserAuthorizedToCategory(userSeq, category);
@@ -157,9 +155,7 @@ public class ScheduleService {
         Category category = findCategoryInfo(categorySeq);
 
         // 요청을 보낸 사람이 참가자가 아니면 안됨
-        if (!participation.getUser().getUserSeq().equals(userSeq)) {
-            throw new RestApiException(ScheduleErrorCode.SCHEDULE_FORBIDDEN);
-        }
+        checkUserParticipation(userSeq, participation);
 
         // 요청을 보낸 사람이 카테고리 주인이 아니면 안됨
         checkUserAuthorizedToCategory(userSeq, category);
@@ -356,6 +352,12 @@ public class ScheduleService {
         }
     }
 
+    private void checkUserParticipation(Long userSeq, Participation participation) {
+        if (!participation.getUser().getUserSeq().equals(userSeq)) {
+            throw new RestApiException(ScheduleErrorCode.SCHEDULE_FORBIDDEN);
+        }
+    }
+
     private void checkUserAuthorizedToComment(Long userSeq, Comment comment) {
         if (!comment.getUser().getUserSeq().equals(userSeq)) {
             throw new RestApiException(CommentErrorCode.COMMENT_FORBIDDEN);
@@ -428,16 +430,23 @@ public class ScheduleService {
             .map(response -> findUserInfo(response.userSeq()))
             .toList();
 
-        // 3. 이전 사용자 목록과 비교해서 현재 사용자 중 추가된 사용자가 있는지 확인, 있으면 참석정보 생성.
-        // 생성할 참석 정보는 이번 요청으로 수정되는 필드가 아니면 요청자의 참석정보를 기본값으로 사용
+        // 3. 수정할 사용자 목록과 비교해서 현재 사용자 중 삭제된 사용자가 있는지 확인, 있으면 참석정보 삭제
+        previousParticipationList.stream()
+            .filter(user -> !updateParticipationList.contains(user))
+            .forEach(user -> deleteParticipation(user.getUserSeq(), schedule));
+
+        // 4. 이전 사용자 목록과 비교해서 현재 사용자 중 추가된 사용자가 있는지 확인, 있으면 참석정보 생성.
         Participation requestUserParticipation = findParticipationInfoBySchedule(
             schedule.getScheduleSeq(), requestUserSeq);
 
+        // 생성할 참석 정보는 이번 요청으로 수정되는 필드가 아니면 요청자의 참석정보를 기본값으로 사용
+        String scheduleName = (request.scheduleName() != null) ? request.scheduleName()
+            : requestUserParticipation.getScheduleName();
+        AlarmTime alarmTime = (request.alarmTime() != null) ? request.alarmTime()
+            : requestUserParticipation.getAlarmTime();
         ScheduleCreateRequest createRequest = ScheduleCreateRequest.builder()
-            .scheduleName(Optional.ofNullable(request.scheduleName()).orElse(
-                requestUserParticipation.getScheduleName()))
-            .alarmTime(Optional.ofNullable(request.alarmTime()).orElse(
-                requestUserParticipation.getAlarmTime()))
+            .scheduleName(scheduleName)
+            .alarmTime(alarmTime)
             .build();
 
         updateParticipationList.stream()
@@ -447,11 +456,6 @@ public class ScheduleService {
                     null, true, true);
                 participationRepository.save(participation);
             });
-
-        // 4. 수정할 사용자 목록과 비교해서 현재 사용자 중 삭제된 사용자가 있는지 확인, 있으면 참석정보 삭제
-        previousParticipationList.stream()
-            .filter(user -> !updateParticipationList.contains(user))
-            .forEach(user -> deleteParticipation(user.getUserSeq(), schedule));
     }
 
     private List<CommentReadResponse> findCommentListBySchedule(Long scheduleSeq) {
