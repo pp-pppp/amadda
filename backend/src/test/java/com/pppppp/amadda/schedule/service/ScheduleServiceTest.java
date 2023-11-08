@@ -1565,6 +1565,170 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .hasMessage("CATEGORY_ALREADY_EXISTS");
     }
 
+
+    @DisplayName("날짜 조건으로 일정을 조회하려면 연 단위 입력이 있어야 한다.")
+    @Transactional
+    @Test
+    void noSearchConditionWithYear() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+        User u2 = userRepository.findAll().get(1);
+
+        ScheduleCreateRequest r1 = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .isTimeSelected(true)
+            .isDateSelected(true)
+            .isAllDay(false)
+            .scheduleStartAt("2023-10-01 08:59:30")
+            .scheduleEndAt("2023-11-01 09:00:00")
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.NONE)
+            .participants(List.of(
+                UserReadResponse.of(u1)))
+            .build();
+        ScheduleCreateRequest r2 = ScheduleCreateRequest.builder()
+            .scheduleName("나도 일정이야")
+            .isTimeSelected(true)
+            .isDateSelected(true)
+            .isAllDay(false)
+            .scheduleStartAt("2023-11-01 08:59:30")
+            .scheduleEndAt("2023-11-01 09:00:00")
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.ON_TIME)
+            .participants(List.of(UserReadResponse.of(u1), UserReadResponse.of(u2)))
+            .build();
+        ScheduleCreateRequest r3 = ScheduleCreateRequest.builder()
+            .scheduleName("나도 일정이야")
+            .isTimeSelected(true)
+            .isDateSelected(true)
+            .isAllDay(false)
+            .scheduleStartAt("2023-10-30 08:59:30")
+            .scheduleEndAt("2023-10-30 09:00:00")
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.ON_TIME)
+            .participants(List.of(UserReadResponse.of(u1), UserReadResponse.of(u2)))
+            .build();
+        ScheduleCreateRequest r4 = ScheduleCreateRequest.builder()
+            .scheduleName("나도 일정이야")
+            .isTimeSelected(true)
+            .isDateSelected(true)
+            .isAllDay(false)
+            .scheduleStartAt("2023-11-30 08:59:30")
+            .scheduleEndAt("2023-12-01 09:00:00")
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.ON_TIME)
+            .participants(List.of(UserReadResponse.of(u1)))
+            .build();
+        ScheduleCreateRequest r5 = ScheduleCreateRequest.builder()
+            .scheduleName("나도 일정이야")
+            .isTimeSelected(true)
+            .isDateSelected(true)
+            .isAllDay(false)
+            .scheduleStartAt("2023-11-30 08:59:30")
+            .scheduleEndAt("2023-12-01 09:00:00")
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.ON_TIME)
+            .participants(List.of(UserReadResponse.of(u2)))
+            .build();
+        scheduleService.createSchedule(u1.getUserSeq(), r1);
+        scheduleService.createSchedule(u1.getUserSeq(), r2);
+        scheduleService.createSchedule(u1.getUserSeq(), r3);
+        scheduleService.createSchedule(u1.getUserSeq(), r4);
+        scheduleService.createSchedule(u2.getUserSeq(), r5);
+
+        // when
+        Map<String, String> searchCondition = Map.of("categories", "", "searchKey", "",
+            "unscheduled", "", "month", "11", "day", "1", "year", "");
+
+        // then
+        assertThatThrownBy(() -> scheduleService.getScheduleListBySearchCondition(
+            u1.getUserSeq(), searchCondition))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("SCHEDULE_INVALID_REQUEST");
+    }
+
+    @DisplayName("일 단위로 일정을 조회하려면 월 단위 입력이 있어야 한다.")
+    @Transactional
+    @Test
+    void noSearchConditionWithMonth() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+        User u2 = userRepository.findAll().get(1);
+
+        ScheduleCreateRequest r1 = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .isTimeSelected(true)
+            .isDateSelected(true)
+            .isAllDay(false)
+            .scheduleStartAt("2023-10-01 08:59:30")
+            .scheduleEndAt("2023-11-01 09:00:00")
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.NONE)
+            .participants(List.of(
+                UserReadResponse.of(u1)))
+            .build();
+        ScheduleCreateRequest r2 = ScheduleCreateRequest.builder()
+            .scheduleName("나도 일정이야")
+            .isTimeSelected(true)
+            .isDateSelected(true)
+            .isAllDay(false)
+            .scheduleStartAt("2023-11-01 08:59:30")
+            .scheduleEndAt("2023-11-01 09:00:00")
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.ON_TIME)
+            .participants(List.of(UserReadResponse.of(u1), UserReadResponse.of(u2)))
+            .build();
+        ScheduleCreateRequest r3 = ScheduleCreateRequest.builder()
+            .scheduleName("나도 일정이야")
+            .isTimeSelected(true)
+            .isDateSelected(true)
+            .isAllDay(false)
+            .scheduleStartAt("2023-10-30 08:59:30")
+            .scheduleEndAt("2023-10-30 09:00:00")
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.ON_TIME)
+            .participants(List.of(UserReadResponse.of(u1), UserReadResponse.of(u2)))
+            .build();
+        ScheduleCreateRequest r4 = ScheduleCreateRequest.builder()
+            .scheduleName("나도 일정이야")
+            .isTimeSelected(true)
+            .isDateSelected(true)
+            .isAllDay(false)
+            .scheduleStartAt("2023-11-30 08:59:30")
+            .scheduleEndAt("2023-12-01 09:00:00")
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.ON_TIME)
+            .participants(List.of(UserReadResponse.of(u1)))
+            .build();
+        ScheduleCreateRequest r5 = ScheduleCreateRequest.builder()
+            .scheduleName("나도 일정이야")
+            .isTimeSelected(true)
+            .isDateSelected(true)
+            .isAllDay(false)
+            .scheduleStartAt("2023-11-30 08:59:30")
+            .scheduleEndAt("2023-12-01 09:00:00")
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.ON_TIME)
+            .participants(List.of(UserReadResponse.of(u2)))
+            .build();
+        scheduleService.createSchedule(u1.getUserSeq(), r1);
+        scheduleService.createSchedule(u1.getUserSeq(), r2);
+        scheduleService.createSchedule(u1.getUserSeq(), r3);
+        scheduleService.createSchedule(u1.getUserSeq(), r4);
+        scheduleService.createSchedule(u2.getUserSeq(), r5);
+
+        // when
+        Map<String, String> searchCondition = Map.of("categories", "", "searchKey", "",
+            "unscheduled", "", "month", "", "day", "1", "year", "2023");
+
+        // then
+        assertThatThrownBy(() -> scheduleService.getScheduleListBySearchCondition(
+            u1.getUserSeq(), searchCondition))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("SCHEDULE_INVALID_REQUEST");
+    }
+
+
     @DisplayName("유효하지 않은 카테고리에 접근해 수정에 실패한다.")
     @Test
     void invalidUpdateCategory() {
