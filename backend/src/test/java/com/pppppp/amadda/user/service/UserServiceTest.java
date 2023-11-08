@@ -4,6 +4,7 @@ import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.friend.entity.Friend;
 import com.pppppp.amadda.friend.repository.FriendRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
+import com.pppppp.amadda.user.dto.request.UserCheckRequest;
 import com.pppppp.amadda.user.dto.request.UserInitRequest;
 import com.pppppp.amadda.user.dto.request.UserJwtRequest;
 import com.pppppp.amadda.user.dto.request.UserRefreshRequest;
@@ -305,6 +306,44 @@ class UserServiceTest extends IntegrationTestSupport {
         assertThatThrownBy(() -> userService.isFriend(u1, u2))
                 .isInstanceOf(RestApiException.class)
                 .hasMessage("FRIEND_RELATION_DAMAGED");
+    }
+
+    @DisplayName("아이디 중복 여부를 반환한다. - 중복")
+    @Test
+    void chkIfIdDuplicated_true() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
+
+        UserCheckRequest request = UserCheckRequest.builder()
+                .userId("id1")
+                .build();
+
+        // when
+        UserCheckResponse response = userService.chkIfIdDuplicated(request);
+
+        // then
+        Assertions.assertTrue(response.isDuplicated());
+    }
+
+    @DisplayName("아이디 중복 여부를 반환한다. - 안중복")
+    @Test
+    void chkIfIdDuplicated_false() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
+
+        UserCheckRequest request = UserCheckRequest.builder()
+                .userId("id")
+                .build();
+
+        // when
+        UserCheckResponse response = userService.chkIfIdDuplicated(request);
+
+        // then
+        Assertions.assertFalse(response.isDuplicated());
     }
 
 }
