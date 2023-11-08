@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -52,19 +53,29 @@ public class Participation extends BaseEntity {
     @Column(length = 20)
     private AlarmTime alarmTime;
 
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    @ColumnDefault("1")
+    private boolean isMentionAlarmOn;
+
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    @ColumnDefault("1")
+    private boolean isUpdateAlarmOn;
+
     @Builder
     public Participation(User user, Schedule schedule, Category category, String scheduleName,
-        String scheduleMemo, AlarmTime alarmTime) {
+        String scheduleMemo, AlarmTime alarmTime, boolean isMentionAlarmOn, boolean isUpdateAlarmOn) {
         this.user = user;
         this.schedule = schedule;
         this.category = category;
         this.scheduleName = scheduleName;
         this.scheduleMemo = scheduleMemo;
         this.alarmTime = alarmTime;
+        this.isMentionAlarmOn = isMentionAlarmOn;
+        this.isUpdateAlarmOn = isUpdateAlarmOn;
     }
 
     public static Participation create(ScheduleCreateRequest request, User participant,
-        Schedule schedule, Category category) {
+        Schedule schedule, Category category, boolean isMentionAlarmOn, boolean isUpdateAlarmOn) {
         return Participation.builder()
             .scheduleName(request.scheduleName())
             .scheduleMemo(request.scheduleMemo())
@@ -72,6 +83,8 @@ public class Participation extends BaseEntity {
             .user(participant)
             .schedule(schedule)
             .category(category)
+            .isMentionAlarmOn(isMentionAlarmOn)
+            .isUpdateAlarmOn(isUpdateAlarmOn)
             .build();
     }
 
@@ -89,5 +102,13 @@ public class Participation extends BaseEntity {
 
     public void updateCategory(Category category) {
         this.category = category;
+    }
+  
+    public void updateIsMentionAlarmOn(boolean isMentionAlarmOn) {
+        this.isMentionAlarmOn = isMentionAlarmOn;
+    }
+
+    public void updateIsUpdateAlarmOn(boolean isUpdateAlarmOn) {
+        this.isUpdateAlarmOn = isUpdateAlarmOn;
     }
 }
