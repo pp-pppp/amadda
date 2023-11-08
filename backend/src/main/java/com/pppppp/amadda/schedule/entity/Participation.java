@@ -18,8 +18,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 import org.hibernate.annotations.ColumnDefault;
 
 @Getter
@@ -63,7 +61,8 @@ public class Participation extends BaseEntity {
 
     @Builder
     public Participation(User user, Schedule schedule, Category category, String scheduleName,
-        String scheduleMemo, AlarmTime alarmTime, boolean isMentionAlarmOn, boolean isUpdateAlarmOn) {
+        String scheduleMemo, AlarmTime alarmTime, boolean isMentionAlarmOn,
+        boolean isUpdateAlarmOn) {
         this.user = user;
         this.schedule = schedule;
         this.category = category;
@@ -89,21 +88,15 @@ public class Participation extends BaseEntity {
     }
 
     public void updateParticipationInfo(SchedulePatchRequest request) {
-        if (StringUtils.hasText(request.scheduleName())) {
-            this.scheduleName = request.scheduleName();
-        }
-        if (StringUtils.hasText(request.scheduleMemo())) {
-            this.scheduleMemo = request.scheduleMemo();
-        }
-        if (!ObjectUtils.isEmpty(request.alarmTime())) {
-            this.alarmTime = request.alarmTime();
-        }
+        this.scheduleName = request.scheduleName();
+        this.scheduleMemo = request.scheduleMemo();
+        this.alarmTime = request.alarmTime();
     }
 
     public void updateCategory(Category category) {
         this.category = category;
     }
-  
+
     public void updateIsMentionAlarmOn(boolean isMentionAlarmOn) {
         this.isMentionAlarmOn = isMentionAlarmOn;
     }

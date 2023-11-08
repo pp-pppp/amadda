@@ -600,6 +600,12 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         SchedulePatchRequest schedulePatchRequest = SchedulePatchRequest.builder()
             .scheduleSeq(scheduleSeq)
             .scheduleName("안녕 나는 바뀐 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
@@ -651,6 +657,12 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         SchedulePatchRequest schedulePatchRequest = SchedulePatchRequest.builder()
             .scheduleSeq(scheduleSeq)
             .scheduleName("안녕 나는 바뀐 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2), UserReadResponse.of(u3)))
             .build();
@@ -703,6 +715,12 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         SchedulePatchRequest request = SchedulePatchRequest.builder()
             .scheduleSeq(s.getScheduleSeq())
             .scheduleName("안녕 나는 바뀐 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u3)))
             .build();
@@ -1027,6 +1045,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         // when
         CategoryPatchRequest request = CategoryPatchRequest.builder()
             .categorySeq(category.getCategorySeq())
+            .categoryName("자율기절")
             .categoryColor("GREEN")
             .build();
         CategoryReadResponse response = scheduleService.updateCategory(u1.getUserSeq(), request);
@@ -1438,7 +1457,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isInstanceOf(RestApiException.class)
             .hasMessage("CATEGORY_FORBIDDEN");
     }
-  
+
     // =================== 개별 일정 알림 설정 테스트 ===================
 
     @DisplayName("멘션 알림 설정을 On으로 설정한다.")
