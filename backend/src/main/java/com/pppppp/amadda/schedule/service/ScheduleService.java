@@ -494,6 +494,9 @@ public class ScheduleService {
         String month = searchCondition.get("month");
         String day = searchCondition.get("day");
 
+        // 날짜 조건 입력이 잘 됐는지 확인
+        checkDateConditionValid(year, month, day);
+
         return participationRepository.findByUser_UserSeqAndIsDeletedFalse(userSeq)
             .stream()
             // filter 1. 카테고리
@@ -563,6 +566,18 @@ public class ScheduleService {
             })
             .map(this::findScheduleByParticipation)
             .toList();
+    }
+
+    private void checkDateConditionValid(String year, String month, String day) {
+        // 만약 날짜 조건으로 검색하는데 연도가 없으면 예외 처리
+        if (year.isEmpty() && !(month.isEmpty() && day.isEmpty())) {
+            throw new RestApiException(ScheduleErrorCode.SCHEDULE_INVALID_REQUEST);
+        }
+
+        // 만약 일별 조회인데 월 단위 입력이 없으면 예외 처리
+        if (month.isEmpty() && !day.isEmpty()) {
+            throw new RestApiException(ScheduleErrorCode.SCHEDULE_INVALID_REQUEST);
+        }
     }
 
     private void deleteCategoryInfoInParticipation(Long categorySeq) {
