@@ -27,8 +27,8 @@ public class Schedule extends BaseEntity {
     private Long scheduleSeq;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_seq")
-    private User user;
+    @JoinColumn(name = "authorized_user_seq")
+    private User authorizedUser;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
     @ColumnDefault("0")
@@ -60,10 +60,11 @@ public class Schedule extends BaseEntity {
     private boolean isAuthorizedAll;
 
     @Builder
-    public Schedule(User user, boolean isTimeSelected, boolean isDateSelected, boolean isAllDay,
+    public Schedule(User authorizedUser, boolean isTimeSelected, boolean isDateSelected,
+        boolean isAllDay,
         LocalDateTime scheduleStartAt, LocalDateTime scheduleEndAt, boolean isFinished,
         String scheduleContent, boolean isAuthorizedAll) {
-        this.user = user;
+        this.authorizedUser = authorizedUser;
         this.isTimeSelected = isTimeSelected;
         this.isDateSelected = isDateSelected;
         this.isAllDay = isAllDay;
@@ -77,7 +78,7 @@ public class Schedule extends BaseEntity {
     public static Schedule create(User user,
         String scheduleContent) {
         return Schedule.builder()
-            .user(user)
+            .authorizedUser(user)
             .isTimeSelected(false)
             .isDateSelected(false)
             .isAllDay(false)

@@ -5,6 +5,7 @@ import com.pppppp.amadda.alarm.dto.response.AlarmReadResponse;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendAccept;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendRequest;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleAssigned;
+import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleUpdate;
 import com.pppppp.amadda.alarm.entity.Alarm;
 import com.pppppp.amadda.alarm.entity.AlarmConfig;
 import com.pppppp.amadda.alarm.entity.AlarmType;
@@ -27,12 +28,14 @@ import com.pppppp.amadda.user.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class AlarmService {
 
     private final UserRepository userRepository;
@@ -84,40 +87,75 @@ public class AlarmService {
 
     @Transactional
     public void sendFriendRequest(Long ownerSeq, Long friendSeq) {
-        User owner = getUser(ownerSeq);
         User friend = getUser(friendSeq);
-        FriendRequest friendRequest = getFriendRequest(owner, friend);
 
-        AlarmFriendRequest value = AlarmFriendRequest.create(friendRequest.getRequestSeq(),
-            owner.getUserSeq(), owner.getUserName());
+        if (checkGlobalAlarmSetting(friend.getUserSeq(), AlarmType.FRIEND_REQUEST)) {
+            User owner = getUser(ownerSeq);
+            FriendRequest friendRequest = getFriendRequest(owner, friend);
 
-        kafkaProducer.sendAlarm(KafkaTopic.ALARM_FRIEND_REQUEST, friend.getUserSeq(), value);
+            AlarmFriendRequest value = AlarmFriendRequest.create(friendRequest.getRequestSeq(),
+                owner.getUserSeq(), owner.getUserName());
+
+            kafkaProducer.sendAlarm(KafkaTopic.ALARM_FRIEND_REQUEST, friend.getUserSeq(), value);
+        }
     }
 
     @Transactional
     public void sendFriendAccept(Long ownerSeq, Long friendSeq) {
         User owner = getUser(ownerSeq);
-        User friend = getUser(friendSeq);
 
-        AlarmFriendAccept value = AlarmFriendAccept.create(friend.getUserSeq(),
-            friend.getUserName());
+        if (checkGlobalAlarmSetting(owner.getUserSeq(), AlarmType.FRIEND_ACCEPT)) {
+            User friend = getUser(friendSeq);
 
-        kafkaProducer.sendAlarm(KafkaTopic.ALARM_FRIEND_ACCEPT, owner.getUserSeq(), value);
+            AlarmFriendAccept value = AlarmFriendAccept.create(friend.getUserSeq(),
+                friend.getUserName());
+
+            kafkaProducer.sendAlarm(KafkaTopic.ALARM_FRIEND_ACCEPT, owner.getUserSeq(), value);
+        }
+
     }
 
     @Transactional
     public void sendScheduleAssigned(Long scheduleSeq) {
         Schedule schedule = getSchedule(scheduleSeq);
-        User owner = schedule.getUser();
+        User owner = schedule.getAuthorizedUser();
 
         List<Participation> participations = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
             scheduleSeq);
-        participations.stream().filter(participation -> !owner.equals(participation.getUser()))
+
+        participations.stream()
+            .filter(participation -> {
+                User user = participation.getUser();
+                return !owner.equals(user) && checkGlobalAlarmSetting(user.getUserSeq(),
+                    AlarmType.SCHEDULE_ASSIGNED);
+            })
             .forEach(participation -> {
                 AlarmScheduleAssigned value = AlarmScheduleAssigned.create(
                     schedule.getScheduleSeq(), participation.getScheduleName(),
                     owner.getUserSeq(), owner.getUserName());
                 kafkaProducer.sendAlarm(KafkaTopic.ALARM_SCHEDULE_ASSIGNED,
+                    participation.getUser().getUserSeq(), value);
+            });
+    }
+
+    @Transactional
+    public void sendScheduleUpdate(Long scheduleSeq, Long userSeq) {
+        Schedule schedule = getSchedule(scheduleSeq);
+        User modifier = getUser(userSeq);
+
+        List<Participation> participations = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
+            scheduleSeq);
+
+        participations.stream()
+            .filter(participation -> {
+                User user = participation.getUser();
+                return !modifier.equals(user) &&
+                    checkUpdateAlarmSetting(schedule.getScheduleSeq(), user.getUserSeq());
+            })
+            .forEach(participation -> {
+                AlarmScheduleUpdate value = AlarmScheduleUpdate.create(schedule.getScheduleSeq(),
+                    participation.getScheduleName());
+                kafkaProducer.sendAlarm(KafkaTopic.ALARM_SCHEDULE_UPDATE,
                     participation.getUser().getUserSeq(), value);
             });
     }
@@ -136,5 +174,24 @@ public class AlarmService {
         return friendRequestRepository.findByOwnerAndFriend(owner, friend)
             .orElseThrow(() -> new RestApiException(
                 FriendRequestErrorCode.FRIEND_REQUEST_NOT_FOUND));
+    }
+
+    public boolean checkUpdateAlarmSetting(Long scheduleSeq, Long userSeq) {
+        return checkGlobalAlarmSetting(userSeq, AlarmType.SCHEDULE_UPDATE)
+            && checkLocalUpdateAlarmSetting(scheduleSeq, userSeq);
+    }
+
+    public boolean checkGlobalAlarmSetting(Long userSeq, AlarmType alarmType) {
+        return alarmConfigRepository
+            .findByUser_UserSeqAndAlarmTypeAndIsEnabledFalseAndIsDeletedFalse(userSeq, alarmType)
+            .map(AlarmConfig::isEnabled)
+            .orElse(true);
+    }
+
+    public boolean checkLocalUpdateAlarmSetting(Long scheduleSeq, Long userSeq) {
+        return participationRepository
+            .findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(scheduleSeq, userSeq)
+            .map(Participation::isUpdateAlarmOn)
+            .orElse(true);
     }
 }

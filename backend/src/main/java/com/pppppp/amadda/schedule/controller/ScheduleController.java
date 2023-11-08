@@ -9,9 +9,13 @@ import com.pppppp.amadda.schedule.dto.response.CategoryReadResponse;
 import com.pppppp.amadda.schedule.dto.response.CommentReadResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleCreateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleDetailReadResponse;
+import com.pppppp.amadda.schedule.dto.response.ScheduleListReadResponse;
 import com.pppppp.amadda.schedule.service.ScheduleService;
+import com.pppppp.amadda.user.dto.response.UserReadResponse;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +38,6 @@ public class ScheduleController {
     private final Long mockUserSeq = 1111L;
 
     // TODO: 로그인 구현 후 코드 수정
-    // TODO: 동적쿼리 구현 후 코드 수정
 
     // ==================== 일정 ====================
 
@@ -42,7 +45,8 @@ public class ScheduleController {
     public ApiResponse<ScheduleCreateResponse> createSchedule(
         @Valid @RequestBody ScheduleCreateRequest request) {
         log.info("POST /api/schedule");
-        ScheduleCreateResponse scheduleCreateResponse = scheduleService.createSchedule(mockUserSeq, request);
+        ScheduleCreateResponse scheduleCreateResponse = scheduleService.createSchedule(mockUserSeq,
+            request);
         alarmService.sendScheduleAssigned(scheduleCreateResponse.scheduleSeq());
         return ApiResponse.ok(scheduleCreateResponse);
     }
@@ -54,21 +58,30 @@ public class ScheduleController {
     }
 
     @GetMapping("")
-    public /*ApiResponse<List<ScheduleListReadResponse>>*/ void getScheduleList(
-        @RequestParam(value = "category", required = false) Long categorySeq,
-        @RequestParam(value = "searchKey", required = false) String searchKey,
-        @RequestParam(value = "unscheduled", required = false) Long unscheduled) {
-        log.info("GET /api/schedule?category={}&searchKey={}&unscheduled={}", categorySeq,
+    public ApiResponse<List<ScheduleListReadResponse>> getScheduleList(
+        @RequestParam(value = "category", required = false) Optional<String> categorySeqList,
+        @RequestParam(value = "searchKey", required = false) Optional<String> searchKey,
+        @RequestParam(value = "unscheduled", required = false) Optional<String> unscheduled) {
+        log.info("GET /api/schedule?category={}&searchKey={}&unscheduled={}", categorySeqList,
             searchKey, unscheduled);
-        // return ApiResponse.ok(scheduleService.getScheduleList(mockUserSeq));
+
+        Map<String, String> searchCondition = Map.of("categories", categorySeqList.orElse(""),
+            "searchKey", searchKey.orElse(""), "unscheduled", unscheduled.orElse(""));
+
+        return ApiResponse.ok(scheduleService.getScheduleListBySearchCondition(mockUserSeq,
+            searchCondition));
     }
 
     @GetMapping("/{scheduleSeq}/participation")
-    public /*ApiResponse<List<UserReadResponse>*/void getParticipatingUsers(
+    public ApiResponse<List<UserReadResponse>> getParticipatingUsers(
         @PathVariable Long scheduleSeq,
-        @RequestParam(value = "searchKey", required = false) String searchKey) {
-        log.info("GET /api/schedule/{}/participation?searchKey={}", scheduleSeq, searchKey);
-        // return ApiResponse.ok(scheduleService.(scheduleSeq));
+        @RequestParam(value = "userName", required = false) Optional<String> searchKey) {
+        log.info("GET /api/schedule/{}/participation?userName={}", scheduleSeq, searchKey);
+
+        // searchKey가 존재하면 검색 결과를, 존재하지 않으면 전체 참여자 목록을 반환
+        return searchKey.map(s -> ApiResponse.ok(
+                scheduleService.getParticipatingUserListBySearchKey(scheduleSeq, s)))
+            .orElseGet(() -> ApiResponse.ok(scheduleService.getParticipatingUserList(scheduleSeq)));
     }
 
     // ==================== 댓글 ====================
@@ -78,7 +91,7 @@ public class ScheduleController {
         @Valid @RequestBody CommentCreateRequest request) {
         log.info("POST /api/schedule/{}/comment", scheduleSeq);
         return ApiResponse.ok(
-            scheduleService.createCommentsOnSchedule(scheduleSeq, mockUserSeq, request));
+            scheduleService.createCommentOnSchedule(scheduleSeq, mockUserSeq, request));
     }
 
     // ==================== 카테고리 ====================
@@ -94,5 +107,39 @@ public class ScheduleController {
     public ApiResponse<List<CategoryReadResponse>> getCategoryList() {
         log.info("GET /api/schedule/user/category");
         return ApiResponse.ok(scheduleService.getCategoryList(mockUserSeq));
+    }
+
+    // ==================== 개별 알림 설정 ====================
+
+    @PostMapping("/{scheduleSeq}/subscribe/mention")
+    public ApiResponse<String> subscribeMention(@PathVariable Long scheduleSeq) {
+        log.info("POST /api/schedule/{}/subscribe/mention", scheduleSeq);
+        Long userSeq = 1L;
+        scheduleService.setMentionAlarm(userSeq, scheduleSeq, true);
+        return ApiResponse.ok("일정의 댓글 멘션 알림을 설정합니다.");
+    }
+
+    @PostMapping("/{scheduleSeq}/unsubscribe/mention")
+    public ApiResponse<String> unsubscribeMention(@PathVariable Long scheduleSeq) {
+        log.info("POST /api/schedule/{}/unsubscribe/mention", scheduleSeq);
+        Long userSeq = 1L;
+        scheduleService.setMentionAlarm(userSeq, scheduleSeq, false);
+        return ApiResponse.ok("일정의 댓글 멘션 알림을 해제합니다.");
+    }
+
+    @PostMapping("/{scheduleSeq}/subscribe/update")
+    public ApiResponse<String> subscribeUpdate(@PathVariable Long scheduleSeq) {
+        log.info("POST /api/schedule/{}/subscribe/update", scheduleSeq);
+        Long userSeq = 1L;
+        scheduleService.setUpdateAlarm(userSeq, scheduleSeq, true);
+        return ApiResponse.ok("일정의 수정 알림을 설정합니다.");
+    }
+
+    @PostMapping("/{scheduleSeq}/unsubscribe/update")
+    public ApiResponse<String> unsubscribeUpdate(@PathVariable Long scheduleSeq) {
+        log.info("POST /api/schedule/{}/unsubscribe/update", scheduleSeq);
+        Long userSeq = 1L;
+        scheduleService.setUpdateAlarm(userSeq, scheduleSeq, false);
+        return ApiResponse.ok("일정의 수정 알림을 해제합니다.");
     }
 }

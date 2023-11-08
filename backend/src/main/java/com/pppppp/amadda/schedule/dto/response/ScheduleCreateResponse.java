@@ -1,6 +1,7 @@
 package com.pppppp.amadda.schedule.dto.response;
 
 import com.pppppp.amadda.schedule.entity.AlarmTime;
+import com.pppppp.amadda.schedule.entity.Category;
 import com.pppppp.amadda.schedule.entity.Participation;
 import com.pppppp.amadda.schedule.entity.Schedule;
 import com.pppppp.amadda.user.dto.response.UserReadResponse;
@@ -24,7 +25,8 @@ public record ScheduleCreateResponse(
 
     AlarmTime alarmTime,
     String scheduleName,
-    String scheduleMemo
+    String scheduleMemo,
+    Category category
 ) {
 
     public static ScheduleCreateResponse of(Schedule schedule,
@@ -43,6 +45,7 @@ public record ScheduleCreateResponse(
             .alarmTime(participation.getAlarmTime())
             .scheduleName(participation.getScheduleName())
             .scheduleMemo(participation.getScheduleMemo())
+            .category(participation.getCategory())
             .build();
     }
 }
