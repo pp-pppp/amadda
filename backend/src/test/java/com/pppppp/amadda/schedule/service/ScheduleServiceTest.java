@@ -621,7 +621,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isEqualTo("안녕 내가 일정 이름이야");
     }
 
-    @DisplayName("기존 일정에 새로운 참가자를 할당한다. 이때 참석 정보의 초기 설정은 일정을 수정하는 유저의 설정값을 따른다.")
+    @DisplayName("기존 일정에 새로운 참가자를 할당한다. 이때 초기 정보는 할당한 참가자의 정보를 따른다.")
     @Transactional
     @Test
     void addNewParticipants() {
@@ -671,6 +671,51 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         assertThat(response2)
             .extracting("scheduleName", "alarmTime")
             .containsExactly("안녕 나는 바뀐 일정 이름이야", "알림 없음");
+    }
+
+    @DisplayName("일정에서 참가자 명단을 수정하고 제외된 사람의 참가 정보는 삭제한다.")
+    @Transactional
+    @Test
+    void deleteParticipation() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+        User u2 = userRepository.findAll().get(1);
+        User u3 = userRepository.findAll().get(2);
+
+        ScheduleCreateRequest request = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(false)
+            .participants(List.of(
+                UserReadResponse.of(u1), UserReadResponse.of(u2), UserReadResponse.of(u3)))
+            .build();
+        scheduleService.createSchedule(u1.getUserSeq(), request);
+        Schedule s = scheduleRepository.findAll().get(0);
+
+        Optional<Participation> p = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+            s.getScheduleSeq(), u2.getUserSeq());
+
+        // when
+        scheduleService.deleteParticipation(u2.getUserSeq(), p.get().getParticipationSeq());
+        List<Participation> result1 = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
+            s.getScheduleSeq());
+        Optional<Participation> result2 = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+            s.getScheduleSeq(), u2.getUserSeq());
+
+        // then
+        assertThat(result1)
+            .hasSize(2)
+            .extracting("user", "schedule.scheduleSeq")
+            .containsExactlyInAnyOrder(
+                tuple(u1, s.getScheduleSeq()),
+                tuple(u3, s.getScheduleSeq())
+            );
+        assertThat(result2).isEmpty();
     }
 
     @DisplayName("카테고리에 새로운 일정을 추가한다.")
@@ -766,128 +811,6 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .extracting("scheduleSeq", "category")
             .containsExactlyInAnyOrder(
                 tuple(s2.getScheduleSeq(), CategoryReadResponse.of(category)));
-    }
-
-    @DisplayName("기존 일정에 새로운 참가자를 할당한다.")
-    @Transactional
-    @Test
-    void inviteNewUserToSchedule() {
-        // given
-        User u1 = userRepository.findAll().get(0);
-        User u2 = userRepository.findAll().get(1);
-        User u3 = userRepository.findAll().get(2);
-
-        ScheduleCreateRequest request = ScheduleCreateRequest.builder()
-            .scheduleName("안녕 내가 일정 이름이야")
-            .scheduleContent("여기는 동기화 되는 메모야")
-            .scheduleMemo("이거는 안되는 메모고")
-            .isDateSelected(false)
-            .isTimeSelected(false)
-            .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
-            .isAuthorizedAll(false)
-            .participants(List.of(
-                UserReadResponse.of(u1), UserReadResponse.of(u2)))
-            .build();
-        scheduleService.createSchedule(u1.getUserSeq(), request);
-        Schedule s = scheduleRepository.findAll().get(0);
-
-        // when
-        System.out.println(s.getAuthorizedUser().getUserSeq());
-        ScheduleCreateResponse response = scheduleService.inviteNewUserToSchedule(
-            u1.getUserSeq(), u3.getUserSeq(), s.getScheduleSeq());
-
-        // then
-        assertThat(response).isNotNull()
-            .extracting("scheduleSeq", "scheduleName", "participants")
-            .containsExactly(s.getScheduleSeq(),
-                "안녕 내가 일정 이름이야",
-                List.of(UserReadResponse.of(u1), UserReadResponse.of(u2),
-                    UserReadResponse.of(u3)));
-    }
-
-    @DisplayName("일정에 할당받은 참가자가 또 다른 참가자를 할당한다. 이때 초기 정보는 할당한 참가자의 정보를 따른다.")
-    @Transactional
-    @Test
-    void createNewParticipationWhenAuthorizedAll() {
-        // given
-        User originalRequestUser = userRepository.findAll().get(0);
-        User assignedUser = userRepository.findAll().get(1);
-        User newUser = userRepository.findAll().get(2);
-
-        ScheduleCreateRequest request = ScheduleCreateRequest.builder()
-            .scheduleName("안녕 내가 일정 이름이야")
-            .scheduleContent("여기는 동기화 되는 메모야")
-            .scheduleMemo("이거는 안되는 메모고")
-            .isDateSelected(false)
-            .isTimeSelected(false)
-            .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
-            .isAuthorizedAll(true)
-            .participants(List.of(
-                UserReadResponse.of(originalRequestUser), UserReadResponse.of(assignedUser)))
-            .build();
-        scheduleService.createSchedule(originalRequestUser.getUserSeq(), request);
-        Schedule s = scheduleRepository.findAll().get(0);
-
-        // when
-        ScheduleCreateResponse response = scheduleService.inviteNewUserToSchedule(
-            assignedUser.getUserSeq(), newUser.getUserSeq(), s.getScheduleSeq());
-
-        // then
-        assertThat(s.getAuthorizedUser()).isEqualTo(originalRequestUser);
-        assertThat(response).isNotNull()
-            .extracting("scheduleSeq", "scheduleName", "isAuthorizedAll", "participants")
-            .containsExactly(s.getScheduleSeq(),
-                "안녕 내가 일정 이름이야", true,
-                List.of(UserReadResponse.of(originalRequestUser), UserReadResponse.of(
-                        assignedUser),
-                    UserReadResponse.of(newUser)));
-    }
-
-    @DisplayName("일정에서 참가자 명단을 수정하고 제외된 사람의 참가 정보는 삭제한다.")
-    @Transactional
-    @Test
-    void deleteParticipation() {
-        // given
-        User u1 = userRepository.findAll().get(0);
-        User u2 = userRepository.findAll().get(1);
-        User u3 = userRepository.findAll().get(2);
-
-        ScheduleCreateRequest request = ScheduleCreateRequest.builder()
-            .scheduleName("안녕 내가 일정 이름이야")
-            .scheduleContent("여기는 동기화 되는 메모야")
-            .scheduleMemo("이거는 안되는 메모고")
-            .isDateSelected(false)
-            .isTimeSelected(false)
-            .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
-            .isAuthorizedAll(false)
-            .participants(List.of(
-                UserReadResponse.of(u1), UserReadResponse.of(u2), UserReadResponse.of(u3)))
-            .build();
-        scheduleService.createSchedule(u1.getUserSeq(), request);
-        Schedule s = scheduleRepository.findAll().get(0);
-
-        Optional<Participation> p = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
-            s.getScheduleSeq(), u2.getUserSeq());
-
-        // when
-        scheduleService.deleteParticipation(u2.getUserSeq(), p.get().getParticipationSeq());
-        List<Participation> result1 = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
-            s.getScheduleSeq());
-        Optional<Participation> result2 = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
-            s.getScheduleSeq(), u2.getUserSeq());
-
-        // then
-        assertThat(result1)
-            .hasSize(2)
-            .extracting("user", "schedule.scheduleSeq")
-            .containsExactlyInAnyOrder(
-                tuple(u1, s.getScheduleSeq()),
-                tuple(u3, s.getScheduleSeq())
-            );
-        assertThat(result2).isEmpty();
     }
 
     @DisplayName("일정을 삭제한다. 이때 일정에 할당된 참가자들의 참가 정보도 같이 사라진다.")

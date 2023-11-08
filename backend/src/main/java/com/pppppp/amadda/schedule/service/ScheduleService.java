@@ -73,19 +73,6 @@ public class ScheduleService {
             creatorParticipation);
     }
 
-    public ScheduleCreateResponse inviteNewUserToSchedule(Long userSeq, Long newUserSeq,
-        Long scheduleSeq) {
-        // 유효체크
-        findUserInfo(userSeq);
-        findUserInfo(newUserSeq);
-        findScheduleInfo(scheduleSeq);
-
-        // 이미 참가한 인원의 경우 예외 처리
-        checkUserAlreadyParticipated(scheduleSeq, newUserSeq);
-
-        return createNewParticipation(newUserSeq, scheduleSeq);
-    }
-
     public ScheduleDetailReadResponse getScheduleDetail(Long scheduleSeq, Long userSeq) {
         findUserInfo(userSeq);
         Schedule schedule = findScheduleInfo(scheduleSeq);
