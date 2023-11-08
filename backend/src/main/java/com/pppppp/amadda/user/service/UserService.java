@@ -5,7 +5,7 @@ import com.pppppp.amadda.friend.repository.FriendRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.global.entity.exception.errorcode.FriendErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
-import com.pppppp.amadda.user.dto.request.UserCheckRequest;
+import com.pppppp.amadda.user.dto.request.UserIdCheckRequest;
 import com.pppppp.amadda.user.dto.request.UserInitRequest;
 import com.pppppp.amadda.user.dto.request.UserJwtRequest;
 import com.pppppp.amadda.user.dto.request.UserRefreshRequest;
@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -88,9 +89,15 @@ public class UserService {
         return chk1 && chk2;
     }
 
-    public UserCheckResponse chkIfIdDuplicated(UserCheckRequest request) {
+    public UserIdCheckResponse chkId(UserIdCheckRequest request) {
         boolean isDup = findUserWithExactId(request.userId()).isPresent();
-        return UserCheckResponse.of(isDup);
+        boolean isValid = isValidId(request.userId());
+        return UserIdCheckResponse.of(isDup, isValid);
+    }
+
+    private boolean isValidId(String id) {
+        String regex = "^[^A-Z!@#$%^&*()_+={}|\\[\\]:\";'<>?,.\\s\\u3131-\\uD79D]{0,20}$";
+        return Pattern.matches(regex, id);
     }
 
     // =============== 레포지토리에 직접 접근하는 메소드들 ===============
