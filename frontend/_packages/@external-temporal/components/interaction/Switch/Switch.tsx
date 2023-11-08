@@ -10,16 +10,25 @@ import {
 interface SwitchProps extends HTMLAttributes<HTMLInputElement> {
   id: string;
   selected: boolean;
-  value: string;
+  onToggle?: (arg: boolean) => void;
 }
-export function Switch({ id, selected, value }: SwitchProps) {
+export function Switch({
+  id,
+  selected,
+  onToggle = (arg: boolean) => {},
+}: SwitchProps) {
   const isSelected = selected ? 'selected' : 'unselected';
   const CONTAINER = `${CONTAINER_BASE} ${CONTAINER_VARIANT[isSelected]}`;
   const SWITCH = `${SWITCH_BASE} ${SWITCH_VARIANT[isSelected]}`;
   return (
     <div className={CONTAINER}>
       <div className={SLIDER}>
-        <input className={SWITCH} id={id} type="checkbox" value={value} />
+        <input
+          className={SWITCH}
+          id={id}
+          type="checkbox"
+          onChange={() => onToggle(!selected)}
+        />
       </div>
     </div>
   );
