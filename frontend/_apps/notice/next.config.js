@@ -3,6 +3,7 @@ const { createVanillaExtractPlugin } = require('@vanilla-extract/next-plugin');
 const withVanillaExtract = createVanillaExtractPlugin();
 module.exports = withVanillaExtract({
   transpilePackages: ['ui'],
+  basePath: '/mf/notice',
   webpack(config, options) {
     if (!options.isServer) {
       config.plugins.push(
