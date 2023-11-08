@@ -14,6 +14,7 @@ import com.pppppp.amadda.user.dto.response.UserRelationResponse;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -257,7 +258,7 @@ class UserServiceTest extends IntegrationTestSupport {
         boolean isFriend = userService.isFriend(u1, u2);
 
         // then
-        assertThat(isFriend).isTrue();
+        Assertions.assertTrue(isFriend);
     }
 
     @DisplayName("친구의 양방향 관계가 유효한지 검사한다. - 유효2")
@@ -272,7 +273,7 @@ class UserServiceTest extends IntegrationTestSupport {
         boolean isFriend = userService.isFriend(u1, u2);
 
         // then
-        assertThat(isFriend).isFalse();
+        Assertions.assertFalse(isFriend);
     }
 
     @DisplayName("친구의 양방향 관계가 유효한지 검사한다. - 안유효")
