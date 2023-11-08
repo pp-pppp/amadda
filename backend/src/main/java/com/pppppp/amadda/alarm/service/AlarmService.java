@@ -5,6 +5,7 @@ import com.pppppp.amadda.alarm.dto.response.AlarmReadResponse;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendAccept;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendRequest;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleAssigned;
+import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleUpdate;
 import com.pppppp.amadda.alarm.entity.Alarm;
 import com.pppppp.amadda.alarm.entity.AlarmConfig;
 import com.pppppp.amadda.alarm.entity.AlarmType;
@@ -88,7 +89,7 @@ public class AlarmService {
     public void sendFriendRequest(Long ownerSeq, Long friendSeq) {
         User friend = getUser(friendSeq);
 
-        if (checkAlarmSetting(friend.getUserSeq(), AlarmType.FRIEND_REQUEST)) {
+        if (checkGlobalAlarmSetting(friend.getUserSeq(), AlarmType.FRIEND_REQUEST)) {
             User owner = getUser(ownerSeq);
             FriendRequest friendRequest = getFriendRequest(owner, friend);
 
@@ -103,7 +104,7 @@ public class AlarmService {
     public void sendFriendAccept(Long ownerSeq, Long friendSeq) {
         User owner = getUser(ownerSeq);
 
-        if (checkAlarmSetting(owner.getUserSeq(), AlarmType.FRIEND_ACCEPT)) {
+        if (checkGlobalAlarmSetting(owner.getUserSeq(), AlarmType.FRIEND_ACCEPT)) {
             User friend = getUser(friendSeq);
 
             AlarmFriendAccept value = AlarmFriendAccept.create(friend.getUserSeq(),
@@ -125,15 +126,37 @@ public class AlarmService {
         participations.stream()
             .filter(participation -> {
                 User user = participation.getUser();
-                return !owner.equals(user) && checkAlarmSetting(user.getUserSeq(),
+                return !owner.equals(user) && checkGlobalAlarmSetting(user.getUserSeq(),
                     AlarmType.SCHEDULE_ASSIGNED);
             })
             .forEach(participation -> {
-                    AlarmScheduleAssigned value = AlarmScheduleAssigned.create(
-                        schedule.getScheduleSeq(), participation.getScheduleName(),
-                        owner.getUserSeq(), owner.getUserName());
-                    kafkaProducer.sendAlarm(KafkaTopic.ALARM_SCHEDULE_ASSIGNED,
-                        participation.getUser().getUserSeq(), value);
+                AlarmScheduleAssigned value = AlarmScheduleAssigned.create(
+                    schedule.getScheduleSeq(), participation.getScheduleName(),
+                    owner.getUserSeq(), owner.getUserName());
+                kafkaProducer.sendAlarm(KafkaTopic.ALARM_SCHEDULE_ASSIGNED,
+                    participation.getUser().getUserSeq(), value);
+            });
+    }
+
+    @Transactional
+    public void sendScheduleUpdate(Long scheduleSeq, Long userSeq) {
+        Schedule schedule = getSchedule(scheduleSeq);
+        User modifier = getUser(userSeq);
+
+        List<Participation> participations = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
+            scheduleSeq);
+
+        participations.stream()
+            .filter(participation -> {
+                User user = participation.getUser();
+                return !modifier.equals(user) &&
+                    checkUpdateAlarmSetting(schedule.getScheduleSeq(), user.getUserSeq());
+            })
+            .forEach(participation -> {
+                AlarmScheduleUpdate value = AlarmScheduleUpdate.create(schedule.getScheduleSeq(),
+                    participation.getScheduleName());
+                kafkaProducer.sendAlarm(KafkaTopic.ALARM_SCHEDULE_UPDATE,
+                    participation.getUser().getUserSeq(), value);
             });
     }
 
@@ -153,9 +176,22 @@ public class AlarmService {
                 FriendRequestErrorCode.FRIEND_REQUEST_NOT_FOUND));
     }
 
-    public boolean checkAlarmSetting(Long userSeq, AlarmType alarmType) {
-        Optional<AlarmConfig> config = alarmConfigRepository.findByUser_UserSeqAndAlarmTypeAndIsEnabledFalseAndIsDeletedFalse(
-            userSeq, alarmType);
-        return config.map(AlarmConfig::isEnabled).orElse(true);
+    public boolean checkUpdateAlarmSetting(Long scheduleSeq, Long userSeq) {
+        return checkGlobalAlarmSetting(userSeq, AlarmType.SCHEDULE_UPDATE)
+            && checkLocalUpdateAlarmSetting(scheduleSeq, userSeq);
+    }
+
+    public boolean checkGlobalAlarmSetting(Long userSeq, AlarmType alarmType) {
+        return alarmConfigRepository
+            .findByUser_UserSeqAndAlarmTypeAndIsEnabledFalseAndIsDeletedFalse(userSeq, alarmType)
+            .map(AlarmConfig::isEnabled)
+            .orElse(true);
+    }
+
+    public boolean checkLocalUpdateAlarmSetting(Long scheduleSeq, Long userSeq) {
+        return participationRepository
+            .findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(scheduleSeq, userSeq)
+            .map(Participation::isUpdateAlarmOn)
+            .orElse(true);
     }
 }
