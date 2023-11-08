@@ -192,6 +192,9 @@ importers:
       '@vanilla-extract/css':
         specifier: 1.13.0
         version: 1.13.0
+      axios:
+        specifier: ^1.6.0
+        version: 1.6.0
       external-temporal:
         specifier: workspace:*
         version: link:../../_packages/@external-temporal
@@ -274,6 +277,9 @@ importers:
       '@vanilla-extract/css':
         specifier: 1.13.0
         version: 1.13.0
+      axios:
+        specifier: ^1.6.0
+        version: 1.6.0
       external-temporal:
         specifier: workspace:*
         version: link:../../_packages/@external-temporal
@@ -447,6 +453,9 @@ importers:
       '@vanilla-extract/css':
         specifier: 1.13.0
         version: 1.13.0
+      axios:
+        specifier: ^1.6.0
+        version: 1.6.0
       external-temporal:
         specifier: workspace:*
         version: link:../../_packages/@external-temporal
@@ -541,9 +550,6 @@ importers:
       '@vanilla-extract/css':
         specifier: 1.13.0
         version: 1.13.0
-      axios:
-        specifier: ^1.6.0
-        version: 1.6.0
       eslint-config-custom:
         specifier: workspace:*
         version: link:../eslint-config-custom
@@ -6614,6 +6620,7 @@ packages:
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
+    dev: false
 
   /axobject-query@3.1.1:
     resolution: {integrity: sha512-goKlv8DZrK9hUh975fnHzhNIO4jUnFCfv/dszV5VwUGDFjI6vQ2VwoyjYjYNEbBE8AH87TduWP5uyDR1D+Iteg==}
