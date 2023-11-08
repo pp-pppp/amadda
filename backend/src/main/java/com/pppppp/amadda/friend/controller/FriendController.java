@@ -4,9 +4,10 @@ import com.pppppp.amadda.alarm.service.AlarmService;
 import com.pppppp.amadda.friend.dto.request.FriendRequestRequest;
 import com.pppppp.amadda.friend.dto.request.GroupCreateRequest;
 import com.pppppp.amadda.friend.dto.request.GroupPatchRequest;
+import com.pppppp.amadda.friend.dto.response.FriendReadResponse;
 import com.pppppp.amadda.friend.dto.response.FriendRequestResponse;
-import com.pppppp.amadda.friend.dto.response.GroupPatchResponse;
 import com.pppppp.amadda.friend.service.FriendRequestService;
+import com.pppppp.amadda.friend.service.FriendService;
 import com.pppppp.amadda.friend.service.GroupMemberService;
 import com.pppppp.amadda.friend.service.UserGroupService;
 import com.pppppp.amadda.global.dto.ApiResponse;
@@ -34,11 +35,14 @@ public class FriendController {
     private final UserGroupService userGroupService;
     private final GroupMemberService groupMemberService;
     private final AlarmService alarmService;
+    private final FriendService friendService;
 
     @GetMapping
-    public void getFriendList(@RequestParam String searchKey) {
-        log.info("친구 목록 검색");
+    public ApiResponse<FriendReadResponse> getFriendList(@RequestParam String searchKey) {
         log.info("searchKey="+searchKey);
+        Long userSeq = 0L;
+        FriendReadResponse response = friendService.searchFriends(userSeq, searchKey);
+        return ApiResponse.ok(response);
     }
 
     @PostMapping("/request")
