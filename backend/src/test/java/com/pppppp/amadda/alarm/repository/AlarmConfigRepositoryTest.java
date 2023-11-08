@@ -34,6 +34,71 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         userRepository.deleteAllInBatch();
     }
 
+    @DisplayName("유저의 알림 글로벌 설정값 확인 - true")
+    @ParameterizedTest
+    @ValueSource(strings = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
+        "SCHEDULE_UPDATE"})
+    void findByUser_UserSeqAndAlarmTypeAndIsDeletedFalse_True(String type) {
+        // given
+        AlarmType alarmType = AlarmType.of(type);
+
+        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User user = userRepository.save(u1);
+
+        AlarmConfig ac= AlarmConfig.create(user, alarmType, true);
+        alarmConfigRepository.save(ac);
+
+        // when
+        Optional<AlarmConfig> config = alarmConfigRepository.findByUser_UserSeqAndAlarmTypeAndIsDeletedFalse(
+            user.getUserSeq(), alarmType);
+
+        // then
+        assertTrue(config.isPresent());
+        assertTrue(config.get().isEnabled());
+    }
+
+    @DisplayName("유저의 알림 글로벌 설정값 확인 - false")
+    @ParameterizedTest
+    @ValueSource(strings = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
+        "SCHEDULE_UPDATE"})
+    void findByUser_UserSeqAndAlarmTypeAndIsDeletedFalse_False(String type) {
+        // given
+        AlarmType alarmType = AlarmType.of(type);
+
+        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User user = userRepository.save(u1);
+
+        AlarmConfig ac= AlarmConfig.create(user, alarmType, false);
+        alarmConfigRepository.save(ac);
+
+        // when
+        Optional<AlarmConfig> config = alarmConfigRepository.findByUser_UserSeqAndAlarmTypeAndIsDeletedFalse(
+            user.getUserSeq(), alarmType);
+
+        // then
+        assertTrue(config.isPresent());
+        assertFalse(config.get().isEnabled());
+    }
+
+    @DisplayName("유저의 알림 글로벌 설정값 확인 - null")
+    @ParameterizedTest
+    @ValueSource(strings = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
+        "SCHEDULE_UPDATE"})
+    void findByUser_UserSeqAndAlarmTypeAndIsDeletedFalse_Null(String type) {
+        // given
+        AlarmType alarmType = AlarmType.of(type);
+
+        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User user = userRepository.save(u1);
+
+        // when
+        Optional<AlarmConfig> config = alarmConfigRepository.findByUser_UserSeqAndAlarmTypeAndIsDeletedFalse(
+            user.getUserSeq(), alarmType);
+
+        // then
+        assertTrue(config.isEmpty());
+    }
+
     @DisplayName("설정이 off인지 확인하기")
     @ParameterizedTest
     @CsvSource(value = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
