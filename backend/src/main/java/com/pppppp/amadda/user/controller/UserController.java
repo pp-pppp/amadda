@@ -4,10 +4,7 @@ import com.pppppp.amadda.global.dto.ApiResponse;
 import com.pppppp.amadda.user.dto.request.UserInitRequest;
 import com.pppppp.amadda.user.dto.request.UserJwtRequest;
 import com.pppppp.amadda.user.dto.request.UserRefreshRequest;
-import com.pppppp.amadda.user.dto.response.UserAccessResponse;
-import com.pppppp.amadda.user.dto.response.UserJwtInitResponse;
-import com.pppppp.amadda.user.dto.response.UserJwtResponse;
-import com.pppppp.amadda.user.dto.response.UserRelationResponse;
+import com.pppppp.amadda.user.dto.response.*;
 import com.pppppp.amadda.user.service.TokenProvider;
 import com.pppppp.amadda.user.service.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -65,9 +62,16 @@ public class UserController {
     }
 
     @GetMapping
-    public ApiResponse<UserRelationResponse> getUserInfoAndRelation(@RequestParam String searchKey) {
+    public ApiResponse<UserRelationResponse> searchUserInfoAndRelation(@RequestParam String searchKey) {
         Long userSeq = 0L;
         UserRelationResponse response = userService.getUserInfoAndIsFriend(userSeq, searchKey);
+        return ApiResponse.ok(response);
+    }
+
+    @GetMapping("/my")
+    public ApiResponse<UserReadResponse> getMyUserInfo() {
+        Long userSeq = 0L;
+        UserReadResponse response = userService.getUserResponse(userSeq);
         return ApiResponse.ok(response);
     }
 

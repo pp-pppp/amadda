@@ -111,4 +111,20 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.message").value("OK"));
     }
 
+    @DisplayName("내 정보를 조회한다. ")
+    @Test
+    void getMyUserInfo() throws Exception {
+        // given
+
+        // when // then
+        mockMvc.perform(
+                get("/api/user/my")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("200"))
+                .andExpect(jsonPath("$.status").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"));
+    }
+
 }

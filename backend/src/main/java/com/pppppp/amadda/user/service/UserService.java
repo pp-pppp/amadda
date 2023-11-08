@@ -8,10 +8,7 @@ import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
 import com.pppppp.amadda.user.dto.request.UserInitRequest;
 import com.pppppp.amadda.user.dto.request.UserJwtRequest;
 import com.pppppp.amadda.user.dto.request.UserRefreshRequest;
-import com.pppppp.amadda.user.dto.response.UserAccessResponse;
-import com.pppppp.amadda.user.dto.response.UserJwtInitResponse;
-import com.pppppp.amadda.user.dto.response.UserJwtResponse;
-import com.pppppp.amadda.user.dto.response.UserRelationResponse;
+import com.pppppp.amadda.user.dto.response.*;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -32,6 +29,10 @@ public class UserService {
 
     public User getUserInfoBySeq(Long userSeq) {
         return findUserByUserSeq(userSeq).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+    }
+
+    public UserReadResponse getUserResponse(Long userSeq) {
+        return UserReadResponse.of(getUserInfoBySeq(userSeq));
     }
 
     public boolean checkIsInited(Long userSeq) {
@@ -77,7 +78,6 @@ public class UserService {
         if(chk1^chk2) throw new RestApiException(FriendErrorCode.FRIEND_RELATION_DAMAGED);
         return chk1 && chk2;
     }
-
 
     // =============== 레포지토리에 직접 접근하는 메소드들 ===============
 
