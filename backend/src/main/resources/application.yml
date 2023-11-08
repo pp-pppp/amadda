@@ -16,11 +16,17 @@ spring:
 
   kafka:
     producer:
-      bootstrap-servers: ${kafka.server.kafka1}, ${kafka.server.kafka2}, ${kafka.server.kafka3}
+      bootstrap-servers:
+        - ${kafka.server.kafka1}
+        - ${kafka.server.kafka2}
+        - ${kafka.server.kafka3}
       key-serializer: org.apache.kafka.common.serialization.LongSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     consumer:
-      bootstrap-servers: ${kafka.server.kafka1}, ${kafka.server.kafka2}, ${kafka.server.kafka3}
+      bootstrap-servers:
+        - ${kafka.server.kafka1}
+        - ${kafka.server.kafka2}
+        - ${kafka.server.kafka3}
       key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
       properties:
