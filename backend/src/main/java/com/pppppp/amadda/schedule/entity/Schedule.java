@@ -17,7 +17,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
-import org.springframework.util.StringUtils;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -91,22 +90,14 @@ public class Schedule extends BaseEntity {
     }
 
     public void updateScheduleInfo(SchedulePatchRequest request) {
-        if (StringUtils.hasText(request.scheduleContent())) {
-            this.scheduleContent = request.scheduleContent();
-        }
-        if (request.isDateSelected() != null) {
-            this.isTimeSelected = request.isTimeSelected();
-        }
-        if (request.isTimeSelected() != null) {
-            this.isTimeSelected = request.isTimeSelected();
-        }
-        if (request.isAllDay() != null) {
-            this.isAllDay = request.isAllDay();
-        }
-        if (StringUtils.hasText(request.scheduleStartAt())) {
+        this.scheduleContent = request.scheduleContent();
+        this.isDateSelected = request.isDateSelected();
+        this.isTimeSelected = request.isTimeSelected();
+        this.isAllDay = request.isAllDay();
+        if (isDateSelected) {
             this.scheduleStartAt = LocalDateTime.parse(request.scheduleStartAt());
         }
-        if (StringUtils.hasText(request.scheduleEndAt())) {
+        if (isTimeSelected) {
             this.scheduleEndAt = LocalDateTime.parse(request.scheduleEndAt());
         }
     }

@@ -17,7 +17,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.util.StringUtils;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -47,11 +46,7 @@ public class Category extends BaseEntity {
     }
 
     public void updateCategoryInfo(CategoryPatchRequest request) {
-        if (StringUtils.hasText(request.categoryName())) {
-            this.categoryName = request.categoryName();
-        }
-        if (StringUtils.hasText(request.categoryColor())) {
-            this.categoryColor = CategoryColor.valueOf(request.categoryColor());
-        }
+        this.categoryName = request.categoryName();
+        this.categoryColor = CategoryColor.valueOf(request.categoryColor());
     }
 }
