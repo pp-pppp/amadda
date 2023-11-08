@@ -424,17 +424,18 @@ public class ScheduleService {
         Participation requestUserParticipaton = findParticipationInfoBySchedule(
             schedule.getScheduleSeq(), requestUserSeq);
 
+        ScheduleCreateRequest createRequest = ScheduleCreateRequest.builder()
+            .scheduleName(Optional.ofNullable(request.scheduleName()).orElse(
+                requestUserParticipaton.getScheduleName()))
+            .alarmTime(Optional.ofNullable(request.alarmTime()).orElse(
+                requestUserParticipaton.getAlarmTime()))
+            .build();
+
         updateParticipationList.stream()
             .filter(user -> !previousParticipationList.contains(user))
             .forEach(user -> {
-                Participation participation = Participation.builder()
-                    .scheduleName(Optional.ofNullable(request.scheduleName()).orElse(
-                        requestUserParticipaton.getScheduleName()))
-                    .alarmTime(Optional.ofNullable(request.alarmTime()).orElse(
-                        requestUserParticipaton.getAlarmTime()))
-                    .schedule(schedule)
-                    .user(user)
-                    .build();
+                Participation participation = Participation.create(createRequest, user, schedule,
+                    null);
                 participationRepository.save(participation);
             });
 
