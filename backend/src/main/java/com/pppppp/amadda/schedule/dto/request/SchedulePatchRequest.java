@@ -10,7 +10,6 @@ import lombok.Builder;
 @Builder
 public record SchedulePatchRequest(
     // ================= Schedule ===================
-    @NotNull(message = "유효하지 않은 일정입니다.") Long scheduleSeq,
     String scheduleContent,
     @NotNull(message = "시간 확정 여부가 결정되지 않았어요!") Boolean isTimeSelected,
     @NotNull(message = "날짜 확정 여부가 결정되지 않았어요!") Boolean isDateSelected,
