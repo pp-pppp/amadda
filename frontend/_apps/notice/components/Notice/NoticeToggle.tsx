@@ -23,10 +23,6 @@ export function NoticeToggle({
   isEnabled,
   alarmType,
 }: NoticeProps) {
-  //타입
-  //알림 내용
-  //알림 타입 캡션
-  //온오프
   return (
     <Flex justifyContents="spaceBetween">
       <Flex

@@ -15,12 +15,6 @@ export interface NoticeProps {
 }
 
 export function Notice({ content, alarmType }: NoticeProps) {
-  //알림 타입
-  //프로필 사진 (유저 정보)
-  //알림 내용
-  //친구신청일 경우 수락, 거절 버튼
-  //읽었으면 사라져야하는데...
-  //링크 있어야함. 해당 글로 갈 수 있는 링크
   return (
     <Flex justifyContents="spaceBetween">
       <H5>{content}</H5>
