@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
@@ -18,6 +20,7 @@ import com.pppppp.amadda.schedule.dto.response.ScheduleListReadResponse;
 import com.pppppp.amadda.schedule.entity.AlarmTime;
 import com.pppppp.amadda.schedule.entity.Category;
 import com.pppppp.amadda.schedule.entity.CategoryColor;
+import com.pppppp.amadda.schedule.entity.Participation;
 import com.pppppp.amadda.schedule.entity.Schedule;
 import com.pppppp.amadda.schedule.repository.CategoryRepository;
 import com.pppppp.amadda.schedule.repository.CommentRepository;
@@ -29,6 +32,7 @@ import com.pppppp.amadda.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,6 +40,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class ScheduleServiceTest extends IntegrationTestSupport {
+    // TODO: 일정 수정 알림 service 테스트
 
     @Autowired
     private ScheduleService scheduleService;
@@ -676,5 +681,159 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         assertThatThrownBy(() -> scheduleService.createCategory(user.getUserSeq(), r2))
             .isInstanceOf(RestApiException.class)
             .hasMessage("CATEGORY_ALREADY_EXISTS");
+    }
+
+    // =================== 개별 일정 알림 설정 테스트 ===================
+
+    @DisplayName("멘션 알림 설정을 On으로 설정한다.")
+    @Test
+    void mention_alarm_on() {
+        // givne
+        User user = userRepository.findAll().get(0);
+
+        ScheduleCreateRequest request = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(false)
+            .participants(List.of(
+                UserReadResponse.of(user)))
+            .build();
+        scheduleService.createSchedule(user.getUserSeq(), request);
+
+        Schedule schedule = scheduleRepository.findAll().get(0);
+
+        // when
+        scheduleService.setMentionAlarm(user.getUserSeq(), schedule.getScheduleSeq(), true);
+
+        // then
+        Optional<Participation> participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+            schedule.getScheduleSeq(), user.getUserSeq());
+        assertTrue(participation.isPresent());
+        assertTrue(participation.get().isMentionAlarmOn());
+    }
+
+    @DisplayName("멘션 알림 설정을 Off으로 설정한다.")
+    @Test
+    void mention_alarm_off() {
+        // givne
+        User user = userRepository.findAll().get(0);
+
+        ScheduleCreateRequest request = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(false)
+            .participants(List.of(
+                UserReadResponse.of(user)))
+            .build();
+        scheduleService.createSchedule(user.getUserSeq(), request);
+
+        Schedule schedule = scheduleRepository.findAll().get(0);
+
+        // when
+        scheduleService.setMentionAlarm(user.getUserSeq(), schedule.getScheduleSeq(), false);
+
+        // then
+        Optional<Participation> participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+            schedule.getScheduleSeq(), user.getUserSeq());
+        assertTrue(participation.isPresent());
+        assertFalse(participation.get().isMentionAlarmOn());
+    }
+
+    @DisplayName("존재하지 않는 일정의 멘션 알림을 수정할 수 없다.")
+    @Test
+    void cannot_set_mention_alram_if_schedule_not_exist() {
+        // givne
+        User user = userRepository.findAll().get(0);
+
+        // when + then
+        assertThatThrownBy(() -> scheduleService.setMentionAlarm(user.getUserSeq(), 1L, true))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("SCHEDULE_NOT_FOUND");
+    }
+
+    @DisplayName("수정 알림 설정을 On으로 설정한다.")
+    @Test
+    void update_alarm_on() {
+        // givne
+        User user = userRepository.findAll().get(0);
+
+        ScheduleCreateRequest request = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(false)
+            .participants(List.of(
+                UserReadResponse.of(user)))
+            .build();
+        scheduleService.createSchedule(user.getUserSeq(), request);
+
+        Schedule schedule = scheduleRepository.findAll().get(0);
+
+        // when
+        scheduleService.setUpdateAlarm(user.getUserSeq(), schedule.getScheduleSeq(), true);
+
+        // then
+        Optional<Participation> participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+            schedule.getScheduleSeq(), user.getUserSeq());
+        assertTrue(participation.isPresent());
+        assertTrue(participation.get().isUpdateAlarmOn());
+    }
+
+    @DisplayName("수정 알림 설정을 Off으로 설정한다.")
+    @Test
+    void update_alarm_off() {
+        // givne
+        User user = userRepository.findAll().get(0);
+
+        ScheduleCreateRequest request = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(false)
+            .participants(List.of(
+                UserReadResponse.of(user)))
+            .build();
+        scheduleService.createSchedule(user.getUserSeq(), request);
+
+        Schedule schedule = scheduleRepository.findAll().get(0);
+
+        // when
+        scheduleService.setUpdateAlarm(user.getUserSeq(), schedule.getScheduleSeq(), false);
+
+        // then
+        Optional<Participation> participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+            schedule.getScheduleSeq(), user.getUserSeq());
+        assertTrue(participation.isPresent());
+        assertFalse(participation.get().isUpdateAlarmOn());
+    }
+
+    @DisplayName("존재하지 않는 일정의 수정 알림을 수정할 수 없다.")
+    @Test
+    void cannot_set_update_alram_if_schedule_not_exist() {
+        // givne
+        User user = userRepository.findAll().get(0);
+
+        // when + then
+        assertThatThrownBy(() -> scheduleService.setUpdateAlarm(user.getUserSeq(), 1L, true))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("SCHEDULE_NOT_FOUND");
     }
 }

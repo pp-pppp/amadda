@@ -108,4 +108,38 @@ public class ScheduleController {
         log.info("GET /api/schedule/user/category");
         return ApiResponse.ok(scheduleService.getCategoryList(mockUserSeq));
     }
+
+    // ==================== 개별 알림 설정 ====================
+
+    @PostMapping("/{scheduleSeq}/subscribe/mention")
+    public ApiResponse<String> subscribeMention(@PathVariable Long scheduleSeq) {
+        log.info("POST /api/schedule/{}/subscribe/mention", scheduleSeq);
+        Long userSeq = 1L;
+        scheduleService.setMentionAlarm(userSeq, scheduleSeq, true);
+        return ApiResponse.ok("일정의 댓글 멘션 알림을 설정합니다.");
+    }
+
+    @PostMapping("/{scheduleSeq}/unsubscribe/mention")
+    public ApiResponse<String> unsubscribeMention(@PathVariable Long scheduleSeq) {
+        log.info("POST /api/schedule/{}/unsubscribe/mention", scheduleSeq);
+        Long userSeq = 1L;
+        scheduleService.setMentionAlarm(userSeq, scheduleSeq, false);
+        return ApiResponse.ok("일정의 댓글 멘션 알림을 해제합니다.");
+    }
+
+    @PostMapping("/{scheduleSeq}/subscribe/update")
+    public ApiResponse<String> subscribeUpdate(@PathVariable Long scheduleSeq) {
+        log.info("POST /api/schedule/{}/subscribe/update", scheduleSeq);
+        Long userSeq = 1L;
+        scheduleService.setUpdateAlarm(userSeq, scheduleSeq, true);
+        return ApiResponse.ok("일정의 수정 알림을 설정합니다.");
+    }
+
+    @PostMapping("/{scheduleSeq}/unsubscribe/update")
+    public ApiResponse<String> unsubscribeUpdate(@PathVariable Long scheduleSeq) {
+        log.info("POST /api/schedule/{}/unsubscribe/update", scheduleSeq);
+        Long userSeq = 1L;
+        scheduleService.setUpdateAlarm(userSeq, scheduleSeq, false);
+        return ApiResponse.ok("일정의 수정 알림을 해제합니다.");
+    }
 }
