@@ -1,12 +1,11 @@
 package com.pppppp.amadda.friend.service;
 
 import com.pppppp.amadda.friend.dto.request.FriendRequestRequest;
-import com.pppppp.amadda.friend.dto.response.FriendRequestResponse;
-import com.pppppp.amadda.friend.dto.response.FriendResponse;
-import com.pppppp.amadda.friend.entity.Friend;
-import com.pppppp.amadda.friend.entity.FriendRequest;
-import com.pppppp.amadda.friend.entity.FriendRequestStatus;
+import com.pppppp.amadda.friend.dto.response.*;
+import com.pppppp.amadda.friend.entity.*;
 import com.pppppp.amadda.friend.repository.FriendRepository;
+import com.pppppp.amadda.friend.repository.GroupMemberRepository;
+import com.pppppp.amadda.friend.repository.UserGroupRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.global.entity.exception.errorcode.FriendErrorCode;
 import com.pppppp.amadda.user.entity.User;
@@ -14,8 +13,8 @@ import com.pppppp.amadda.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +22,8 @@ public class FriendService {
 
     private final FriendRepository friendRepository;
     private final UserService userService;
+    private final UserGroupRepository userGroupRepository;
+    private final GroupMemberRepository groupMemberRepository;
 
     public List<FriendResponse> createFriend(FriendRequestResponse friendRequest) {
 
@@ -53,10 +54,50 @@ public class FriendService {
         deleteFriendBySeq(relationSeq2);
     }
 
+    public FriendReadResponse searchFriends(Long userSeq, String searchKey) {
+
+        List<GroupResponse> groupResponses = searchInGroups(userSeq, searchKey);
+        List<MemberResponse> memberResponses = searchFriendsWithKey(userSeq, searchKey)
+                .stream().map(MemberResponse::of)
+                .collect(Collectors.toList());
+
+        return FriendReadResponse.of(
+                groupResponses,
+                memberResponses
+        );
+    }
+
+    public List<GroupResponse> searchInGroups(Long userSeq, String searchKey) {
+
+        List<UserGroup> myGroups = getMyUserGroups(userSeq); // 내 그룹들만 뽑음
+
+        List<Long> myGroupSeqs = myGroups.stream() // 내 그룹들 seq만 뽑아 담은 리스트
+                .map(UserGroup::getGroupSeq)
+                .collect(Collectors.toList());
+
+        // 내 그룹에 해당하면서 검색키에 해당하는 멤버들만 뽑음
+        List<GroupMember> searchedGroupMembers = getMySearchedGroupMembers(myGroupSeqs, searchKey);
+
+        Set<Long> newHS = searchedGroupMembers.stream() // 검색에 해당하는 그룹 seq만 뽑아 담은 쎗
+                .map(mem -> mem.getGroup().getGroupSeq())
+                .collect(Collectors.toSet());
+
+        return myGroups.stream()
+                .filter(group -> newHS.contains(group.getGroupSeq())) // 검색에서 걸러진 그룹들 여기서도 걸러주기
+                .map(group -> {
+                    List<MemberResponse> mems = searchedGroupMembers.stream()
+                            .filter(mem -> mem.getGroup().getGroupSeq() == group.getGroupSeq())
+                            .map(MemberResponse::of)
+                            .collect(Collectors.toList());
+                    return GroupResponse.of(group, mems);
+                })
+                .collect(Collectors.toList());
+    }
+
+
 
     // =============== 레포지토리에 직접 접근하는 메소드들 ===============
-
-    public Friend saveFriend(User u1, User u2) {
+    private Friend saveFriend(User u1, User u2) {
         return friendRepository.save(Friend.create(u1, u2));
     }
 
@@ -66,6 +107,18 @@ public class FriendService {
 
     private void deleteFriendBySeq(Long relationSeq) {
         friendRepository.deleteById(relationSeq);
+    }
+
+    private List<UserGroup> getMyUserGroups(Long userSeq) {
+        return userGroupRepository.findByOwner_UserSeq(userSeq);
+    }
+
+    private List<GroupMember> getMySearchedGroupMembers(List<Long> myGroupSeqs, String searchKey) {
+        return groupMemberRepository.findByGroupSeqAndSearchKey(myGroupSeqs, searchKey);
+    }
+
+    private List<Friend> searchFriendsWithKey(Long userSeq, String searchKey) {
+        return friendRepository.findByOwnerSeqAndSearchKey(userSeq, searchKey);
     }
 
     // =========================================================

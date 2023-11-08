@@ -3,9 +3,7 @@ package com.pppppp.amadda.friend.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -17,6 +15,7 @@ import com.pppppp.amadda.friend.dto.request.GroupCreateRequest;
 import com.pppppp.amadda.friend.dto.request.GroupPatchRequest;
 import com.pppppp.amadda.friend.dto.response.FriendRequestResponse;
 import com.pppppp.amadda.friend.service.FriendRequestService;
+import com.pppppp.amadda.friend.service.FriendService;
 import com.pppppp.amadda.friend.service.GroupMemberService;
 import com.pppppp.amadda.friend.service.UserGroupService;
 import java.util.List;
@@ -45,6 +44,8 @@ class FriendControllerTest {
     private GroupMemberService groupMemberService;
     @MockBean
     private AlarmService alarmService;
+    @MockBean
+    private FriendService friendService;
 
     @DisplayName("친구 요청을 보낸다. ")
     @Test
@@ -323,5 +324,23 @@ class FriendControllerTest {
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"));
     }
+
+    @DisplayName("친구를 검색한다. ")
+    @Test
+    void getFriendList() throws Exception {
+        // given
+        String key = "aaa";
+
+        // when // then
+        mockMvc.perform(
+                        get("/api/friend?searchKey="+key)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("200"))
+                .andExpect(jsonPath("$.status").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"));
+    }
+
 
 }

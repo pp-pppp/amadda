@@ -109,4 +109,32 @@ class GroupMemberRepositoryTest extends IntegrationTestSupport {
                 );
     }
 
+    @DisplayName("그룹 seq와 검색키로 해당 멤버유저를 조회할 수 있다. ")
+    @Test
+    void findByGroupSeqAndSearchKey() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
+
+        List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
+        UserGroup ug = UserGroup.create("그룹명1", u1);
+        Long groupSeq = userGroupRepository.save(ug).getGroupSeq();
+
+        GroupMember gm1 = GroupMember.create(ug, u2);
+        GroupMember gm2 = GroupMember.create(ug, u3);
+        groupMemberRepository.saveAll(List.of(gm1, gm2));
+
+        // when
+        List<GroupMember> members = groupMemberRepository.findByGroupSeqAndSearchKey(List.of(ug.getGroupSeq()), "유저3");
+
+        // then
+        assertThat(members)
+                .extracting("group.groupName", "member.userSeq", "member.userName")
+                .containsExactlyInAnyOrder(
+                        tuple("그룹명1", 2222L, "유저3")
+                );
+    }
+
+
 }

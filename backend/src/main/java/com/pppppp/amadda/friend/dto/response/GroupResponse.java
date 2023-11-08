@@ -10,17 +10,20 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record GroupPatchResponse(
-    Long ownerSeq,
-    String groupName,
-    List<Long> userSeqs){
-    
-    public static GroupPatchResponse of(UserGroup group, List<Long> members) {
-        return GroupPatchResponse.builder()
-                .ownerSeq(group.getOwner().getUserSeq())
+public record GroupResponse(
+        Long groupSeq,
+        String groupName,
+        List<MemberResponse> members
+){
+
+    public static GroupResponse of(
+            UserGroup group,
+            List<MemberResponse> memberResponses
+    ){
+        return GroupResponse.builder()
+                .groupSeq(group.getGroupSeq())
                 .groupName(group.getGroupName())
-                .userSeqs(members)
+                .members(memberResponses)
                 .build();
     }
-
 }
