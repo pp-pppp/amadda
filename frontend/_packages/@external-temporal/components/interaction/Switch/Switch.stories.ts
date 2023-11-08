@@ -24,9 +24,6 @@ const meta = {
       description:
         '스위치의 선택 여부입니다. true 값이 선택이 된 상태를 의미합니다.',
     },
-    value: {
-      description: 'input 태그에 바인딩됩니다.',
-    },
   },
 } satisfies Meta<typeof Switch>;
 
@@ -35,9 +32,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
   args: {
-    // primary: true,
     id: 'id',
     selected: true,
-    value: 'wow',
   },
 };
