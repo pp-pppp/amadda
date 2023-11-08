@@ -490,6 +490,9 @@ public class ScheduleService {
         String categorySeqList = searchCondition.get("categories");
         String searchKey = searchCondition.get("searchKey");
         String unscheduled = searchCondition.get("unscheduled");
+        String year = searchCondition.get("year");
+        String month = searchCondition.get("month");
+        String day = searchCondition.get("day");
 
         return participationRepository.findByUser_UserSeqAndIsDeletedFalse(userSeq)
             .stream()
@@ -525,7 +528,39 @@ public class ScheduleService {
                 }
                 return true;
             })
-            // TODO: 월별, 주별 일정 반환할 시 필터 추가 필요
+            // filter 4. 연도별 일정
+            .filter(participation -> {
+                if (!year.isEmpty()) {
+                    return participation.getSchedule().getScheduleStartAt().getYear()
+                        == Integer
+                        .parseInt(year)
+                        || participation.getSchedule().getScheduleEndAt().getYear()
+                        == Integer.parseInt(year);
+                }
+                return true;
+            })
+            // filter 5. 월별 일정
+            .filter(participation -> {
+                if (!month.isEmpty()) {
+                    return participation.getSchedule().getScheduleStartAt().getMonthValue()
+                        == Integer
+                        .parseInt(month)
+                        || participation.getSchedule().getScheduleEndAt().getMonthValue()
+                        == Integer.parseInt(month);
+                }
+                return true;
+            })
+            // filter 6. 일별 일정
+            .filter(participation -> {
+                if (!day.isEmpty()) {
+                    return participation.getSchedule().getScheduleStartAt().getDayOfMonth()
+                        == Integer
+                        .parseInt(day)
+                        || participation.getSchedule().getScheduleEndAt().getMonthValue()
+                        == Integer.parseInt(day);
+                }
+                return true;
+            })
             .map(this::findScheduleByParticipation)
             .toList();
     }
