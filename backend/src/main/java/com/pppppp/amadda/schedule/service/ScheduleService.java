@@ -114,10 +114,7 @@ public class ScheduleService {
         Schedule schedule = findScheduleInfo(request.scheduleSeq());
 
         // 사용자가 권한이 없으면 안됨
-        if (!schedule.isAuthorizedAll() && !schedule.getAuthorizedUser().getUserSeq()
-            .equals(userSeq)) {
-            throw new RestApiException(ScheduleErrorCode.SCHEDULE_FORBIDDEN);
-        }
+        checkUserAuthorizedToSchedule(userSeq, schedule);
 
         // 1. 전체 참가자에게 동기화되는 일정 정보 수정
         schedule.updateScheduleInfo(request);
@@ -147,9 +144,7 @@ public class ScheduleService {
         }
 
         // 요청을 보낸 사람이 카테고리 주인이 아니면 안됨
-        if (!category.getUser().getUserSeq().equals(userSeq)) {
-            throw new RestApiException(CategoryErrorCode.CATEGORY_FORBIDDEN);
-        }
+        checkUserAuthorizedToCategory(userSeq, category);
 
         // 참가정보 업데이트
         participation.updateCategory(category);
@@ -167,9 +162,7 @@ public class ScheduleService {
         }
 
         // 요청을 보낸 사람이 카테고리 주인이 아니면 안됨
-        if (!category.getUser().getUserSeq().equals(userSeq)) {
-            throw new RestApiException(CategoryErrorCode.CATEGORY_FORBIDDEN);
-        }
+        checkUserAuthorizedToCategory(userSeq, category);
 
         // 참가정보 업데이트
         participation.updateCategory(null);
@@ -181,28 +174,13 @@ public class ScheduleService {
         Schedule schedule = findScheduleInfo(scheduleSeq);
 
         // 사용자가 권한이 없으면 안됨
-        if (!schedule.isAuthorizedAll() && !schedule.getAuthorizedUser().getUserSeq()
-            .equals(userSeq)) {
-            throw new RestApiException(ScheduleErrorCode.SCHEDULE_FORBIDDEN);
-        }
+        checkUserAuthorizedToSchedule(userSeq, schedule);
 
         // 연결되어 있는 참가정보 삭제
         List<Participation> participations = findParticipationListBySchedule(scheduleSeq);
         participationRepository.deleteAllInBatch(participations);
 
         scheduleRepository.delete(schedule);
-    }
-
-    public void deleteParticipation(Long userSeq, Long participationSeq) {
-        findUserInfo(userSeq);
-        Participation particiption = findParticipationInfo(participationSeq);
-
-        // 사용자가 권한이 없으면 안됨
-        if (!particiption.getUser().getUserSeq().equals(userSeq)) {
-            throw new RestApiException(ScheduleErrorCode.SCHEDULE_FORBIDDEN);
-        }
-
-        participationRepository.delete(particiption);
     }
 
     // ================== comment ==================
@@ -222,9 +200,7 @@ public class ScheduleService {
         Comment comment = findCommentInfo(commentSeq);
 
         // 요청을 보낸 사람이 댓글 작성자가 아니면 안됨
-        if (!comment.getUser().getUserSeq().equals(userSeq)) {
-            throw new RestApiException(CommentErrorCode.COMMENT_FORBIDDEN);
-        }
+        checkUserAuthorizedToComment(userSeq, comment);
 
         commentRepository.delete(comment);
     }
@@ -255,14 +231,13 @@ public class ScheduleService {
         Category category = findCategoryInfo(request.categorySeq());
 
         // 요청한 사용자와 카테고리 주인이 다르면 안됨
-        if (!category.getUser().getUserSeq().equals(userSeq)) {
-            throw new RestApiException(CategoryErrorCode.CATEGORY_FORBIDDEN);
-        }
+        checkUserAuthorizedToCategory(userSeq, category);
 
         category.updateCategoryInfo(request);
 
         return CategoryReadResponse.of(category);
     }
+
 
     @Transactional
     public void deleteCategory(Long userSeq, Long categorySeq) {
@@ -271,9 +246,7 @@ public class ScheduleService {
         Category category = findCategoryInfo(categorySeq);
 
         // 요청한 사용자와 카테고리 주인이 다르면 안됨
-        if (!category.getUser().getUserSeq().equals(userSeq)) {
-            throw new RestApiException(CategoryErrorCode.CATEGORY_FORBIDDEN);
-        }
+        checkUserAuthorizedToCategory(userSeq, category);
 
         // 카테고리에 포함되어 있는 일정 카테고리 설정 해제
         deleteCategoryInfoInParticipation(categorySeq);
@@ -313,11 +286,6 @@ public class ScheduleService {
             .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
     }
 
-    private Participation findParticipationInfo(Long participationSeq) {
-        return participationRepository.findByParticipationSeqAndIsDeletedFalse(participationSeq)
-            .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
-    }
-
     private Participation findParticipationInfoBySchedule(Long scheduleSeq, Long userSeq) {
         return participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
                 scheduleSeq, userSeq)
@@ -344,6 +312,33 @@ public class ScheduleService {
         if (request.isTimeSelected() && ((request.scheduleStartAt() == null) || (
             request.scheduleEndAt() == null))) {
             throw new RestApiException(ScheduleErrorCode.SCHEDULE_TIME_NOT_SELECTED);
+        }
+    }
+
+    private void checkUserAuthorizedToSchedule(Long userSeq, Schedule schedule) {
+        if (!(schedule.isAuthorizedAll() || schedule.getAuthorizedUser().getUserSeq()
+            .equals(userSeq))) {
+            throw new RestApiException(ScheduleErrorCode.SCHEDULE_FORBIDDEN);
+        }
+    }
+
+    private void checkUserAuthorizedToParticipation(Long userSeq, Participation particiption) {
+        if (!(particiption.getUser().getUserSeq().equals(userSeq) || particiption.getSchedule()
+            .getAuthorizedUser().getUserSeq().equals(userSeq))) {
+            throw new RestApiException(ScheduleErrorCode.SCHEDULE_FORBIDDEN);
+        }
+    }
+
+    private void checkUserAuthorizedToComment(Long userSeq, Comment comment) {
+        if (!comment.getUser().getUserSeq().equals(userSeq)) {
+            throw new RestApiException(CommentErrorCode.COMMENT_FORBIDDEN);
+        }
+    }
+
+    private void checkUserAuthorizedToCategory(Long userSeq, Category category) {
+
+        if (!category.getUser().getUserSeq().equals(userSeq)) {
+            throw new RestApiException(CategoryErrorCode.CATEGORY_FORBIDDEN);
         }
     }
 
@@ -406,16 +401,16 @@ public class ScheduleService {
             .map(response -> findUserInfo(response.userSeq()))
             .toList();
 
-        // 3. 이전 사용자 목록과 비교해서 현재 사용자 중 추가된 사용자가 있는지 확인, 있으면 참석정보 생성
+        // 3. 이전 사용자 목록과 비교해서 현재 사용자 중 추가된 사용자가 있는지 확인, 있으면 참석정보 생성.
         // 생성할 참석 정보는 이번 요청으로 수정되는 필드가 아니면 요청자의 참석정보를 기본값으로 사용
-        Participation requestUserParticipaton = findParticipationInfoBySchedule(
+        Participation requestUserParticipation = findParticipationInfoBySchedule(
             schedule.getScheduleSeq(), requestUserSeq);
 
         ScheduleCreateRequest createRequest = ScheduleCreateRequest.builder()
             .scheduleName(Optional.ofNullable(request.scheduleName()).orElse(
-                requestUserParticipaton.getScheduleName()))
+                requestUserParticipation.getScheduleName()))
             .alarmTime(Optional.ofNullable(request.alarmTime()).orElse(
-                requestUserParticipaton.getAlarmTime()))
+                requestUserParticipation.getAlarmTime()))
             .build();
 
         updateParticipationList.stream()
@@ -429,11 +424,18 @@ public class ScheduleService {
         // 4. 수정할 사용자 목록과 비교해서 현재 사용자 중 삭제된 사용자가 있는지 확인, 있으면 참석정보 삭제
         previousParticipationList.stream()
             .filter(user -> !updateParticipationList.contains(user))
-            .forEach(user -> {
-                Participation participation = findParticipationInfoBySchedule(
-                    schedule.getScheduleSeq(), user.getUserSeq());
-                participationRepository.delete(participation);
-            });
+            .forEach(user -> deleteParticipation(user.getUserSeq(), schedule));
+    }
+
+    private void deleteParticipation(Long requestUserSeq, Schedule schedule) {
+        // 유효 체크
+        Participation participation = findParticipationInfoBySchedule(
+            schedule.getScheduleSeq(), requestUserSeq);
+
+        // 권한 체크, 본인이거나 일정 생성자면 삭제 가능
+        checkUserAuthorizedToParticipation(requestUserSeq, participation);
+
+        participationRepository.delete(participation);
     }
 
     private List<CommentReadResponse> findCommentListBySchedule(Long scheduleSeq) {
@@ -505,43 +507,6 @@ public class ScheduleService {
             .map(this::findScheduleByParticipation)
             .toList();
     }
-
-    private void checkUserAlreadyParticipated(Long scheduleSeq, Long userSeq) {
-        if (participationRepository.existsBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
-            scheduleSeq, userSeq)) {
-            throw new RestApiException(ScheduleErrorCode.SCHEDULE_ALREADY_PARTICIPATED);
-        }
-    }
-
-    private ScheduleCreateResponse createNewParticipation(Long userSeq, Long scheduleSeq) {
-        User user = findUserInfo(userSeq);
-        Schedule schedule = findScheduleInfo(scheduleSeq);
-
-        // 기본 참석 정보 생성
-        Participation defaultParticipationInfo = getAuthorizedUserParticipationInfo(schedule);
-
-        Participation newParticipation = Participation.builder()
-            .scheduleName(defaultParticipationInfo.getScheduleName())
-            .alarmTime(defaultParticipationInfo.getAlarmTime())
-            .user(user)
-            .schedule(schedule)
-            .build();
-
-        newParticipation = participationRepository.save(newParticipation);
-
-        // 수정된 참가자 명단
-        List<UserReadResponse> updatedParticipants = getParticipatingUserList(scheduleSeq);
-
-        return ScheduleCreateResponse.of(schedule, updatedParticipants,
-            newParticipation);
-    }
-
-    private Participation getAuthorizedUserParticipationInfo(Schedule schedule) {
-        return participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
-                schedule.getScheduleSeq(), schedule.getAuthorizedUser().getUserSeq())
-            .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
-    }
-
 
     private void deleteCategoryInfoInParticipation(Long categorySeq) {
         participationRepository.findByCategory_CategorySeqAndIsDeletedFalse(categorySeq)
