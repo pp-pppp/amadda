@@ -28,6 +28,7 @@ public class AlarmScheduleAssigned extends BaseTopicValue {
         this.scheduleOwnerUserName = scheduleOwnerUserName;
     }
 
+    @JsonIgnore
     public static AlarmScheduleAssigned create(Long scheduleSeq, String scheduleName,
         Long scheduleOwnerUserSeq,
         String scheduleOwnerUserName) {

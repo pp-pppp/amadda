@@ -28,6 +28,7 @@ public class AlarmMentioned extends BaseTopicValue {
         this.writerUserName = writerUserName;
     }
 
+    @JsonIgnore
     public static AlarmMentioned create(Long scheduleSeq, String scheduleName, Long writerUserSeq,
         String writerUserName) {
         return AlarmMentioned.builder()

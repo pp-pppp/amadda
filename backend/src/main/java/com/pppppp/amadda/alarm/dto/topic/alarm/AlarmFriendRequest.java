@@ -26,6 +26,7 @@ public class AlarmFriendRequest extends BaseTopicValue {
         this.requestedUserName = requestedUserName;
     }
 
+    @JsonIgnore
     public static AlarmFriendRequest create(Long friendRequestSeq, Long requestedUserSeq,
         String requestedUserName) {
         return AlarmFriendRequest.builder()

@@ -1,5 +1,6 @@
 package com.pppppp.amadda.alarm.service;
 
+import com.pppppp.amadda.alarm.dto.topic.TestValue;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendAccept;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendRequest;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmMentioned;
@@ -75,6 +76,17 @@ public class KafkaConsumer {
     public void consumeScheduleNotification(
         ConsumerRecord<String, AlarmScheduleNotification> record)
         throws IOException {
+    }
+
+    @KafkaListener(topics = "test", groupId = "${spring.kafka.consumer.group-id}")
+    public void consumeTest(
+        ConsumerRecord<String, TestValue> record)
+        throws IOException {
+        log.info("================================================");
+        log.info("Kafka Consume Topic <<test>>");
+        log.info("key : {}", record.key());
+        log.info("value : {}", record.value().getValue());
+        log.info("================================================");
     }
 
     public void saveAlarm(Long userSeq, String message, AlarmType alarmType) {

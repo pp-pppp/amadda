@@ -30,6 +30,7 @@ public class AlarmScheduleNotification extends BaseTopicValue {
         this.alarmDateTime = alarmDateTime;
     }
 
+    @JsonIgnore
     public static AlarmScheduleNotification create(Long scheduleSeq, String scheduleName,
         AlarmTime alarmTime, LocalDateTime alarmDateTime) {
         return AlarmScheduleNotification.builder()
