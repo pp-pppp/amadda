@@ -673,7 +673,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .containsExactly("안녕 나는 바뀐 일정 이름이야", "알림 없음");
     }
 
-    @DisplayName("일정에서 참가자 명단을 수정하고 제외된 사람의 참가 정보는 삭제한다.")
+    @DisplayName("일정에서 참가자를 할당 취소하고 제외된 사람의 참가 정보는 삭제한다.")
     @Transactional
     @Test
     void deleteParticipation() {
@@ -682,7 +682,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         User u2 = userRepository.findAll().get(1);
         User u3 = userRepository.findAll().get(2);
 
-        ScheduleCreateRequest request = ScheduleCreateRequest.builder()
+        ScheduleCreateRequest createRequest = ScheduleCreateRequest.builder()
             .scheduleName("안녕 내가 일정 이름이야")
             .scheduleContent("여기는 동기화 되는 메모야")
             .scheduleMemo("이거는 안되는 메모고")
@@ -694,14 +694,18 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2), UserReadResponse.of(u3)))
             .build();
-        scheduleService.createSchedule(u1.getUserSeq(), request);
+        scheduleService.createSchedule(u1.getUserSeq(), createRequest);
         Schedule s = scheduleRepository.findAll().get(0);
 
-        Optional<Participation> p = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
-            s.getScheduleSeq(), u2.getUserSeq());
+        SchedulePatchRequest request = SchedulePatchRequest.builder()
+            .scheduleSeq(s.getScheduleSeq())
+            .scheduleName("안녕 나는 바뀐 일정 이름이야")
+            .participants(List.of(
+                UserReadResponse.of(u1), UserReadResponse.of(u3)))
+            .build();
 
         // when
-        scheduleService.deleteParticipation(u2.getUserSeq(), p.get().getParticipationSeq());
+        scheduleService.updateSchedule(u1.getUserSeq(), request);
         List<Participation> result1 = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
             s.getScheduleSeq());
         Optional<Participation> result2 = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
@@ -809,7 +813,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         // then
         assertThat(result).hasSize(1)
             .extracting("scheduleSeq", "category")
-            .containsExactlyInAnyOrder(
+            .containsExactly(
                 tuple(s2.getScheduleSeq(), CategoryReadResponse.of(category)));
     }
 
