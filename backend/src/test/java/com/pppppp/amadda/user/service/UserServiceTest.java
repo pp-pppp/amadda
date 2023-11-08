@@ -7,10 +7,7 @@ import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.user.dto.request.UserInitRequest;
 import com.pppppp.amadda.user.dto.request.UserJwtRequest;
 import com.pppppp.amadda.user.dto.request.UserRefreshRequest;
-import com.pppppp.amadda.user.dto.response.UserAccessResponse;
-import com.pppppp.amadda.user.dto.response.UserJwtInitResponse;
-import com.pppppp.amadda.user.dto.response.UserJwtResponse;
-import com.pppppp.amadda.user.dto.response.UserRelationResponse;
+import com.pppppp.amadda.user.dto.response.*;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -55,6 +52,22 @@ class UserServiceTest extends IntegrationTestSupport {
         assertThat(u).isNotNull();
         assertThat(u).extracting("userName", "userId", "imageUrl")
                 .containsExactlyInAnyOrder("유저1", "id1", "imageUrl1");
+    }
+
+    @DisplayName("userSeq로 유저 리스폰스를 가져온다. ")
+    @Test
+    void getUserResponse() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        userRepository.saveAll(List.of(u1, u2));
+
+        // when
+        UserReadResponse u = userService.getUserResponse(1111L);
+
+        // then
+        assertThat(u).extracting("userSeq", "userName", "userId", "imageUrl")
+                .containsExactlyInAnyOrder(1111L, "유저1", "id1", "imageUrl1");
     }
 
     @DisplayName("존재하지 않는 userSeq로 유저를 조회하면 예외가 발생한다. ")
