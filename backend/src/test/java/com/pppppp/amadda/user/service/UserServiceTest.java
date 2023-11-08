@@ -75,7 +75,7 @@ class UserServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1));
 
         UserJwtRequest request = UserJwtRequest.builder()
-                .userSeq(1111L)
+                .userSeq("1111")
                 .imageUrl("url1")
                 .build();
 
@@ -101,7 +101,7 @@ class UserServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1));
 
         UserJwtRequest request = UserJwtRequest.builder()
-                .userSeq(1111L)
+                .userSeq("1111")
                 .imageUrl("url1")
                 .build();
         UserJwtInitResponse response = userService.getTokensAndCheckInit(request);
@@ -143,7 +143,7 @@ class UserServiceTest extends IntegrationTestSupport {
                 .userId("jammminjung")
                 .userName("잼민정")
                 .imageUrl("imgUrl")
-                .userSeq(1111L)
+                .userSeq("1111")
                 .build();
 
         // when
@@ -197,7 +197,8 @@ class UserServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         Friend f1 = Friend.create(u1, u2);
-        friendRepository.save(f1);
+        Friend f2 = Friend.create(u2, u1);
+        friendRepository.saveAll(List.of(f1, f2));
 
         // when
         UserRelationResponse response = userService.getUserInfoAndIsFriend(1111L, "id2");

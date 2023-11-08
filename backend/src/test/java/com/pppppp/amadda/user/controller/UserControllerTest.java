@@ -37,7 +37,7 @@ class UserControllerTest {
     void getTokens() throws Exception {
         // given
         UserJwtRequest request = UserJwtRequest.builder()
-                .userSeq(1111L)
+                .userSeq("1111")
                 .imageUrl("imgUrl1")
                 .build();
 
@@ -59,7 +59,7 @@ class UserControllerTest {
     void signupUser() throws Exception {
         // given
         UserInitRequest request = UserInitRequest.builder()
-                .userSeq(1111L)
+                .userSeq("1111")
                 .imageUrl("imgUrl")
                 .userId("aaa")
                 .userName("sss")

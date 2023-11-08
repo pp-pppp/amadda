@@ -44,7 +44,7 @@ public class UserService {
     }
 
     public void saveUser(UserInitRequest request) {
-        User u = User.create(request.userSeq(), request.userName(), request.userId(), request.imageUrl());
+        User u = User.create(Long.parseLong(request.userSeq()), request.userName(), request.userId(), request.imageUrl());
         saveUser(u);
     }
 
@@ -101,8 +101,9 @@ public class UserService {
 
     public UserJwtInitResponse getTokensAndCheckInit(UserJwtRequest request) {
 
-        List<String> tokens = tokenProvider.createTokens(request.userSeq());
-        boolean isInited = checkIsInited(request.userSeq());
+        Long userSeq = Long.parseLong(request.userSeq());
+        List<String> tokens = tokenProvider.createTokens(userSeq);
+        boolean isInited = checkIsInited(userSeq);
 
         return UserJwtInitResponse.of(
                 tokens.get(0),
