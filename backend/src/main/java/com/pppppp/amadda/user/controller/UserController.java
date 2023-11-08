@@ -7,6 +7,7 @@ import com.pppppp.amadda.user.dto.request.UserRefreshRequest;
 import com.pppppp.amadda.user.dto.response.UserAccessResponse;
 import com.pppppp.amadda.user.dto.response.UserJwtInitResponse;
 import com.pppppp.amadda.user.dto.response.UserJwtResponse;
+import com.pppppp.amadda.user.dto.response.UserRelationResponse;
 import com.pppppp.amadda.user.service.TokenProvider;
 import com.pppppp.amadda.user.service.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -61,6 +62,13 @@ public class UserController {
     public void deleteUser() {
         log.info("회원 탈퇴");
 
+    }
+
+    @GetMapping
+    public ApiResponse<UserRelationResponse> getUserInfoAndRelation(@RequestParam String searchKey) {
+        Long userSeq = 0L;
+        UserRelationResponse response = userService.getUserInfoAndIsFriend(userSeq, searchKey);
+        return ApiResponse.ok(response);
     }
 
     @GetMapping("/{userSeq}")

@@ -1,6 +1,8 @@
 package com.pppppp.amadda.user.service;
 
 import com.pppppp.amadda.IntegrationTestSupport;
+import com.pppppp.amadda.friend.entity.Friend;
+import com.pppppp.amadda.friend.repository.FriendRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.user.dto.request.UserInitRequest;
 import com.pppppp.amadda.user.dto.request.UserJwtRequest;
@@ -8,6 +10,7 @@ import com.pppppp.amadda.user.dto.request.UserRefreshRequest;
 import com.pppppp.amadda.user.dto.response.UserAccessResponse;
 import com.pppppp.amadda.user.dto.response.UserJwtInitResponse;
 import com.pppppp.amadda.user.dto.response.UserJwtResponse;
+import com.pppppp.amadda.user.dto.response.UserRelationResponse;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -24,12 +27,15 @@ class UserServiceTest extends IntegrationTestSupport {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private FriendRepository friendRepository;
+    @Autowired
     private UserService userService;
     @Autowired
     private TokenProvider tokenProvider;
 
     @AfterEach
     void tearDown() {
+        friendRepository.deleteAllInBatch();
         userRepository.deleteAllInBatch();
     }
 
@@ -180,4 +186,59 @@ class UserServiceTest extends IntegrationTestSupport {
                 .extracting("isExpired", "isBroken", "refreshAccessKey")
                 .containsExactly(true, true, "-");
     }
+
+    @DisplayName("내 유저seq와 검색키로 해당 유저와 그 유저와의 친구관계를 조회한다. ")
+    @Test
+    void getUserInfoAndIsFriend() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
+
+        Friend f1 = Friend.create(u1, u2);
+        friendRepository.save(f1);
+
+        // when
+        UserRelationResponse response = userService.getUserInfoAndIsFriend(1111L, "id2");
+
+        // then
+        assertThat(response)
+                .extracting("userSeq", "userName", "userId", "imageUrl", "isFriend")
+                .containsExactlyInAnyOrder(1234L, "유저2", "id2", "imageUrl2", true);
+    }
+
+    @DisplayName("내 유저seq와 검색키로 해당 유저와 그 유저와의 친구관계를 조회한다. ")
+    @Test
+    void getUserInfoAndIsNotFriend() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
+
+        // when
+        UserRelationResponse response = userService.getUserInfoAndIsFriend(1111L, "id2");
+
+        // then
+        assertThat(response)
+                .extracting("userSeq", "userName", "userId", "imageUrl", "isFriend")
+                .containsExactlyInAnyOrder(1234L, "유저2", "id2", "imageUrl2", false);
+    }
+
+    @DisplayName("내 유저seq와 검색키로 검색해 대상이 존재하지 않는경우 dto를 비워 리턴한다. ")
+    @Test
+    void getUserInfoAndIsFriend_notFound() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
+
+        // when
+        UserRelationResponse response = userService.getUserInfoAndIsFriend(1111L, "id3");
+
+        // then
+        assertThat(response)
+                .extracting("userSeq", "userName", "userId", "imageUrl", "isFriend")
+                .containsExactlyInAnyOrder(null, "", "", "", false);
+    }
+
 }

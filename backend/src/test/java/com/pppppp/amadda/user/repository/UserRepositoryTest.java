@@ -61,4 +61,21 @@ class UserRepositoryTest extends IntegrationTestSupport {
                 .containsExactlyInAnyOrder(1111L, "유저1", "id1", "imageUrl1");
     }
 
+    @DisplayName("유저 아이디로 해당 유저를 조회한다. ")
+    @Test
+    void findByUserId() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        userRepository.saveAll(List.of(u1, u2));
+
+        // when
+        User u = userRepository.findByUserId("id2").get();
+
+        // then
+        assertThat(u).isNotNull();
+        assertThat(u).extracting("userSeq", "userName", "userId", "imageUrl")
+                .containsExactlyInAnyOrder(1234L, "유저2", "id2", "imageUrl2");
+    }
+
 }

@@ -94,5 +94,21 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.message").value("OK"));
     }
 
+    @DisplayName("검색키에 해당하는 유저와 본인과 친구여부를 조회한다. ")
+    @Test
+    void getUserInfoAndRelation() throws Exception {
+        // given
+        String key = "검색키";
+
+        // when // then
+        mockMvc.perform(
+                get("/api/user?searchKey="+key)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("200"))
+                .andExpect(jsonPath("$.status").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"));
+    }
 
 }
