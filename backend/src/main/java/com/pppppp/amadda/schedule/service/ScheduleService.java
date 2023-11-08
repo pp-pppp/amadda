@@ -264,20 +264,20 @@ public class ScheduleService {
 
         categoryRepository.delete(category);
     }
-  
+
     @Transactional
     public void setMentionAlarm(Long userSeq, Long scheduleSeq, boolean isEnabled) {
-        User user = findUserInfo(userSeq);
-        Schedule schedule = findScheduleInfo(scheduleSeq);
-        Participation participation = findParticipationInfo(scheduleSeq, userSeq);
+        findUserInfo(userSeq);
+        findScheduleInfo(scheduleSeq);
+        Participation participation = findParticipationInfoBySchedule(scheduleSeq, userSeq);
         participation.updateIsMentionAlarmOn(isEnabled);
     }
 
     @Transactional
     public void setUpdateAlarm(Long userSeq, Long scheduleSeq, boolean isEnabled) {
-        User user = findUserInfo(userSeq);
-        Schedule schedule = findScheduleInfo(scheduleSeq);
-        Participation participation = findParticipationInfo(scheduleSeq, userSeq);
+        findUserInfo(userSeq);
+        findScheduleInfo(scheduleSeq);
+        Participation participation = findParticipationInfoBySchedule(scheduleSeq, userSeq);
         participation.updateIsUpdateAlarmOn(isEnabled);
     }
 
@@ -444,7 +444,7 @@ public class ScheduleService {
             .filter(user -> !previousParticipationList.contains(user))
             .forEach(user -> {
                 Participation participation = Participation.create(createRequest, user, schedule,
-                    null);
+                    null, true, true);
                 participationRepository.save(participation);
             });
 
