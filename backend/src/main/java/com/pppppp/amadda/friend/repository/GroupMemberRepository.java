@@ -6,8 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 public interface GroupMemberRepository extends JpaRepository<GroupMember, Long> {
 
@@ -16,7 +14,7 @@ public interface GroupMemberRepository extends JpaRepository<GroupMember, Long> 
     @Query("Select m, u, g From GroupMember m Left Join m.member u Left Join m.group g " +
             "Where m.group.groupSeq IN :groupSeqs " +
             "And m.member.userName like concat('%', :searchKey, '%')")
-    List<GroupMember> findByGroupSeqAndSearchKey(
+    List<GroupMember> findByGroupSeqsAndSearchKey(
             @Param("groupSeqs") List<Long> groupSeqs, @Param("searchKey") String searchKey);
 
 }

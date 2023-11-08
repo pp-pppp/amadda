@@ -5,18 +5,15 @@ import com.pppppp.amadda.friend.entity.GroupMember;
 import com.pppppp.amadda.friend.entity.UserGroup;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
-import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.junit.jupiter.api.Assertions.*;
 
 class UserGroupRepositoryTest extends IntegrationTestSupport {
 
@@ -68,7 +65,7 @@ class UserGroupRepositoryTest extends IntegrationTestSupport {
         groupMemberRepository.saveAll(List.of(mem1, mem2));
 
         // when
-        List<GroupMember> members = groupMemberRepository.findByGroupSeqAndSearchKey(
+        List<GroupMember> members = groupMemberRepository.findByGroupSeqsAndSearchKey(
                 List.of(ug.getGroupSeq()),
                 "유저"
         );
@@ -99,7 +96,7 @@ class UserGroupRepositoryTest extends IntegrationTestSupport {
         groupMemberRepository.saveAll(List.of(mem1, mem2));
 
         // when
-        List<GroupMember> members = groupMemberRepository.findByGroupSeqAndSearchKey(
+        List<GroupMember> members = groupMemberRepository.findByGroupSeqsAndSearchKey(
                 List.of(ug.getGroupSeq()),
                 ""
         );

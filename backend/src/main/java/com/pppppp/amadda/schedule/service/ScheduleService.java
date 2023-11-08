@@ -91,7 +91,7 @@ public class ScheduleService {
                 scheduleSeq)
             .stream()
             .map(participation -> UserReadResponse.of(participation.getUser()))
-            .collect(Collectors.toList());
+            .toList();
 
         Participation participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
                 scheduleSeq, user.getUserSeq())

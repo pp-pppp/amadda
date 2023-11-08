@@ -1,6 +1,5 @@
 package com.pppppp.amadda.friend.service;
 
-import com.pppppp.amadda.friend.dto.request.FriendRequestRequest;
 import com.pppppp.amadda.friend.dto.response.*;
 import com.pppppp.amadda.friend.entity.*;
 import com.pppppp.amadda.friend.repository.FriendRepository;
@@ -59,7 +58,7 @@ public class FriendService {
         List<GroupResponse> groupResponses = searchInGroups(userSeq, searchKey);
         List<MemberResponse> memberResponses = searchFriendsWithKey(userSeq, searchKey)
                 .stream().map(MemberResponse::of)
-                .collect(Collectors.toList());
+                .toList();
 
         return FriendReadResponse.of(
                 groupResponses,
@@ -73,7 +72,7 @@ public class FriendService {
 
         List<Long> myGroupSeqs = myGroups.stream() // 내 그룹들 seq만 뽑아 담은 리스트
                 .map(UserGroup::getGroupSeq)
-                .collect(Collectors.toList());
+                .toList();
 
         // 내 그룹에 해당하면서 검색키에 해당하는 멤버들만 뽑음
         List<GroupMember> searchedGroupMembers = getMySearchedGroupMembers(myGroupSeqs, searchKey);
@@ -88,10 +87,10 @@ public class FriendService {
                     List<MemberResponse> mems = searchedGroupMembers.stream()
                             .filter(mem -> mem.getGroup().getGroupSeq() == group.getGroupSeq())
                             .map(MemberResponse::of)
-                            .collect(Collectors.toList());
+                            .toList();
                     return GroupResponse.of(group, mems);
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
 
@@ -114,7 +113,7 @@ public class FriendService {
     }
 
     private List<GroupMember> getMySearchedGroupMembers(List<Long> myGroupSeqs, String searchKey) {
-        return groupMemberRepository.findByGroupSeqAndSearchKey(myGroupSeqs, searchKey);
+        return groupMemberRepository.findByGroupSeqsAndSearchKey(myGroupSeqs, searchKey);
     }
 
     private List<Friend> searchFriendsWithKey(Long userSeq, String searchKey) {
