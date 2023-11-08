@@ -168,6 +168,18 @@ public class ScheduleService {
         participation.updateCategory(null);
     }
 
+    public void deleteParticipation(Long requestUserSeq, Schedule schedule) {
+        // 유효 체크
+        Participation participation = findParticipationInfoBySchedule(
+            schedule.getScheduleSeq(), requestUserSeq);
+
+        // 권한 체크, 본인이거나 일정 생성자면 삭제 가능
+        checkUserAuthorizedToParticipation(requestUserSeq, participation);
+
+        participationRepository.delete(participation);
+    }
+
+
     @Transactional
     public void deleteSchedule(Long userSeq, Long scheduleSeq) {
         findUserInfo(userSeq);
@@ -237,7 +249,6 @@ public class ScheduleService {
 
         return CategoryReadResponse.of(category);
     }
-
 
     @Transactional
     public void deleteCategory(Long userSeq, Long categorySeq) {
@@ -425,17 +436,6 @@ public class ScheduleService {
         previousParticipationList.stream()
             .filter(user -> !updateParticipationList.contains(user))
             .forEach(user -> deleteParticipation(user.getUserSeq(), schedule));
-    }
-
-    private void deleteParticipation(Long requestUserSeq, Schedule schedule) {
-        // 유효 체크
-        Participation participation = findParticipationInfoBySchedule(
-            schedule.getScheduleSeq(), requestUserSeq);
-
-        // 권한 체크, 본인이거나 일정 생성자면 삭제 가능
-        checkUserAuthorizedToParticipation(requestUserSeq, participation);
-
-        participationRepository.delete(participation);
     }
 
     private List<CommentReadResponse> findCommentListBySchedule(Long scheduleSeq) {

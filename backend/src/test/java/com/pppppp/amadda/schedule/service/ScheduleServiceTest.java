@@ -722,6 +722,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         assertThat(result2).isEmpty();
     }
 
+
     @DisplayName("카테고리에 새로운 일정을 추가한다.")
     @Transactional
     @Test
@@ -817,7 +818,49 @@ class ScheduleServiceTest extends IntegrationTestSupport {
                 tuple(s2.getScheduleSeq(), CategoryReadResponse.of(category)));
     }
 
-    @DisplayName("일정을 삭제한다. 이때 일정에 할당된 참가자들의 참가 정보도 같이 사라진다.")
+    @DisplayName("참가 정보를 삭제한다. 이때 나머지 인원의 참가 정보는 유지된다.")
+    @Transactional
+    @Test
+    void deleteSelfParticipation() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+        User u2 = userRepository.findAll().get(1);
+        User u3 = userRepository.findAll().get(2);
+
+        ScheduleCreateRequest createRequest = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(false)
+            .participants(List.of(
+                UserReadResponse.of(u1), UserReadResponse.of(u2), UserReadResponse.of(u3)))
+            .build();
+        scheduleService.createSchedule(u1.getUserSeq(), createRequest);
+        Schedule s = scheduleRepository.findAll().get(0);
+
+        // when
+        scheduleService.deleteParticipation(u2.getUserSeq(), s);
+        List<Participation> result1 = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
+            s.getScheduleSeq());
+        Optional<Participation> result2 = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+            s.getScheduleSeq(), u2.getUserSeq());
+
+        // then
+        assertThat(result1)
+            .hasSize(2)
+            .extracting("user", "schedule.scheduleSeq")
+            .containsExactlyInAnyOrder(
+                tuple(u1, s.getScheduleSeq()),
+                tuple(u3, s.getScheduleSeq())
+            );
+        assertThat(result2).isEmpty();
+    }
+
+    @DisplayName("일정 자체를 삭제한다. 이때 일정에 할당된 참가자들의 참가 정보도 같이 사라진다.")
     @Test
     void deleteSchedule() {
         // given
