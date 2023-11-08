@@ -2,6 +2,7 @@ package com.pppppp.amadda.alarm.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,7 +31,9 @@ import com.pppppp.amadda.schedule.repository.ParticipationRepository;
 import com.pppppp.amadda.schedule.repository.ScheduleRepository;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
+import java.util.Arrays;
 import java.util.List;
+import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -166,6 +169,44 @@ class AlarmServiceTest extends IntegrationTestSupport {
             .extracting("alarmType")
             .containsExactlyInAnyOrder(AlarmType.MENTIONED, AlarmType.SCHEDULE_UPDATE,
                 AlarmType.SCHEDULE_NOTIFICATION);
+    }
+
+    @DisplayName("알림 목록과 설정값가져오기")
+    @Test
+    void getAlarmsAndConfig() {
+        // given
+        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User user = userRepository.save(u1);
+
+        Alarm a1 = Alarm.create(user, "알람 테스트", AlarmType.FRIEND_REQUEST);
+        Alarm a2 = Alarm.create(user, "알람 테스트", AlarmType.FRIEND_ACCEPT);
+        Alarm a3 = Alarm.create(user, "알람 테스트", AlarmType.SCHEDULE_ASSIGNED);
+        Alarm a4 = Alarm.create(user, "알람 테스트", AlarmType.MENTIONED);
+        Alarm a5 = Alarm.create(user, "알람 테스트", AlarmType.SCHEDULE_UPDATE);
+        Alarm a6 = Alarm.create(user, "알람 테스트", AlarmType.SCHEDULE_NOTIFICATION);
+        List<Alarm> alarms = alarmRepository.saveAll(List.of(a1, a2, a3, a4, a5, a6));
+
+        alarms.get(0).markAsRead();
+        alarms.get(1).markAsRead();
+        alarmRepository.saveAll(alarms);
+
+//        AlarmType.SCHEDULE_ASSIGNED config 생성도 하지 않은 상태
+        AlarmConfig ac1 = AlarmConfig.create(user, AlarmType.MENTIONED, true);
+        AlarmConfig ac2 = AlarmConfig.create(user, AlarmType.SCHEDULE_UPDATE, false);
+        alarmConfigRepository.saveAll(List.of(ac1, ac2));
+
+        // when
+        List<AlarmReadResponse> result = alarmService.readAlarms(user.getUserSeq());
+
+        // then
+        assertThat(result).hasSize(4)
+            .extracting("alarmType", "isEnabled")
+            .containsExactlyInAnyOrder(
+                tuple(AlarmType.SCHEDULE_ASSIGNED, true),
+                tuple(AlarmType.MENTIONED, true),
+                tuple(AlarmType.SCHEDULE_UPDATE, false),
+                tuple(AlarmType.SCHEDULE_NOTIFICATION, true)
+            );
     }
 
     @DisplayName("모든 알림을 읽은 경우 길이가 0인 리스트를 반환한다.")

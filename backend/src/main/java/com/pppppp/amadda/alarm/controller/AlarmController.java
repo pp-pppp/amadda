@@ -2,10 +2,8 @@ package com.pppppp.amadda.alarm.controller;
 
 import com.pppppp.amadda.alarm.dto.request.AlarmConfigRequest;
 import com.pppppp.amadda.alarm.dto.response.AlarmReadResponse;
-import com.pppppp.amadda.alarm.entity.Alarm;
 import com.pppppp.amadda.alarm.entity.AlarmConfig;
 import com.pppppp.amadda.alarm.service.AlarmService;
-import com.pppppp.amadda.alarm.service.KafkaProducer;
 import com.pppppp.amadda.global.dto.ApiResponse;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -25,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class AlarmController {
 
-    private final KafkaProducer kafkaProducer;
     private final AlarmService alarmService;
 
     @GetMapping
