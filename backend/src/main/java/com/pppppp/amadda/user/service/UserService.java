@@ -63,6 +63,16 @@ public class UserService {
         }
     }
 
+    public UserRelationResponse getUserInfoAndIsFriend(Long userSeq) {
+        User target = findUserByUserSeq(userSeq)
+                .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        User owner = findUserByUserSeq(userSeq)
+                .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        boolean isFriend = isFriend(owner, target);
+
+        return UserRelationResponse.of(target, isFriend);
+    }
+
     public UserRelationResponse getUserInfoAndIsFriend(Long userSeq, String searchKey) {
         User result = findUserWithExactId(searchKey).orElse(null);
 
