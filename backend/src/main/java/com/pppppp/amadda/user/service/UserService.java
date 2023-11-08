@@ -3,6 +3,7 @@ package com.pppppp.amadda.user.service;
 import com.pppppp.amadda.friend.entity.Friend;
 import com.pppppp.amadda.friend.repository.FriendRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
+import com.pppppp.amadda.global.entity.exception.errorcode.FriendErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
 import com.pppppp.amadda.user.dto.request.UserInitRequest;
 import com.pppppp.amadda.user.dto.request.UserJwtRequest;
@@ -64,7 +65,17 @@ public class UserService {
         User result = findUserWithExactId(searchKey).orElse(null);
 
         if(result == null) return UserRelationResponse.notFound();
-        return UserRelationResponse.of(result, findTargetUserInFriend(userSeq, result).isPresent());
+        User owner = findUserByUserSeq(userSeq)
+                .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        boolean isFriend = isFriend(owner, result);
+        return UserRelationResponse.of(result, isFriend);
+    }
+
+    public boolean isFriend(User owner, User target) {
+        boolean chk1 = findTargetUserInFriend(owner, target).isPresent();
+        boolean chk2 = findTargetUserInFriend(target, owner).isPresent();
+        if(chk1^chk2) throw new RestApiException(FriendErrorCode.FRIEND_RELATION_DAMAGED);
+        return chk1 && chk2;
     }
 
 
@@ -82,8 +93,8 @@ public class UserService {
         return userRepository.findByUserId(searchKey);
     }
 
-    private Optional<Friend> findTargetUserInFriend(Long userSeq, User target) {
-        return friendRepository.findByOwner_userSeqAndFriend(userSeq, target);
+    private Optional<Friend> findTargetUserInFriend(User owner, User target) {
+        return friendRepository.findByOwnerAndFriend(owner, target);
     }
 
     // =================== 유저 인증 관련 메소드들 ===================

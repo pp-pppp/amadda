@@ -241,4 +241,55 @@ class UserServiceTest extends IntegrationTestSupport {
                 .containsExactlyInAnyOrder(null, "", "", "", false);
     }
 
+    @DisplayName("친구의 양방향 관계가 유효한지 검사한다. - 유효1")
+    @Test
+    void isFriend() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
+
+        Friend f1 = Friend.create(u1, u2);
+        Friend f2 = Friend.create(u2, u1);
+        friendRepository.saveAll(List.of(f1, f2));
+
+        // when
+        boolean isFriend = userService.isFriend(u1, u2);
+
+        // then
+        assertThat(isFriend).isTrue();
+    }
+
+    @DisplayName("친구의 양방향 관계가 유효한지 검사한다. - 유효2")
+    @Test
+    void isNotFriend() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
+
+        // when
+        boolean isFriend = userService.isFriend(u1, u2);
+
+        // then
+        assertThat(isFriend).isFalse();
+    }
+
+    @DisplayName("친구의 양방향 관계가 유효한지 검사한다. - 안유효")
+    @Test
+    void isFriend_damaged() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
+
+        Friend f1 = Friend.create(u1, u2);
+        friendRepository.saveAll(List.of(f1));
+
+        // when // then
+        assertThatThrownBy(() -> userService.isFriend(u1, u2))
+                .isInstanceOf(RestApiException.class)
+                .hasMessage("FRIEND_RELATION_DAMAGED");
+    }
+
 }
