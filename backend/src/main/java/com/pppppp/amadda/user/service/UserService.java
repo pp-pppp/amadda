@@ -63,6 +63,14 @@ public class UserService {
         }
     }
 
+    public UserRelationResponse getUserInfoAndIsFriend(Long mySeq, Long targetSeq) {
+        User target = getUserInfoBySeq(targetSeq);
+        User owner = getUserInfoBySeq(mySeq);
+        boolean isFriend = isFriend(owner, target);
+
+        return UserRelationResponse.of(target, isFriend);
+    }
+
     public UserRelationResponse getUserInfoAndIsFriend(Long userSeq, String searchKey) {
         User result = findUserWithExactId(searchKey).orElse(null);
 

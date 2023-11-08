@@ -77,9 +77,10 @@ public class UserController {
     }
 
     @GetMapping("/{userSeq}")
-    public void hoverUserInfo(@RequestParam Long userSeq) {
-        log.info("유저 정보. 호버용. ");
-
+    public ApiResponse<UserRelationResponse> getUserInfoForHover(@PathVariable Long userSeq) {
+        Long mySeq = 0L;
+        UserRelationResponse response = userService.getUserInfoAndIsFriend(mySeq, userSeq);
+        return ApiResponse.ok(response);
     }
 
     @PostMapping("/check")

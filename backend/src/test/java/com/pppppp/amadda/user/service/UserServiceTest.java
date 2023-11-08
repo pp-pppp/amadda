@@ -204,7 +204,7 @@ class UserServiceTest extends IntegrationTestSupport {
 
     @DisplayName("내 유저seq와 검색키로 해당 유저와 그 유저와의 친구관계를 조회한다. ")
     @Test
-    void getUserInfoAndIsFriend() {
+    void getUserInfoAndIsFriend_withSearchKey() {
         // given
         User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
         User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
@@ -225,7 +225,7 @@ class UserServiceTest extends IntegrationTestSupport {
 
     @DisplayName("내 유저seq와 검색키로 해당 유저와 그 유저와의 친구관계를 조회한다. ")
     @Test
-    void getUserInfoAndIsNotFriend() {
+    void getUserInfoAndIsNotFriend_withSearchKey() {
         // given
         User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
         User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
@@ -240,9 +240,47 @@ class UserServiceTest extends IntegrationTestSupport {
                 .containsExactlyInAnyOrder(1234L, "유저2", "id2", "imageUrl2", false);
     }
 
+    @DisplayName("호버한 상대의 유저 seq로 해당 유저와 그 유저와의 친구관계를 조회한다. ")
+    @Test
+    void getUserInfoAndIsFriend() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
+
+        Friend f1 = Friend.create(u1, u2);
+        Friend f2 = Friend.create(u2, u1);
+        friendRepository.saveAll(List.of(f1, f2));
+
+        // when
+        UserRelationResponse response = userService.getUserInfoAndIsFriend(1111L, 1234L);
+
+        // then
+        assertThat(response)
+                .extracting("userSeq", "userName", "userId", "imageUrl", "isFriend")
+                .containsExactlyInAnyOrder(1234L, "유저2", "id2", "imageUrl2", true);
+    }
+
+    @DisplayName("호버한 상대의 유저 seq로 해당 유저와 그 유저와의 친구관계를 조회한다. ")
+    @Test
+    void getUserInfoAndIsNotFriend() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
+
+        // when
+        UserRelationResponse response = userService.getUserInfoAndIsFriend(1111L, 1234L);
+
+        // then
+        assertThat(response)
+                .extracting("userSeq", "userName", "userId", "imageUrl", "isFriend")
+                .containsExactlyInAnyOrder(1234L, "유저2", "id2", "imageUrl2", false);
+    }
+
     @DisplayName("내 유저seq와 검색키로 검색해 대상이 존재하지 않는경우 dto를 비워 리턴한다. ")
     @Test
-    void getUserInfoAndIsFriend_notFound() {
+    void getUserInfoAndIsFriend__withSearchKey_notFound() {
         // given
         User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
         User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");

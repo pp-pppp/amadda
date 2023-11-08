@@ -148,4 +148,21 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.message").value("OK"));
     }
 
+    @DisplayName("유저seq로 호버한 유저의 정보와 나와의 친구관계를 표시한다. ")
+    @Test
+    void getUserInfoForHover() throws Exception {
+        // given
+        Long targetSeq = 0L;
+
+        // when // then
+        mockMvc.perform(
+                        get("/api/user/"+targetSeq)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("200"))
+                .andExpect(jsonPath("$.status").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"));
+    }
+
 }
