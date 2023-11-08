@@ -1,6 +1,9 @@
 package com.pppppp.amadda.user.service;
 
+import com.pppppp.amadda.friend.entity.Friend;
+import com.pppppp.amadda.friend.repository.FriendRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
+import com.pppppp.amadda.global.entity.exception.errorcode.FriendErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
 import com.pppppp.amadda.user.dto.request.UserInitRequest;
 import com.pppppp.amadda.user.dto.request.UserJwtRequest;
@@ -8,6 +11,7 @@ import com.pppppp.amadda.user.dto.request.UserRefreshRequest;
 import com.pppppp.amadda.user.dto.response.UserAccessResponse;
 import com.pppppp.amadda.user.dto.response.UserJwtInitResponse;
 import com.pppppp.amadda.user.dto.response.UserJwtResponse;
+import com.pppppp.amadda.user.dto.response.UserRelationResponse;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -22,6 +26,7 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final FriendRepository friendRepository;
     private final TokenProvider tokenProvider;
 
 
@@ -56,6 +61,23 @@ public class UserService {
         }
     }
 
+    public UserRelationResponse getUserInfoAndIsFriend(Long userSeq, String searchKey) {
+        User result = findUserWithExactId(searchKey).orElse(null);
+
+        if(result == null) return UserRelationResponse.notFound();
+        User owner = findUserByUserSeq(userSeq)
+                .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        boolean isFriend = isFriend(owner, result);
+        return UserRelationResponse.of(result, isFriend);
+    }
+
+    public boolean isFriend(User owner, User target) {
+        boolean chk1 = findTargetUserInFriend(owner, target).isPresent();
+        boolean chk2 = findTargetUserInFriend(target, owner).isPresent();
+        if(chk1^chk2) throw new RestApiException(FriendErrorCode.FRIEND_RELATION_DAMAGED);
+        return chk1 && chk2;
+    }
+
 
     // =============== 레포지토리에 직접 접근하는 메소드들 ===============
 
@@ -65,6 +87,14 @@ public class UserService {
 
     private void saveUser(User user) {
         userRepository.save(user);
+    }
+
+    private Optional<User> findUserWithExactId(String searchKey) {
+        return userRepository.findByUserId(searchKey);
+    }
+
+    private Optional<Friend> findTargetUserInFriend(User owner, User target) {
+        return friendRepository.findByOwnerAndFriend(owner, target);
     }
 
     // =================== 유저 인증 관련 메소드들 ===================
@@ -92,5 +122,4 @@ public class UserService {
                 tokens.get(2)
         );
     }
-
 }
