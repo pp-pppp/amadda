@@ -23,6 +23,7 @@ public class AlarmFriendAccept extends BaseTopicValue {
         this.friendUserName = friendUserName;
     }
 
+    @JsonIgnore
     public static AlarmFriendAccept create(Long friendUserSeq, String friendUserName) {
         return AlarmFriendAccept.builder()
             .friendUserSeq(friendUserSeq)

@@ -23,6 +23,7 @@ public class AlarmScheduleUpdate extends BaseTopicValue {
         this.scheduleName = scheduleName;
     }
 
+    @JsonIgnore
     public static AlarmScheduleUpdate create(Long scheduleSeq, String scheduleName) {
         return AlarmScheduleUpdate.builder()
             .scheduleSeq(scheduleSeq)
