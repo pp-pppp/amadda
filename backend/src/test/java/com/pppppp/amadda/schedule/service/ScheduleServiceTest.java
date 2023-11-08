@@ -598,7 +598,6 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         Long scheduleSeq = scheduleRepository.findAll().get(0).getScheduleSeq();
 
         SchedulePatchRequest schedulePatchRequest = SchedulePatchRequest.builder()
-            .scheduleSeq(scheduleSeq)
             .scheduleName("안녕 나는 바뀐 일정 이름이야")
             .scheduleContent("여기는 동기화 되는 메모야")
             .scheduleMemo("이거는 안되는 메모고")
@@ -612,7 +611,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
         // when
         ScheduleDetailReadResponse response1 = scheduleService.updateSchedule(
-            u1.getUserSeq(), schedulePatchRequest);
+            u1.getUserSeq(), scheduleSeq, schedulePatchRequest);
         ScheduleDetailReadResponse response2 = scheduleService.getScheduleDetail(scheduleSeq,
             u2.getUserSeq());
 
@@ -655,7 +654,6 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         Long scheduleSeq = scheduleRepository.findAll().get(0).getScheduleSeq();
 
         SchedulePatchRequest schedulePatchRequest = SchedulePatchRequest.builder()
-            .scheduleSeq(scheduleSeq)
             .scheduleName("안녕 나는 바뀐 일정 이름이야")
             .scheduleContent("여기는 동기화 되는 메모야")
             .scheduleMemo("이거는 안되는 메모고")
@@ -669,7 +667,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
         // when
         ScheduleDetailReadResponse response1 = scheduleService.updateSchedule(
-            u2.getUserSeq(), schedulePatchRequest);
+            u2.getUserSeq(), scheduleSeq, schedulePatchRequest);
         ScheduleDetailReadResponse response2 = scheduleService.getScheduleDetail(scheduleSeq,
             u3.getUserSeq());
 
@@ -713,7 +711,6 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         Schedule s = scheduleRepository.findAll().get(0);
 
         SchedulePatchRequest request = SchedulePatchRequest.builder()
-            .scheduleSeq(s.getScheduleSeq())
             .scheduleName("안녕 나는 바뀐 일정 이름이야")
             .scheduleContent("여기는 동기화 되는 메모야")
             .scheduleMemo("이거는 안되는 메모고")
@@ -726,7 +723,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .build();
 
         // when
-        scheduleService.updateSchedule(u1.getUserSeq(), request);
+        scheduleService.updateSchedule(u1.getUserSeq(), s.getScheduleSeq(), request);
         List<Participation> result1 = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
             s.getScheduleSeq());
         Optional<Participation> result2 = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
@@ -1044,11 +1041,11 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
         // when
         CategoryPatchRequest request = CategoryPatchRequest.builder()
-            .categorySeq(category.getCategorySeq())
             .categoryName("자율기절")
             .categoryColor("GREEN")
             .build();
-        CategoryReadResponse response = scheduleService.updateCategory(u1.getUserSeq(), request);
+        CategoryReadResponse response = scheduleService.updateCategory(u1.getUserSeq(),
+            category.getCategorySeq(), request);
 
         // then
         assertThat(response)
@@ -1174,13 +1171,13 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         Schedule schedule = scheduleRepository.findAll().get(0);
 
         SchedulePatchRequest patchRequest = SchedulePatchRequest.builder()
-            .scheduleSeq(schedule.getScheduleSeq() + 1)
             .scheduleName("안녕 나는 바뀐 일정 이름이야")
             .build();
 
         // when // then
         assertThatThrownBy(
-            () -> scheduleService.updateSchedule(user.getUserSeq(), patchRequest))
+            () -> scheduleService.updateSchedule(user.getUserSeq(), schedule.getScheduleSeq() + 1,
+                patchRequest))
             .isInstanceOf(RestApiException.class)
             .hasMessage("SCHEDULE_NOT_FOUND");
     }
@@ -1206,12 +1203,13 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         Schedule schedule = scheduleRepository.findAll().get(0);
 
         SchedulePatchRequest patchRequest = SchedulePatchRequest.builder()
-            .scheduleSeq(schedule.getScheduleSeq())
             .scheduleName("안녕 나는 바뀐 일정 이름이야")
             .build();
 
         // when // then
-        assertThatThrownBy(() -> scheduleService.updateSchedule(u2.getUserSeq(), patchRequest))
+        assertThatThrownBy(
+            () -> scheduleService.updateSchedule(u2.getUserSeq(), schedule.getScheduleSeq(),
+                patchRequest))
             .isInstanceOf(RestApiException.class)
             .hasMessage("SCHEDULE_FORBIDDEN");
     }
@@ -1387,13 +1385,14 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         Category category = categoryRepository.findAll().get(0);
 
         CategoryPatchRequest patchRequest = CategoryPatchRequest.builder()
-            .categorySeq(category.getCategorySeq() + 1)
             .categoryName("자율기절")
             .categoryColor("GREEN")
             .build();
 
         // when // then
-        assertThatThrownBy(() -> scheduleService.updateCategory(user.getUserSeq(), patchRequest))
+        assertThatThrownBy(
+            () -> scheduleService.updateCategory(user.getUserSeq(), category.getCategorySeq() + 1,
+                patchRequest))
             .isInstanceOf(RestApiException.class)
             .hasMessage("CATEGORY_NOT_FOUND");
     }
@@ -1411,13 +1410,14 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         Category category = categoryRepository.findAll().get(0);
 
         CategoryPatchRequest patchRequest = CategoryPatchRequest.builder()
-            .categorySeq(category.getCategorySeq())
             .categoryName("자율기절")
             .categoryColor("GREEN")
             .build();
 
         // when // then
-        assertThatThrownBy(() -> scheduleService.updateCategory(u2.getUserSeq(), patchRequest))
+        assertThatThrownBy(
+            () -> scheduleService.updateCategory(u2.getUserSeq(), category.getCategorySeq(),
+                patchRequest))
             .isInstanceOf(RestApiException.class)
             .hasMessage("CATEGORY_FORBIDDEN");
     }

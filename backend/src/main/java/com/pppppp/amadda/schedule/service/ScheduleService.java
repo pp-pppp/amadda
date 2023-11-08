@@ -109,9 +109,10 @@ public class ScheduleService {
     }
 
     @Transactional
-    public ScheduleDetailReadResponse updateSchedule(Long userSeq, SchedulePatchRequest request) {
+    public ScheduleDetailReadResponse updateSchedule(Long userSeq, Long scheduleSeq,
+        SchedulePatchRequest request) {
         findUserInfo(userSeq);
-        Schedule schedule = findScheduleInfo(request.scheduleSeq());
+        Schedule schedule = findScheduleInfo(scheduleSeq);
 
         // 사용자가 권한이 없으면 안됨
         checkUserAuthorizedToSchedule(userSeq, schedule);
@@ -120,7 +121,7 @@ public class ScheduleService {
         schedule.updateScheduleInfo(request);
 
         // 2. 참가자 참석 정보 가져오기
-        Participation participation = findParticipationInfoBySchedule(request.scheduleSeq(),
+        Participation participation = findParticipationInfoBySchedule(scheduleSeq,
             userSeq);
 
         // 3. 개인 참석 정보 수정
@@ -129,7 +130,7 @@ public class ScheduleService {
         // 4. 추가되는 사용자가 있으면 새롭게 참가자 추가, 없으면 참가자 목록 수정
         updateParticipantList(userSeq, request, schedule);
 
-        return getScheduleDetail(request.scheduleSeq(), userSeq);
+        return getScheduleDetail(scheduleSeq, userSeq);
     }
 
     public void addScheduleToCategory(Long userSeq, Long scheduleSeq,
@@ -233,10 +234,11 @@ public class ScheduleService {
         return findCategoryListByUser(userSeq);
     }
 
-    public CategoryReadResponse updateCategory(Long userSeq, CategoryPatchRequest request) {
+    public CategoryReadResponse updateCategory(Long userSeq, Long categorySeq,
+        CategoryPatchRequest request) {
 
         // 카테고리 유효 체크
-        Category category = findCategoryInfo(request.categorySeq());
+        Category category = findCategoryInfo(categorySeq);
 
         // 요청한 사용자와 카테고리 주인이 다르면 안됨
         checkUserAuthorizedToCategory(userSeq, category);
