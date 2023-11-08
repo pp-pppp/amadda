@@ -18,6 +18,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 @Getter
@@ -81,7 +82,7 @@ public class Participation extends BaseEntity {
         if (StringUtils.hasText(request.scheduleMemo())) {
             this.scheduleMemo = request.scheduleMemo();
         }
-        if (request.alarmTime() != null) {
+        if (!ObjectUtils.isEmpty(request.alarmTime())) {
             this.alarmTime = request.alarmTime();
         }
     }

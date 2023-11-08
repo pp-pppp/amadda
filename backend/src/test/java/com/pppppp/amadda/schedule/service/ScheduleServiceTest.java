@@ -597,6 +597,8 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         SchedulePatchRequest schedulePatchRequest = SchedulePatchRequest.builder()
             .scheduleSeq(scheduleSeq)
             .scheduleName("안녕 나는 바뀐 일정 이름이야")
+            .participants(List.of(
+                UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
 
         // when
@@ -617,6 +619,58 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         assertThat(response2)
             .extracting("scheduleName")
             .isEqualTo("안녕 내가 일정 이름이야");
+    }
+
+    @DisplayName("기존 일정에 새로운 참가자를 할당한다. 이때 참석 정보의 초기 설정은 일정을 수정하는 유저의 설정값을 따른다.")
+    @Transactional
+    @Test
+    void addNewParticipants() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+        User u2 = userRepository.findAll().get(1);
+        User u3 = userRepository.findAll().get(2);
+        ScheduleCreateRequest scheduleCreateRequest = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(true)
+            .participants(List.of(
+                UserReadResponse.of(u1), UserReadResponse.of(u2)))
+            .build();
+        scheduleService.createSchedule(u1.getUserSeq(),
+            scheduleCreateRequest);
+        Long scheduleSeq = scheduleRepository.findAll().get(0).getScheduleSeq();
+
+        SchedulePatchRequest schedulePatchRequest = SchedulePatchRequest.builder()
+            .scheduleSeq(scheduleSeq)
+            .scheduleName("안녕 나는 바뀐 일정 이름이야")
+            .participants(List.of(
+                UserReadResponse.of(u1), UserReadResponse.of(u2), UserReadResponse.of(u3)))
+            .build();
+
+        // when
+        ScheduleDetailReadResponse response1 = scheduleService.updateSchedule(
+            u2.getUserSeq(), schedulePatchRequest);
+        ScheduleDetailReadResponse response2 = scheduleService.getScheduleDetail(scheduleSeq,
+            u3.getUserSeq());
+
+        // then
+        assertThat(response2).isNotNull();
+        assertThat(response1.scheduleSeq()).isEqualTo(response2.scheduleSeq());
+        assertThat(response1)
+            .extracting("scheduleName", "scheduleMemo", "scheduleContent",
+                "isDateSelected", "isTimeSelected", "isAllDay", "scheduleStartAt", "scheduleEndAt",
+                "alarmTime", "isAuthorizedAll")
+            .containsExactly(
+                "안녕 나는 바뀐 일정 이름이야", "이거는 안되는 메모고", "여기는 동기화 되는 메모야", false, false, false,
+                "null", "null", "알림 없음", true);
+        assertThat(response2)
+            .extracting("scheduleName", "alarmTime")
+            .containsExactly("안녕 나는 바뀐 일정 이름이야", "알림 없음");
     }
 
     @DisplayName("카테고리에 새로운 일정을 추가한다.")
@@ -1045,6 +1099,56 @@ class ScheduleServiceTest extends IntegrationTestSupport {
     }
 
     // =================== 실패 테스트 ===================
+
+    @DisplayName("날짜가 설정된 일정에서 날짜가 입력되지 않으면 일정 생성에 실패한다.")
+    @Test
+    void noStartTime() {
+        // given
+        User user = userRepository.findAll().get(0);
+
+        ScheduleCreateRequest request = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .isDateSelected(true)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(true)
+            .participants(List.of(
+                UserReadResponse.of(user)))
+            .build();
+
+        // when // then
+        assertThatThrownBy(() -> scheduleService.createSchedule(user.getUserSeq(), request))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("SCHEDULE_DATE_NOT_SELECTED");
+
+    }
+
+    @DisplayName("시간이 설정된 일정에서 시간이 입력되지 않으면 일정 생성에 실패한다.")
+    @Test
+    void noEndTime() {
+        // given
+        User user = userRepository.findAll().get(0);
+
+        ScheduleCreateRequest request = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .isDateSelected(true)
+            .isTimeSelected(true)
+            .scheduleStartAt("2023-11-01 08:59:30")
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .isAuthorizedAll(true)
+            .participants(List.of(
+                UserReadResponse.of(user)))
+            .build();
+
+        // when // then
+        assertThatThrownBy(() -> scheduleService.createSchedule(user.getUserSeq(), request))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("SCHEDULE_TIME_NOT_SELECTED");
+    }
 
     @DisplayName("유효하지 않은 일정에 접근해 일정 조회에 실패한다.")
     @Test

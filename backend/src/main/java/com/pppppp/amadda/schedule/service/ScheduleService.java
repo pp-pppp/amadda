@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +54,9 @@ public class ScheduleService {
     @Transactional
     public ScheduleCreateResponse createSchedule(Long userSeq, ScheduleCreateRequest request) {
         User user = findUserInfo(userSeq);
+
+        // 시간 입력이 잘 됐는지 확인
+        checkTimeInput(request);
 
         // request to entity
         Schedule newSchedule = scheduleRepository.save(request.toEntity(user));
@@ -135,8 +139,11 @@ public class ScheduleService {
         Participation participation = findParticipationInfoBySchedule(request.scheduleSeq(),
             userSeq);
 
-        // 3. 참석 정보 수정
+        // 3. 개인 참석 정보 수정
         participation.updateParticipationInfo(request);
+
+        // 4. 추가되는 사용자가 있으면 새롭게 참가자 추가, 없으면 참가자 목록 수정
+        updateParticipantList(userSeq, request, schedule);
 
         return getScheduleDetail(request.scheduleSeq(), userSeq);
     }
@@ -340,6 +347,19 @@ public class ScheduleService {
             .orElseThrow(() -> new RestApiException(CategoryErrorCode.CATEGORY_NOT_FOUND));
     }
 
+    private void checkTimeInput(ScheduleCreateRequest request) {
+        // 1. isDateSelected = true인데 시작 시간 입력이 안 됐으면 예외 처리
+        if (request.isDateSelected() && request.scheduleStartAt() == null) {
+            throw new RestApiException(ScheduleErrorCode.SCHEDULE_DATE_NOT_SELECTED);
+        }
+
+        // 2. isTimeSelected == true인데 시작 시간 또는 종료 시간 입력이 안 됐으면 예외 처리
+        if (request.isTimeSelected() && ((request.scheduleStartAt() == null) || (
+            request.scheduleEndAt() == null))) {
+            throw new RestApiException(ScheduleErrorCode.SCHEDULE_TIME_NOT_SELECTED);
+        }
+    }
+
     private ScheduleListReadResponse findScheduleByParticipation(
         Participation participation) {
 
@@ -381,6 +401,51 @@ public class ScheduleService {
             .map(participation -> UserReadResponse.of(participation.getUser()))
             .filter(user -> user.userName().contains(searchKey))
             .toList();
+    }
+
+    private void updateParticipantList(Long requestUserSeq, SchedulePatchRequest request,
+        Schedule schedule) {
+
+        // 1. 이전 사용자 목록
+        List<User> previousParticipationList = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
+                schedule.getScheduleSeq())
+            .stream()
+            .map(Participation::getUser)
+            .toList();
+
+        // 2. 수정할 사용자 목록
+        List<User> updateParticipationList = request.participants()
+            .stream()
+            .map(response -> findUserInfo(response.userSeq()))
+            .toList();
+
+        // 3. 이전 사용자 목록과 비교해서 현재 사용자 중 추가된 사용자가 있는지 확인, 있으면 참석정보 생성
+        // 생성할 참석 정보는 이번 요청으로 수정되는 필드가 아니면 요청자의 참석정보를 기본값으로 사용
+        Participation requestUserParticipaton = findParticipationInfoBySchedule(
+            schedule.getScheduleSeq(), requestUserSeq);
+
+        updateParticipationList.stream()
+            .filter(user -> !previousParticipationList.contains(user))
+            .forEach(user -> {
+                Participation participation = Participation.builder()
+                    .scheduleName(Optional.ofNullable(request.scheduleName()).orElse(
+                        requestUserParticipaton.getScheduleName()))
+                    .alarmTime(Optional.ofNullable(request.alarmTime()).orElse(
+                        requestUserParticipaton.getAlarmTime()))
+                    .schedule(schedule)
+                    .user(user)
+                    .build();
+                participationRepository.save(participation);
+            });
+
+        // 4. 수정할 사용자 목록과 비교해서 현재 사용자 중 삭제된 사용자가 있는지 확인, 있으면 참석정보 삭제
+        previousParticipationList.stream()
+            .filter(user -> !updateParticipationList.contains(user))
+            .forEach(user -> {
+                Participation participation = findParticipationInfoBySchedule(
+                    schedule.getScheduleSeq(), user.getUserSeq());
+                participationRepository.delete(participation);
+            });
     }
 
     private List<CommentReadResponse> findCommentListBySchedule(Long scheduleSeq) {
