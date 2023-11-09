@@ -4,7 +4,7 @@ import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.friend.entity.Friend;
 import com.pppppp.amadda.friend.repository.FriendRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
-import com.pppppp.amadda.user.dto.request.UserCheckRequest;
+import com.pppppp.amadda.user.dto.request.UserIdCheckRequest;
 import com.pppppp.amadda.user.dto.request.UserInitRequest;
 import com.pppppp.amadda.user.dto.request.UserJwtRequest;
 import com.pppppp.amadda.user.dto.request.UserRefreshRequest;
@@ -346,42 +346,64 @@ class UserServiceTest extends IntegrationTestSupport {
                 .hasMessage("FRIEND_RELATION_DAMAGED");
     }
 
-    @DisplayName("아이디 중복 여부를 반환한다. - 중복")
+    @DisplayName("아이디 중복/유효 여부를 반환한다. - 중복,유효")
     @Test
-    void chkIfIdDuplicated_true() {
+    void chkId_duplicated() {
         // given
         User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
         User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
-        UserCheckRequest request = UserCheckRequest.builder()
+        UserIdCheckRequest request = UserIdCheckRequest.builder()
                 .userId("id1")
                 .build();
 
         // when
-        UserCheckResponse response = userService.chkIfIdDuplicated(request);
+        UserIdCheckResponse response = userService.chkId(request);
 
         // then
         Assertions.assertTrue(response.isDuplicated());
+        Assertions.assertTrue(response.isValid());
     }
 
-    @DisplayName("아이디 중복 여부를 반환한다. - 안중복")
+    @DisplayName("아이디 중복/유효 여부를 반환한다. - 굳")
     @Test
-    void chkIfIdDuplicated_false() {
+    void chkId_good() {
         // given
         User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
         User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
-        UserCheckRequest request = UserCheckRequest.builder()
+        UserIdCheckRequest request = UserIdCheckRequest.builder()
                 .userId("id")
                 .build();
 
         // when
-        UserCheckResponse response = userService.chkIfIdDuplicated(request);
+        UserIdCheckResponse response = userService.chkId(request);
+
+        // then
+        Assertions.assertTrue(response.isValid());
+        Assertions.assertFalse(response.isDuplicated());
+    }
+
+    @DisplayName("아이디 중복/유효 여부를 반환한다. - 안중복, 안유효")
+    @Test
+    void chkId_notValid() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
+
+        UserIdCheckRequest request = UserIdCheckRequest.builder()
+                .userId("ASDF((#")
+                .build();
+
+        // when
+        UserIdCheckResponse response = userService.chkId(request);
 
         // then
         Assertions.assertFalse(response.isDuplicated());
+        Assertions.assertFalse(response.isValid());
     }
 
 }

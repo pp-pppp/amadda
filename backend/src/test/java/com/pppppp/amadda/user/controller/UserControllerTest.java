@@ -1,7 +1,7 @@
 package com.pppppp.amadda.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pppppp.amadda.user.dto.request.UserCheckRequest;
+import com.pppppp.amadda.user.dto.request.UserIdCheckRequest;
 import com.pppppp.amadda.user.dto.request.UserInitRequest;
 import com.pppppp.amadda.user.dto.request.UserJwtRequest;
 import com.pppppp.amadda.user.service.TokenProvider;
@@ -132,7 +132,7 @@ class UserControllerTest {
     @Test
     void checkIfIdDuplicated() throws Exception {
         // given
-        UserCheckRequest request = UserCheckRequest.builder()
+        UserIdCheckRequest request = UserIdCheckRequest.builder()
                 .userId("iddd")
                 .build();
 

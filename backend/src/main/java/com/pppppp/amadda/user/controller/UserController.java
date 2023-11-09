@@ -1,16 +1,13 @@
 package com.pppppp.amadda.user.controller;
 
 import com.pppppp.amadda.global.dto.ApiResponse;
-import com.pppppp.amadda.user.dto.request.UserCheckRequest;
+import com.pppppp.amadda.user.dto.request.UserIdCheckRequest;
 import com.pppppp.amadda.user.dto.request.UserInitRequest;
 import com.pppppp.amadda.user.dto.request.UserJwtRequest;
 import com.pppppp.amadda.user.dto.request.UserRefreshRequest;
 import com.pppppp.amadda.user.dto.response.*;
 import com.pppppp.amadda.user.service.TokenProvider;
 import com.pppppp.amadda.user.service.UserService;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -84,8 +81,8 @@ public class UserController {
     }
 
     @PostMapping("/check")
-    public ApiResponse<UserCheckResponse> checkIfIdDuplicated(@Valid @RequestBody UserCheckRequest request) {
-        UserCheckResponse response = userService.chkIfIdDuplicated(request);
+    public ApiResponse<UserIdCheckResponse> checkIfIdDuplicated(@Valid @RequestBody UserIdCheckRequest request) {
+        UserIdCheckResponse response = userService.chkId(request);
         return ApiResponse.ok(response);
     }
 
