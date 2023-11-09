@@ -28,6 +28,8 @@ import com.pppppp.amadda.user.dto.response.UserReadResponse;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -153,6 +155,7 @@ public class ScheduleService {
         Long scheduleSeq, Long categorySeq) {
         findUserInfo(userSeq);
         Participation participation = findParticipationInfoBySchedule(scheduleSeq, userSeq);
+
         Category category = findCategoryInfo(categorySeq);
 
         // 요청을 보낸 사람이 참가자가 아니면 안됨

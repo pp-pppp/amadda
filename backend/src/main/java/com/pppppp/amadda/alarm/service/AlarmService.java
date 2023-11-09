@@ -176,6 +176,22 @@ public class AlarmService {
             });
     }
 
+    @Transactional
+    public void readFriendRequestAlarm(Long requestSeq) {
+        FriendRequest friendRequest = friendRequestRepository.findById(requestSeq)
+            .orElseThrow(() -> new RestApiException(
+                FriendRequestErrorCode.FRIEND_REQUEST_NOT_FOUND));
+
+        User owner = friendRequest.getOwner();
+        User friend = friendRequest.getFriend();
+
+        Alarm alarm = alarmRepository.findFriendRequestAlarm(friend, AlarmType.FRIEND_REQUEST,
+                owner.getUserName())
+            .orElseThrow(() -> new RestApiException(AlarmErrorCode.ALARM_NOT_EXIST));
+        alarm.markAsRead();
+        alarmRepository.save(alarm);
+    }
+
     private User getUser(Long ownerSeq) {
         return userRepository.findByUserSeq(ownerSeq)
             .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));

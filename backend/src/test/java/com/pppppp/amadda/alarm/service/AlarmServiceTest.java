@@ -17,6 +17,7 @@ import com.pppppp.amadda.alarm.dto.response.AlarmReadResponse;
 import com.pppppp.amadda.alarm.dto.topic.BaseTopicValue;
 import com.pppppp.amadda.alarm.entity.Alarm;
 import com.pppppp.amadda.alarm.entity.AlarmConfig;
+import com.pppppp.amadda.alarm.entity.AlarmContent;
 import com.pppppp.amadda.alarm.entity.AlarmType;
 import com.pppppp.amadda.alarm.entity.KafkaTopic;
 import com.pppppp.amadda.alarm.repository.AlarmConfigRepository;
@@ -31,9 +32,8 @@ import com.pppppp.amadda.schedule.repository.ParticipationRepository;
 import com.pppppp.amadda.schedule.repository.ScheduleRepository;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
-import java.util.Arrays;
 import java.util.List;
-import org.assertj.core.groups.Tuple;
+import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -792,6 +792,43 @@ class AlarmServiceTest extends IntegrationTestSupport {
         verify(kafkaTemplate, never()).send(eq(topic), eq(user1.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user2.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
+    }
+
+    @DisplayName("친신 읽음 처리")
+    @Test
+    void readFriendRequestAlarm() {
+        // given
+        create3users();
+        List<User> users = userRepository.findAll();
+        User owner = users.get(0);
+        User friend = users.get(1);
+
+        FriendRequest fr = FriendRequest.create(owner, friend);
+        FriendRequest friendRequest = friendRequestRepository.save(fr);
+
+        String content = AlarmContent.FRIEND_REQUEST.getMessage(owner.getUserName());
+        Alarm a = Alarm.create(friend, content,
+            AlarmType.FRIEND_REQUEST);
+        Alarm alarm = alarmRepository.save(a);
+
+        // when
+        alarmService.readFriendRequestAlarm(friendRequest.getRequestSeq());
+
+        // then
+        Optional<Alarm> result = alarmRepository.findById(alarm.getAlarmSeq());
+        assertTrue(result.isPresent());
+        assertThat(result.get())
+            .extracting("user.userSeq", "content", "isRead", "alarmType")
+            .containsExactly(friend.getUserSeq(), content, true, AlarmType.FRIEND_REQUEST);
+    }
+
+    @DisplayName("친신 읽음 처리 실패")
+    @Test
+    void readFriendRequestAlarm_fail() {
+        // when
+        assertThatThrownBy(() -> alarmService.readFriendRequestAlarm(1L))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("FRIEND_REQUEST_NOT_FOUND");
     }
 
     private List<User> create3users() {

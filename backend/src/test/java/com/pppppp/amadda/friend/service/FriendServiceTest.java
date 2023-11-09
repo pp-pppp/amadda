@@ -1,6 +1,7 @@
 package com.pppppp.amadda.friend.service;
 
 import com.pppppp.amadda.IntegrationTestSupport;
+import com.pppppp.amadda.alarm.repository.AlarmRepository;
 import com.pppppp.amadda.friend.dto.request.FriendRequestRequest;
 import com.pppppp.amadda.friend.dto.response.FriendReadResponse;
 import com.pppppp.amadda.friend.dto.response.FriendRequestResponse;
@@ -41,9 +42,12 @@ class FriendServiceTest extends IntegrationTestSupport {
     private UserGroupRepository userGroupRepository;
     @Autowired
     private GroupMemberRepository groupMemberRepository;
+    @Autowired
+    private AlarmRepository alarmRepository;
 
     @AfterEach
     void tearDown() {
+        alarmRepository.deleteAllInBatch();
         groupMemberRepository.deleteAllInBatch();
         userGroupRepository.deleteAllInBatch();
         friendRepository.deleteAllInBatch();
