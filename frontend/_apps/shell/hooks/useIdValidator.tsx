@@ -24,10 +24,12 @@ export default function useIdValidator(id: string) {
         userId: idValue,
       };
 
-      // const resp = await http.post<IdCheckRequest, IdCheckResponse>(
+      // const {isDuplicated, isValid} = await http.post<IdCheckRequest, IdCheckResponse>(
       //   `${process.env.SPRING_API_ROOT}/user/check/id`,
       //   UserIdCheckRequestBody
       // );
+      // isDuplicated ? setIsIdDuplicated(true) : setIsIdDuplicated(false);
+      // !isValid && setIdValue(idValue.slice(0, -1));
 
       const resp = { isDuplicated: false, isValid: true };
 

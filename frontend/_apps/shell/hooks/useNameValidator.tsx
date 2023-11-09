@@ -22,10 +22,11 @@ export default function useNameValidator(name: string) {
         userName: nameValue,
       };
 
-      // const resp = await http.post<NameCheckRequest, NameCheckResponse>(
+      // const {isValid} = await http.post<NameCheckRequest, NameCheckResponse>(
       //   `${process.env.SPRING_API_ROOT}/user/check/name`,
       //   UserNameCheckRequestBody
       // );
+      // !isValid && setNameValue(nickname.slice(0, -1));
 
       const resp = { isValid: true };
       !resp.isValid && setNameValue(nickname.slice(0, -1));
