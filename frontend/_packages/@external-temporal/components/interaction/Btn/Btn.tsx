@@ -1,5 +1,5 @@
 import React from 'react';
-import type { HTMLAttributes } from 'react';
+import type { HTMLAttributes, MouseEvent } from 'react';
 
 import { VARIANTS } from './Btn.css';
 
@@ -7,7 +7,7 @@ export interface BtnProps extends HTMLAttributes<HTMLButtonElement> {
   type: 'button' | 'submit';
   variant: keyof typeof VARIANTS;
   disabled: boolean;
-  onClick: (e: React.MouseEvent) => void;
+  onClick?: (e: MouseEvent) => void;
   children: string;
 }
 
@@ -18,7 +18,7 @@ export function Btn({ type, variant, disabled, onClick, children }: BtnProps) {
       className={className}
       disabled={disabled}
       type={type}
-      onClick={e => onClick(e)}
+      onClick={onClick}
     >
       {children}
     </button>

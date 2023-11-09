@@ -8,7 +8,8 @@ export const TYPE = styleVariants({
     marginBottom: '1rem',
   },
   caption: {
-    fontSize: '0.9rem',
+    fontSize: '0.8rem',
     lineHeight: '1.2',
+    textAlign: 'right',
   },
 });
