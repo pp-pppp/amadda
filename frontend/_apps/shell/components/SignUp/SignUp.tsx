@@ -6,6 +6,7 @@ import { Profile } from '../../../user/components/Profile/Profile';
 import useNameValidator from '@/hooks/useNameValidator';
 import useIdValidator from '@/hooks/useIdValidator';
 import SIGNUP_TEXT from '@/constants/SIGNUP_TEXT';
+import SignUpCaption from '../SignUpCaption/SignUpCaption';
 
 export interface UserInitRequest {
   userSeq: string;
@@ -73,30 +74,6 @@ export default function SignUp() {
     }
   };
 
-  const nicknameCaption = () => {
-    return isNameEmpty ? (
-      <P type="caption" color="warn">
-        {SIGNUP_TEXT.NICKNAME_EMPTY}
-      </P>
-    ) : (
-      <P type="caption" color="grey">
-        {SIGNUP_TEXT.NICKNAME_DESC}
-      </P>
-    );
-  };
-
-  const idCaption = () => {
-    return isIdEmpty ? (
-      <P type="caption" color="warn">
-        {SIGNUP_TEXT.ID_EMPTY}
-      </P>
-    ) : (
-      <P type="caption" color="grey">
-        {SIGNUP_TEXT.ID_DESC}
-      </P>
-    );
-  };
-
   return (
     <IndexLayout>
       <Flex justifyContents="center" alignItems="center" flexDirection="column">
@@ -120,8 +97,11 @@ export default function SignUp() {
         autoComplete="off"
       />
       <Spacing size="0.25" />
-      {nicknameCaption()}
-
+      {isNameEmpty ? (
+        <SignUpCaption color="warn">{SIGNUP_TEXT.NICKNAME_EMPTY}</SignUpCaption>
+      ) : (
+        <SignUpCaption color="grey">{SIGNUP_TEXT.NICKNAME_DESC}</SignUpCaption>
+      )}
       <Spacing size="2" />
 
       <Label htmlFor="getUserId">{SIGNUP_TEXT.ID}</Label>
@@ -138,7 +118,11 @@ export default function SignUp() {
         autoComplete="off"
       />
       <Spacing size="0.25" />
-      {idCaption()}
+      {isIdEmpty ? (
+        <SignUpCaption color="warn">{SIGNUP_TEXT.ID_EMPTY}</SignUpCaption>
+      ) : (
+        <SignUpCaption color="grey">{SIGNUP_TEXT.ID_DESC}</SignUpCaption>
+      )}
       <P type="caption" color="warn">
         {isDuplicated && SIGNUP_TEXT.ID_DUPLICATE}
       </P>
