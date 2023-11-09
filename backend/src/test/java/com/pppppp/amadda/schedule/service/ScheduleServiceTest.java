@@ -595,17 +595,29 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isTimeSelected(true)
             .isDateSelected(true)
             .isAllDay(false)
-            .scheduleStartAt("2023-11-30 08:59:30")
-            .scheduleEndAt("2023-12-01 09:00:00")
+            .scheduleStartAt("2022-11-30 08:59:30")
+            .scheduleEndAt("2022-12-01 09:00:00")
             .isAuthorizedAll(false)
             .alarmTime(AlarmTime.ON_TIME)
             .participants(List.of(UserReadResponse.of(u2)))
+            .build();
+        ScheduleCreateRequest r6 = ScheduleCreateRequest.builder()
+            .scheduleName("나도 일정이야")
+            .isTimeSelected(true)
+            .isDateSelected(true)
+            .isAllDay(false)
+            .scheduleStartAt("2023-10-30 08:59:30")
+            .scheduleEndAt("2023-12-01 09:00:00")
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.ON_TIME)
+            .participants(List.of(UserReadResponse.of(u1)))
             .build();
         scheduleService.createSchedule(u1.getUserSeq(), r1);
         scheduleService.createSchedule(u1.getUserSeq(), r2);
         scheduleService.createSchedule(u1.getUserSeq(), r3);
         scheduleService.createSchedule(u1.getUserSeq(), r4);
         scheduleService.createSchedule(u2.getUserSeq(), r5);
+        scheduleService.createSchedule(u1.getUserSeq(), r6);
 
         // when
         Map<String, String> searchCondition = Map.of("categories", "", "searchKey", "",
@@ -617,19 +629,19 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(result1)
-            .hasSize(3)
+            .hasSize(4)
             .extracting("scheduleStartAt", "scheduleEndAt")
             .containsExactlyInAnyOrder(
                 tuple("2023-10-01 08:59:30", "2023-11-01 09:00:00"),
                 tuple("2023-11-01 08:59:30", "2023-11-01 09:00:00"),
-                tuple("2023-11-30 08:59:30", "2023-12-01 09:00:00")
+                tuple("2023-11-30 08:59:30", "2023-12-01 09:00:00"),
+                tuple("2023-10-30 08:59:30", "2023-12-01 09:00:00")
             );
         assertThat(result2)
-            .hasSize(2)
+            .hasSize(1)
             .extracting("scheduleStartAt", "scheduleEndAt")
             .containsExactlyInAnyOrder(
-                tuple("2023-11-01 08:59:30", "2023-11-01 09:00:00"),
-                tuple("2023-11-30 08:59:30", "2023-12-01 09:00:00")
+                tuple("2023-11-01 08:59:30", "2023-11-01 09:00:00")
             );
     }
 
@@ -691,8 +703,8 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isTimeSelected(true)
             .isDateSelected(true)
             .isAllDay(false)
-            .scheduleStartAt("2023-11-30 08:59:30")
-            .scheduleEndAt("2023-12-01 09:00:00")
+            .scheduleStartAt("2022-11-01 08:59:30")
+            .scheduleEndAt("2022-12-01 09:00:00")
             .isAuthorizedAll(false)
             .alarmTime(AlarmTime.ON_TIME)
             .participants(List.of(UserReadResponse.of(u2)))
