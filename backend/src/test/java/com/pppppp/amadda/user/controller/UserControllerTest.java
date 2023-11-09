@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pppppp.amadda.user.dto.request.UserIdCheckRequest;
 import com.pppppp.amadda.user.dto.request.UserInitRequest;
 import com.pppppp.amadda.user.dto.request.UserJwtRequest;
+import com.pppppp.amadda.user.dto.request.UserNameCheckRequest;
 import com.pppppp.amadda.user.service.TokenProvider;
 import com.pppppp.amadda.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
@@ -128,9 +129,9 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.message").value("OK"));
     }
 
-    @DisplayName("아이디 중복 여부를 반환한다. ")
+    @DisplayName("아이디 중복/유효 여부를 반환한다. ")
     @Test
-    void checkIfIdDuplicated() throws Exception {
+    void checkId() throws Exception {
         // given
         UserIdCheckRequest request = UserIdCheckRequest.builder()
                 .userId("iddd")
@@ -138,7 +139,27 @@ class UserControllerTest {
 
         // when // then
         mockMvc.perform(
-                        post("/api/user/check")
+                        post("/api/user/check/id")
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("200"))
+                .andExpect(jsonPath("$.status").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"));
+    }
+
+    @DisplayName("닉네임 유효 여부를 반환한다. ")
+    @Test
+    void checkName() throws Exception {
+        // given
+        UserNameCheckRequest request = UserNameCheckRequest.builder()
+                .userName("nameee")
+                .build();
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/user/check/name")
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )

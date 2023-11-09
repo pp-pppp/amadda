@@ -4,10 +4,7 @@ import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.friend.entity.Friend;
 import com.pppppp.amadda.friend.repository.FriendRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
-import com.pppppp.amadda.user.dto.request.UserIdCheckRequest;
-import com.pppppp.amadda.user.dto.request.UserInitRequest;
-import com.pppppp.amadda.user.dto.request.UserJwtRequest;
-import com.pppppp.amadda.user.dto.request.UserRefreshRequest;
+import com.pppppp.amadda.user.dto.request.*;
 import com.pppppp.amadda.user.dto.response.*;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
@@ -403,6 +400,36 @@ class UserServiceTest extends IntegrationTestSupport {
 
         // then
         Assertions.assertFalse(response.isDuplicated());
+        Assertions.assertFalse(response.isValid());
+    }
+
+    @DisplayName("닉네임 유효 여부를 반환한다. - 유효")
+    @Test
+    void chkName_valid() {
+        // given
+        UserNameCheckRequest request = UserNameCheckRequest.builder()
+                .userName("이름")
+                .build();
+
+        // when
+        UserNameCheckResponse response = userService.chkName(request);
+
+        // then
+        Assertions.assertTrue(response.isValid());
+    }
+
+    @DisplayName("닉네임 유효 여부를 반환한다. - 안유효")
+    @Test
+    void chkName_notValid() {
+        // given
+        UserNameCheckRequest request = UserNameCheckRequest.builder()
+                .userName("@Zㅣ존민정@")
+                .build();
+
+        // when
+        UserNameCheckResponse response = userService.chkName(request);
+
+        // then
         Assertions.assertFalse(response.isValid());
     }
 

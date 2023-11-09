@@ -1,10 +1,7 @@
 package com.pppppp.amadda.user.controller;
 
 import com.pppppp.amadda.global.dto.ApiResponse;
-import com.pppppp.amadda.user.dto.request.UserIdCheckRequest;
-import com.pppppp.amadda.user.dto.request.UserInitRequest;
-import com.pppppp.amadda.user.dto.request.UserJwtRequest;
-import com.pppppp.amadda.user.dto.request.UserRefreshRequest;
+import com.pppppp.amadda.user.dto.request.*;
 import com.pppppp.amadda.user.dto.response.*;
 import com.pppppp.amadda.user.service.TokenProvider;
 import com.pppppp.amadda.user.service.UserService;
@@ -80,9 +77,15 @@ public class UserController {
         return ApiResponse.ok(response);
     }
 
-    @PostMapping("/check")
-    public ApiResponse<UserIdCheckResponse> checkIfIdDuplicated(@Valid @RequestBody UserIdCheckRequest request) {
+    @PostMapping("/check/id")
+    public ApiResponse<UserIdCheckResponse> checkId(@Valid @RequestBody UserIdCheckRequest request) {
         UserIdCheckResponse response = userService.chkId(request);
+        return ApiResponse.ok(response);
+    }
+
+    @PostMapping("/check/name")
+    public ApiResponse<UserNameCheckResponse> checkName(@Valid @RequestBody UserNameCheckRequest request) {
+        UserNameCheckResponse response = userService.chkName(request);
         return ApiResponse.ok(response);
     }
 
