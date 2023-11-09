@@ -31,6 +31,7 @@
     "@vanilla-extract/next-plugin": "2.3.1",
     "babel-jest": "^29.7.0",
     "eslint-config-custom": "workspace:*",
+    "amadda-global-types": "workspace:*",
     "jest": "29.7.0",
     "jest-environment-jsdom": "29.7.0",
     "node-mocks-http": "1.13.0",
