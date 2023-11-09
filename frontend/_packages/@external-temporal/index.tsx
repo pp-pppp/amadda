@@ -27,5 +27,3 @@ export * from './components/view/Filter/Filter';
 export * from './components/view/Icon/Icon';
 export * from './components/view/List/List';
 export * from './components/view/Tooltip/Tooltip';
-
-export * from './util/http';
