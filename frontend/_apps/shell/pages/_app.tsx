@@ -3,6 +3,7 @@ import { lazy } from 'react';
 import '#/util/global.css';
 import { AppLayout } from '@/layout/AppLayout';
 import { SessionProvider } from 'next-auth/react';
+import wrapper from '@/store/store';
 
 function App({ Component, pageProps: { session, ...pageProps } }) {
   return (
@@ -15,4 +16,4 @@ function App({ Component, pageProps: { session, ...pageProps } }) {
   );
 }
 
-export default App;
+export default wrapper.withRedux(App);
