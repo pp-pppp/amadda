@@ -29,7 +29,7 @@ export default function SignUp() {
     nameValue,
     setNameValue,
   } = useNameValidator(userName);
-  const { userId, isIdEmpty, isDuplicated, isIdValid, setIdValue } =
+  const { userId, isIdEmpty, isIdDuplicated, isIdValid, setIdValue } =
     useIdValidator('');
 
   const [btnDisable, setBtnDisable] = useState(true);
@@ -41,7 +41,7 @@ export default function SignUp() {
 
   const checkAllValid = () => {
     if (
-      !isDuplicated &&
+      !isIdDuplicated &&
       !isNameEmpty &&
       !isIdEmpty &&
       isIdValid &&
@@ -143,7 +143,7 @@ export default function SignUp() {
           <SignUpCaption color="grey">{SIGNUP_TEXT.ID_DESC}</SignUpCaption>
         )}
         <P type="caption" color="warn">
-          {isDuplicated && SIGNUP_TEXT.ID_DUPLICATE}
+          {isIdDuplicated && SIGNUP_TEXT.ID_DUPLICATE}
         </P>
 
         <Spacing size="2" />

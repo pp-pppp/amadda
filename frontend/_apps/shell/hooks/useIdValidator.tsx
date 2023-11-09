@@ -12,10 +12,11 @@ export interface IdCheckResponse {
 
 export default function useIdValidator(id: string) {
   const [userId, setUserId] = useState(id);
-  const [isEmpty, setIsEmpty] = useState(false);
-  const [isValid, setIsValid] = useState(true);
-  const [isDuplicated, setIsDuplicated] = useState(false);
+  const [isIdEmpty, setIsIdEmpty] = useState(false);
+  const [isIdValid, setIsIdValid] = useState(true);
+  const [isIdDuplicated, setIsIdDuplicated] = useState(false);
   const [idValue, setIdValue] = useState('');
+  const [initial, setInitial] = useState(true);
 
   useEffect(() => {
     const IdCheck = async () => {
@@ -30,28 +31,25 @@ export default function useIdValidator(id: string) {
 
       const resp = { isDuplicated: false, isValid: true };
 
-      resp.isDuplicated ? setIsDuplicated(true) : setIsDuplicated(false);
+      resp.isDuplicated ? setIsIdDuplicated(true) : setIsIdDuplicated(false);
       // !resp.isValid && setIdValue(idValue.slice(0, -1));
     };
 
     IdCheck();
 
-    idValue.length === 0 ? setIsEmpty(true) : setIsEmpty(false);
+    initial && setInitial(false);
+    !initial && idValue.length === 0 ? setIsIdEmpty(true) : setIsIdEmpty(false);
     idValue.length > 20 && setIdValue(idValue.slice(0, -1));
 
     setUserId(idValue);
   }, [idValue]);
 
-  useEffect(() => {
-    setIsEmpty(false);
-  }, []);
-
   return {
     userId,
     idValue,
     setIdValue,
-    isDuplicated: isDuplicated,
-    isIdValid: isValid,
-    isIdEmpty: isEmpty,
+    isIdDuplicated: isIdDuplicated,
+    isIdValid: isIdValid,
+    isIdEmpty: isIdEmpty,
   };
 }

@@ -8,7 +8,7 @@ export default function Page() {
     <IndexLayout>
       <Flex justifyContents="center" alignItems="center" flexDirection="column">
         <H1>Amadda</H1>
-        <Spacing size="5" />{' '}
+        <Spacing size="5" />
         <img
           src="image/kakao_login.png"
           alt="카카오로 로그인하기"

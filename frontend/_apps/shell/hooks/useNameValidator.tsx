@@ -12,8 +12,8 @@ export interface NameCheckResponse {
 
 export default function useNameValidator(name: string) {
   const [nickname, setNickname] = useState<string>(name);
-  const [isValid, setIsValid] = useState(true);
-  const [isEmpty, setIsEmpty] = useState(false);
+  const [isNameValid, setIsNameValid] = useState(true);
+  const [isNameEmpty, setIsNameEmpty] = useState(false);
   const [nameValue, setNameValue] = useState(name);
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export default function useNameValidator(name: string) {
       !resp.isValid && setNameValue(nickname.slice(0, -1));
     };
     NameCheck();
-    nameValue.length === 0 ? setIsEmpty(true) : setIsEmpty(false);
+    nameValue.length === 0 ? setIsNameEmpty(true) : setIsNameEmpty(false);
     nameValue.length > 20 && setNameValue(nameValue.slice(0, -1));
 
     setNickname(nameValue);
@@ -42,7 +42,7 @@ export default function useNameValidator(name: string) {
     setNickname,
     nameValue,
     setNameValue,
-    isNameEmpty: isEmpty,
-    isNameValid: isValid,
+    isNameEmpty: isNameEmpty,
+    isNameValid: isNameValid,
   };
 }
