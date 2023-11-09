@@ -1,5 +1,6 @@
 package com.pppppp.amadda.schedule.controller;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -18,6 +19,7 @@ import com.pppppp.amadda.schedule.dto.request.CommentCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.ScheduleCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.SchedulePatchRequest;
 import com.pppppp.amadda.schedule.dto.response.ScheduleCreateResponse;
+import com.pppppp.amadda.schedule.dto.response.ScheduleDetailReadResponse;
 import com.pppppp.amadda.schedule.entity.AlarmTime;
 import com.pppppp.amadda.schedule.service.ScheduleService;
 import com.pppppp.amadda.user.dto.response.UserReadResponse;
@@ -443,6 +445,11 @@ class ScheduleControllerTest {
             .alarmTime(AlarmTime.ONE_DAY_BEFORE)
             .build();
 
+        // stubbing
+        when(scheduleService.updateSchedule(anyLong(), anyLong(),
+            any(SchedulePatchRequest.class)))
+            .thenReturn(ScheduleDetailReadResponse.builder().scheduleSeq(1L).build());
+
         mockMvc.perform(
                 put("/api/schedule/{scheduleSeq}", 1L)
                     .content(objectMapper.writeValueAsString(request))
@@ -475,6 +482,11 @@ class ScheduleControllerTest {
             .alarmTime(AlarmTime.ONE_DAY_BEFORE)
             .build();
 
+        // stubbing
+        when(scheduleService.updateSchedule(anyLong(), anyLong(),
+            any(SchedulePatchRequest.class)))
+            .thenReturn(ScheduleDetailReadResponse.builder().scheduleSeq(1L).build());
+
         // when  // then
         mockMvc.perform(
                 put("/api/schedule/{scheduleSeq}", 1L)
@@ -505,6 +517,11 @@ class ScheduleControllerTest {
             .scheduleMemo("수원역에서 걸어서 10분")
             .alarmTime(AlarmTime.ONE_DAY_BEFORE)
             .build();
+
+        // stubbing
+        when(scheduleService.updateSchedule(anyLong(), anyLong(),
+            any(SchedulePatchRequest.class)))
+            .thenReturn(ScheduleDetailReadResponse.builder().scheduleSeq(1L).build());
 
         // when  // then
         mockMvc.perform(
@@ -537,6 +554,11 @@ class ScheduleControllerTest {
             .scheduleMemo("수원역에서 걸어서 10분")
             .alarmTime(AlarmTime.ONE_DAY_BEFORE)
             .build();
+
+        // stubbing
+        when(scheduleService.updateSchedule(anyLong(), anyLong(),
+            any(SchedulePatchRequest.class)))
+            .thenReturn(ScheduleDetailReadResponse.builder().scheduleSeq(1L).build());
 
         // when  // then
         mockMvc.perform(
@@ -733,6 +755,5 @@ class ScheduleControllerTest {
             .andExpect(jsonPath("$.message").value("OK"))
             .andExpect(jsonPath("$.data").value("일정의 수정 알림을 해제합니다."));
     }
-
 
 }
