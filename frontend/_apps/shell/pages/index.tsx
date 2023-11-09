@@ -3,10 +3,6 @@ import { signIn } from 'next-auth/react';
 import { IndexLayout } from '@/layout/IndexLayout';
 import { BASE } from '@/components/KakaoBtn/KakaoBtn.css';
 
-const kakaoBtnStyle = {
-  cursor: 'pointer',
-};
-
 export default function Page() {
   return (
     <IndexLayout>
