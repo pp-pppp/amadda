@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 
-import { http } from '#/util/http';
-
 export interface NameCheckRequest {
   userName: string;
 }
