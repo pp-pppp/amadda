@@ -9,7 +9,7 @@ export interface InputProps extends HTMLAttributes<HTMLInputElement> {
   validator?: (target: string) => boolean;
   id: string;
   name: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   disabled: boolean;
   placeholder?: string;
   value: string;

@@ -4,18 +4,19 @@ import { Input } from '#/components/interaction/Input/Input';
 import { Label } from '#/components/interaction/Label/Label';
 import { H5 } from '#/components/typography/Hn/H5';
 import { STATUS } from './Filter.css';
+import type { ChangeEvent, MouseEvent, ReactNode } from 'react';
 
 export interface FilterProps {
   isOpen: boolean;
-  onClick?(e: React.MouseEvent): void;
+  onClick?(e: MouseEvent): void;
   main: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export interface OptionProps {
   id: string;
   name: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   value: string;
   children: string;
 }

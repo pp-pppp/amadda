@@ -1,7 +1,8 @@
 import { APPLAYOUT_MOBILE } from './Layout.css';
+import type { ReactNode } from 'react';
 
 export interface LayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function AppLayout({ children }: LayoutProps) {
