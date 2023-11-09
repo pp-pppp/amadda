@@ -28,7 +28,11 @@ import com.pppppp.amadda.user.dto.response.UserReadResponse;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -490,6 +494,12 @@ public class ScheduleService {
         String categorySeqList = searchCondition.get("categories");
         String searchKey = searchCondition.get("searchKey");
         String unscheduled = searchCondition.get("unscheduled");
+        String year = searchCondition.get("year");
+        String month = searchCondition.get("month");
+        String day = searchCondition.get("day");
+
+        // 날짜 조건 입력이 잘 됐는지 확인
+        checkDateConditionValid(year, month, day);
 
         return participationRepository.findByUser_UserSeqAndIsDeletedFalse(userSeq)
             .stream()
@@ -525,9 +535,115 @@ public class ScheduleService {
                 }
                 return true;
             })
-            // TODO: 월별, 주별 일정 반환할 시 필터 추가 필요
+            // filter 4. 연도별 일정
+            .filter(participation -> {
+                if (!year.isEmpty() && month.isEmpty() && day.isEmpty()) {
+                    return checkScheduleInYearCondition(participation, year);
+                }
+                return true;
+            })
+            // filter 5. 월별 일정
+            .filter(participation -> {
+                if (!month.isEmpty() && day.isEmpty()) {
+                    return checkScheduleInMonthCondition(participation, year, month);
+                }
+                return true;
+            })
+            // filter 6. 일별 일정
+            .filter(participation -> {
+                if (!day.isEmpty()) {
+                    return checkScheduleInDayCondition(participation, year, month, day);
+                }
+                return true;
+            })
             .map(this::findScheduleByParticipation)
             .toList();
+    }
+
+    private void checkDateConditionValid(String year, String month, String day) {
+        // 만약 날짜 조건으로 검색하는데 연도가 없으면 예외 처리
+        if (year.isEmpty() && !(month.isEmpty() && day.isEmpty())) {
+            throw new RestApiException(ScheduleErrorCode.SCHEDULE_INVALID_REQUEST);
+        }
+
+        // 만약 일별 조회인데 월 단위 입력이 없으면 예외 처리
+        if (month.isEmpty() && !day.isEmpty()) {
+            throw new RestApiException(ScheduleErrorCode.SCHEDULE_INVALID_REQUEST);
+        }
+    }
+
+    private boolean checkScheduleInYearCondition(Participation participation, String year) {
+
+        // 확인하려는 일정의 시작시점, 종료시점
+        LocalDateTime scheduleStartAt = participation.getSchedule().getScheduleStartAt();
+        LocalDateTime scheduleEndAt = participation.getSchedule().getScheduleEndAt();
+
+        LocalTime startOfTheDay = LocalTime.of(0, 0, 0);
+        LocalTime endOfTheDay = LocalTime.of(23, 59, 59);
+
+        // 일정 시작 연도, 종료 연도가 해당 연도 이거나 해당 연도가 일정 중에 포함 되면 true
+        return
+            (scheduleStartAt.isBefore(
+                LocalDateTime.of(LocalDate.of(Integer.parseInt(year), 1, 1), startOfTheDay))
+                && scheduleEndAt.isAfter(
+                LocalDateTime.of(LocalDate.of(Integer.parseInt(year), 12, 31), endOfTheDay)))
+                || scheduleStartAt.getYear() == Integer.parseInt(year)
+                || scheduleEndAt.getYear() == Integer.parseInt(year);
+    }
+
+    private boolean checkScheduleInMonthCondition(Participation participation, String year,
+        String month) {
+        // 확인하려는 일정의 시작시점, 종료시점
+        LocalDateTime scheduleStartAt = participation.getSchedule().getScheduleStartAt();
+        LocalDateTime scheduleEndAt = participation.getSchedule().getScheduleEndAt();
+
+        LocalTime startOfTheDay = LocalTime.of(0, 0, 0);
+        LocalTime endOfTheDay = LocalTime.of(23, 59, 59);
+
+        // 해당 년도의 해당 월의 마지막 날짜를 알기 위해 Calender 객체 생성
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Integer.parseInt(year), Integer.parseInt(month) - 1, 1);
+
+        LocalDateTime startTime = LocalDate.of(Integer.parseInt(year),
+            Integer.parseInt(month),
+            1).atTime(startOfTheDay);
+        LocalDateTime endTime = LocalDate.of(calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.getActualMaximum(Calendar.DAY_OF_MONTH)).atTime(endOfTheDay);
+
+        // 일정 시작 시점이나 종료 시점이 해당 달이거나 해당 달이 일정 중에 포함되면 true
+        return (scheduleStartAt.getYear() == Integer.parseInt(year)
+            && scheduleStartAt.getMonthValue() == Integer.parseInt(month))
+            || (scheduleEndAt.getYear() == Integer.parseInt(year)
+            && scheduleEndAt.getMonthValue() == Integer.parseInt(month))
+            || (scheduleStartAt.isBefore(startTime) && scheduleEndAt.isAfter(endTime));
+    }
+
+    private boolean checkScheduleInDayCondition(Participation participation, String year,
+        String month, String day) {
+
+        // 확인하려는 일정의 시작시점, 종료시점
+        LocalDateTime scheduleStartAt = participation.getSchedule().getScheduleStartAt();
+        LocalDateTime scheduleEndAt = participation.getSchedule().getScheduleEndAt();
+
+        LocalTime startOfTheDay = LocalTime.of(0, 0, 0);
+        LocalTime endOfTheDay = LocalTime.of(23, 59, 59);
+
+        LocalDateTime startTime = LocalDate.of(Integer.parseInt(year),
+            Integer.parseInt(month),
+            Integer.parseInt(day)).atTime(startOfTheDay);
+        LocalDateTime endTime = LocalDate.of(Integer.parseInt(year),
+            Integer.parseInt(month),
+            Integer.parseInt(day)).atTime(endOfTheDay);
+
+        // 일정 시작 시점이나 종료 시점이 해당 날짜이거나 해당 날짜가 일정 중에 포함되면 true
+        return (scheduleStartAt.getYear() == Integer.parseInt(year)
+            && scheduleStartAt.getMonthValue() == Integer.parseInt(month)
+            && scheduleStartAt.getDayOfMonth() == Integer.parseInt(day))
+            || (scheduleEndAt.getYear() == Integer.parseInt(year)
+            && scheduleEndAt.getMonthValue() == Integer.parseInt(month)
+            && scheduleEndAt.getDayOfMonth() == Integer.parseInt(day)) || (
+            scheduleStartAt.isBefore(startTime) && scheduleEndAt.isAfter(endTime));
     }
 
     private void deleteCategoryInfoInParticipation(Long categorySeq) {

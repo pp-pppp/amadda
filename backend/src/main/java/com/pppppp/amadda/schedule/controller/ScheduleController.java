@@ -65,12 +65,19 @@ public class ScheduleController {
     public ApiResponse<List<ScheduleListReadResponse>> getScheduleList(
         @RequestParam(value = "category", required = false) Optional<String> categorySeqList,
         @RequestParam(value = "searchKey", required = false) Optional<String> searchKey,
-        @RequestParam(value = "unscheduled", required = false) Optional<String> unscheduled) {
-        log.info("GET /api/schedule?category={}&searchKey={}&unscheduled={}", categorySeqList,
-            searchKey, unscheduled);
+        @RequestParam(value = "unscheduled", required = false) Optional<String> unscheduled,
+        @RequestParam(value = "year", required = false) Optional<String> year,
+        @RequestParam(value = "month", required = false) Optional<String> month,
+        @RequestParam(value = "day", required = false) Optional<String> day) {
+        log.info(
+            "GET /api/schedule?category={}&searchKey={}&unscheduled={}&year={}&month={}&day={}",
+            categorySeqList,
+            searchKey, unscheduled, year, month, day);
 
         Map<String, String> searchCondition = Map.of("categories", categorySeqList.orElse(""),
-            "searchKey", searchKey.orElse(""), "unscheduled", unscheduled.orElse(""));
+            "searchKey", searchKey.orElse(""), "unscheduled", unscheduled.orElse(""), "year",
+            year.orElse(""), "month",
+            month.orElse(""), "day", day.orElse(""));
 
         return ApiResponse.ok(scheduleService.getScheduleListBySearchCondition(mockUserSeq,
             searchCondition));
