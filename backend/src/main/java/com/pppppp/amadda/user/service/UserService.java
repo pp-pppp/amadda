@@ -5,10 +5,7 @@ import com.pppppp.amadda.friend.repository.FriendRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.global.entity.exception.errorcode.FriendErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
-import com.pppppp.amadda.user.dto.request.UserIdCheckRequest;
-import com.pppppp.amadda.user.dto.request.UserInitRequest;
-import com.pppppp.amadda.user.dto.request.UserJwtRequest;
-import com.pppppp.amadda.user.dto.request.UserRefreshRequest;
+import com.pppppp.amadda.user.dto.request.*;
 import com.pppppp.amadda.user.dto.response.*;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
@@ -96,8 +93,18 @@ public class UserService {
     }
 
     private boolean isValidId(String id) {
-        String regex = "^[^A-Z!@#$%^&*()_+={}|\\[\\]:\";'<>?,.\\s\\u3131-\\uD79D]{0,20}$";
+        String regex = "^[^A-Z!@#$%^&*()_+={}|\\[\\]:\";'<>?,.\\s\\u3131-\\uD79D]{1,20}$";
         return Pattern.matches(regex, id);
+    }
+
+    public UserNameCheckResponse chkName(UserNameCheckRequest request) {
+        boolean isValid = isValidName(request.userName());
+        return UserNameCheckResponse.of(isValid);
+    }
+
+    private boolean isValidName(String name) {
+        String regex = "^[^A-Z!@#$%^&*()_+={}|\\[\\]\\\\:\";'<>?,./\\s]{1,20}$";
+        return Pattern.matches(regex, name);
     }
 
     // =============== 레포지토리에 직접 접근하는 메소드들 ===============
