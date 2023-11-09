@@ -10,6 +10,8 @@ export const http = {
     axios.get<Response>(url).then(res => res),
   post: <Request = unknown, Response = unknown>(url: string, body?: Request) =>
     axios.post<Response>(url, body).then(res => res),
+  put: <Request = unknown, Response = unknown>(url: string, body?: Request) =>
+    axios.put<Response>(url, body).then(res => res),
   patch: <Request = unknown, Response = unknown>(url: string, body?: Request) =>
     axios.patch<Response>(url, body).then(res => res),
   delete: <Response = unknown>(url: string) =>
