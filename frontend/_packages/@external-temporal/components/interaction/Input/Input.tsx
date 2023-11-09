@@ -9,11 +9,12 @@ export interface InputProps extends HTMLAttributes<HTMLInputElement> {
   validator?: (target: string) => boolean;
   id: string;
   name: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   disabled: boolean;
   placeholder?: string;
   value: string;
   checked?: boolean;
+  autoComplete?: undefined | 'off';
 }
 
 export function Input({
@@ -26,6 +27,8 @@ export function Input({
   placeholder = '',
   value,
   checked,
+  autoComplete = undefined,
+  style = undefined,
 }: InputProps) {
   return (
     <input
@@ -38,6 +41,8 @@ export function Input({
       placeholder={placeholder}
       type={type}
       value={value}
+      autoComplete={autoComplete}
+      style={style}
     />
   );
 }

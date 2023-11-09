@@ -1,4 +1,3 @@
-import { http } from '#/index';
 import axios from 'axios';
 import NextAuth, { Session } from 'next-auth';
 import 'next-auth';
@@ -25,42 +24,54 @@ export const authOptions = {
   ],
   callbacks: {
     async session({ session, token }) {
-      // spring에서 AT 가져오기
-      const UserJwtRequestBody: AuthRequest = {
-        userSeq: token.id,
-        imageUrl: token.image,
-      };
-
-      // const data = await http.post<AuthRequest, AuthResponse>(
-      //   'http://localhost:8080/user/login',
-      //   UserJwtRequestBody
-      // );
-
-      // mock
-      const mock = {
-        accessToken: 'atatatat',
-        refreshToken: 'rtrtrtrt',
-        refreshAccessKey: 'rakrak',
-        isInited: true,
-      };
-
-      session.user.id = token.id;
-      session.user.name = token.name;
-      session.user.image = token.image;
-      session.user.accessToken = mock.accessToken;
-      session.user.refreshToken = mock.refreshToken;
-      session.user.isInited = mock.isInited;
+      session.user.userSeq = token.userSeq;
+      session.user.userName = token.userName;
+      session.user.userId = token.userId;
+      session.user.imageUrl = token.imageUrl;
+      session.user.accessToken = token.accessToken;
+      session.user.refreshToken = token.refreshToken;
+      session.user.refreshAccessKey = token.refreshAccessKey;
+      session.user.isInited = token.isInited;
 
       return session;
     },
 
-    async jwt({ token, user, account }) {
+    async jwt({ token, trigger, user, account, session }) {
       if (account) {
-        token.accessToken = account.access_token;
-        token.id = user.id;
-        token.name = user.name;
-        token.image = user.image;
+        const UserJwtRequest: AuthRequest = {
+          userSeq: token.id,
+          imageUrl: token.image,
+        };
+
+        // const data = await http.post<AuthRequest, AuthResponse>(
+        //   `${process.env.SPRING_API_ROOT}/user/login`,
+        //   UserJwtRequest
+        // );
+
+        // mock
+        const data: AuthResponse = {
+          accessToken: 'at',
+          refreshAccessKey: 'rak',
+          refreshToken: 'rt',
+          isInited: false,
+        };
+        console.log(data);
+
+        token.accessToken = data.accessToken;
+        token.refreshToken = data.refreshToken;
+        token.refreshAccessKey = data.refreshAccessKey;
+        token.userSeq = user.id;
+        token.userName = user.name;
+        token.imageUrl = user.image;
+        token.isInited = data.isInited;
       }
+
+      if (trigger == 'update') {
+        token.userName = session?.userName ? session?.userName : token.userName;
+        token.userId = session?.userId ? session?.userId : token.userId;
+        token.isInited = session?.isInited ? session?.isInited : token.isInited;
+      }
+
       return token;
     },
   },

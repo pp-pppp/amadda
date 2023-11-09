@@ -7,16 +7,17 @@ import {
   TRIGGER_VARIANT,
 } from './Segments.css';
 import Spacing from '#/components/typography/Spacing/Spacing';
+import type { ReactNode } from 'react';
 
 export interface SegmentProps {
   titles: string[];
-  pages: React.ReactNode[];
+  pages: ReactNode[];
 }
 export interface SegmentTriggerProps {
   titles: string[];
 }
 export interface SegmentContentProps {
-  pages: React.ReactNode[];
+  pages: ReactNode[];
 }
 
 const SegmentContext = createContext<{
