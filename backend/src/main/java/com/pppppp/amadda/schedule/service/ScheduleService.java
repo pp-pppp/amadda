@@ -157,6 +157,7 @@ public class ScheduleService {
         Long scheduleSeq, Long categorySeq) {
         findUserInfo(userSeq);
         Participation participation = findParticipationInfoBySchedule(scheduleSeq, userSeq);
+
         Category category = findCategoryInfo(categorySeq);
 
         // 요청을 보낸 사람이 참가자가 아니면 안됨

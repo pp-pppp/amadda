@@ -62,6 +62,7 @@ public class FriendController {
             userSeq, requestSeq);
         alarmService.sendFriendAccept(friendRequestResponse.ownerSeq(),
             friendRequestResponse.friendSeq());
+        alarmService.readFriendRequestAlarm(requestSeq);
         return ApiResponse.ok("받은 친구 신청 수락");
     }
 
@@ -72,6 +73,7 @@ public class FriendController {
         // TODO 추후 JWT 토큰으로 사용자 seq 디코딩 추가
         Long userSeq = 0L; // request.getHeader("Auth");
         friendRequestService.declineFriendRequest(userSeq, requestSeq);
+        alarmService.readFriendRequestAlarm(requestSeq);
         return ApiResponse.ok("받은 친구 신청 거절");
     }
 
