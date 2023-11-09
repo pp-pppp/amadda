@@ -92,7 +92,9 @@ public class ScheduleController {
     public ApiResponse<String> updateSchedule(@PathVariable Long scheduleSeq,
         @Valid @RequestBody SchedulePatchRequest request) {
         log.info("PUT /api/schedule/{}", scheduleSeq);
-        scheduleService.updateSchedule(mockUserSeq, scheduleSeq, request);
+        ScheduleDetailReadResponse response = scheduleService.updateSchedule(
+            mockUserSeq, scheduleSeq, request);
+        alarmService.sendScheduleUpdate(response.scheduleSeq(), mockUserSeq);
         return ApiResponse.ok("수정되었습니다.");
     }
 
