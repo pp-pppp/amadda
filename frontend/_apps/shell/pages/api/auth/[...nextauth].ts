@@ -1,4 +1,3 @@
-import { http } from '#/index';
 import axios from 'axios';
 import NextAuth, { Session } from 'next-auth';
 import 'next-auth';

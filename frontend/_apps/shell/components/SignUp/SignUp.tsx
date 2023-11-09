@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Btn, Flex, Form, H1, Input, Label, P, Spacing } from '#/index';
 import { IndexLayout } from '@/layout/IndexLayout';
 import { useSession } from 'next-auth/react';
-import { Profile } from '../../../user/components/Profile/Profile';
+// import { Profile } from '../../../user/components/Profile/Profile';
 import useNameValidator from '@/hooks/useNameValidator';
 import useIdValidator from '@/hooks/useIdValidator';
 import SIGNUP_TEXT from '@/constants/SIGNUP_TEXT';
@@ -93,7 +93,7 @@ export default function SignUp() {
       <Flex justifyContents="center" alignItems="center" flexDirection="column">
         <H1>A M A D D A</H1>
         <Spacing size="2" />
-        <Profile src={imageUrl} alt="profile image" size="large" />
+        {/* <Profile src={imageUrl} alt="profile image" size="large" /> */}
       </Flex>
       <Spacing size="2" />
       <Form formName="singup" onSubmit={e => amaddaSignUp()}>
