@@ -12,14 +12,14 @@ export interface NameCheckResponse {
 
 export default function useNameValidator(name: string) {
   const [nickname, setNickname] = useState<string>(name);
-
   const [isValid, setIsValid] = useState(true);
   const [isEmpty, setIsEmpty] = useState(false);
+  const [nameValue, setNameValue] = useState(name);
 
   useEffect(() => {
     const NameCheck = async () => {
       const UserNameCheckRequestBody: NameCheckRequest = {
-        userName: nickname,
+        userName: nameValue,
       };
 
       // const resp = await http.post<NameCheckRequest, NameCheckResponse>(
@@ -28,18 +28,20 @@ export default function useNameValidator(name: string) {
       // );
 
       const resp = { isValid: true };
-
-      resp.isValid ? setIsValid(true) : setIsValid(false);
+      !resp.isValid && setNameValue(nickname.slice(0, -1));
     };
     NameCheck();
-    nickname.length === 0 ? setIsEmpty(true) : setIsEmpty(false);
-  }, [nickname]);
+    nameValue.length === 0 ? setIsEmpty(true) : setIsEmpty(false);
+    nameValue.length > 20 && setNameValue(nameValue.slice(0, -1));
 
-  // 유효성 검사
+    setNickname(nameValue);
+  }, [nameValue]);
 
   return {
     nickname,
     setNickname,
+    nameValue,
+    setNameValue,
     isNameEmpty: isEmpty,
     isNameValid: isValid,
   };

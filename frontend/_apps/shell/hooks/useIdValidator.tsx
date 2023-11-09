@@ -15,11 +15,12 @@ export default function useIdValidator(id: string) {
   const [isEmpty, setIsEmpty] = useState(false);
   const [isValid, setIsValid] = useState(true);
   const [isDuplicated, setIsDuplicated] = useState(false);
+  const [idValue, setIdValue] = useState('');
 
   useEffect(() => {
     const IdCheck = async () => {
       const UserIdCheckRequestBody: IdCheckRequest = {
-        userId: userId,
+        userId: idValue,
       };
 
       // const resp = await http.post<IdCheckRequest, IdCheckResponse>(
@@ -30,21 +31,25 @@ export default function useIdValidator(id: string) {
       const resp = { isDuplicated: false, isValid: true };
 
       resp.isDuplicated ? setIsDuplicated(true) : setIsDuplicated(false);
-      resp.isValid ? setIsValid(true) : setIsValid(false);
+      // !resp.isValid && setIdValue(idValue.slice(0, -1));
     };
+
     IdCheck();
-    userId.length === 0 ? setIsEmpty(true) : setIsEmpty(false);
-  }, [userId]);
+
+    idValue.length === 0 ? setIsEmpty(true) : setIsEmpty(false);
+    idValue.length > 20 && setIdValue(idValue.slice(0, -1));
+
+    setUserId(idValue);
+  }, [idValue]);
 
   useEffect(() => {
     setIsEmpty(false);
   }, []);
 
-  // ID 중복 및 유효성 검사
-
   return {
     userId,
-    setUserId,
+    idValue,
+    setIdValue,
     isDuplicated: isDuplicated,
     isIdValid: isValid,
     isIdEmpty: isEmpty,

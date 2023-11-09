@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Btn, Flex, H1, Input, Label, P, Spacing, http } from '#/index';
+import { Btn, Flex, Form, H1, Input, Label, P, Spacing } from '#/index';
 import { IndexLayout } from '@/layout/IndexLayout';
 import { useSession } from 'next-auth/react';
 import { Profile } from '../../../user/components/Profile/Profile';
@@ -21,19 +21,33 @@ export default function SignUp() {
   const imageUrl = session?.user.imageUrl || '';
   const userName = session?.user.userName || '';
 
-  const { nickname, setNickname, isNameEmpty, isNameValid } =
-    useNameValidator(userName);
-  const { userId, setUserId, isIdEmpty, isDuplicated, isIdValid } =
+  const {
+    nickname,
+    setNickname,
+    isNameEmpty,
+    isNameValid,
+    nameValue,
+    setNameValue,
+  } = useNameValidator(userName);
+  const { userId, isIdEmpty, isDuplicated, isIdValid, setIdValue } =
     useIdValidator('');
 
   const [btnDisable, setBtnDisable] = useState(true);
 
   useEffect(() => {
-    setNickname(userName);
+    // setNickname(userName);
+    setNameValue(userName);
   }, [session]);
 
   const checkAllValid = () => {
-    if (!isDuplicated && !isNameEmpty && !isIdEmpty && isIdValid && isNameValid)
+    if (
+      !isDuplicated &&
+      !isNameEmpty &&
+      !isIdEmpty &&
+      isIdValid &&
+      isNameValid &&
+      userId.length !== 0
+    )
       return true;
     return false;
   };
@@ -45,13 +59,13 @@ export default function SignUp() {
 
   // userName onChange
   const userNameOnChange = (value: string) => {
-    setNickname(value);
+    setNameValue(value);
     btnControl();
   };
 
   // userId onChagnge
   const userIdOnChange = (value: string) => {
-    setUserId(value);
+    setIdValue(value);
     btnControl();
   };
 
@@ -82,60 +96,61 @@ export default function SignUp() {
         <Profile src={imageUrl} alt="profile image" size="large" />
       </Flex>
       <Spacing size="2" />
-      <Label htmlFor="getNickname">{SIGNUP_TEXT.NICKNAME}</Label>
-      <Spacing size="0.25" />
-      <Spacing size="0.25" />
-      <Input
-        type="text"
-        id="getNickname"
-        validator={target => isNameValid}
-        name="nickname"
-        disabled={false}
-        value={nickname}
-        onChange={e => userNameOnChange(e.target.value)}
-        placeholder={SIGNUP_TEXT.NICKNAME_PLACEHOLDER}
-        autoComplete="off"
-      />
-      <Spacing size="0.25" />
-      {isNameEmpty ? (
-        <SignUpCaption color="warn">{SIGNUP_TEXT.NICKNAME_EMPTY}</SignUpCaption>
-      ) : (
-        <SignUpCaption color="grey">{SIGNUP_TEXT.NICKNAME_DESC}</SignUpCaption>
-      )}
-      <Spacing size="2" />
+      <Form formName="singup" onSubmit={e => amaddaSignUp()}>
+        <Label htmlFor="getNickname">{SIGNUP_TEXT.NICKNAME}</Label>
+        <Spacing size="0.25" />
+        <Spacing size="0.25" />
+        <Input
+          type="text"
+          id="getNickname"
+          validator={target => isNameValid}
+          name="nickname"
+          disabled={false}
+          value={nameValue}
+          onChange={e => userNameOnChange(e.target.value)}
+          placeholder={SIGNUP_TEXT.NICKNAME_PLACEHOLDER}
+          autoComplete="off"
+        />
+        <Spacing size="0.25" />
+        {isNameEmpty ? (
+          <SignUpCaption color="warn">
+            {SIGNUP_TEXT.NICKNAME_EMPTY}
+          </SignUpCaption>
+        ) : (
+          <SignUpCaption color="grey">
+            {SIGNUP_TEXT.NICKNAME_DESC}
+          </SignUpCaption>
+        )}
+        <Spacing size="2" />
 
-      <Label htmlFor="getUserId">{SIGNUP_TEXT.ID}</Label>
-      <Spacing size="0.25" />
-      <Input
-        type="text"
-        id="getUserId"
-        name="userId"
-        validator={target => isIdValid}
-        disabled={false}
-        value={userId}
-        onChange={e => userIdOnChange(e.target.value)}
-        placeholder={SIGNUP_TEXT.ID_PLACEHOLDER}
-        autoComplete="off"
-      />
-      <Spacing size="0.25" />
-      {isIdEmpty ? (
-        <SignUpCaption color="warn">{SIGNUP_TEXT.ID_EMPTY}</SignUpCaption>
-      ) : (
-        <SignUpCaption color="grey">{SIGNUP_TEXT.ID_DESC}</SignUpCaption>
-      )}
-      <P type="caption" color="warn">
-        {isDuplicated && SIGNUP_TEXT.ID_DUPLICATE}
-      </P>
+        <Label htmlFor="getUserId">{SIGNUP_TEXT.ID}</Label>
+        <Spacing size="0.25" />
+        <Input
+          type="text"
+          id="getUserId"
+          name="userId"
+          validator={target => isIdValid}
+          disabled={false}
+          value={userId}
+          onChange={e => userIdOnChange(e.target.value)}
+          placeholder={SIGNUP_TEXT.ID_PLACEHOLDER}
+          autoComplete="off"
+        />
+        <Spacing size="0.25" />
+        {isIdEmpty ? (
+          <SignUpCaption color="warn">{SIGNUP_TEXT.ID_EMPTY}</SignUpCaption>
+        ) : (
+          <SignUpCaption color="grey">{SIGNUP_TEXT.ID_DESC}</SignUpCaption>
+        )}
+        <P type="caption" color="warn">
+          {isDuplicated && SIGNUP_TEXT.ID_DUPLICATE}
+        </P>
 
-      <Spacing size="2" />
-      <Btn
-        type="button"
-        variant="key"
-        disabled={btnDisable}
-        onClick={e => amaddaSignUp()}
-      >
-        AMADDA 시작하기
-      </Btn>
+        <Spacing size="2" />
+        <Btn type="submit" variant="key" disabled={btnDisable}>
+          AMADDA 시작하기
+        </Btn>
+      </Form>
     </IndexLayout>
   );
 }
