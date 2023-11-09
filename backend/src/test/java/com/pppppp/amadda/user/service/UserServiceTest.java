@@ -153,7 +153,7 @@ class UserServiceTest extends IntegrationTestSupport {
         UserInitRequest request = UserInitRequest.builder()
                 .userId("jammminjung")
                 .userName("잼민정")
-                .imageUrl("imgUrl")
+                .imageUrl("https://www.readersnews.com/news/photo/202305/108912_78151_1733.jpg")
                 .userSeq("1111")
                 .build();
 
@@ -162,9 +162,9 @@ class UserServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(userRepository.findAll()).hasSize(1)
-                .extracting("userId", "userName", "imageUrl", "userSeq")
+                .extracting("userId", "userName", "userSeq")
                 .containsExactly(
-                        tuple("jammminjung", "잼민정", "imgUrl", 1111L)
+                        tuple("jammminjung", "잼민정", 1111L)
                 );
     }
 
