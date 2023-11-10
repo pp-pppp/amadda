@@ -19,6 +19,8 @@ import com.pppppp.amadda.friend.service.FriendService;
 import com.pppppp.amadda.friend.service.GroupMemberService;
 import com.pppppp.amadda.friend.service.UserGroupService;
 import java.util.List;
+
+import com.pppppp.amadda.global.util.TokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +48,8 @@ class FriendControllerTest {
     private AlarmService alarmService;
     @MockBean
     private FriendService friendService;
+    @MockBean
+    private TokenProvider tokenProvider;
 
     @DisplayName("친구 요청을 보낸다. ")
     @Test

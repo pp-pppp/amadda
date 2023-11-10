@@ -1,12 +1,15 @@
-package com.pppppp.amadda.user.service;
+package com.pppppp.amadda.global.util;
 
 import com.pppppp.amadda.global.entity.exception.RestApiException;
+import com.pppppp.amadda.global.entity.exception.errorcode.HttpErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
 import com.pppppp.amadda.user.dto.request.UserJwtRequest;
 import com.pppppp.amadda.user.dto.request.UserRefreshRequest;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
@@ -80,6 +83,22 @@ public class TokenProvider {
         return Long.parseLong(
                 new String(Base64.decodeBase64(rak))
         );
+    }
+
+    public Long getUserSeq(HttpServletRequest http) {
+        return parseUserSeq(getTokenFromCookie(http));
+    }
+
+    public String getTokenFromCookie(HttpServletRequest http){
+        Cookie[] cookies = http.getCookies();
+        if(cookies == null)
+            throw new RestApiException(HttpErrorCode.HTTP_COOKIE_NULL);
+        for(Cookie c : cookies) {
+            if(c.getName().equals("Auth")) {
+                return c.getValue();
+            }
+        }
+        throw new RestApiException(HttpErrorCode.HTTP_COOKIE_KEY_NOT_FOUND);
     }
 
     public Long parseUserSeq(String token) {
