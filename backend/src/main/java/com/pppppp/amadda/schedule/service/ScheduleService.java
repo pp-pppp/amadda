@@ -37,13 +37,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.TreeMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -127,7 +127,7 @@ public class ScheduleService {
             userSeq, searchCondition);
 
         // 반환할 map 생성
-        Map<String, List<ScheduleListReadResponse>> response = new TreeMap<>(Map.of());
+        Map<String, List<ScheduleListReadResponse>> response = new HashMap<>(Map.of());
 
         // 날짜 확정 / 미확정, 일자별로 정리하며 입력
         scheduleListByCondition.forEach(
@@ -137,7 +137,7 @@ public class ScheduleService {
                     if (response.containsKey("unscheduled")) {
                         response.get("unscheduled").add(schedule);
                     } else {
-                        response.put("unscheduled", new ArrayList<>());
+                        response.put("unscheduled", new LinkedList<>());
                         response.get("unscheduled").add(schedule);
                     }
                 }
@@ -155,7 +155,7 @@ public class ScheduleService {
                         if (response.containsKey(date)) {
                             response.get(date).add(schedule);
                         } else {
-                            response.put(date, new ArrayList<>());
+                            response.put(date, new LinkedList<>());
                             response.get(date).add(schedule);
                         }
                     }
@@ -189,7 +189,7 @@ public class ScheduleService {
                             if (response.containsKey(dateString)) {
                                 response.get(dateString).add(schedule);
                             } else {
-                                response.put(dateString, new ArrayList<>());
+                                response.put(dateString, new LinkedList<>());
                                 response.get(dateString).add(schedule);
                             }
                         }
