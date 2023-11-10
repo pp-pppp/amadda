@@ -180,4 +180,42 @@ class GroupMemberRepositoryTest extends IntegrationTestSupport {
                 );
     }
 
+    @DisplayName("그룹 주인과 멤버로 그룹 멤버를 삭제한다. ")
+    @Test
+    @Transactional
+    void deleteByGroup_OwnerAndMember() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
+        User u4 = User.create(9999L, "유저4", "id4", "imageUrl4");
+        User u5 = User.create(3456L, "유저5", "id5", "imageUrl5");
+        List<User> users = userRepository.saveAll(List.of(u1, u2, u3, u4, u5));
+
+        UserGroup ug1 = UserGroup.create("그룹명1", u1);
+        ug1 = userGroupRepository.save(ug1);
+        GroupMember mem1 = GroupMember.create(ug1, u2);
+        GroupMember mem2 = GroupMember.create(ug1, u3);
+        GroupMember mem3 = GroupMember.create(ug1, u4);
+        groupMemberRepository.saveAll(List.of(mem1, mem2, mem3));
+
+        UserGroup ug2 = UserGroup.create("그룹명2", u1);
+        ug2 = userGroupRepository.save(ug2);
+        GroupMember mem4 = GroupMember.create(ug2, u4);
+        GroupMember mem5 = GroupMember.create(ug2, u5);
+        groupMemberRepository.saveAll(List.of(mem4, mem5));
+
+        // when
+        groupMemberRepository.deleteByGroup_OwnerAndMember(u1, u4);
+
+        // then
+        assertThat(groupMemberRepository.findAll())
+                .extracting("group.groupName", "member.userSeq", "member.userName")
+                .containsExactlyInAnyOrder(
+                        tuple("그룹명1", 1234L, "유저2"),
+                        tuple("그룹명1", 2222L, "유저3"),
+                        tuple("그룹명2", 3456L, "유저5")
+                );
+    }
+
 }

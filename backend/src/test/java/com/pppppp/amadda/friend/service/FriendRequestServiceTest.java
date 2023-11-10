@@ -6,8 +6,12 @@ import com.pppppp.amadda.friend.dto.response.FriendRequestResponse;
 import com.pppppp.amadda.friend.dto.response.FriendResponse;
 import com.pppppp.amadda.friend.entity.FriendRequest;
 import com.pppppp.amadda.friend.entity.FriendRequestStatus;
+import com.pppppp.amadda.friend.entity.GroupMember;
+import com.pppppp.amadda.friend.entity.UserGroup;
 import com.pppppp.amadda.friend.repository.FriendRepository;
 import com.pppppp.amadda.friend.repository.FriendRequestRepository;
+import com.pppppp.amadda.friend.repository.GroupMemberRepository;
+import com.pppppp.amadda.friend.repository.UserGroupRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
@@ -34,9 +38,15 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
     private FriendRepository friendRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private GroupMemberRepository groupMemberRepository;
+    @Autowired
+    private UserGroupRepository userGroupRepository;
 
     @AfterEach
     void tearDown() {
+        groupMemberRepository.deleteAllInBatch();
+        userGroupRepository.deleteAllInBatch();
         friendRequestRepository.deleteAllInBatch();
         friendRepository.deleteAllInBatch();
     }
@@ -217,7 +227,7 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
 
     @DisplayName("친구요청 기록을 삭제한다. ")
     @Test
-    void deleteFriendRequest() {
+    void deleteFriendAndRequest() {
         // given
         User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
         User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
@@ -232,12 +242,19 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
                         .get().updateStatus(FriendRequestStatus.ACCEPTED);
         friendService.createFriend(response);
 
+        UserGroup ug1 = UserGroup.create("그룹명1", u1);
+        ug1 = userGroupRepository.save(ug1);
+        GroupMember mem1 = GroupMember.create(ug1, u2);
+        groupMemberRepository.saveAll(List.of(mem1));
+
         // when
         friendRequestService.deleteFriendAndRequest(1111L, 1234L);
 
         // then
         assertThat(friendRequestRepository.findAll()).hasSize(0);
         assertThat(friendRepository.findAll()).hasSize(0);
+        assertThat(userGroupRepository.findAll()).hasSize(0);
+        assertThat(groupMemberRepository.findAll()).hasSize(0);
     }
 
     @DisplayName("존재하지 않는 친구요청 기록을 삭제하면 예외가 발생한다. ")
@@ -253,6 +270,5 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
                 .isInstanceOf(RestApiException.class)
                 .hasMessage("FRIEND_REQUEST_NOT_FOUND");
     }
-
 
 }

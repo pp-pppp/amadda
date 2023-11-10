@@ -76,6 +76,18 @@ public class GroupMemberService {
         saveGroupMembers(toAdd);
     }
 
+    @Transactional
+    public void deleteFriend(User me, User target) {
+        deleteMembers(me, target);
+
+        // 만약 그룹이 비어버리면 그룹 삭제
+        findMyGroups(me.getUserSeq())
+                .stream()
+                .filter(group -> getMembers(group.getGroupSeq()).isEmpty())
+                .forEach(this::deleteGroup);
+
+    }
+
 
     // =============== 레포지토리에 직접 접근하는 메소드들 ===============
 
@@ -104,4 +116,15 @@ public class GroupMemberService {
         groupMemberRepository.deleteByGroup_GroupSeqAndMember_UserSeq(groupSeq, userSeq);
     }
 
+    private void deleteMembers(User me, User target) {
+        groupMemberRepository.deleteByGroup_OwnerAndMember(me, target);
+    }
+
+    private List<UserGroup> findMyGroups(Long userSeq) {
+        return userGroupRepository.findByOwner_UserSeq(userSeq);
+    }
+
+    private void deleteGroup(UserGroup group) {
+        userGroupRepository.delete(group);
+    }
 }

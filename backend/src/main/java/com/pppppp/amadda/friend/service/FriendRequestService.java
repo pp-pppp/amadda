@@ -22,6 +22,7 @@ public class FriendRequestService {
     private final FriendRequestRepository friendRequestRepository;
     private final UserService userService;
     private final FriendService friendService;
+    private final GroupMemberService groupMemberService;
 
     @Transactional
     public FriendRequestResponse createFriendRequest(FriendRequestRequest request) {
@@ -82,8 +83,9 @@ public class FriendRequestService {
                 .orElse(findFriendRequestByUserAndFriend(u2, u1).orElse(null));
         if(chk == null) throw new RestApiException(FriendRequestErrorCode.FRIEND_REQUEST_NOT_FOUND);
 
-        deleteFriendRequestBySeq(chk.getRequestSeq());
-        friendService.deleteFriends(u1, u2);
+        deleteFriendRequestBySeq(chk.getRequestSeq()); // 친구 신청 내역 삭제
+        groupMemberService.deleteFriend(u1, u2); // 내 그룹에서 삭제
+        friendService.deleteFriends(u1, u2); // 친구에서 삭제
     }
 
 

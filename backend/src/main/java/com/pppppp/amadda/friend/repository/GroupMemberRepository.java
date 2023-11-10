@@ -1,6 +1,7 @@
 package com.pppppp.amadda.friend.repository;
 
 import com.pppppp.amadda.friend.entity.GroupMember;
+import com.pppppp.amadda.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,5 +17,6 @@ public interface GroupMemberRepository extends JpaRepository<GroupMember, Long> 
             "And m.member.userName like concat('%', :searchKey, '%')")
     List<GroupMember> findByGroupSeqsAndSearchKey(
             @Param("groupSeqs") List<Long> groupSeqs, @Param("searchKey") String searchKey);
+    void deleteByGroup_OwnerAndMember(User owner, User member);
 
 }
