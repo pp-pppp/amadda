@@ -9,6 +9,7 @@
     "generate:component": "turbo gen react-component"
   },
   "devDependencies": {
+    "@storybook/nextjs": "7.5.1",
     "@storybook/react": "7.5.1",
     "@turbo/gen": "1.10.12",
     "@types/node": "20.5.2",
