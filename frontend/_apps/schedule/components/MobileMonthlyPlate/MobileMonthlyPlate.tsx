@@ -1,3 +1,4 @@
+import React from 'react';
 import { ReactNode } from 'react';
 import { Icon, Span } from '#/index';
 import { BASE, SELECTED } from './MobileMonthlyPlate.css';
@@ -18,7 +19,7 @@ const dateColor: dateColorValues = {
   weekend: 'warn',
 };
 
-export default function MobileMonthPlate({
+export function MobileMonthlyPlate({
   dateType,
   isScheduled = false,
   isSelected = false,
