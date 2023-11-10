@@ -1,5 +1,6 @@
 package com.pppppp.amadda.schedule.service;
 
+import com.pppppp.amadda.alarm.service.AlarmService;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.global.entity.exception.errorcode.CategoryErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.CommentErrorCode;
@@ -27,7 +28,6 @@ import com.pppppp.amadda.schedule.repository.ScheduleRepository;
 import com.pppppp.amadda.user.dto.response.UserReadResponse;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -39,10 +39,14 @@ import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class ScheduleService {
+
+    private final AlarmService alarmService;
 
     private final ScheduleRepository scheduleRepository;
 
@@ -144,6 +148,7 @@ public class ScheduleService {
         return getScheduleDetail(scheduleSeq, userSeq);
     }
 
+    @Transactional
     public void addScheduleToCategory(Long userSeq, Long scheduleSeq,
         Long categorySeq) {
         findUserInfo(userSeq);
@@ -160,6 +165,7 @@ public class ScheduleService {
         participation.updateCategory(category);
     }
 
+    @Transactional
     public void deleteScheduleFromCategory(Long userSeq,
         Long scheduleSeq, Long categorySeq) {
         findUserInfo(userSeq);
@@ -177,6 +183,7 @@ public class ScheduleService {
         participation.updateCategory(null);
     }
 
+    @Transactional
     public void deleteParticipation(Long requestUserSeq, Schedule schedule) {
         // 유효 체크
         Participation participation = findParticipationInfoBySchedule(
@@ -206,6 +213,7 @@ public class ScheduleService {
 
     // ================== comment ==================
 
+    @Transactional
     public CommentReadResponse createCommentOnSchedule(Long scheduleSeq,
         Long userSeq, CommentCreateRequest request) {
 
@@ -217,6 +225,7 @@ public class ScheduleService {
         return CommentReadResponse.of(comment, UserReadResponse.of(user));
     }
 
+    @Transactional
     public void deleteComment(Long commentSeq, Long userSeq) {
         Comment comment = findCommentInfo(commentSeq);
 
@@ -228,6 +237,7 @@ public class ScheduleService {
 
     // ================== category ==================
 
+    @Transactional
     public CategoryReadResponse createCategory(Long userSeq, CategoryCreateRequest request) {
 
         // 사용자 체크
@@ -242,10 +252,10 @@ public class ScheduleService {
     }
 
     public List<CategoryReadResponse> getCategoryList(Long userSeq) {
-
         return findCategoryListByUser(userSeq);
     }
 
+    @Transactional
     public CategoryReadResponse updateCategory(Long userSeq, Long categorySeq,
         CategoryPatchRequest request) {
 
@@ -310,6 +320,12 @@ public class ScheduleService {
                 category, true, true);
 
             participationRepository.save(participation);
+
+            if (!Objects.equals(participant.getUserSeq(), userSeq)) {
+                alarmService.sendScheduleAssigned(
+                    participation.getSchedule().getScheduleSeq(),
+                    userSeq, participation.getUser().getUserSeq());
+            }
         });
     }
 
@@ -469,6 +485,8 @@ public class ScheduleService {
                 Participation participation = Participation.create(createRequest, user, schedule,
                     null, true, true);
                 participationRepository.save(participation);
+                alarmService.sendScheduleAssigned(schedule.getScheduleSeq(), requestUserSeq,
+                    user.getUserSeq());
             });
     }
 
