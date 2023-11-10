@@ -6,7 +6,8 @@ const meta = {
   component: MobileDailyPlate,
   parameters: {
     layout: 'centered',
-    componentSubtitle: '하루 일정...뷰.....',
+    componentSubtitle:
+      '월간 뷰에서 날짜를 선택하면 보여질 하루 일정 정보입니다.',
   },
   tags: ['autodocs'],
   argTypes: {},
@@ -21,6 +22,7 @@ export const Primary: Story = {
       color: 'hotpink',
       scheduleName: '업무 미팅',
       person: 7,
+      allday: true,
       participants: [
         'https://amadda-bucket.s3.ap-northeast-2.amazonaws.com/1111_2023-11-10-15-04-51.jpg',
         'https://amadda-bucket.s3.ap-northeast-2.amazonaws.com/1111_2023-11-10-15-04-51.jpg',
