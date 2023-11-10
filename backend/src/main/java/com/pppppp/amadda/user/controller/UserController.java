@@ -43,7 +43,7 @@ public class UserController {
     @GetMapping("/refresh")
     public ApiResponse<?> getRefreshedTokens(
             HttpServletRequest http, @Valid @RequestBody UserRefreshRequest request) {
-        Long userSeq = 0L;
+        Long userSeq = tokenProvider.getUserSeq(http);
         try {
             UserJwtResponse response = userService.getNewTokens(request, userSeq);
             return ApiResponse.ok(response);
