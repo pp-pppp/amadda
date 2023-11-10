@@ -9,6 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.alarm.repository.AlarmRepository;
+import com.pppppp.amadda.friend.entity.Friend;
+import com.pppppp.amadda.friend.repository.FriendRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.schedule.dto.request.CategoryCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.CategoryPatchRequest;
@@ -67,6 +69,9 @@ class ScheduleServiceTest extends IntegrationTestSupport {
     private UserRepository userRepository;
 
     @Autowired
+    private FriendRepository friendRepository;
+
+    @Autowired
     private AlarmRepository alarmRepository;
 
     @BeforeEach
@@ -75,6 +80,11 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         User user2 = User.create(2L, "정민영", "minyoung", "url2");
         User user3 = User.create(3L, "김민정", "mindy0414", "url3");
         userRepository.saveAll(List.of(user1, user2, user3));
+
+        friendRepository.save(Friend.create(user1, user2));
+        friendRepository.save(Friend.create(user2, user1));
+        friendRepository.save(Friend.create(user2, user3));
+        friendRepository.save(Friend.create(user3, user2));
     }
 
     @AfterEach
@@ -84,6 +94,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         categoryRepository.deleteAllInBatch();
         commentRepository.deleteAllInBatch();
         scheduleRepository.deleteAllInBatch();
+        friendRepository.deleteAllInBatch();
         userRepository.deleteAllInBatch();
     }
 
@@ -778,6 +789,9 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         User u2 = userRepository.findAll().get(1);
         User u3 = userRepository.findAll().get(2);
 
+        friendRepository.save(Friend.create(u1, u3));
+        friendRepository.save(Friend.create(u3, u1));
+
         ScheduleCreateRequest request = ScheduleCreateRequest.builder()
             .scheduleName("안녕 내가 일정 이름이야")
             .scheduleContent("여기는 동기화 되는 메모야")
@@ -928,6 +942,9 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         User u2 = userRepository.findAll().get(1);
         User u3 = userRepository.findAll().get(2);
 
+        friendRepository.save(Friend.create(u1, u3));
+        friendRepository.save(Friend.create(u3, u1));
+
         ScheduleCreateRequest createRequest = ScheduleCreateRequest.builder()
             .scheduleName("안녕 내가 일정 이름이야")
             .scheduleContent("여기는 동기화 되는 메모야")
@@ -1076,7 +1093,6 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         // given
         User u1 = userRepository.findAll().get(0);
         User u2 = userRepository.findAll().get(1);
-        User u3 = userRepository.findAll().get(2);
 
         ScheduleCreateRequest createRequest = ScheduleCreateRequest.builder()
             .scheduleName("안녕 내가 일정 이름이야")
@@ -1088,7 +1104,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .alarmTime(AlarmTime.NONE)
             .isAuthorizedAll(false)
             .participants(List.of(
-                UserReadResponse.of(u1), UserReadResponse.of(u2), UserReadResponse.of(u3)))
+                UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
         scheduleService.createSchedule(u1.getUserSeq(), createRequest);
         Schedule s = scheduleRepository.findAll().get(0);
@@ -1102,11 +1118,10 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(result1)
-            .hasSize(2)
+            .hasSize(1)
             .extracting("user", "schedule.scheduleSeq")
             .containsExactlyInAnyOrder(
-                tuple(u1, s.getScheduleSeq()),
-                tuple(u3, s.getScheduleSeq())
+                tuple(u1, s.getScheduleSeq())
             );
         assertThat(result2).isEmpty();
     }
@@ -1413,6 +1428,85 @@ class ScheduleServiceTest extends IntegrationTestSupport {
                 patchRequest))
             .isInstanceOf(RestApiException.class)
             .hasMessage("SCHEDULE_NOT_FOUND");
+    }
+
+    @DisplayName("친구관계가 아닌 사용자는 추가할 수 없다.")
+    @Test
+    void noFriendshipBetweenUsers() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+        User u3 = userRepository.findAll().get(2);
+
+        ScheduleCreateRequest createRequest = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .isTimeSelected(false)
+            .isDateSelected(false)
+            .isAllDay(false)
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.NONE)
+            .participants(List.of(
+                UserReadResponse.of(u1)))
+            .build();
+        scheduleService.createSchedule(u1.getUserSeq(), createRequest);
+        Schedule schedule = scheduleRepository.findAll().get(0);
+
+        // when
+        SchedulePatchRequest schedulePatchRequest = SchedulePatchRequest.builder()
+            .scheduleName("안녕 나는 바뀐 일정 이름이야")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .participants(List.of(
+                UserReadResponse.of(u1), UserReadResponse.of(u3)))
+            .build();
+
+        // then
+        assertThatThrownBy(() -> scheduleService.updateSchedule(u1.getUserSeq(),
+            schedule.getScheduleSeq(), schedulePatchRequest))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("SCHEDULE_FORBIDDEN");
+    }
+
+    @DisplayName("양방향으로 친구관계이지 않은 경우는 추가할 수 없다.")
+    @Test
+    void friendRelationshipDamaged() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+        User u3 = userRepository.findAll().get(2);
+
+        // 단방향으로만 친구관계 생성된 상황 가정
+        friendRepository.save(Friend.create(u1, u3));
+
+        ScheduleCreateRequest createRequest = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .isTimeSelected(false)
+            .isDateSelected(false)
+            .isAllDay(false)
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.NONE)
+            .participants(List.of(
+                UserReadResponse.of(u1)))
+            .build();
+        scheduleService.createSchedule(u1.getUserSeq(), createRequest);
+        Schedule schedule = scheduleRepository.findAll().get(0);
+
+        // when
+        SchedulePatchRequest schedulePatchRequest = SchedulePatchRequest.builder()
+            .scheduleName("안녕 나는 바뀐 일정 이름이야")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .participants(List.of(
+                UserReadResponse.of(u1), UserReadResponse.of(u3)))
+            .build();
+
+        // then
+        assertThatThrownBy(() -> scheduleService.updateSchedule(u1.getUserSeq(),
+            schedule.getScheduleSeq(), schedulePatchRequest))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("FRIEND_RELATION_DAMAGED");
     }
 
     @DisplayName("일정 수정 시 수정 권한이 없으면 수정할 수 없다.")
