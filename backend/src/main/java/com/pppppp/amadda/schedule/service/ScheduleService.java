@@ -31,6 +31,7 @@ import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -53,8 +54,8 @@ public class ScheduleService {
 
     private final CategoryRepository categoryRepository;
 
-    // ================== schedule & participation ==================
 
+    // ================== schedule & participation ==================
     @Transactional
     public ScheduleCreateResponse createSchedule(Long userSeq, ScheduleCreateRequest request) {
         User user = findUserInfo(userSeq);
@@ -75,6 +76,12 @@ public class ScheduleService {
 
         return ScheduleCreateResponse.of(newSchedule, request.participants(),
             creatorParticipation);
+    }
+
+    public String getServerTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        return LocalDateTime.now().format(formatter);
     }
 
     public ScheduleDetailReadResponse getScheduleDetail(Long scheduleSeq, Long userSeq) {

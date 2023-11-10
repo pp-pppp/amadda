@@ -55,6 +55,13 @@ public class ScheduleController {
         return ApiResponse.ok(scheduleCreateResponse);
     }
 
+    @GetMapping("/serverTime")
+    public ApiResponse<String> getServerTime() {
+        log.info("GET /api/schedule/serverTime");
+        log.info("time: {}", scheduleService.getServerTime());
+        return ApiResponse.ok(scheduleService.getServerTime());
+    }
+
     @GetMapping("/{scheduleSeq}")
     public ApiResponse<ScheduleDetailReadResponse> getSchedule(@PathVariable Long scheduleSeq) {
         log.info("GET /api/schedule/" + scheduleSeq);
