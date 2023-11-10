@@ -1,7 +1,7 @@
 package com.pppppp.amadda.schedule.entity;
 
 import com.pppppp.amadda.global.entity.BaseEntity;
-import com.pppppp.amadda.schedule.dto.request.SchedulePatchRequest;
+import com.pppppp.amadda.schedule.dto.request.ScheduleUpdateRequest;
 import com.pppppp.amadda.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -89,7 +89,7 @@ public class Schedule extends BaseEntity {
             .build();
     }
 
-    public void updateScheduleInfo(SchedulePatchRequest request) {
+    public void updateScheduleInfo(ScheduleUpdateRequest request) {
         this.scheduleContent = request.scheduleContent();
         this.isDateSelected = request.isDateSelected();
         this.isTimeSelected = request.isTimeSelected();

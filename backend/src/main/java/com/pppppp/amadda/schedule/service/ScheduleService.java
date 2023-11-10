@@ -8,15 +8,18 @@ import com.pppppp.amadda.global.entity.exception.errorcode.CommentErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.ScheduleErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
 import com.pppppp.amadda.schedule.dto.request.CategoryCreateRequest;
-import com.pppppp.amadda.schedule.dto.request.CategoryPatchRequest;
+import com.pppppp.amadda.schedule.dto.request.CategoryUpdateRequest;
 import com.pppppp.amadda.schedule.dto.request.CommentCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.ScheduleCreateRequest;
-import com.pppppp.amadda.schedule.dto.request.SchedulePatchRequest;
+import com.pppppp.amadda.schedule.dto.request.ScheduleUpdateRequest;
+import com.pppppp.amadda.schedule.dto.response.CategoryCreateResponse;
 import com.pppppp.amadda.schedule.dto.response.CategoryReadResponse;
+import com.pppppp.amadda.schedule.dto.response.CategoryUpdateResponse;
 import com.pppppp.amadda.schedule.dto.response.CommentReadResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleCreateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleDetailReadResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleListReadResponse;
+import com.pppppp.amadda.schedule.dto.response.ScheduleUpdateResponse;
 import com.pppppp.amadda.schedule.entity.AlarmTime;
 import com.pppppp.amadda.schedule.entity.Category;
 import com.pppppp.amadda.schedule.entity.Comment;
@@ -79,13 +82,7 @@ public class ScheduleService {
         // 참가정보 바탕으로 참가자별 참석 정보 생성
         createParticipation(userSeq, request, newSchedule);
 
-        // 생성한 사람의 일정의 개인 기록 가져오기
-        Participation creatorParticipation = findParticipationInfoBySchedule(
-            newSchedule.getScheduleSeq(),
-            userSeq);
-
-        return ScheduleCreateResponse.of(newSchedule, request.participants(),
-            creatorParticipation);
+        return ScheduleCreateResponse.of(newSchedule);
     }
 
     public String getServerTime() {
@@ -130,8 +127,8 @@ public class ScheduleService {
     }
 
     @Transactional
-    public ScheduleDetailReadResponse updateSchedule(Long userSeq, Long scheduleSeq,
-        SchedulePatchRequest request) {
+    public ScheduleUpdateResponse updateSchedule(Long userSeq, Long scheduleSeq,
+        ScheduleUpdateRequest request) {
         findUserInfo(userSeq);
         Schedule schedule = findScheduleInfo(scheduleSeq);
 
@@ -151,7 +148,7 @@ public class ScheduleService {
         // 4. 추가되는 사용자가 있으면 새롭게 참가자 추가, 없으면 참가자 목록 수정
         updateParticipantList(userSeq, request, schedule);
 
-        return getScheduleDetail(scheduleSeq, userSeq);
+        return ScheduleUpdateResponse.of(schedule);
     }
 
     @Transactional
@@ -220,15 +217,13 @@ public class ScheduleService {
     // ================== comment ==================
 
     @Transactional
-    public CommentReadResponse createCommentOnSchedule(Long scheduleSeq,
+    public void createCommentOnSchedule(Long scheduleSeq,
         Long userSeq, CommentCreateRequest request) {
 
         Schedule schedule = findScheduleInfo(scheduleSeq);
         User user = findUserInfo(userSeq);
 
-        Comment comment = commentRepository.save(request.toEntity(user, schedule));
-
-        return CommentReadResponse.of(comment, UserReadResponse.of(user));
+        commentRepository.save(request.toEntity(user, schedule));
     }
 
     @Transactional
@@ -244,7 +239,7 @@ public class ScheduleService {
     // ================== category ==================
 
     @Transactional
-    public CategoryReadResponse createCategory(Long userSeq, CategoryCreateRequest request) {
+    public CategoryCreateResponse createCategory(Long userSeq, CategoryCreateRequest request) {
 
         // 사용자 체크
         User user = findUserInfo(userSeq);
@@ -254,7 +249,7 @@ public class ScheduleService {
 
         Category category = categoryRepository.save(request.toEntity(user));
 
-        return CategoryReadResponse.of(category);
+        return CategoryCreateResponse.of(category);
     }
 
     public List<CategoryReadResponse> getCategoryList(Long userSeq) {
@@ -262,8 +257,8 @@ public class ScheduleService {
     }
 
     @Transactional
-    public CategoryReadResponse updateCategory(Long userSeq, Long categorySeq,
-        CategoryPatchRequest request) {
+    public CategoryUpdateResponse updateCategory(Long userSeq, Long categorySeq,
+        CategoryUpdateRequest request) {
 
         // 카테고리 유효 체크
         Category category = findCategoryInfo(categorySeq);
@@ -273,7 +268,7 @@ public class ScheduleService {
 
         category.updateCategoryInfo(request);
 
-        return CategoryReadResponse.of(category);
+        return CategoryUpdateResponse.of(category);
     }
 
     @Transactional
@@ -469,7 +464,7 @@ public class ScheduleService {
             .toList();
     }
 
-    private void updateParticipantList(Long requestUserSeq, SchedulePatchRequest request,
+    private void updateParticipantList(Long requestUserSeq, ScheduleUpdateRequest request,
         Schedule schedule) {
 
         User requestUser = findUserInfo(requestUserSeq);

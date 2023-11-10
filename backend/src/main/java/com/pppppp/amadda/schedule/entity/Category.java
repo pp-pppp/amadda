@@ -1,7 +1,7 @@
 package com.pppppp.amadda.schedule.entity;
 
 import com.pppppp.amadda.global.entity.BaseEntity;
-import com.pppppp.amadda.schedule.dto.request.CategoryPatchRequest;
+import com.pppppp.amadda.schedule.dto.request.CategoryUpdateRequest;
 import com.pppppp.amadda.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -45,7 +45,7 @@ public class Category extends BaseEntity {
         this.categoryColor = categoryColor;
     }
 
-    public void updateCategoryInfo(CategoryPatchRequest request) {
+    public void updateCategoryInfo(CategoryUpdateRequest request) {
         this.categoryName = request.categoryName();
         this.categoryColor = CategoryColor.valueOf(request.categoryColor());
     }

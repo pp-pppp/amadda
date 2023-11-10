@@ -3,15 +3,17 @@ package com.pppppp.amadda.schedule.controller;
 import com.pppppp.amadda.alarm.service.AlarmService;
 import com.pppppp.amadda.global.dto.ApiResponse;
 import com.pppppp.amadda.schedule.dto.request.CategoryCreateRequest;
-import com.pppppp.amadda.schedule.dto.request.CategoryPatchRequest;
+import com.pppppp.amadda.schedule.dto.request.CategoryUpdateRequest;
 import com.pppppp.amadda.schedule.dto.request.CommentCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.ScheduleCreateRequest;
-import com.pppppp.amadda.schedule.dto.request.SchedulePatchRequest;
+import com.pppppp.amadda.schedule.dto.request.ScheduleUpdateRequest;
+import com.pppppp.amadda.schedule.dto.response.CategoryCreateResponse;
 import com.pppppp.amadda.schedule.dto.response.CategoryReadResponse;
-import com.pppppp.amadda.schedule.dto.response.CommentReadResponse;
+import com.pppppp.amadda.schedule.dto.response.CategoryUpdateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleCreateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleDetailReadResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleListReadResponse;
+import com.pppppp.amadda.schedule.dto.response.ScheduleUpdateResponse;
 import com.pppppp.amadda.schedule.service.ScheduleService;
 import com.pppppp.amadda.user.dto.response.UserReadResponse;
 import jakarta.validation.Valid;
@@ -20,6 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -102,13 +105,13 @@ public class ScheduleController {
     }
 
     @PutMapping("/{scheduleSeq}")
-    public ApiResponse<String> updateSchedule(@PathVariable Long scheduleSeq,
-        @Valid @RequestBody SchedulePatchRequest request) {
+    public ApiResponse<ScheduleUpdateResponse> updateSchedule(@PathVariable Long scheduleSeq,
+        @Valid @RequestBody ScheduleUpdateRequest request) {
         log.info("PUT /api/schedule/{}", scheduleSeq);
-        ScheduleDetailReadResponse response = scheduleService.updateSchedule(
+        ScheduleUpdateResponse response = scheduleService.updateSchedule(
             mockUserSeq, scheduleSeq, request);
         alarmService.sendScheduleUpdate(response.scheduleSeq(), mockUserSeq);
-        return ApiResponse.ok("수정되었습니다.");
+        return ApiResponse.of(HttpStatus.OK, "수정되었습니다.", response);
     }
 
     @DeleteMapping("/{scheduleSeq}")
@@ -121,11 +124,11 @@ public class ScheduleController {
     // ==================== 댓글 ====================
 
     @PostMapping("/{scheduleSeq}/comment")
-    public ApiResponse<CommentReadResponse> createComment(@PathVariable Long scheduleSeq,
+    public ApiResponse<String> createComment(@PathVariable Long scheduleSeq,
         @Valid @RequestBody CommentCreateRequest request) {
         log.info("POST /api/schedule/{}/comment", scheduleSeq);
-        return ApiResponse.ok(
-            scheduleService.createCommentOnSchedule(scheduleSeq, mockUserSeq, request));
+        scheduleService.createCommentOnSchedule(scheduleSeq, mockUserSeq, request);
+        return ApiResponse.ok("댓글이 생성되었습니다.");
     }
 
     @DeleteMapping("/{scheduleSeq}/comment/{commentSeq}")
@@ -139,7 +142,7 @@ public class ScheduleController {
     // ==================== 카테고리 ====================
 
     @PostMapping("/user/category")
-    public ApiResponse<CategoryReadResponse> createCategory(
+    public ApiResponse<CategoryCreateResponse> createCategory(
         @Valid @RequestBody CategoryCreateRequest request) {
         log.info("POST /api/schedule/user/category");
         return ApiResponse.ok(scheduleService.createCategory(mockUserSeq, request));
@@ -152,11 +155,11 @@ public class ScheduleController {
     }
 
     @PutMapping("/user/category/{categorySeq}")
-    public ApiResponse<String> updateCategory(@PathVariable Long categorySeq,
-        @Valid @RequestBody CategoryPatchRequest request) {
+    public ApiResponse<CategoryUpdateResponse> updateCategory(@PathVariable Long categorySeq,
+        @Valid @RequestBody CategoryUpdateRequest request) {
         log.info("PUT /api/schedule/user/category/{}", categorySeq);
-        scheduleService.updateCategory(mockUserSeq, categorySeq, request);
-        return ApiResponse.ok("수정되었습니다.");
+        return ApiResponse.ok(
+            scheduleService.updateCategory(mockUserSeq, categorySeq, request));
     }
 
     @DeleteMapping("/user/category/{categorySeq}")

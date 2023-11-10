@@ -4,13 +4,12 @@ import com.pppppp.amadda.schedule.entity.Schedule;
 import lombok.Builder;
 
 @Builder
-public record ScheduleCreateResponse(
-    // ================= Schedule ===================
+public record ScheduleUpdateResponse(
     Long scheduleSeq
 ) {
 
-    public static ScheduleCreateResponse of(Schedule schedule) {
-        return ScheduleCreateResponse.builder()
+    public static ScheduleUpdateResponse of(Schedule schedule) {
+        return ScheduleUpdateResponse.builder()
             .scheduleSeq(schedule.getScheduleSeq())
             .build();
     }
