@@ -598,6 +598,9 @@ importers:
       eslint-config-custom:
         specifier: workspace:*
         version: link:../eslint-config-custom
+      next:
+        specifier: 13.4.12
+        version: 13.4.12(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)
       react:
         specifier: 18.2.0
         version: 18.2.0
