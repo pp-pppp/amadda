@@ -5,7 +5,7 @@ import com.pppppp.amadda.user.dto.request.UserIdCheckRequest;
 import com.pppppp.amadda.user.dto.request.UserInitRequest;
 import com.pppppp.amadda.user.dto.request.UserJwtRequest;
 import com.pppppp.amadda.user.dto.request.UserNameCheckRequest;
-import com.pppppp.amadda.user.service.TokenProvider;
+import com.pppppp.amadda.global.util.TokenProvider;
 import com.pppppp.amadda.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

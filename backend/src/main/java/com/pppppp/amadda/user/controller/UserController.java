@@ -3,7 +3,7 @@ package com.pppppp.amadda.user.controller;
 import com.pppppp.amadda.global.dto.ApiResponse;
 import com.pppppp.amadda.user.dto.request.*;
 import com.pppppp.amadda.user.dto.response.*;
-import com.pppppp.amadda.user.service.TokenProvider;
+import com.pppppp.amadda.global.util.TokenProvider;
 import com.pppppp.amadda.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -35,12 +35,14 @@ public class UserController {
 
     @GetMapping("/access")
     public ApiResponse<UserAccessResponse> validateAccessToken(HttpServletRequest request) {
-        UserAccessResponse response = userService.validateUser(request.getHeader("Auth"));
+        String token = tokenProvider.getTokenFromCookie(request);
+        UserAccessResponse response = userService.validateUser(token);
         return ApiResponse.ok(response);
     }
 
     @GetMapping("/refresh")
-    public ApiResponse<?> getRefreshedTokens(@Valid @RequestBody UserRefreshRequest request) {
+    public ApiResponse<?> getRefreshedTokens(
+            HttpServletRequest http, @Valid @RequestBody UserRefreshRequest request) {
         Long userSeq = 0L;
         try {
             UserJwtResponse response = userService.getNewTokens(request, userSeq);
@@ -57,22 +59,24 @@ public class UserController {
     }
 
     @GetMapping
-    public ApiResponse<UserRelationResponse> searchUserInfoAndRelation(@RequestParam String searchKey) {
-        Long userSeq = 0L;
+    public ApiResponse<UserRelationResponse> searchUserInfoAndRelation(
+            HttpServletRequest http, @RequestParam String searchKey) {
+        Long userSeq = tokenProvider.getUserSeq(http);
         UserRelationResponse response = userService.getUserInfoAndIsFriend(userSeq, searchKey);
         return ApiResponse.ok(response);
     }
 
     @GetMapping("/my")
-    public ApiResponse<UserReadResponse> getMyUserInfo() {
-        Long userSeq = 0L;
+    public ApiResponse<UserReadResponse> getMyUserInfo(HttpServletRequest http) {
+        Long userSeq = tokenProvider.getUserSeq(http);
         UserReadResponse response = userService.getUserResponse(userSeq);
         return ApiResponse.ok(response);
     }
 
     @GetMapping("/{userSeq}")
-    public ApiResponse<UserRelationResponse> getUserInfoForHover(@PathVariable Long userSeq) {
-        Long mySeq = 0L;
+    public ApiResponse<UserRelationResponse> getUserInfoForHover(
+            HttpServletRequest http, @PathVariable Long userSeq) {
+        Long mySeq = tokenProvider.getUserSeq(http);
         UserRelationResponse response = userService.getUserInfoAndIsFriend(mySeq, userSeq);
         return ApiResponse.ok(response);
     }

@@ -11,6 +11,7 @@ import com.pppppp.amadda.friend.service.FriendService;
 import com.pppppp.amadda.friend.service.GroupMemberService;
 import com.pppppp.amadda.friend.service.UserGroupService;
 import com.pppppp.amadda.global.dto.ApiResponse;
+import com.pppppp.amadda.global.util.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,11 +29,13 @@ public class FriendController {
     private final GroupMemberService groupMemberService;
     private final AlarmService alarmService;
     private final FriendService friendService;
+    private final TokenProvider tokenProvider;
 
     @GetMapping
-    public ApiResponse<FriendReadResponse> getFriendList(@RequestParam String searchKey) {
+    public ApiResponse<FriendReadResponse> getFriendList(
+            HttpServletRequest http, @RequestParam String searchKey) {
         log.info("searchKey="+searchKey);
-        Long userSeq = 0L;
+        Long userSeq = tokenProvider.getUserSeq(http);
         FriendReadResponse response = friendService.searchFriends(userSeq, searchKey);
         return ApiResponse.ok(response);
     }
@@ -47,9 +50,10 @@ public class FriendController {
     }
 
     @PostMapping("/request/{requestSeq}")
-    public ApiResponse acceptFriendRequest(@PathVariable Long requestSeq) {
-        // TODO 추후 JWT 토큰으로 사용자 seq 디코딩 추가
-        Long userSeq = 0L; // request.getHeader("Auth");
+    public ApiResponse acceptFriendRequest(
+            HttpServletRequest http, @PathVariable Long requestSeq) {
+        Long userSeq = tokenProvider.getUserSeq(http);
+
         FriendRequestResponse friendRequestResponse = friendRequestService.acceptFriendRequest(
             userSeq, requestSeq);
         alarmService.sendFriendAccept(friendRequestResponse.ownerSeq(),
@@ -60,10 +64,9 @@ public class FriendController {
 
     @PutMapping("/request/{requestSeq}")
     public ApiResponse declineFriendRequest(
-            HttpServletRequest request,
+            HttpServletRequest http,
             @PathVariable Long requestSeq) {
-        // TODO 추후 JWT 토큰으로 사용자 seq 디코딩 추가
-        Long userSeq = 0L; // request.getHeader("Auth");
+        Long userSeq = tokenProvider.getUserSeq(http);
         friendRequestService.declineFriendRequest(userSeq, requestSeq);
         alarmService.readFriendRequestAlarm(requestSeq);
         return ApiResponse.ok("받은 친구 신청 거절");
@@ -71,10 +74,9 @@ public class FriendController {
 
     @DeleteMapping("/{friendUserSeq}")
     public ApiResponse deleteFriend(
-            HttpServletRequest request,
+            HttpServletRequest http,
             @PathVariable Long friendUserSeq) {
-        // TODO 추후 JWT 토큰으로 사용자 seq 디코딩 추가
-        Long userSeq = 0L; // request.getHeader("Auth");
+        Long userSeq = tokenProvider.getUserSeq(http);
         friendRequestService.deleteFriendAndRequest(userSeq, friendUserSeq);
 
         // TODO 추후 그룹에서 친구 찾아서 삭제하는 메소드 추가
