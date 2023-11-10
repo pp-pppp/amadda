@@ -5,6 +5,7 @@ import com.pppppp.amadda.friend.repository.FriendRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.global.entity.exception.errorcode.FriendErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
+import com.pppppp.amadda.global.service.ImageService;
 import com.pppppp.amadda.user.dto.request.*;
 import com.pppppp.amadda.user.dto.response.*;
 import com.pppppp.amadda.user.entity.User;
@@ -13,6 +14,8 @@ import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -24,6 +27,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final FriendRepository friendRepository;
     private final TokenProvider tokenProvider;
+    private final ImageService imageService;
 
 
     public User getUserInfoBySeq(Long userSeq) {
@@ -44,7 +48,12 @@ public class UserService {
     }
 
     public void saveUser(UserInitRequest request) {
-        User u = User.create(Long.parseLong(request.userSeq()), request.userName(), request.userId(), request.imageUrl());
+        String fileName = request.userSeq()+"_"
+                + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))
+                + ".jpg";
+        String s3Url = imageService.saveKakaoImgInS3(request.imageUrl(), fileName);
+
+        User u = User.create(Long.parseLong(request.userSeq()), request.userName(), request.userId(), s3Url);
         saveUser(u);
     }
 

@@ -14,6 +14,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -153,9 +155,12 @@ class UserServiceTest extends IntegrationTestSupport {
         UserInitRequest request = UserInitRequest.builder()
                 .userId("jammminjung")
                 .userName("잼민정")
-                .imageUrl("imgUrl")
+                .imageUrl("https://www.readersnews.com/news/photo/202305/108912_78151_1733.jpg")
                 .userSeq("1111")
                 .build();
+        String fileName = "https://amadda-bucket.s3.ap-northeast-2.amazonaws.com/1111_"
+                + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))
+                + ".jpg";
 
         // when
         userService.saveUser(request);
@@ -164,7 +169,7 @@ class UserServiceTest extends IntegrationTestSupport {
         assertThat(userRepository.findAll()).hasSize(1)
                 .extracting("userId", "userName", "imageUrl", "userSeq")
                 .containsExactly(
-                        tuple("jammminjung", "잼민정", "imgUrl", 1111L)
+                        tuple("jammminjung", "잼민정", fileName, 1111L)
                 );
     }
 
