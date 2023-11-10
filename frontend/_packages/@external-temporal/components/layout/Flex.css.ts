@@ -7,6 +7,7 @@ export const DIRECTION_VARIANT = styleVariants({
 
 export const JUSTIFY_VARIANT = styleVariants({
   start: { justifyContent: 'start' },
+  end: { justifyContent: 'end' },
   center: { justifyContent: 'center' },
   spaceBetween: { justifyContent: 'space-between' },
   spaceAround: { justifyContent: 'space-around' },
