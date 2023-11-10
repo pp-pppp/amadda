@@ -67,6 +67,9 @@ public class ScheduleService {
 
     private final CategoryRepository categoryRepository;
 
+    private static boolean isSameUser(Long requestUserSeq, Long userSeq) {
+        return Objects.equals(requestUserSeq, userSeq);
+    }
 
     // ================== schedule & participation ==================
     @Transactional
@@ -147,42 +150,14 @@ public class ScheduleService {
         // 4. 추가되는 사용자가 있으면 새롭게 참가자 추가, 없으면 참가자 목록 수정
         updateParticipantList(userSeq, request, schedule);
 
+        // 5. 생성자라면 카테고리 정보가 있는 경우 카테고리 정보 입력
+        if (request.categorySeq() != null) {
+            participation.updateCategory(findCategoryInfo(request.categorySeq()));
+        } else {
+            participation.updateCategory(null);
+        }
+
         return ScheduleUpdateResponse.of(schedule);
-    }
-
-    @Transactional
-    public void addScheduleToCategory(Long userSeq, Long scheduleSeq,
-        Long categorySeq) {
-        findUserInfo(userSeq);
-        Participation participation = findParticipationInfoBySchedule(scheduleSeq, userSeq);
-        Category category = findCategoryInfo(categorySeq);
-
-        // 요청을 보낸 사람이 참가자가 아니면 안됨
-        checkUserParticipation(userSeq, participation);
-
-        // 요청을 보낸 사람이 카테고리 주인이 아니면 안됨
-        checkUserAuthorizedToCategory(userSeq, category);
-
-        // 참가정보 업데이트
-        participation.updateCategory(category);
-    }
-
-    @Transactional
-    public void deleteScheduleFromCategory(Long userSeq,
-        Long scheduleSeq, Long categorySeq) {
-        findUserInfo(userSeq);
-        Participation participation = findParticipationInfoBySchedule(scheduleSeq, userSeq);
-
-        Category category = findCategoryInfo(categorySeq);
-
-        // 요청을 보낸 사람이 참가자가 아니면 안됨
-        checkUserParticipation(userSeq, participation);
-
-        // 요청을 보낸 사람이 카테고리 주인이 아니면 안됨
-        checkUserAuthorizedToCategory(userSeq, category);
-
-        // 참가정보 업데이트
-        participation.updateCategory(null);
     }
 
     @Transactional
@@ -197,6 +172,7 @@ public class ScheduleService {
         participationRepository.delete(participation);
     }
 
+    // ================== comment ==================
 
     @Transactional
     public void deleteSchedule(Long userSeq, Long scheduleSeq) {
@@ -213,8 +189,6 @@ public class ScheduleService {
         scheduleRepository.delete(schedule);
     }
 
-    // ================== comment ==================
-
     @Transactional
     public void createCommentOnSchedule(Long scheduleSeq,
         Long userSeq, CommentCreateRequest request) {
@@ -225,6 +199,8 @@ public class ScheduleService {
         commentRepository.save(request.toEntity(user, schedule));
     }
 
+    // ================== category ==================
+
     @Transactional
     public void deleteComment(Long commentSeq, Long userSeq) {
         Comment comment = findCommentInfo(commentSeq);
@@ -234,8 +210,6 @@ public class ScheduleService {
 
         commentRepository.delete(comment);
     }
-
-    // ================== category ==================
 
     @Transactional
     public CategoryCreateResponse createCategory(Long userSeq, CategoryCreateRequest request) {
@@ -293,6 +267,8 @@ public class ScheduleService {
         participation.updateIsMentionAlarmOn(isEnabled);
     }
 
+    // ================== private methods ==================
+
     @Transactional
     public void setUpdateAlarm(Long userSeq, Long scheduleSeq, boolean isEnabled) {
         findUserInfo(userSeq);
@@ -300,8 +276,6 @@ public class ScheduleService {
         Participation participation = findParticipationInfoBySchedule(scheduleSeq, userSeq);
         participation.updateIsUpdateAlarmOn(isEnabled);
     }
-
-    // ================== private methods ==================
 
     private void createParticipation(Long userSeq, ScheduleCreateRequest request,
         Schedule newSchedule) {
@@ -397,12 +371,6 @@ public class ScheduleService {
     private void checkUserAuthorizedToParticipation(Long userSeq, Participation particiption) {
         if (!(particiption.getUser().getUserSeq().equals(userSeq) || particiption.getSchedule()
             .getAuthorizedUser().getUserSeq().equals(userSeq))) {
-            throw new RestApiException(ScheduleErrorCode.SCHEDULE_FORBIDDEN);
-        }
-    }
-
-    private void checkUserParticipation(Long userSeq, Participation participation) {
-        if (!participation.getUser().getUserSeq().equals(userSeq)) {
             throw new RestApiException(ScheduleErrorCode.SCHEDULE_FORBIDDEN);
         }
     }
@@ -521,10 +489,6 @@ public class ScheduleService {
                 alarmService.sendScheduleAssigned(schedule.getScheduleSeq(), requestUserSeq,
                     participant.getUserSeq());
             });
-    }
-
-    private static boolean isSameUser(Long requestUserSeq, Long userSeq) {
-        return Objects.equals(requestUserSeq, userSeq);
     }
 
     private List<CommentReadResponse> findCommentListBySchedule(Long scheduleSeq) {

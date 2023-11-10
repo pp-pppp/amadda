@@ -1036,11 +1036,24 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         Category category = categoryRepository.findAll().get(0);
 
         // when
-        scheduleService.addScheduleToCategory(u1.getUserSeq(),
+        ScheduleUpdateRequest updateRequest = ScheduleUpdateRequest.builder()
+            .scheduleName("안녕 나는 바뀐 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .participants(List.of(
+                UserReadResponse.of(u1)))
+            .categorySeq(category.getCategorySeq())
+            .build();
+
+        ScheduleUpdateResponse updateResponse = scheduleService.updateSchedule(u1.getUserSeq(),
             schedule.scheduleSeq(),
-            category.getCategorySeq());
+            updateRequest);
         Optional<Participation> result1 = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
-            schedule.scheduleSeq(), u1.getUserSeq());
+            updateResponse.scheduleSeq(), u1.getUserSeq());
         List<ScheduleListReadResponse> result2 = scheduleService.getScheduleListBySearchCondition(
             u1.getUserSeq(), Map.of("categories", String.valueOf(category.getCategorySeq()),
                 "searchKey", "", "unscheduled", "", "month", "", "day", "", "year", ""));
@@ -1052,6 +1065,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .extracting("scheduleSeq")
             .contains(schedule.scheduleSeq());
     }
+
 
     @DisplayName("카테고리에서 일정을 삭제한다.")
     @Transactional
@@ -1091,17 +1105,37 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         ScheduleCreateResponse s2 = scheduleService.createSchedule(u1.getUserSeq(), sr2);
 
         // when
-        scheduleService.deleteScheduleFromCategory(u1.getUserSeq(), s1.scheduleSeq(),
-            category.getCategorySeq());
+        ScheduleUpdateRequest updateRequest = ScheduleUpdateRequest.builder()
+            .scheduleName("안녕 나는 바뀐 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(false)
+            .isTimeSelected(false)
+            .isAllDay(false)
+            .alarmTime(AlarmTime.NONE)
+            .participants(List.of(
+                UserReadResponse.of(u1)))
+            .categorySeq(null)
+            .build();
+
+        ScheduleUpdateResponse updateResponse = scheduleService.updateSchedule(u1.getUserSeq(),
+            s1.scheduleSeq(),
+            updateRequest);
         List<ScheduleListReadResponse> result = scheduleService.getScheduleListBySearchCondition(
             u1.getUserSeq(), Map.of("categories", String.valueOf(category.getCategorySeq()),
                 "searchKey", "", "unscheduled", "", "month", "", "day", "", "year", ""));
+        ScheduleDetailReadResponse result2 = scheduleService.getScheduleDetail(
+            updateResponse.scheduleSeq(),
+            u1.getUserSeq());
 
         // then
         assertThat(result).hasSize(1)
             .extracting("scheduleSeq", "category")
             .containsExactly(
                 tuple(s2.scheduleSeq(), CategoryReadResponse.of(category)));
+        assertThat(result2)
+            .extracting("scheduleName", "category")
+            .containsExactlyInAnyOrder("안녕 나는 바뀐 일정 이름이야", null);
     }
 
     @DisplayName("참가 정보를 삭제한다. 이때 나머지 인원의 참가 정보는 유지된다.")
