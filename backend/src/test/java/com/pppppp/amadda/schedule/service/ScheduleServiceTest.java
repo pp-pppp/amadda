@@ -729,8 +729,6 @@ class ScheduleServiceTest extends IntegrationTestSupport {
                 tuple("2023-11-01 08:59:30", "2023-11-01 09:00:00")
             );
 
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + mapResult1.keySet());
-
         assertThat(mapResult1)
             .hasSize(30)
             // 2023년 11월 1일부터 2023년 11월 30일까지 다 포함
