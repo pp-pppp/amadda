@@ -150,6 +150,30 @@ public class ScheduleService {
         return ScheduleUpdateResponse.of(schedule);
     }
 
+    private static boolean hasChangeField(ScheduleUpdateRequest request, Schedule schedule) {
+        if (!Objects.equals(schedule.getScheduleContent(), request.scheduleContent())) {
+            return true;
+        }
+        if (!Objects.equals(schedule.isDateSelected(), request.isDateSelected())) {
+            return true;
+        }
+        if (!Objects.equals(schedule.isTimeSelected(), request.isTimeSelected())) {
+            return true;
+        }
+        if (!Objects.equals(schedule.isAllDay(), request.isAllDay())) {
+            return true;
+        }
+        if (request.isDateSelected() && !Objects.equals(schedule.getScheduleStartAt(),
+            LocalDateTime.parse(request.scheduleStartAt()))) {
+            return true;
+        }
+        if (request.isTimeSelected() && !Objects.equals(schedule.getScheduleEndAt(),
+            LocalDateTime.parse(request.scheduleEndAt()))) {
+            return true;
+        }
+        return false;
+    }
+
     @Transactional
     public void addScheduleToCategory(Long userSeq, Long scheduleSeq,
         Long categorySeq) {
@@ -482,10 +506,10 @@ public class ScheduleService {
             .toList();
 
         // 3. 수정할 사용자 목록과 비교해서 현재 사용자 중 삭제된 사용자가 있는지 확인, 있으면 참석정보 삭제
+        boolean hasChangeField = hasChangeField(request, schedule);
         for (User user : previousParticipationList) {
             if (updateParticipationList.contains(user)) {
-                // TODO 공통 부분이 바뀌면 알림 전송
-                if (!isSameUser(requestUserSeq, user.getUserSeq())) {
+                if (hasChangeField && !isSameUser(requestUserSeq, user.getUserSeq())) {
                     alarmService.sendScheduleUpdate(schedule.getScheduleSeq(), user.getUserSeq());
                 }
             } else {
