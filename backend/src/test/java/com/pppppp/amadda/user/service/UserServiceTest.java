@@ -4,6 +4,7 @@ import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.friend.entity.Friend;
 import com.pppppp.amadda.friend.repository.FriendRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
+import com.pppppp.amadda.global.util.TokenProvider;
 import com.pppppp.amadda.user.dto.request.*;
 import com.pppppp.amadda.user.dto.response.*;
 import com.pppppp.amadda.user.entity.User;

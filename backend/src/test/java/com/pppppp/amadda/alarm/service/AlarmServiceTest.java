@@ -641,11 +641,10 @@ class AlarmServiceTest extends IntegrationTestSupport {
         participationRepository.save(participation);
 
         // when
-        alarmService.sendScheduleUpdate(schedule.getScheduleSeq(), user1.getUserSeq());
+        alarmService.sendScheduleUpdate(schedule.getScheduleSeq(), user2.getUserSeq());
 
         // then
         String topic = KafkaTopic.ALARM_SCHEDULE_UPDATE;
-        verify(kafkaTemplate, never()).send(eq(topic), eq(user1.getUserSeq()), any());
         verify(kafkaTemplate, times(1)).send(eq(topic), eq(user2.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
     }
@@ -668,11 +667,10 @@ class AlarmServiceTest extends IntegrationTestSupport {
         participationRepository.save(participation);
 
         // when
-        alarmService.sendScheduleUpdate(schedule.getScheduleSeq(), user1.getUserSeq());
+        alarmService.sendScheduleUpdate(schedule.getScheduleSeq(), user2.getUserSeq());
 
         // then
         String topic = KafkaTopic.ALARM_SCHEDULE_UPDATE;
-        verify(kafkaTemplate, never()).send(eq(topic), eq(user1.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user2.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
     }
@@ -698,11 +696,10 @@ class AlarmServiceTest extends IntegrationTestSupport {
         participationRepository.save(participation);
 
         // when
-        alarmService.sendScheduleUpdate(schedule.getScheduleSeq(), user1.getUserSeq());
+        alarmService.sendScheduleUpdate(schedule.getScheduleSeq(), user2.getUserSeq());
 
         // then
         String topic = KafkaTopic.ALARM_SCHEDULE_UPDATE;
-        verify(kafkaTemplate, never()).send(eq(topic), eq(user1.getUserSeq()), any());
         verify(kafkaTemplate, times(1)).send(eq(topic), eq(user2.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
     }
@@ -728,11 +725,10 @@ class AlarmServiceTest extends IntegrationTestSupport {
         participationRepository.save(participation);
 
         // when
-        alarmService.sendScheduleUpdate(schedule.getScheduleSeq(), user1.getUserSeq());
+        alarmService.sendScheduleUpdate(schedule.getScheduleSeq(), user2.getUserSeq());
 
         // then
         String topic = KafkaTopic.ALARM_SCHEDULE_UPDATE;
-        verify(kafkaTemplate, never()).send(eq(topic), eq(user1.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user2.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
     }
@@ -758,11 +754,10 @@ class AlarmServiceTest extends IntegrationTestSupport {
         participationRepository.save(participation);
 
         // when
-        alarmService.sendScheduleUpdate(schedule.getScheduleSeq(), user1.getUserSeq());
+        alarmService.sendScheduleUpdate(schedule.getScheduleSeq(), user2.getUserSeq());
 
         // then
         String topic = KafkaTopic.ALARM_SCHEDULE_UPDATE;
-        verify(kafkaTemplate, never()).send(eq(topic), eq(user1.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user2.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
     }
@@ -788,11 +783,10 @@ class AlarmServiceTest extends IntegrationTestSupport {
         participationRepository.save(participation);
 
         // when
-        alarmService.sendScheduleUpdate(schedule.getScheduleSeq(), user1.getUserSeq());
+        alarmService.sendScheduleUpdate(schedule.getScheduleSeq(), user2.getUserSeq());
 
         // then
         String topic = KafkaTopic.ALARM_SCHEDULE_UPDATE;
-        verify(kafkaTemplate, never()).send(eq(topic), eq(user1.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user2.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
     }

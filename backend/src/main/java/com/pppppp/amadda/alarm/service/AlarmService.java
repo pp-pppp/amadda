@@ -149,24 +149,17 @@ public class AlarmService {
 
     @Transactional
     public void sendScheduleUpdate(Long scheduleSeq, Long userSeq) {
-        Schedule schedule = getSchedule(scheduleSeq);
-        User modifier = getUser(userSeq);
+        User user = getUser(userSeq);
+        if (checkUpdateAlarmSetting(scheduleSeq, userSeq)) {
+            Schedule schedule = getSchedule(scheduleSeq);
+            Participation participation = getParticipation(schedule.getScheduleSeq(),
+                user.getUserSeq());
 
-        List<Participation> participations = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
-            scheduleSeq);
-
-        participations.stream()
-            .filter(participation -> {
-                User user = participation.getUser();
-                return !modifier.equals(user) &&
-                    checkUpdateAlarmSetting(schedule.getScheduleSeq(), user.getUserSeq());
-            })
-            .forEach(participation -> {
-                AlarmScheduleUpdate value = AlarmScheduleUpdate.create(schedule.getScheduleSeq(),
-                    participation.getScheduleName());
-                kafkaProducer.sendAlarm(KafkaTopic.ALARM_SCHEDULE_UPDATE,
-                    participation.getUser().getUserSeq(), value);
-            });
+            AlarmScheduleUpdate value = AlarmScheduleUpdate.create(schedule.getScheduleSeq(),
+                participation.getScheduleName());
+            kafkaProducer.sendAlarm(KafkaTopic.ALARM_SCHEDULE_UPDATE,
+                participation.getUser().getUserSeq(), value);
+        }
     }
 
     @Transactional
@@ -185,8 +178,8 @@ public class AlarmService {
         alarmRepository.save(alarm);
     }
 
-    private User getUser(Long ownerSeq) {
-        return userRepository.findByUserSeq(ownerSeq)
+    private User getUser(Long userSeq) {
+        return userRepository.findByUserSeq(userSeq)
             .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
     }
 
@@ -195,9 +188,9 @@ public class AlarmService {
             .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
     }
 
-    private Participation getParticipation(Long scheduleSeq, Long targetSeq) {
+    private Participation getParticipation(Long scheduleSeq, Long userSeq) {
         return participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
-                scheduleSeq, targetSeq)
+                scheduleSeq, userSeq)
             .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
     }
 
