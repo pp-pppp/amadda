@@ -31,7 +31,6 @@ public record ScheduleDetailReadResponse(
     List<CommentReadResponse> comments
 ) {
 
-    // TODO: 카테고리 관련 로직 수정 필요
     public static ScheduleDetailReadResponse of(Schedule schedule,
         List<UserReadResponse> participants,
         Participation participation,
