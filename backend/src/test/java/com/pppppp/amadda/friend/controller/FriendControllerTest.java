@@ -119,7 +119,7 @@ class FriendControllerTest {
 
         // when // then
         mockMvc.perform(
-                        patch("/api/friend/request/"+requestSeq)
+                        put("/api/friend/request/"+requestSeq)
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
@@ -241,7 +241,7 @@ class FriendControllerTest {
 
         // when // then
         mockMvc.perform(
-                        patch("/api/friend/group")
+                        put("/api/friend/group")
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -263,7 +263,7 @@ class FriendControllerTest {
 
         // when // then
         mockMvc.perform(
-                        patch("/api/friend/group")
+                        put("/api/friend/group")
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -282,7 +282,7 @@ class FriendControllerTest {
                 .build();
         // when // then
         mockMvc.perform(
-                        patch("/api/friend/group")
+                        put("/api/friend/group")
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -300,7 +300,7 @@ class FriendControllerTest {
                 .build();
         // when // then
         mockMvc.perform(
-                        patch("/api/friend/group")
+                        put("/api/friend/group")
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
