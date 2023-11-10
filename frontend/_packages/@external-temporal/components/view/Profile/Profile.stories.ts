@@ -18,7 +18,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
   args: {
-    src: '',
-    alt: 'empty image',
+    src: 'https://amadda-bucket.s3.ap-northeast-2.amazonaws.com/1111_2023-11-10-15-04-51.jpg',
+    alt: '푸바오입니다.',
   },
 };
