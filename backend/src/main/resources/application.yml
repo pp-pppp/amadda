@@ -16,6 +16,8 @@ spring:
     time-zone: Asia/Seoul
 
   kafka:
+    listener:
+      auto-startup: true
     producer:
       bootstrap-servers:
         - ${kafka.server.kafka1}
@@ -43,7 +45,7 @@ spring:
             trusted:
               packages: com.pppppp.amadda.alarm.dto.topic, com.pppppp.amadda.alarm.dto.topic.alarm, com.pppppp.amadda.alarm.dto.topic.setting
       group-id: ${kafka.group}
-      auto-offset-reset: earliest
+      auto-offset-reset: latest
 
   jwt:
     secret-key: ${jwt.secret-key}
@@ -107,13 +109,13 @@ spring:
     password: ${mysql.password}
 ---
 spring:
-  kafka:
-    listener:
-      auto-startup: false
-
   config:
     activate:
       on-profile: test
+
+  kafka:
+    listener:
+      auto-startup: false
 
   jpa:
     hibernate:

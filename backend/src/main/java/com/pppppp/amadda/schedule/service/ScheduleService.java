@@ -142,8 +142,7 @@ public class ScheduleService {
         schedule.updateScheduleInfo(request);
 
         // 2. 참가자 참석 정보 가져오기
-        Participation participation = findParticipationInfoBySchedule(scheduleSeq,
-            userSeq);
+        Participation participation = findParticipationInfoBySchedule(scheduleSeq, userSeq);
 
         // 3. 개인 참석 정보 수정
         participation.updateParticipationInfo(request);
@@ -324,7 +323,7 @@ public class ScheduleService {
 
             // 카테고리 정보가 있는 경우 참석자가 생성자라면 카테고리 정보 입력
             Category category = null;
-            if ((request.categorySeq() != null) && Objects.equals(participant.getUserSeq(),
+            if ((request.categorySeq() != null) && isSameUser(participant.getUserSeq(),
                 userSeq)) {
                 category = findCategoryInfo(request.categorySeq());
             }
@@ -334,7 +333,7 @@ public class ScheduleService {
 
             participationRepository.save(participation);
 
-            if (!Objects.equals(participant.getUserSeq(), userSeq)) {
+            if (!isSameUser(participant.getUserSeq(), userSeq)) {
                 alarmService.sendScheduleAssigned(
                     participation.getSchedule().getScheduleSeq(),
                     userSeq, participation.getUser().getUserSeq());
@@ -488,9 +487,16 @@ public class ScheduleService {
             .toList();
 
         // 3. 수정할 사용자 목록과 비교해서 현재 사용자 중 삭제된 사용자가 있는지 확인, 있으면 참석정보 삭제
-        previousParticipationList.stream()
-            .filter(user -> !updateParticipationList.contains(user))
-            .forEach(user -> deleteParticipation(user.getUserSeq(), schedule));
+        for (User user : previousParticipationList) {
+            if (updateParticipationList.contains(user)) {
+                // TODO 공통 부분이 바뀌면 알림 전송
+                if (!isSameUser(requestUserSeq, user.getUserSeq())) {
+                    alarmService.sendScheduleUpdate(schedule.getScheduleSeq(), user.getUserSeq());
+                }
+            } else {
+                deleteParticipation(user.getUserSeq(), schedule);
+            }
+        }
 
         // 4. 이전 사용자 목록과 비교해서 현재 사용자 중 추가된 사용자가 있는지 확인, 있으면 참석정보 생성.
         Participation requestUserParticipation = findParticipationInfoBySchedule(
@@ -520,6 +526,10 @@ public class ScheduleService {
                 alarmService.sendScheduleAssigned(schedule.getScheduleSeq(), requestUserSeq,
                     participant.getUserSeq());
             });
+    }
+
+    private static boolean isSameUser(Long requestUserSeq, Long userSeq) {
+        return Objects.equals(requestUserSeq, userSeq);
     }
 
     private List<CommentReadResponse> findCommentListBySchedule(Long scheduleSeq) {
