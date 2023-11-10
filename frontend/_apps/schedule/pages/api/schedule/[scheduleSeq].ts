@@ -17,6 +17,7 @@ const scheduleSeq = async (req: NextApiRequest, res: NextApiResponse) => {
     }
   }
   if (req.method === 'PUT') {
+    //일정 수정하기
     try {
       const SPRING_RES = await http.put(
         `${process.env.SPRING_API_ROOT}/schedule/${scheduleSeq}`,
