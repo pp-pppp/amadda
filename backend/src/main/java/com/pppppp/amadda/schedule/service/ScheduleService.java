@@ -445,28 +445,28 @@ public class ScheduleService {
     }
 
     private void checkUserAuthorizedToSchedule(Long userSeq, Schedule schedule) {
-        if (!(schedule.isAuthorizedAll() || schedule.getAuthorizedUser().getUserSeq()
-            .equals(userSeq))) {
+        // 일정이 전체에게 공개되어 있지도 않은데 사용자가 권한이 없으면 안됨
+        if (!(schedule.isAuthorizedAll()
+            || !isSameUser(userSeq, schedule.getAuthorizedUser().getUserSeq()))) {
             throw new RestApiException(ScheduleErrorCode.SCHEDULE_FORBIDDEN);
         }
     }
 
-    private void checkUserAuthorizedToParticipation(Long userSeq, Participation particiption) {
-        if (!(particiption.getUser().getUserSeq().equals(userSeq) || particiption.getSchedule()
-            .getAuthorizedUser().getUserSeq().equals(userSeq))) {
+    private void checkUserAuthorizedToParticipation(Long userSeq, Participation participation) {
+        if (!(isSameUser(userSeq, participation.getUser().getUserSeq())
+            || isSameUser(userSeq, participation.getSchedule().getAuthorizedUser().getUserSeq()))) {
             throw new RestApiException(ScheduleErrorCode.SCHEDULE_FORBIDDEN);
         }
     }
 
     private void checkUserAuthorizedToComment(Long userSeq, Comment comment) {
-        if (!comment.getUser().getUserSeq().equals(userSeq)) {
+        if (!isSameUser(userSeq, comment.getUser().getUserSeq())) {
             throw new RestApiException(CommentErrorCode.COMMENT_FORBIDDEN);
         }
     }
 
     private void checkUserAuthorizedToCategory(Long userSeq, Category category) {
-
-        if (!category.getUser().getUserSeq().equals(userSeq)) {
+        if (!isSameUser(userSeq, category.getUser().getUserSeq())) {
             throw new RestApiException(CategoryErrorCode.CATEGORY_FORBIDDEN);
         }
     }
