@@ -3,6 +3,8 @@ package com.pppppp.amadda.friend.service;
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.friend.dto.request.GroupCreateRequest;
 import com.pppppp.amadda.friend.dto.request.GroupUpdateRequest;
+import com.pppppp.amadda.friend.entity.GroupMember;
+import com.pppppp.amadda.friend.entity.UserGroup;
 import com.pppppp.amadda.friend.repository.GroupMemberRepository;
 import com.pppppp.amadda.friend.repository.UserGroupRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
@@ -169,6 +171,89 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
                 .extracting("groupName", "owner.userSeq")
                 .containsExactly(
                         tuple("새로운 이름", 1111L)
+                );
+    }
+
+    @DisplayName("그룹에서 손절한 친구 삭제")
+    @Test
+    void deleteFriend() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
+        User u4 = User.create(9999L, "유저4", "id4", "imageUrl4");
+        User u5 = User.create(3456L, "유저5", "id5", "imageUrl5");
+        List<User> users = userRepository.saveAll(List.of(u1, u2, u3, u4, u5));
+
+        UserGroup ug1 = UserGroup.create("그룹명1", u1);
+        ug1 = userGroupRepository.save(ug1);
+        GroupMember mem1 = GroupMember.create(ug1, u2);
+        GroupMember mem2 = GroupMember.create(ug1, u3);
+        GroupMember mem3 = GroupMember.create(ug1, u4);
+        groupMemberRepository.saveAll(List.of(mem1, mem2, mem3));
+
+        UserGroup ug2 = UserGroup.create("그룹명2", u1);
+        ug2 = userGroupRepository.save(ug2);
+        GroupMember mem4 = GroupMember.create(ug2, u4);
+        GroupMember mem5 = GroupMember.create(ug2, u5);
+        groupMemberRepository.saveAll(List.of(mem4, mem5));
+
+        // when
+        groupMemberService.deleteFriend(u1, u4);
+
+        // then
+        assertThat(groupMemberRepository.findAll())
+                .extracting("group.groupSeq", "member.userSeq")
+                .containsExactlyInAnyOrder(
+                        tuple(ug1.getGroupSeq(), 1234L),
+                        tuple(ug1.getGroupSeq(), 2222L),
+                        tuple(ug2.getGroupSeq(), 3456L)
+                );
+        assertThat(userGroupRepository.findAll())
+                .extracting("groupSeq", "groupName", "owner.userSeq")
+                .containsExactly(
+                        tuple(ug1.getGroupSeq(), "그룹명1", 1111L),
+                        tuple(ug2.getGroupSeq(), "그룹명2", 1111L)
+                );
+    }
+
+    @DisplayName("그룹에서 손절한 친구 삭제 - 멤버 0명일때 그룹 삭제")
+    @Test
+    void deleteFriend_groupDelete() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
+        User u4 = User.create(9999L, "유저4", "id4", "imageUrl4");
+        User u5 = User.create(3456L, "유저5", "id5", "imageUrl5");
+        List<User> users = userRepository.saveAll(List.of(u1, u2, u3, u4, u5));
+
+        UserGroup ug1 = UserGroup.create("그룹명1", u1);
+        ug1 = userGroupRepository.save(ug1);
+        GroupMember mem1 = GroupMember.create(ug1, u2);
+        GroupMember mem2 = GroupMember.create(ug1, u3);
+        GroupMember mem3 = GroupMember.create(ug1, u4);
+        groupMemberRepository.saveAll(List.of(mem1, mem2, mem3));
+
+        UserGroup ug2 = UserGroup.create("그룹명2", u1);
+        ug2 = userGroupRepository.save(ug2);
+        GroupMember mem4 = GroupMember.create(ug2, u4);
+        groupMemberRepository.saveAll(List.of(mem4));
+
+        // when
+        groupMemberService.deleteFriend(u1, u4);
+
+        // then
+        assertThat(groupMemberRepository.findAll())
+                .extracting("group.groupSeq", "member.userSeq")
+                .containsExactlyInAnyOrder(
+                        tuple(ug1.getGroupSeq(), 1234L),
+                        tuple(ug1.getGroupSeq(), 2222L)
+                );
+        assertThat(userGroupRepository.findAll())
+                .extracting("groupSeq", "groupName", "owner.userSeq")
+                .containsExactly(
+                        tuple(ug1.getGroupSeq(), "그룹명1", 1111L)
                 );
     }
 

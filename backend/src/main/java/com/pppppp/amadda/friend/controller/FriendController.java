@@ -78,9 +78,6 @@ public class FriendController {
             @PathVariable Long friendUserSeq) {
         Long userSeq = tokenProvider.getUserSeq(http);
         friendRequestService.deleteFriendAndRequest(userSeq, friendUserSeq);
-
-        // TODO 추후 그룹에서 친구 찾아서 삭제하는 메소드 추가
-
         return ApiResponse.ok("유저 삭제 완료");
     }
 
