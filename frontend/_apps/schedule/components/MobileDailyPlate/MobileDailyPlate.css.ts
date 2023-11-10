@@ -3,7 +3,7 @@ import { styleVariants } from '@vanilla-extract/css';
 
 export const LAYOUT = styleVariants({
   plate: {
-    width: '21rem',
+    width: '100%',
     height: '2rem',
     display: 'flex',
     justifyContent: 'space-between',
