@@ -478,6 +478,8 @@ public class ScheduleService {
                 Participation participation = Participation.create(createRequest, user, schedule,
                     null, true, true);
                 participationRepository.save(participation);
+                alarmService.sendScheduleAssigned(schedule.getScheduleSeq(), requestUserSeq,
+                    user.getUserSeq());
             });
     }
 
