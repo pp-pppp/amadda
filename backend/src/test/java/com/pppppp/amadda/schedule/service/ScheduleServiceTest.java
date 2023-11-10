@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.pppppp.amadda.IntegrationTestSupport;
+import com.pppppp.amadda.alarm.repository.AlarmRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.schedule.dto.request.CategoryCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.CategoryPatchRequest;
@@ -63,6 +64,8 @@ class ScheduleServiceTest extends IntegrationTestSupport {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private AlarmRepository alarmRepository;
 
     @BeforeEach
     void setUp() {
@@ -74,6 +77,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
     @AfterEach
     void tearDown() {
+        alarmRepository.deleteAllInBatch();
         participationRepository.deleteAllInBatch();
         categoryRepository.deleteAllInBatch();
         commentRepository.deleteAllInBatch();

@@ -51,7 +51,6 @@ public class ScheduleController {
         log.info("POST /api/schedule");
         ScheduleCreateResponse scheduleCreateResponse = scheduleService.createSchedule(mockUserSeq,
             request);
-        alarmService.sendScheduleAssigned(scheduleCreateResponse.scheduleSeq());
         return ApiResponse.ok(scheduleCreateResponse);
     }
 

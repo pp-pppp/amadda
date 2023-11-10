@@ -561,7 +561,8 @@ class AlarmServiceTest extends IntegrationTestSupport {
         Schedule schedule = scheduleRepository.findAll().get(0);
 
         // when
-        alarmService.sendScheduleAssigned(schedule.getScheduleSeq());
+        alarmService.sendScheduleAssigned(schedule.getScheduleSeq(), user1.getUserSeq(),
+            user2.getUserSeq());
 
         // then
         String topic = KafkaTopic.ALARM_SCHEDULE_ASSIGNED;
@@ -586,7 +587,8 @@ class AlarmServiceTest extends IntegrationTestSupport {
         alarmConfigRepository.save(ac);
 
         // when
-        alarmService.sendScheduleAssigned(schedule.getScheduleSeq());
+        alarmService.sendScheduleAssigned(schedule.getScheduleSeq(), user1.getUserSeq(),
+            user2.getUserSeq());
 
         // then
         String topic = KafkaTopic.ALARM_SCHEDULE_ASSIGNED;
@@ -611,7 +613,8 @@ class AlarmServiceTest extends IntegrationTestSupport {
         alarmConfigRepository.save(ac);
 
         // when
-        alarmService.sendScheduleAssigned(schedule.getScheduleSeq());
+        alarmService.sendScheduleAssigned(schedule.getScheduleSeq(), user1.getUserSeq(),
+            user2.getUserSeq());
 
         // then
         String topic = KafkaTopic.ALARM_SCHEDULE_ASSIGNED;

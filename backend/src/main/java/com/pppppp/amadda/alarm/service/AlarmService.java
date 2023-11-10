@@ -132,26 +132,19 @@ public class AlarmService {
     }
 
     @Transactional
-    public void sendScheduleAssigned(Long scheduleSeq) {
-        Schedule schedule = getSchedule(scheduleSeq);
-        User owner = schedule.getAuthorizedUser();
+    public void sendScheduleAssigned(Long scheduleSeq, Long userSeq, Long targetSeq) {
+        User user = getUser(targetSeq);
+        if (checkGlobalAlarmSetting(targetSeq, AlarmType.SCHEDULE_ASSIGNED)) {
+            Schedule schedule = getSchedule(scheduleSeq);
+            User creator = getUser(userSeq);
 
-        List<Participation> participations = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
-            scheduleSeq);
-
-        participations.stream()
-            .filter(participation -> {
-                User user = participation.getUser();
-                return !owner.equals(user) && checkGlobalAlarmSetting(user.getUserSeq(),
-                    AlarmType.SCHEDULE_ASSIGNED);
-            })
-            .forEach(participation -> {
-                AlarmScheduleAssigned value = AlarmScheduleAssigned.create(
-                    schedule.getScheduleSeq(), participation.getScheduleName(),
-                    owner.getUserSeq(), owner.getUserName());
-                kafkaProducer.sendAlarm(KafkaTopic.ALARM_SCHEDULE_ASSIGNED,
-                    participation.getUser().getUserSeq(), value);
-            });
+            Participation participation = getParticipation(scheduleSeq, targetSeq);
+            AlarmScheduleAssigned value = AlarmScheduleAssigned.create(
+                schedule.getScheduleSeq(), participation.getScheduleName(),
+                creator.getUserSeq(), creator.getUserName());
+            kafkaProducer.sendAlarm(KafkaTopic.ALARM_SCHEDULE_ASSIGNED,
+                user.getUserSeq(), value);
+        }
     }
 
     @Transactional
@@ -199,6 +192,12 @@ public class AlarmService {
 
     private Schedule getSchedule(Long scheduleSeq) {
         return scheduleRepository.findByScheduleSeqAndIsDeletedFalse(scheduleSeq)
+            .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
+    }
+
+    private Participation getParticipation(Long scheduleSeq, Long targetSeq) {
+        return participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+                scheduleSeq, targetSeq)
             .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
     }
 
