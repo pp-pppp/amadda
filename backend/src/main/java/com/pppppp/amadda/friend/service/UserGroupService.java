@@ -25,6 +25,7 @@ public class UserGroupService {
     private final GroupMemberRepository groupMemberRepository;
     private final UserService userService;
 
+    @Transactional
     public Long createUserGroup(GroupCreateRequest request) {
         User u = userService.getUserInfoBySeq(request.ownerSeq());
         UserGroup ug = UserGroup.create(request.groupName(), u);
