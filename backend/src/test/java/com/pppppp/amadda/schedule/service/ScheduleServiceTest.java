@@ -33,6 +33,8 @@ import com.pppppp.amadda.user.dto.response.UserReadResponse;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -251,6 +253,30 @@ class ScheduleServiceTest extends IntegrationTestSupport {
     }
 
     // =================== 일정 조회 ===================
+
+    @DisplayName("서버 시간을 조회한다.")
+    @Test
+    void getServerTime() {
+        // given
+        String expectedFormat = "yyyy-MM-dd HH:mm:ss";
+
+        // when
+        String serverTime = scheduleService.getServerTime();
+
+        // then
+        assertThat(serverTime).isNotNull();
+        assertTrue(() -> {
+            SimpleDateFormat sdf = new SimpleDateFormat(expectedFormat);
+            sdf.setLenient(false); // 엄격한 모드로 설정
+
+            try {
+                sdf.parse(serverTime);
+                return true; // 예외가 발생하지 않으면 형식이 일치함
+            } catch (ParseException e) {
+                return false; // ParseException이 발생하면 형식이 일치하지 않음
+            }
+        });
+    }
 
     @DisplayName("사용자의 일정 목록을 조회한다.")
     @Transactional

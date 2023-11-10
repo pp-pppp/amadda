@@ -24,7 +24,6 @@ public record ScheduleListReadResponse(
     CategoryReadResponse category
 ) {
 
-    // TODO: 카테고리 관련 로직 개선 필요
     public static ScheduleListReadResponse of(Schedule schedule,
         UserReadResponse authorizedUser, List<UserReadResponse> participants,
         Participation participation) {

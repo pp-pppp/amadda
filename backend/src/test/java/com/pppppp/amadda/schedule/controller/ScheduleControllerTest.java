@@ -24,6 +24,7 @@ import com.pppppp.amadda.schedule.entity.AlarmTime;
 import com.pppppp.amadda.schedule.service.ScheduleService;
 import com.pppppp.amadda.user.dto.response.UserReadResponse;
 import com.pppppp.amadda.user.entity.User;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -86,6 +87,27 @@ class ScheduleControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"))
             .andExpect(jsonPath("$.data.scheduleSeq").value(1L));
+    }
+
+    @DisplayName("서버 시간을 조회한다.")
+    @Test
+    void getServerTime() throws Exception {
+
+        // stubbing
+        String currentTime = String.valueOf(LocalDateTime.now());
+
+        when(scheduleService.getServerTime())
+            .thenReturn(currentTime);
+
+        mockMvc.perform(
+                get("/api/schedule/serverTime")
+                    .contentType(MediaType.APPLICATION_JSON)
+            ).andDo(
+                print()
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.data").value(currentTime));
     }
 
     @DisplayName("사용자의 단일 일정을 조회한다.")
