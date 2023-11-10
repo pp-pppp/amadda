@@ -3,7 +3,7 @@ package com.pppppp.amadda.friend.controller;
 import com.pppppp.amadda.alarm.service.AlarmService;
 import com.pppppp.amadda.friend.dto.request.FriendRequestRequest;
 import com.pppppp.amadda.friend.dto.request.GroupCreateRequest;
-import com.pppppp.amadda.friend.dto.request.GroupPutRequest;
+import com.pppppp.amadda.friend.dto.request.GroupUpdateRequest;
 import com.pppppp.amadda.friend.dto.response.FriendReadResponse;
 import com.pppppp.amadda.friend.dto.response.FriendRequestResponse;
 import com.pppppp.amadda.friend.service.FriendRequestService;
@@ -94,7 +94,7 @@ public class FriendController {
     }
 
     @PutMapping("/group")
-    public ApiResponse editGroup(@Valid @RequestBody GroupPutRequest request) {
+    public ApiResponse editGroup(@Valid @RequestBody GroupUpdateRequest request) {
         groupMemberService.isUserValid(request.userSeqs()); // 전부 존재하는 유저들인지 검증
         groupMemberService.editGroup(request);
         return ApiResponse.ok("그룹 수정 완료");

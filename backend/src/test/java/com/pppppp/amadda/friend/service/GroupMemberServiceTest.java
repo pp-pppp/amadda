@@ -2,7 +2,7 @@ package com.pppppp.amadda.friend.service;
 
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.friend.dto.request.GroupCreateRequest;
-import com.pppppp.amadda.friend.dto.request.GroupPutRequest;
+import com.pppppp.amadda.friend.dto.request.GroupUpdateRequest;
 import com.pppppp.amadda.friend.repository.GroupMemberRepository;
 import com.pppppp.amadda.friend.repository.UserGroupRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
@@ -149,7 +149,7 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
         Long groupSeq = userGroupService.createUserGroup(gcr);
         groupMemberService.createGroupMember(gcr, groupSeq);
 
-        GroupPutRequest gpr = GroupPutRequest.builder()
+        GroupUpdateRequest gpr = GroupUpdateRequest.builder()
                 .groupSeq(groupSeq)
                 .groupName("새로운 이름")
                 .userSeqs(List.of(2222L, 3456L))

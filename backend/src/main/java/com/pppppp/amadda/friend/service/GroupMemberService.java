@@ -1,7 +1,7 @@
 package com.pppppp.amadda.friend.service;
 
 import com.pppppp.amadda.friend.dto.request.GroupCreateRequest;
-import com.pppppp.amadda.friend.dto.request.GroupPutRequest;
+import com.pppppp.amadda.friend.dto.request.GroupUpdateRequest;
 import com.pppppp.amadda.friend.entity.GroupMember;
 import com.pppppp.amadda.friend.entity.UserGroup;
 import com.pppppp.amadda.friend.repository.GroupMemberRepository;
@@ -47,7 +47,7 @@ public class GroupMemberService {
     }
 
     @Transactional
-    public void editGroup(GroupPutRequest request) {
+    public void editGroup(GroupUpdateRequest request) {
 
         UserGroup ug = getGroup(request.groupSeq())
                 .orElseThrow(() -> new RestApiException(GroupErrorCode.GROUP_NOT_FOUND));

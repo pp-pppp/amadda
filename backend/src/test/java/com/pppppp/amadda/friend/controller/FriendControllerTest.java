@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pppppp.amadda.alarm.service.AlarmService;
 import com.pppppp.amadda.friend.dto.request.FriendRequestRequest;
 import com.pppppp.amadda.friend.dto.request.GroupCreateRequest;
-import com.pppppp.amadda.friend.dto.request.GroupPutRequest;
+import com.pppppp.amadda.friend.dto.request.GroupUpdateRequest;
 import com.pppppp.amadda.friend.dto.response.FriendRequestResponse;
 import com.pppppp.amadda.friend.service.FriendRequestService;
 import com.pppppp.amadda.friend.service.FriendService;
@@ -233,7 +233,7 @@ class FriendControllerTest {
     @Test
     void editGroup() throws Exception {
         // given
-        GroupPutRequest request = GroupPutRequest.builder()
+        GroupUpdateRequest request = GroupUpdateRequest.builder()
                 .groupSeq(0L)
                 .groupName("그룹명1")
                 .userSeqs(List.of(1234L, 2222L))
@@ -255,7 +255,7 @@ class FriendControllerTest {
     @Test
     void editGroupWithoutUsers() throws Exception {
         // given
-        GroupPutRequest request = GroupPutRequest.builder()
+        GroupUpdateRequest request = GroupUpdateRequest.builder()
                 .groupSeq(0L)
                 .groupName("그룹명1")
                 .userSeqs(List.of())
@@ -275,7 +275,7 @@ class FriendControllerTest {
     @Test
     void editGroupWithoutName() throws Exception {
         // given
-        GroupPutRequest request = GroupPutRequest.builder()
+        GroupUpdateRequest request = GroupUpdateRequest.builder()
                 .groupSeq(0L)
                 .groupName(" ")
                 .userSeqs(List.of(1234L, 2222L))
@@ -294,7 +294,7 @@ class FriendControllerTest {
     @Test
     void editGroupWithoutGroupSeq() throws Exception {
         // given
-        GroupPutRequest request = GroupPutRequest.builder()
+        GroupUpdateRequest request = GroupUpdateRequest.builder()
                 .groupName("aaa")
                 .userSeqs(List.of(1234L, 2222L))
                 .build();
