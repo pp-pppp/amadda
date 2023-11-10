@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.pppppp.amadda.IntegrationTestSupport;
+import com.pppppp.amadda.alarm.entity.KafkaTopic;
 import com.pppppp.amadda.alarm.repository.AlarmRepository;
 import com.pppppp.amadda.friend.entity.Friend;
 import com.pppppp.amadda.friend.repository.FriendRepository;
@@ -49,6 +50,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 class ScheduleServiceTest extends IntegrationTestSupport {
     // TODO: 일정 수정 알림 service 테스트
+
+    @Autowired
+    private KafkaTopic kafkaTopic;
 
     @Autowired
     private ScheduleService scheduleService;

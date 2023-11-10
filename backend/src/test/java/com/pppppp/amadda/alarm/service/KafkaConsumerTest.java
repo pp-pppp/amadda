@@ -33,6 +33,9 @@ import org.springframework.kafka.test.context.EmbeddedKafka;
 class KafkaConsumerTest extends IntegrationTestSupport {
 
     @Autowired
+    private KafkaTopic kafkaTopic;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -73,7 +76,9 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         FriendRequest friendRequest = FriendRequest.create(owner, friend);
         FriendRequest savedFriendRequest = friendRequestRepository.save(friendRequest);
 
-        String topic = KafkaTopic.ALARM_FRIEND_REQUEST;
+        String topic = kafkaTopic.ALARM_FRIEND_REQUEST;
+        System.out.println("topic = " + topic);
+        System.out.println("kafkaTopic.ALARM_FRIEND_REQUEST = " + kafkaTopic.ALARM_FRIEND_REQUEST);
         String key = String.valueOf(friend.getUserSeq());
         AlarmFriendRequest value = AlarmFriendRequest.create(
             savedFriendRequest.getRequestSeq(), friend.getUserSeq(),
@@ -102,7 +107,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         FriendRequest friendRequest = FriendRequest.create(owner, friend);
         friendRequestRepository.save(friendRequest);
 
-        String topic = KafkaTopic.ALARM_FRIEND_ACCEPT;
+        String topic = kafkaTopic.ALARM_FRIEND_ACCEPT;
         String key = String.valueOf(owner.getUserSeq());
         AlarmFriendAccept value = AlarmFriendAccept.create(friend.getUserSeq(),
             friend.getUserName());
@@ -130,7 +135,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         Schedule s = Schedule.create(user1, "집가야돼");
         Schedule schedule = scheduleRepository.save(s);
 
-        String topic = KafkaTopic.ALARM_SCHEDULE_ASSIGNED;
+        String topic = kafkaTopic.ALARM_SCHEDULE_ASSIGNED;
         String key = String.valueOf(user2.getUserSeq());
         AlarmScheduleAssigned value = AlarmScheduleAssigned.create(schedule.getScheduleSeq(),
             schedule.getScheduleContent(), user1.getUserSeq(), user2.getUserName());
@@ -158,7 +163,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         Schedule s = Schedule.create(user1, "집가야돼");
         Schedule schedule = scheduleRepository.save(s);
 
-        String topic = KafkaTopic.ALARM_SCHEDULE_UPDATE;
+        String topic = kafkaTopic.ALARM_SCHEDULE_UPDATE;
         String key = String.valueOf(user2.getUserSeq());
         AlarmScheduleUpdate value = AlarmScheduleUpdate.create(schedule.getScheduleSeq(),
             schedule.getScheduleContent());
