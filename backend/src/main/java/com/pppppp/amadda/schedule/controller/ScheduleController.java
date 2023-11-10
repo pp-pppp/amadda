@@ -1,6 +1,5 @@
 package com.pppppp.amadda.schedule.controller;
 
-import com.pppppp.amadda.alarm.service.AlarmService;
 import com.pppppp.amadda.global.dto.ApiResponse;
 import com.pppppp.amadda.schedule.dto.request.CategoryCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.CategoryPatchRequest;
@@ -37,7 +36,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
-    private final AlarmService alarmService;
 
     private final Long mockUserSeq = 1111L;
 
@@ -105,9 +103,7 @@ public class ScheduleController {
     public ApiResponse<String> updateSchedule(@PathVariable Long scheduleSeq,
         @Valid @RequestBody SchedulePatchRequest request) {
         log.info("PUT /api/schedule/{}", scheduleSeq);
-        ScheduleDetailReadResponse response = scheduleService.updateSchedule(
-            mockUserSeq, scheduleSeq, request);
-        alarmService.sendScheduleUpdate(response.scheduleSeq(), mockUserSeq);
+        scheduleService.updateSchedule(mockUserSeq, scheduleSeq, request);
         return ApiResponse.ok("수정되었습니다.");
     }
 
