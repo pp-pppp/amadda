@@ -8,7 +8,7 @@ import java.util.List;
 import lombok.Builder;
 
 @Builder
-public record SchedulePatchRequest(
+public record ScheduleUpdateRequest(
     // ================= Schedule ===================
     @NotNull(message = "유효하지 않은 요청입니다.") String scheduleContent,
     @NotNull(message = "시간 확정 여부가 결정되지 않았어요!") Boolean isTimeSelected,

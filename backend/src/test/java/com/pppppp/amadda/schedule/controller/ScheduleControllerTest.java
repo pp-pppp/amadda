@@ -14,12 +14,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pppppp.amadda.alarm.service.AlarmService;
 import com.pppppp.amadda.schedule.dto.request.CategoryCreateRequest;
-import com.pppppp.amadda.schedule.dto.request.CategoryPatchRequest;
+import com.pppppp.amadda.schedule.dto.request.CategoryUpdateRequest;
 import com.pppppp.amadda.schedule.dto.request.CommentCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.ScheduleCreateRequest;
-import com.pppppp.amadda.schedule.dto.request.SchedulePatchRequest;
+import com.pppppp.amadda.schedule.dto.request.ScheduleUpdateRequest;
 import com.pppppp.amadda.schedule.dto.response.ScheduleCreateResponse;
-import com.pppppp.amadda.schedule.dto.response.ScheduleDetailReadResponse;
+import com.pppppp.amadda.schedule.dto.response.ScheduleUpdateResponse;
 import com.pppppp.amadda.schedule.entity.AlarmTime;
 import com.pppppp.amadda.schedule.service.ScheduleService;
 import com.pppppp.amadda.user.dto.response.UserReadResponse;
@@ -506,7 +506,7 @@ class ScheduleControllerTest {
 
         User user = User.create(1111L, "박동건", "icebearrrr", "imgUrl1");
 
-        SchedulePatchRequest request = SchedulePatchRequest.builder()
+        ScheduleUpdateRequest request = ScheduleUpdateRequest.builder()
             // schedule
             .scheduleContent("수원 시민 회관")
             .isDateSelected(true)
@@ -522,8 +522,8 @@ class ScheduleControllerTest {
 
         // stubbing
         when(scheduleService.updateSchedule(anyLong(), anyLong(),
-            any(SchedulePatchRequest.class)))
-            .thenReturn(ScheduleDetailReadResponse.builder().scheduleSeq(1L).build());
+            any(ScheduleUpdateRequest.class)))
+            .thenReturn(ScheduleUpdateResponse.builder().scheduleSeq(1L).build());
 
         mockMvc.perform(
                 put("/api/schedule/{scheduleSeq}", 1L)
@@ -543,7 +543,7 @@ class ScheduleControllerTest {
         // given
         User user = User.create(1111L, "박동건", "icebearrrr", "imgUrl1");
 
-        SchedulePatchRequest request = SchedulePatchRequest.builder()
+        ScheduleUpdateRequest request = ScheduleUpdateRequest.builder()
             // schedule
             .scheduleContent("수원 시민 회관")
             .isTimeSelected(true)
@@ -559,8 +559,8 @@ class ScheduleControllerTest {
 
         // stubbing
         when(scheduleService.updateSchedule(anyLong(), anyLong(),
-            any(SchedulePatchRequest.class)))
-            .thenReturn(ScheduleDetailReadResponse.builder().scheduleSeq(1L).build());
+            any(ScheduleUpdateRequest.class)))
+            .thenReturn(ScheduleUpdateResponse.builder().scheduleSeq(1L).build());
 
         // when  // then
         mockMvc.perform(
@@ -580,7 +580,7 @@ class ScheduleControllerTest {
         // given
         User user = User.create(1111L, "박동건", "icebearrrr", "imgUrl1");
 
-        SchedulePatchRequest request = SchedulePatchRequest.builder()
+        ScheduleUpdateRequest request = ScheduleUpdateRequest.builder()
             .scheduleContent("수원 시민 회관")
             .isDateSelected(true)
             .isAllDay(false)
@@ -595,8 +595,8 @@ class ScheduleControllerTest {
 
         // stubbing
         when(scheduleService.updateSchedule(anyLong(), anyLong(),
-            any(SchedulePatchRequest.class)))
-            .thenReturn(ScheduleDetailReadResponse.builder().scheduleSeq(1L).build());
+            any(ScheduleUpdateRequest.class)))
+            .thenReturn(ScheduleUpdateResponse.builder().scheduleSeq(1L).build());
 
         // when  // then
         mockMvc.perform(
@@ -616,7 +616,7 @@ class ScheduleControllerTest {
         // given
         User user = User.create(1111L, "박동건", "icebearrrr", "imgUrl1");
 
-        SchedulePatchRequest request = SchedulePatchRequest.builder()
+        ScheduleUpdateRequest request = ScheduleUpdateRequest.builder()
             // schedule
             .scheduleContent("수원 시민 회관")
             .isDateSelected(true)
@@ -632,8 +632,8 @@ class ScheduleControllerTest {
 
         // stubbing
         when(scheduleService.updateSchedule(anyLong(), anyLong(),
-            any(SchedulePatchRequest.class)))
-            .thenReturn(ScheduleDetailReadResponse.builder().scheduleSeq(1L).build());
+            any(ScheduleUpdateRequest.class)))
+            .thenReturn(ScheduleUpdateResponse.builder().scheduleSeq(1L).build());
 
         // when  // then
         mockMvc.perform(
@@ -738,7 +738,7 @@ class ScheduleControllerTest {
     @DisplayName("카테고리 수정시 이름이 필요하다.")
     @Test
     void noCategoryNameToUpdate() throws Exception {
-        CategoryPatchRequest request = CategoryPatchRequest.builder()
+        CategoryUpdateRequest request = CategoryUpdateRequest.builder()
             .categoryColor("GREEN")
             .build();
 
@@ -756,7 +756,7 @@ class ScheduleControllerTest {
     @DisplayName("카테고리 수정시 카테고리 색을 지정해야 한다.")
     @Test
     void noCategoryColorToUpdate() throws Exception {
-        CategoryPatchRequest request = CategoryPatchRequest.builder()
+        CategoryUpdateRequest request = CategoryUpdateRequest.builder()
             .categoryName("합창단")
             .build();
 

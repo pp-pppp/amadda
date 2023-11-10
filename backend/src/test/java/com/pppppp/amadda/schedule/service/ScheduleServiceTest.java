@@ -13,15 +13,16 @@ import com.pppppp.amadda.friend.entity.Friend;
 import com.pppppp.amadda.friend.repository.FriendRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.schedule.dto.request.CategoryCreateRequest;
-import com.pppppp.amadda.schedule.dto.request.CategoryPatchRequest;
+import com.pppppp.amadda.schedule.dto.request.CategoryUpdateRequest;
 import com.pppppp.amadda.schedule.dto.request.CommentCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.ScheduleCreateRequest;
-import com.pppppp.amadda.schedule.dto.request.SchedulePatchRequest;
+import com.pppppp.amadda.schedule.dto.request.ScheduleUpdateRequest;
 import com.pppppp.amadda.schedule.dto.response.CategoryReadResponse;
 import com.pppppp.amadda.schedule.dto.response.CommentReadResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleCreateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleDetailReadResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleListReadResponse;
+import com.pppppp.amadda.schedule.dto.response.ScheduleUpdateResponse;
 import com.pppppp.amadda.schedule.entity.AlarmTime;
 import com.pppppp.amadda.schedule.entity.Category;
 import com.pppppp.amadda.schedule.entity.CategoryColor;
@@ -120,18 +121,21 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .build();
 
         // when
-        ScheduleCreateResponse response = scheduleService.createSchedule(u1.getUserSeq(), request);
+        ScheduleCreateResponse response = scheduleService.createSchedule(u1.getUserSeq(),
+            request);
+        ScheduleDetailReadResponse schedule = scheduleService.getScheduleDetail(
+            response.scheduleSeq(), u1.getUserSeq());
 
         // then
-        assertThat(response).isNotNull()
+        assertThat(schedule).isNotNull()
             .extracting("scheduleName", "scheduleMemo", "scheduleContent",
                 "isDateSelected", "isTimeSelected", "isAllDay", "scheduleStartAt", "scheduleEndAt",
                 "alarmTime", "isAuthorizedAll")
             .containsExactly(
                 "안녕 내가 일정 이름이야", "이거는 안되는 메모고", "여기는 동기화 되는 메모야", false, false, false,
-                "null", "null", AlarmTime.NONE, false);
+                "null", "null", "알림 없음", false);
 
-        List<UserReadResponse> participants = response.participants();
+        List<UserReadResponse> participants = schedule.participants();
         assertThat(participants)
             .hasSize(2)
             .extracting("userId", "userName", "imageUrl")
@@ -162,18 +166,21 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .build();
 
         // when
-        ScheduleCreateResponse response = scheduleService.createSchedule(u1.getUserSeq(), request);
+        ScheduleCreateResponse response = scheduleService.createSchedule(u1.getUserSeq(),
+            request);
+        ScheduleDetailReadResponse schedule = scheduleService.getScheduleDetail(
+            response.scheduleSeq(), u1.getUserSeq());
 
         // then
-        assertThat(response).isNotNull()
+        assertThat(schedule).isNotNull()
             .extracting("scheduleName", "scheduleMemo", "scheduleContent",
                 "isDateSelected", "isTimeSelected", "isAllDay", "scheduleStartAt", "scheduleEndAt",
                 "alarmTime", "isAuthorizedAll")
             .containsExactly(
                 "안녕 내가 일정 이름이야", "이거는 안되는 메모고", "여기는 동기화 되는 메모야", true, false, false,
-                "2023-11-02T00:00", "null", AlarmTime.NONE, false);
+                "2023-11-02T00:00", "null", "알림 없음", false);
 
-        List<UserReadResponse> participants = response.participants();
+        List<UserReadResponse> participants = schedule.participants();
         assertThat(participants)
             .hasSize(2)
             .extracting("userId", "userName", "imageUrl")
@@ -205,18 +212,21 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .build();
 
         // when
-        ScheduleCreateResponse response = scheduleService.createSchedule(u1.getUserSeq(), request);
+        ScheduleCreateResponse response = scheduleService.createSchedule(u1.getUserSeq(),
+            request);
+        ScheduleDetailReadResponse schedule = scheduleService.getScheduleDetail(
+            response.scheduleSeq(), u1.getUserSeq());
 
         // then
-        assertThat(response).isNotNull()
+        assertThat(schedule).isNotNull()
             .extracting("scheduleName", "scheduleMemo", "scheduleContent",
                 "isDateSelected", "isTimeSelected", "isAllDay", "scheduleStartAt", "scheduleEndAt",
                 "alarmTime", "isAuthorizedAll")
             .containsExactly(
                 "안녕 내가 일정 이름이야", "이거는 안되는 메모고", "여기는 동기화 되는 메모야", true, true, false,
-                "2023-11-01T09:00", "2023-11-01T18:00", AlarmTime.NONE, false);
+                "2023-11-01T09:00", "2023-11-01T18:00", "알림 없음", false);
 
-        List<UserReadResponse> participants = response.participants();
+        List<UserReadResponse> participants = schedule.participants();
         assertThat(participants)
             .hasSize(2)
             .extracting("userId", "userName", "imageUrl")
@@ -247,18 +257,21 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .build();
 
         // when
-        ScheduleCreateResponse response = scheduleService.createSchedule(u1.getUserSeq(), request);
+        ScheduleCreateResponse response = scheduleService.createSchedule(u1.getUserSeq(),
+            request);
+        ScheduleDetailReadResponse schedule = scheduleService.getScheduleDetail(
+            response.scheduleSeq(), u1.getUserSeq());
 
         // then
-        assertThat(response).isNotNull()
+        assertThat(schedule).isNotNull()
             .extracting("scheduleName", "scheduleMemo", "scheduleContent",
                 "isDateSelected", "isTimeSelected", "isAllDay", "scheduleStartAt", "scheduleEndAt",
                 "alarmTime", "isAuthorizedAll")
             .containsExactly(
                 "안녕 내가 일정 이름이야", "이거는 안되는 메모고", "여기는 동기화 되는 메모야", true, true, true,
-                "2023-11-01T00:00", "2023-11-01T23:59:59", AlarmTime.NONE, false);
+                "2023-11-01T00:00", "2023-11-01T23:59:59", "알림 없음", false);
 
-        List<UserReadResponse> participants = response.participants();
+        List<UserReadResponse> participants = schedule.participants();
         assertThat(participants)
             .hasSize(2)
             .extracting("userId", "userName", "imageUrl")
@@ -371,14 +384,13 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
-        scheduleService.createSchedule(u1.getUserSeq(), r1);
-        Schedule schedule = scheduleRepository.findAll().get(0);
+        ScheduleCreateResponse createResponse = scheduleService.createSchedule(u1.getUserSeq(), r1);
 
         // when
         ScheduleDetailReadResponse u1Response = scheduleService.getScheduleDetail(
-            schedule.getScheduleSeq(), u1.getUserSeq());
+            createResponse.scheduleSeq(), u1.getUserSeq());
         ScheduleDetailReadResponse u2Response = scheduleService.getScheduleDetail(
-            schedule.getScheduleSeq(), u2.getUserSeq());
+            createResponse.scheduleSeq(), u2.getUserSeq());
 
         // then
         assertThat(u1Response).isNotNull();
@@ -805,11 +817,11 @@ class ScheduleServiceTest extends IntegrationTestSupport {
                 UserReadResponse.of(u1), UserReadResponse.of(u2), UserReadResponse.of(u3)))
             .build();
 
-        Long scheduleSeq = scheduleService.createSchedule(u1.getUserSeq(), request).scheduleSeq();
+        ScheduleCreateResponse schedule = scheduleService.createSchedule(u1.getUserSeq(), request);
 
         // when
         List<UserReadResponse> result = scheduleService.getParticipatingUserListBySearchKey(
-            scheduleSeq, "민");
+            schedule.scheduleSeq(), "민");
 
         // then
         assertThat(result)
@@ -840,11 +852,10 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
-        scheduleService.createSchedule(u1.getUserSeq(),
+        ScheduleCreateResponse schedule = scheduleService.createSchedule(u1.getUserSeq(),
             scheduleCreateRequest);
-        Long scheduleSeq = scheduleRepository.findAll().get(0).getScheduleSeq();
 
-        SchedulePatchRequest schedulePatchRequest = SchedulePatchRequest.builder()
+        ScheduleUpdateRequest scheduleUpdateRequest = ScheduleUpdateRequest.builder()
             .scheduleName("안녕 나는 바뀐 일정 이름이야")
             .scheduleContent("여기는 동기화 되는 메모야")
             .scheduleMemo("이거는 안되는 메모고")
@@ -857,9 +868,14 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .build();
 
         // when
-        ScheduleDetailReadResponse response1 = scheduleService.updateSchedule(
-            u1.getUserSeq(), scheduleSeq, schedulePatchRequest);
-        ScheduleDetailReadResponse response2 = scheduleService.getScheduleDetail(scheduleSeq,
+        scheduleService.updateSchedule(
+            u1.getUserSeq(), schedule.scheduleSeq(), scheduleUpdateRequest);
+
+        ScheduleDetailReadResponse response1 = scheduleService.getScheduleDetail(
+            schedule.scheduleSeq(),
+            u1.getUserSeq());
+        ScheduleDetailReadResponse response2 = scheduleService.getScheduleDetail(
+            schedule.scheduleSeq(),
             u2.getUserSeq());
 
         // then
@@ -896,11 +912,10 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
-        scheduleService.createSchedule(u1.getUserSeq(),
+        ScheduleCreateResponse createResponse = scheduleService.createSchedule(u1.getUserSeq(),
             scheduleCreateRequest);
-        Long scheduleSeq = scheduleRepository.findAll().get(0).getScheduleSeq();
 
-        SchedulePatchRequest schedulePatchRequest = SchedulePatchRequest.builder()
+        ScheduleUpdateRequest scheduleUpdateRequest = ScheduleUpdateRequest.builder()
             .scheduleName("안녕 나는 바뀐 일정 이름이야")
             .scheduleContent("여기는 동기화 되는 메모야")
             .scheduleMemo("이거는 안되는 메모고")
@@ -913,20 +928,25 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .build();
 
         // when
-        ScheduleDetailReadResponse response1 = scheduleService.updateSchedule(
-            u2.getUserSeq(), scheduleSeq, schedulePatchRequest);
-        ScheduleDetailReadResponse response2 = scheduleService.getScheduleDetail(scheduleSeq,
+        ScheduleUpdateResponse updateResponse = scheduleService.updateSchedule(
+            u2.getUserSeq(), createResponse.scheduleSeq(), scheduleUpdateRequest);
+        ScheduleDetailReadResponse response1 = scheduleService.getScheduleDetail(
+            updateResponse.scheduleSeq(),
+            u1.getUserSeq());
+        ScheduleDetailReadResponse response2 = scheduleService.getScheduleDetail(
+            updateResponse.scheduleSeq(),
             u3.getUserSeq());
 
         // then
         assertThat(response2).isNotNull();
-        assertThat(response1.scheduleSeq()).isEqualTo(response2.scheduleSeq());
+        assertThat(response1.scheduleSeq()).isEqualTo(response2.scheduleSeq())
+            .isEqualTo(updateResponse.scheduleSeq());
         assertThat(response1)
             .extracting("scheduleName", "scheduleMemo", "scheduleContent",
                 "isDateSelected", "isTimeSelected", "isAllDay", "scheduleStartAt", "scheduleEndAt",
                 "alarmTime", "isAuthorizedAll")
             .containsExactly(
-                "안녕 나는 바뀐 일정 이름이야", "이거는 안되는 메모고", "여기는 동기화 되는 메모야", false, false, false,
+                "안녕 내가 일정 이름이야", "이거는 안되는 메모고", "여기는 동기화 되는 메모야", false, false, false,
                 "null", "null", "알림 없음", true);
         assertThat(response2)
             .extracting("scheduleName", "alarmTime")
@@ -957,10 +977,10 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2), UserReadResponse.of(u3)))
             .build();
-        scheduleService.createSchedule(u1.getUserSeq(), createRequest);
-        Schedule s = scheduleRepository.findAll().get(0);
+        ScheduleCreateResponse schedule = scheduleService.createSchedule(u1.getUserSeq(),
+            createRequest);
 
-        SchedulePatchRequest request = SchedulePatchRequest.builder()
+        ScheduleUpdateRequest request = ScheduleUpdateRequest.builder()
             .scheduleName("안녕 나는 바뀐 일정 이름이야")
             .scheduleContent("여기는 동기화 되는 메모야")
             .scheduleMemo("이거는 안되는 메모고")
@@ -973,19 +993,20 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .build();
 
         // when
-        scheduleService.updateSchedule(u1.getUserSeq(), s.getScheduleSeq(), request);
+        ScheduleUpdateResponse updateResponse = scheduleService.updateSchedule(u1.getUserSeq(),
+            schedule.scheduleSeq(), request);
         List<Participation> result1 = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
-            s.getScheduleSeq());
+            updateResponse.scheduleSeq());
         Optional<Participation> result2 = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
-            s.getScheduleSeq(), u2.getUserSeq());
+            updateResponse.scheduleSeq(), u2.getUserSeq());
 
         // then
         assertThat(result1)
             .hasSize(2)
             .extracting("user", "schedule.scheduleSeq")
             .containsExactlyInAnyOrder(
-                tuple(u1, s.getScheduleSeq()),
-                tuple(u3, s.getScheduleSeq())
+                tuple(u1, schedule.scheduleSeq()),
+                tuple(u3, schedule.scheduleSeq())
             );
         assertThat(result2).isEmpty();
     }
@@ -1008,8 +1029,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .participants(List.of(
                 UserReadResponse.of(u1)))
             .build();
-        scheduleService.createSchedule(u1.getUserSeq(), sr1);
-        Schedule schedule = scheduleRepository.findAll().get(0);
+        ScheduleCreateResponse schedule = scheduleService.createSchedule(u1.getUserSeq(), sr1);
 
         CategoryCreateRequest r1 = CategoryCreateRequest.of("합창단", "GREEN");
         scheduleService.createCategory(u1.getUserSeq(), r1);
@@ -1017,10 +1037,10 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
         // when
         scheduleService.addScheduleToCategory(u1.getUserSeq(),
-            schedule.getScheduleSeq(),
+            schedule.scheduleSeq(),
             category.getCategorySeq());
         Optional<Participation> result1 = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
-            schedule.getScheduleSeq(), u1.getUserSeq());
+            schedule.scheduleSeq(), u1.getUserSeq());
         List<ScheduleListReadResponse> result2 = scheduleService.getScheduleListBySearchCondition(
             u1.getUserSeq(), Map.of("categories", String.valueOf(category.getCategorySeq()),
                 "searchKey", "", "unscheduled", "", "month", "", "day", "", "year", ""));
@@ -1030,7 +1050,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         assertThat(result1.get().getCategory()).isEqualTo(category);
         assertThat(result2).hasSize(1)
             .extracting("scheduleSeq")
-            .contains(schedule.getScheduleSeq());
+            .contains(schedule.scheduleSeq());
     }
 
     @DisplayName("카테고리에서 일정을 삭제한다.")
@@ -1067,13 +1087,11 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .participants(List.of(UserReadResponse.of(u1)))
             .categorySeq(category.getCategorySeq())
             .build();
-        scheduleService.createSchedule(u1.getUserSeq(), sr1);
-        scheduleService.createSchedule(u1.getUserSeq(), sr2);
-        Schedule s1 = scheduleRepository.findAll().get(0);
-        Schedule s2 = scheduleRepository.findAll().get(1);
+        ScheduleCreateResponse s1 = scheduleService.createSchedule(u1.getUserSeq(), sr1);
+        ScheduleCreateResponse s2 = scheduleService.createSchedule(u1.getUserSeq(), sr2);
 
         // when
-        scheduleService.deleteScheduleFromCategory(u1.getUserSeq(), s1.getScheduleSeq(),
+        scheduleService.deleteScheduleFromCategory(u1.getUserSeq(), s1.scheduleSeq(),
             category.getCategorySeq());
         List<ScheduleListReadResponse> result = scheduleService.getScheduleListBySearchCondition(
             u1.getUserSeq(), Map.of("categories", String.valueOf(category.getCategorySeq()),
@@ -1083,7 +1101,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         assertThat(result).hasSize(1)
             .extracting("scheduleSeq", "category")
             .containsExactly(
-                tuple(s2.getScheduleSeq(), CategoryReadResponse.of(category)));
+                tuple(s2.scheduleSeq(), CategoryReadResponse.of(category)));
     }
 
     @DisplayName("참가 정보를 삭제한다. 이때 나머지 인원의 참가 정보는 유지된다.")
@@ -1106,22 +1124,22 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
-        scheduleService.createSchedule(u1.getUserSeq(), createRequest);
-        Schedule s = scheduleRepository.findAll().get(0);
+        ScheduleCreateResponse s = scheduleService.createSchedule(u1.getUserSeq(), createRequest);
+        Schedule schedule = scheduleRepository.findAll().get(0);
 
         // when
-        scheduleService.deleteParticipation(u2.getUserSeq(), s);
+        scheduleService.deleteParticipation(u2.getUserSeq(), schedule);
         List<Participation> result1 = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
-            s.getScheduleSeq());
+            s.scheduleSeq());
         Optional<Participation> result2 = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
-            s.getScheduleSeq(), u2.getUserSeq());
+            s.scheduleSeq(), u2.getUserSeq());
 
         // then
         assertThat(result1)
             .hasSize(1)
             .extracting("user", "schedule.scheduleSeq")
             .containsExactlyInAnyOrder(
-                tuple(u1, s.getScheduleSeq())
+                tuple(u1, s.scheduleSeq())
             );
         assertThat(result2).isEmpty();
     }
@@ -1145,13 +1163,12 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
-        scheduleService.createSchedule(u1.getUserSeq(), request);
-        Schedule s = scheduleRepository.findAll().get(0);
+        ScheduleCreateResponse s = scheduleService.createSchedule(u1.getUserSeq(), request);
 
         // when
-        scheduleService.deleteSchedule(u1.getUserSeq(), s.getScheduleSeq());
+        scheduleService.deleteSchedule(u1.getUserSeq(), s.scheduleSeq());
         List<Participation> result = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
-            s.getScheduleSeq());
+            s.scheduleSeq());
 
         // then
         assertThat(result).hasSize(0);
@@ -1178,13 +1195,15 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .participants(List.of(
                 UserReadResponse.of(user)))
             .build();
-        scheduleService.createSchedule(user.getUserSeq(), request);
-
-        Schedule s = scheduleRepository.findAll().get(0);
+        ScheduleCreateResponse schedule = scheduleService.createSchedule(user.getUserSeq(),
+            request);
 
         // when
-        CommentReadResponse response = scheduleService.createCommentOnSchedule(
-            s.getScheduleSeq(), user.getUserSeq(), CommentCreateRequest.of("세상에서 제일 불행한 사람임"));
+        scheduleService.createCommentOnSchedule(
+            schedule.scheduleSeq(), user.getUserSeq(), CommentCreateRequest.of("세상에서 제일 불행한 사람임"));
+
+        CommentReadResponse response = scheduleService.getScheduleDetail(schedule.scheduleSeq(),
+            user.getUserSeq()).comments().get(0);
 
         // then
         assertThat(response).isNotNull()
@@ -1210,18 +1229,22 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .participants(List.of(
                 UserReadResponse.of(user)))
             .build();
-        scheduleService.createSchedule(user.getUserSeq(), request);
-        Schedule s = scheduleRepository.findAll().get(0);
+        ScheduleCreateResponse schedule = scheduleService.createSchedule(user.getUserSeq(),
+            request);
 
-        CommentReadResponse r1 = scheduleService.createCommentOnSchedule(
-            s.getScheduleSeq(), user.getUserSeq(), CommentCreateRequest.of("세상에서 제일 불행한 사람임"));
-        CommentReadResponse r2 = scheduleService.createCommentOnSchedule(s.getScheduleSeq(),
+        scheduleService.createCommentOnSchedule(
+            schedule.scheduleSeq(), user.getUserSeq(), CommentCreateRequest.of("세상에서 제일 불행한 사람임"));
+        CommentReadResponse r1 = scheduleService.getScheduleDetail(schedule.scheduleSeq(),
+            user.getUserSeq()).comments().get(0);
+        scheduleService.createCommentOnSchedule(schedule.scheduleSeq(),
             user.getUserSeq(), CommentCreateRequest.of("얘는 삭제될거임"));
+        CommentReadResponse r2 = scheduleService.getScheduleDetail(schedule.scheduleSeq(),
+            user.getUserSeq()).comments().get(1);
 
         // when
         scheduleService.deleteComment(r2.commentSeq(), user.getUserSeq());
         List<Comment> result = commentRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
-            s.getScheduleSeq());
+            schedule.scheduleSeq());
 
         // then
         assertThat(result).hasSize(1)
@@ -1239,7 +1262,8 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         CategoryCreateRequest request = CategoryCreateRequest.of("자율기절", "HOTPINK");
 
         // when
-        CategoryReadResponse response = scheduleService.createCategory(user.getUserSeq(), request);
+        scheduleService.createCategory(user.getUserSeq(), request);
+        CategoryReadResponse response = scheduleService.getCategoryList(user.getUserSeq()).get(0);
 
         // then
         assertThat(response).isNotNull()
@@ -1288,12 +1312,13 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         Category category = categoryRepository.findAll().get(0);
 
         // when
-        CategoryPatchRequest request = CategoryPatchRequest.builder()
+        CategoryUpdateRequest request = CategoryUpdateRequest.builder()
             .categoryName("자율기절")
             .categoryColor("GREEN")
             .build();
-        CategoryReadResponse response = scheduleService.updateCategory(u1.getUserSeq(),
+        scheduleService.updateCategory(u1.getUserSeq(),
             category.getCategorySeq(), request);
+        CategoryReadResponse response = scheduleService.getCategoryList(u1.getUserSeq()).get(0);
 
         // then
         assertThat(response)
@@ -1418,14 +1443,14 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         scheduleService.createSchedule(user.getUserSeq(), createRequest);
         Schedule schedule = scheduleRepository.findAll().get(0);
 
-        SchedulePatchRequest patchRequest = SchedulePatchRequest.builder()
+        ScheduleUpdateRequest updateRequest = ScheduleUpdateRequest.builder()
             .scheduleName("안녕 나는 바뀐 일정 이름이야")
             .build();
 
         // when // then
         assertThatThrownBy(
             () -> scheduleService.updateSchedule(user.getUserSeq(), schedule.getScheduleSeq() + 1,
-                patchRequest))
+                updateRequest))
             .isInstanceOf(RestApiException.class)
             .hasMessage("SCHEDULE_NOT_FOUND");
     }
@@ -1451,7 +1476,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         Schedule schedule = scheduleRepository.findAll().get(0);
 
         // when
-        SchedulePatchRequest schedulePatchRequest = SchedulePatchRequest.builder()
+        ScheduleUpdateRequest scheduleUpdateRequest = ScheduleUpdateRequest.builder()
             .scheduleName("안녕 나는 바뀐 일정 이름이야")
             .isDateSelected(false)
             .isTimeSelected(false)
@@ -1463,7 +1488,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
         // then
         assertThatThrownBy(() -> scheduleService.updateSchedule(u1.getUserSeq(),
-            schedule.getScheduleSeq(), schedulePatchRequest))
+            schedule.getScheduleSeq(), scheduleUpdateRequest))
             .isInstanceOf(RestApiException.class)
             .hasMessage("SCHEDULE_FORBIDDEN");
     }
@@ -1492,7 +1517,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         Schedule schedule = scheduleRepository.findAll().get(0);
 
         // when
-        SchedulePatchRequest schedulePatchRequest = SchedulePatchRequest.builder()
+        ScheduleUpdateRequest scheduleUpdateRequest = ScheduleUpdateRequest.builder()
             .scheduleName("안녕 나는 바뀐 일정 이름이야")
             .isDateSelected(false)
             .isTimeSelected(false)
@@ -1504,7 +1529,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
         // then
         assertThatThrownBy(() -> scheduleService.updateSchedule(u1.getUserSeq(),
-            schedule.getScheduleSeq(), schedulePatchRequest))
+            schedule.getScheduleSeq(), scheduleUpdateRequest))
             .isInstanceOf(RestApiException.class)
             .hasMessage("FRIEND_RELATION_DAMAGED");
     }
@@ -1529,14 +1554,14 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         scheduleService.createSchedule(u1.getUserSeq(), createRequest);
         Schedule schedule = scheduleRepository.findAll().get(0);
 
-        SchedulePatchRequest patchRequest = SchedulePatchRequest.builder()
+        ScheduleUpdateRequest updateRequest = ScheduleUpdateRequest.builder()
             .scheduleName("안녕 나는 바뀐 일정 이름이야")
             .build();
 
         // when // then
         assertThatThrownBy(
             () -> scheduleService.updateSchedule(u2.getUserSeq(), schedule.getScheduleSeq(),
-                patchRequest))
+                updateRequest))
             .isInstanceOf(RestApiException.class)
             .hasMessage("SCHEDULE_FORBIDDEN");
     }
@@ -1644,8 +1669,10 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         scheduleService.createSchedule(user.getUserSeq(), request);
         Schedule s = scheduleRepository.findAll().get(0);
 
-        CommentReadResponse response = scheduleService.createCommentOnSchedule(
+        scheduleService.createCommentOnSchedule(
             s.getScheduleSeq(), user.getUserSeq(), CommentCreateRequest.of("세상에서 제일 불행한 사람임"));
+        CommentReadResponse response = scheduleService.getScheduleDetail(s.getScheduleSeq(),
+            user.getUserSeq()).comments().get(0);
 
         // when // then
         assertThatThrownBy(
@@ -1676,8 +1703,11 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         scheduleService.createSchedule(u1.getUserSeq(), request);
         Schedule s = scheduleRepository.findAll().get(0);
 
-        CommentReadResponse response = scheduleService.createCommentOnSchedule(
+        scheduleService.createCommentOnSchedule(
             s.getScheduleSeq(), u1.getUserSeq(), CommentCreateRequest.of("세상에서 제일 불행한 사람임"));
+
+        CommentReadResponse response = scheduleService.getScheduleDetail(s.getScheduleSeq(),
+            u1.getUserSeq()).comments().get(0);
 
         // when // then
         assertThatThrownBy(
@@ -1875,7 +1905,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
         Category category = categoryRepository.findAll().get(0);
 
-        CategoryPatchRequest patchRequest = CategoryPatchRequest.builder()
+        CategoryUpdateRequest updateRequest = CategoryUpdateRequest.builder()
             .categoryName("자율기절")
             .categoryColor("GREEN")
             .build();
@@ -1883,7 +1913,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         // when // then
         assertThatThrownBy(
             () -> scheduleService.updateCategory(user.getUserSeq(), category.getCategorySeq() + 1,
-                patchRequest))
+                updateRequest))
             .isInstanceOf(RestApiException.class)
             .hasMessage("CATEGORY_NOT_FOUND");
     }
@@ -1900,7 +1930,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
         Category category = categoryRepository.findAll().get(0);
 
-        CategoryPatchRequest patchRequest = CategoryPatchRequest.builder()
+        CategoryUpdateRequest updateRequest = CategoryUpdateRequest.builder()
             .categoryName("자율기절")
             .categoryColor("GREEN")
             .build();
@@ -1908,7 +1938,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         // when // then
         assertThatThrownBy(
             () -> scheduleService.updateCategory(u2.getUserSeq(), category.getCategorySeq(),
-                patchRequest))
+                updateRequest))
             .isInstanceOf(RestApiException.class)
             .hasMessage("CATEGORY_FORBIDDEN");
     }
