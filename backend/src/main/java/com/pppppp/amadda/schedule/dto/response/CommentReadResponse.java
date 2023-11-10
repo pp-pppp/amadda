@@ -12,9 +12,7 @@ public record CommentReadResponse(
 
     String commentContent,
 
-    String createdAt,
-
-    String updatedAt
+    String createdAt
 ) {
 
     public static CommentReadResponse of(Comment comment, UserReadResponse user) {
@@ -23,7 +21,6 @@ public record CommentReadResponse(
             .user(user)
             .commentContent(comment.getCommentContent())
             .createdAt(String.valueOf(comment.getCreatedAt()))
-            .updatedAt(String.valueOf(comment.getUpdatedAt()))
             .build();
     }
 }
