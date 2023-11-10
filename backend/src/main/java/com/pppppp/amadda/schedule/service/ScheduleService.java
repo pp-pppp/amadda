@@ -1,5 +1,6 @@
 package com.pppppp.amadda.schedule.service;
 
+import com.pppppp.amadda.friend.repository.FriendRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.global.entity.exception.errorcode.CategoryErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.CommentErrorCode;
@@ -27,6 +28,7 @@ import com.pppppp.amadda.schedule.repository.ScheduleRepository;
 import com.pppppp.amadda.user.dto.response.UserReadResponse;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
+import com.pppppp.amadda.user.service.UserService;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -44,11 +46,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class ScheduleService {
 
+    private final UserService userService;
+
     private final ScheduleRepository scheduleRepository;
 
     private final ParticipationRepository participationRepository;
 
     private final UserRepository userRepository;
+
+    private final FriendRepository friendRepository;
 
     private final CommentRepository commentRepository;
 
@@ -295,9 +301,16 @@ public class ScheduleService {
 
     private void createParticipation(Long userSeq, ScheduleCreateRequest request,
         Schedule newSchedule) {
+        User requestUser = findUserInfo(userSeq);
+
         request.participants().forEach(response -> {
             // seq로 user 찾기
             User participant = findUserInfo(response.userSeq());
+
+            // 일정 참가자가 생성자와 친구가 아니면 안됨(본인 제외)
+            if (!Objects.equals(requestUser, participant)) {
+                checkRequestUserAndParticipantFriend(requestUser, participant);
+            }
 
             // 카테고리 정보가 있는 경우 참석자가 생성자라면 카테고리 정보 입력
             Category category = null;
@@ -311,6 +324,18 @@ public class ScheduleService {
 
             participationRepository.save(participation);
         });
+    }
+
+    private void checkRequestUserAndParticipantFriend(User requestUser, User participant) {
+
+        // 우선 요청을 보낸 사용자의 친구목록에 참가자가 있는지 확인
+        if (friendRepository.findByOwnerAndFriend(requestUser, participant)
+            .isEmpty()) {
+            throw new RestApiException(ScheduleErrorCode.SCHEDULE_FORBIDDEN);
+        }
+
+        // 양방향인 친구 관계가 손상되었는지 확인
+        userService.isFriend(requestUser, participant);
     }
 
     private User findUserInfo(Long userSeq) {
@@ -431,6 +456,8 @@ public class ScheduleService {
     private void updateParticipantList(Long requestUserSeq, SchedulePatchRequest request,
         Schedule schedule) {
 
+        User requestUser = findUserInfo(requestUserSeq);
+
         // 1. 이전 사용자 목록
         List<User> previousParticipationList = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
                 schedule.getScheduleSeq())
@@ -464,9 +491,14 @@ public class ScheduleService {
             .build();
 
         updateParticipationList.stream()
-            .filter(user -> !previousParticipationList.contains(user))
-            .forEach(user -> {
-                Participation participation = Participation.create(createRequest, user, schedule,
+            .filter(participant -> !previousParticipationList.contains(participant))
+            .forEach(participant -> {
+
+                // 친구관계 확인
+                checkRequestUserAndParticipantFriend(requestUser, participant);
+
+                Participation participation = Participation.create(createRequest, participant,
+                    schedule,
                     null, true, true);
                 participationRepository.save(participation);
             });
