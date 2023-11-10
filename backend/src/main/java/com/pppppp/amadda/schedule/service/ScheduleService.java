@@ -1,7 +1,7 @@
 package com.pppppp.amadda.schedule.service;
 
-import com.pppppp.amadda.friend.repository.FriendRepository;
 import com.pppppp.amadda.alarm.service.AlarmService;
+import com.pppppp.amadda.friend.repository.FriendRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.global.entity.exception.errorcode.CategoryErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.CommentErrorCode;
@@ -30,7 +30,6 @@ import com.pppppp.amadda.user.dto.response.UserReadResponse;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
 import com.pppppp.amadda.user.service.UserService;
-import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -519,7 +518,7 @@ public class ScheduleService {
                     null, true, true);
                 participationRepository.save(participation);
                 alarmService.sendScheduleAssigned(schedule.getScheduleSeq(), requestUserSeq,
-                    user.getUserSeq());
+                    participant.getUserSeq());
             });
     }
 
