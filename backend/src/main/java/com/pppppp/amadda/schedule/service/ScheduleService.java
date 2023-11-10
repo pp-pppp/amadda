@@ -151,25 +151,27 @@ public class ScheduleService {
     }
 
     private static boolean hasChangeField(ScheduleUpdateRequest request, Schedule schedule) {
-        boolean scheduleContent = Objects.equals(schedule.getScheduleContent(),
-            request.scheduleContent());
-        boolean isDateSelected = Objects.equals(schedule.isDateSelected(),
-            request.isDateSelected());
-        boolean isTimeSelected = Objects.equals(schedule.isTimeSelected(),
-            request.isTimeSelected());
-        boolean isAllDay = Objects.equals(schedule.isAllDay(), request.isAllDay());
-        boolean scheduleStartAt = true;
-        if (request.isDateSelected()) {
-            scheduleStartAt = Objects.equals(schedule.getScheduleStartAt(),
-                LocalDateTime.parse(request.scheduleStartAt()));
+        if (!Objects.equals(schedule.getScheduleContent(), request.scheduleContent())) {
+            return true;
         }
-        boolean scheduleEndAt = true;
-        if (request.isTimeSelected()) {
-            scheduleEndAt = Objects.equals(schedule.getScheduleEndAt(),
-                LocalDateTime.parse(request.scheduleEndAt()));
+        if (!Objects.equals(schedule.isDateSelected(), request.isDateSelected())) {
+            return true;
         }
-        return !(scheduleContent && isDateSelected && isTimeSelected && isAllDay && scheduleStartAt
-            && scheduleEndAt);
+        if (!Objects.equals(schedule.isTimeSelected(), request.isTimeSelected())) {
+            return true;
+        }
+        if (!Objects.equals(schedule.isAllDay(), request.isAllDay())) {
+            return true;
+        }
+        if (request.isDateSelected() && !Objects.equals(schedule.getScheduleStartAt(),
+            LocalDateTime.parse(request.scheduleStartAt()))) {
+            return true;
+        }
+        if (request.isTimeSelected() && !Objects.equals(schedule.getScheduleEndAt(),
+            LocalDateTime.parse(request.scheduleEndAt()))) {
+            return true;
+        }
+        return false;
     }
 
     @Transactional
