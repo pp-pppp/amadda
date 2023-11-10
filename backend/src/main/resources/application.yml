@@ -46,6 +46,14 @@ spring:
               packages: com.pppppp.amadda.alarm.dto.topic, com.pppppp.amadda.alarm.dto.topic.alarm, com.pppppp.amadda.alarm.dto.topic.setting
       group-id: ${kafka.group}
       auto-offset-reset: latest
+    topic:
+      alarm:
+        friend-request: "${kafka.prefix}.alarm.friend-request"
+        friend-accept: "${kafka.prefix}.alarm.friend-accept"
+        schedule-assigned: "${kafka.prefix}.alarm.schedule-assigned"
+        mentioned: "${kafka.prefix}.alarm.mentioned"
+        schedule-update: "${kafka.prefix}.alarm.schedule-update"
+        schedule-notification: "${kafka.prefix}.alarm.schedule-notification"
 
   jwt:
     secret-key: ${jwt.secret-key}

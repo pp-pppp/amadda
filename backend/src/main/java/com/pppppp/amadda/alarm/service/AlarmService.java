@@ -31,6 +31,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +40,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @Slf4j
 public class AlarmService {
+
+    @Autowired
+    private KafkaTopic kafkaTopic;
 
     private final UserRepository userRepository;
     private final FriendRequestRepository friendRequestRepository;
@@ -112,7 +116,8 @@ public class AlarmService {
             AlarmFriendRequest value = AlarmFriendRequest.create(friendRequest.getRequestSeq(),
                 owner.getUserSeq(), owner.getUserName());
 
-            kafkaProducer.sendAlarm(KafkaTopic.ALARM_FRIEND_REQUEST, friend.getUserSeq(), value);
+            kafkaProducer.sendAlarm(kafkaTopic.ALARM_FRIEND_REQUEST,
+                friend.getUserSeq(), value);
         }
     }
 
@@ -126,7 +131,8 @@ public class AlarmService {
             AlarmFriendAccept value = AlarmFriendAccept.create(friend.getUserSeq(),
                 friend.getUserName());
 
-            kafkaProducer.sendAlarm(KafkaTopic.ALARM_FRIEND_ACCEPT, owner.getUserSeq(), value);
+            kafkaProducer.sendAlarm(kafkaTopic.ALARM_FRIEND_ACCEPT, owner.getUserSeq(),
+                value);
         }
 
     }
@@ -142,7 +148,7 @@ public class AlarmService {
             AlarmScheduleAssigned value = AlarmScheduleAssigned.create(
                 schedule.getScheduleSeq(), participation.getScheduleName(),
                 creator.getUserSeq(), creator.getUserName());
-            kafkaProducer.sendAlarm(KafkaTopic.ALARM_SCHEDULE_ASSIGNED,
+            kafkaProducer.sendAlarm(kafkaTopic.ALARM_SCHEDULE_ASSIGNED,
                 user.getUserSeq(), value);
         }
     }
@@ -157,7 +163,7 @@ public class AlarmService {
 
             AlarmScheduleUpdate value = AlarmScheduleUpdate.create(schedule.getScheduleSeq(),
                 participation.getScheduleName());
-            kafkaProducer.sendAlarm(KafkaTopic.ALARM_SCHEDULE_UPDATE,
+            kafkaProducer.sendAlarm(kafkaTopic.ALARM_SCHEDULE_UPDATE,
                 participation.getUser().getUserSeq(), value);
         }
     }

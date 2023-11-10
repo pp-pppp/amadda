@@ -56,6 +56,9 @@ import org.springframework.test.annotation.DirtiesContext;
 )
 class AlarmServiceTest extends IntegrationTestSupport {
 
+    @Autowired
+    private KafkaTopic kafkaTopic;
+
     @MockBean
     KafkaTemplate<Long, BaseTopicValue> kafkaTemplate;
     @Autowired
@@ -420,7 +423,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         alarmService.sendFriendRequest(owner.getUserSeq(), friend.getUserSeq());
 
         // then
-        String topic = KafkaTopic.ALARM_FRIEND_REQUEST;
+        String topic = kafkaTopic.ALARM_FRIEND_REQUEST;
         verify(kafkaTemplate, never()).send(eq(topic), eq(owner.getUserSeq()), any());
         verify(kafkaTemplate, times(1)).send(eq(topic), eq(friend.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(other.getUserSeq()), any());
@@ -445,7 +448,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         alarmService.sendFriendRequest(owner.getUserSeq(), friend.getUserSeq());
 
         // then
-        String topic = KafkaTopic.ALARM_FRIEND_REQUEST;
+        String topic = kafkaTopic.ALARM_FRIEND_REQUEST;
         verify(kafkaTemplate, never()).send(eq(topic), eq(owner.getUserSeq()), any());
         verify(kafkaTemplate, times(1)).send(eq(topic), eq(friend.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(other.getUserSeq()), any());
@@ -470,7 +473,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         alarmService.sendFriendRequest(owner.getUserSeq(), friend.getUserSeq());
 
         // then
-        String topic = KafkaTopic.ALARM_FRIEND_REQUEST;
+        String topic = kafkaTopic.ALARM_FRIEND_REQUEST;
         verify(kafkaTemplate, never()).send(eq(topic), eq(owner.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(friend.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(other.getUserSeq()), any());
@@ -492,7 +495,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         alarmService.sendFriendAccept(owner.getUserSeq(), friend.getUserSeq());
 
         // then
-        String topic = KafkaTopic.ALARM_FRIEND_ACCEPT;
+        String topic = kafkaTopic.ALARM_FRIEND_ACCEPT;
         verify(kafkaTemplate, times(1)).send(eq(topic), eq(owner.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(friend.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(other.getUserSeq()), any());
@@ -517,7 +520,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         alarmService.sendFriendAccept(owner.getUserSeq(), friend.getUserSeq());
 
         // then
-        String topic = KafkaTopic.ALARM_FRIEND_ACCEPT;
+        String topic = kafkaTopic.ALARM_FRIEND_ACCEPT;
         verify(kafkaTemplate, times(1)).send(eq(topic), eq(owner.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(friend.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(other.getUserSeq()), any());
@@ -542,7 +545,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         alarmService.sendFriendAccept(owner.getUserSeq(), friend.getUserSeq());
 
         // then
-        String topic = KafkaTopic.ALARM_FRIEND_ACCEPT;
+        String topic = kafkaTopic.ALARM_FRIEND_ACCEPT;
         verify(kafkaTemplate, never()).send(eq(topic), eq(owner.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(friend.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(other.getUserSeq()), any());
@@ -565,7 +568,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
             user2.getUserSeq());
 
         // then
-        String topic = KafkaTopic.ALARM_SCHEDULE_ASSIGNED;
+        String topic = kafkaTopic.ALARM_SCHEDULE_ASSIGNED;
         verify(kafkaTemplate, never()).send(eq(topic), eq(user1.getUserSeq()), any());
         verify(kafkaTemplate, times(1)).send(eq(topic), eq(user2.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
@@ -591,7 +594,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
             user2.getUserSeq());
 
         // then
-        String topic = KafkaTopic.ALARM_SCHEDULE_ASSIGNED;
+        String topic = kafkaTopic.ALARM_SCHEDULE_ASSIGNED;
         verify(kafkaTemplate, never()).send(eq(topic), eq(user1.getUserSeq()), any());
         verify(kafkaTemplate, times(1)).send(eq(topic), eq(user2.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
@@ -617,7 +620,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
             user2.getUserSeq());
 
         // then
-        String topic = KafkaTopic.ALARM_SCHEDULE_ASSIGNED;
+        String topic = kafkaTopic.ALARM_SCHEDULE_ASSIGNED;
         verify(kafkaTemplate, never()).send(eq(topic), eq(user1.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user2.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
@@ -644,7 +647,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         alarmService.sendScheduleUpdate(schedule.getScheduleSeq(), user2.getUserSeq());
 
         // then
-        String topic = KafkaTopic.ALARM_SCHEDULE_UPDATE;
+        String topic = kafkaTopic.ALARM_SCHEDULE_UPDATE;
         verify(kafkaTemplate, times(1)).send(eq(topic), eq(user2.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
     }
@@ -670,7 +673,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         alarmService.sendScheduleUpdate(schedule.getScheduleSeq(), user2.getUserSeq());
 
         // then
-        String topic = KafkaTopic.ALARM_SCHEDULE_UPDATE;
+        String topic = kafkaTopic.ALARM_SCHEDULE_UPDATE;
         verify(kafkaTemplate, never()).send(eq(topic), eq(user2.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
     }
@@ -699,7 +702,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         alarmService.sendScheduleUpdate(schedule.getScheduleSeq(), user2.getUserSeq());
 
         // then
-        String topic = KafkaTopic.ALARM_SCHEDULE_UPDATE;
+        String topic = kafkaTopic.ALARM_SCHEDULE_UPDATE;
         verify(kafkaTemplate, times(1)).send(eq(topic), eq(user2.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
     }
@@ -728,7 +731,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         alarmService.sendScheduleUpdate(schedule.getScheduleSeq(), user2.getUserSeq());
 
         // then
-        String topic = KafkaTopic.ALARM_SCHEDULE_UPDATE;
+        String topic = kafkaTopic.ALARM_SCHEDULE_UPDATE;
         verify(kafkaTemplate, never()).send(eq(topic), eq(user2.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
     }
@@ -757,7 +760,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         alarmService.sendScheduleUpdate(schedule.getScheduleSeq(), user2.getUserSeq());
 
         // then
-        String topic = KafkaTopic.ALARM_SCHEDULE_UPDATE;
+        String topic = kafkaTopic.ALARM_SCHEDULE_UPDATE;
         verify(kafkaTemplate, never()).send(eq(topic), eq(user2.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
     }
@@ -786,7 +789,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         alarmService.sendScheduleUpdate(schedule.getScheduleSeq(), user2.getUserSeq());
 
         // then
-        String topic = KafkaTopic.ALARM_SCHEDULE_UPDATE;
+        String topic = kafkaTopic.ALARM_SCHEDULE_UPDATE;
         verify(kafkaTemplate, never()).send(eq(topic), eq(user2.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
     }

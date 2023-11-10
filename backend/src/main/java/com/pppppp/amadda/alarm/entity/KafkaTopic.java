@@ -1,23 +1,33 @@
 package com.pppppp.amadda.alarm.entity;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
+
+@Component
 public class KafkaTopic {
 
-    public static final String ALARM_FRIEND_REQUEST = "alarm.friend-request";
-    public static final String ALARM_FRIEND_ACCEPT = "alarm.friend-accept";
-    public static final String ALARM_SCHEDULE_ASSIGNED = "alarm.schedule-assigned";
-    public static final String ALARM_MENTIONED = "alarm.mentioned";
-    public static final String ALARM_SCHEDULE_UPDATE = "alarm.schedule-update";
-    public static final String ALARM_SCHEDULE_NOTIFICATION = "alarm.schedule-notification";
+    private Environment environment;
 
-    public static final String SETTING_GLOBAL_FRIEND_REQUEST = "setting.global.friend-request";
-    public static final String SETTING_GLOBAL_FRIEND_ACCEPT = "setting.global.friend-accept";
-    public static final String SETTING_GLOBAL_SCHEDULE_ASSIGNED = "setting.global.schedule-assigned";
-    public static final String SETTING_GLOBAL_MENTIONED = "setting.global.mentioned";
-    public static final String SETTING_GLOBAL_SCHEDULE_UPDATE = "setting.global.schedule-update";
+    @Autowired
+    public KafkaTopic(Environment environment) {
+        this.environment = environment;
+        initializeConstants();
+    }
 
-    public static final String SETTING_LOCAL_MENTIONED = "setting.local.mentioned";
-    public static final String SETTING_LOCAL_SCHEDULE_UPDATE = "setting.local.schedule-update";
+    public String ALARM_FRIEND_REQUEST;
+    public String ALARM_FRIEND_ACCEPT;
+    public String ALARM_SCHEDULE_ASSIGNED;
+    public String ALARM_MENTIONED;
+    public String ALARM_SCHEDULE_UPDATE;
+    public String ALARM_SCHEDULE_NOTIFICATION;
 
-    public static final String NAME_SCHEDULE = "name.schedule";
-    public static final String NAME_USER = "name.user";
+    private void initializeConstants() {
+        ALARM_FRIEND_REQUEST = environment.getProperty("spring.kafka.topic.alarm.friend-request");
+        ALARM_FRIEND_ACCEPT = environment.getProperty("spring.kafka.topic.alarm.friend-accept");
+        ALARM_SCHEDULE_ASSIGNED = environment.getProperty("spring.kafka.topic.alarm.schedule-assigned");
+        ALARM_MENTIONED = environment.getProperty("spring.kafka.topic.alarm.mentioned");
+        ALARM_SCHEDULE_UPDATE = environment.getProperty("spring.kafka.topic.alarm.schedule-update");
+        ALARM_SCHEDULE_NOTIFICATION = environment.getProperty("spring.kafka.topic.alarm.schedule-notification");
+    }
 }
