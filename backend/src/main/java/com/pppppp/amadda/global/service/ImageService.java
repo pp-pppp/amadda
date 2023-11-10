@@ -1,6 +1,7 @@
 package com.pppppp.amadda.global.service;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.global.entity.exception.errorcode.ImageErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
@@ -38,7 +39,9 @@ public class ImageService {
 
     private String uploadImgInS3(byte[] data, String name) {
         try (InputStream inputStream = new ByteArrayInputStream(data)) {
-            s3.putObject(bucket, name, inputStream, null);
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType("image/jpg");
+            s3.putObject(bucket, name, inputStream, metadata);
             return s3.getUrl(bucket, name).toString();
         } catch (IOException e) {
             throw new RestApiException(ImageErrorCode.IMAGE_UPLOAD_FAILED);
