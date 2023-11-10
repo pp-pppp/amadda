@@ -134,7 +134,7 @@ class ScheduleControllerTest {
             )
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"))
-            .andExpect(jsonPath("$.data").isArray());
+            .andExpect(jsonPath("$.data").isMap());
     }
 
     @DisplayName("query string을 통해 입력받은 조건에 맞는 일정 목록을 조회한다.")
@@ -156,7 +156,7 @@ class ScheduleControllerTest {
                 print()
             ).andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"))
-            .andExpect(jsonPath("$.data").isArray());
+            .andExpect(jsonPath("$.data").isMap());
 
     }
 
@@ -175,7 +175,7 @@ class ScheduleControllerTest {
             )
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"))
-            .andExpect(jsonPath("$.data").isArray());
+            .andExpect(jsonPath("$.data").isMap());
     }
 
     @DisplayName("이름으로 일정을 검색한다.")
@@ -193,7 +193,7 @@ class ScheduleControllerTest {
             )
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"))
-            .andExpect(jsonPath("$.data").isArray());
+            .andExpect(jsonPath("$.data").isMap());
     }
 
     @DisplayName("사용자의 미확정 일정을 조회한다.")
@@ -211,7 +211,7 @@ class ScheduleControllerTest {
             )
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"))
-            .andExpect(jsonPath("$.data").isArray());
+            .andExpect(jsonPath("$.data").isMap());
     }
 
     @DisplayName("날짜 조건에 맞는 일정 목록을 가져온다.")
@@ -230,7 +230,7 @@ class ScheduleControllerTest {
                 print()
             ).andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"))
-            .andExpect(jsonPath("$.data").isArray());
+            .andExpect(jsonPath("$.data").isMap());
     }
 
     @DisplayName("일정 내 참가자 명단에서 사용자를 검색한다.")

@@ -189,7 +189,6 @@ class ScheduleServiceTest extends IntegrationTestSupport {
                 tuple("minyoung", "정민영", "url2"));
     }
 
-
     @DisplayName("일정이 확정된 새로운 일정을 생성하고, 사용자의 개인화 된 설정이 반영 되었는지 확인한다.")
     @Test
     void createFixedScheduleAndParticipation() {
@@ -329,7 +328,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(true)
             .isAllDay(false)
             .scheduleStartAt("2023-11-01 08:59:30")
-            .scheduleEndAt("2023-11-01 09:00:00")
+            .scheduleEndAt("2023-11-02 09:00:00")
             .isAuthorizedAll(false)
             .alarmTime(AlarmTime.ON_TIME)
             .participants(List.of(UserReadResponse.of(u2)))
@@ -343,6 +342,10 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         List<ScheduleListReadResponse> user1Schedules = scheduleService.getScheduleListBySearchCondition(
             u1.getUserSeq(), searchCondition);
         List<ScheduleListReadResponse> user2Schedules = scheduleService.getScheduleListBySearchCondition(
+            u2.getUserSeq(), searchCondition);
+        Map<String, List<ScheduleListReadResponse>> user1Result = scheduleService.getScheduleListByCondition(
+            u1.getUserSeq(), searchCondition);
+        Map<String, List<ScheduleListReadResponse>> user2Result = scheduleService.getScheduleListByCondition(
             u2.getUserSeq(), searchCondition);
 
         // then
@@ -361,8 +364,14 @@ class ScheduleServiceTest extends IntegrationTestSupport {
                 tuple("안녕 내가 일정 이름이야", false, false, false,
                     "", "", AlarmTime.NONE.getContent(), false),
                 tuple("나도 일정이야", true, true, false,
-                    "2023-11-01 08:59:30", "2023-11-01 09:00:00", AlarmTime.ON_TIME.getContent(),
+                    "2023-11-01 08:59:30", "2023-11-02 09:00:00", AlarmTime.ON_TIME.getContent(),
                     false));
+        assertThat(user1Result)
+            .hasSize(1)
+            .containsKeys("unscheduled");
+        assertThat(user2Result)
+            .hasSize(3)
+            .containsKeys("unscheduled", "2023-11-01", "2023-11-02");
     }
 
     @DisplayName("일정의 상세 정보를 불러온다.")
@@ -459,6 +468,10 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             u1.getUserSeq(), searchCondition1);
         List<ScheduleListReadResponse> result2 = scheduleService.getScheduleListBySearchCondition(
             u1.getUserSeq(), searchCondition2);
+        Map<String, List<ScheduleListReadResponse>> mapResult1 = scheduleService.getScheduleListByCondition(
+            u1.getUserSeq(), searchCondition1);
+        Map<String, List<ScheduleListReadResponse>> mapResult2 = scheduleService.getScheduleListByCondition(
+            u1.getUserSeq(), searchCondition2);
 
         // then
         assertThat(result1)
@@ -484,6 +497,12 @@ class ScheduleServiceTest extends IntegrationTestSupport {
                     List.of(UserReadResponse.of(u1)), UserReadResponse.of(u1), false, false, false,
                     "", "", AlarmTime.NONE.getContent(), false, CategoryReadResponse.of(c1))
             );
+        assertThat(mapResult1)
+            .hasSize(1)
+            .containsKeys("unscheduled");
+        assertThat(mapResult2)
+            .hasSize(1)
+            .containsKeys("unscheduled");
     }
 
     @DisplayName("일정 이름으로 일정을 검색한다.")
@@ -522,6 +541,8 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             "categories", "", "month", "", "day", "", "year", "");
         List<ScheduleListReadResponse> schedules = scheduleService.getScheduleListBySearchCondition(
             u1.getUserSeq(), searchCondition);
+        Map<String, List<ScheduleListReadResponse>> mapResult = scheduleService.getScheduleListByCondition(
+            u1.getUserSeq(), searchCondition);
 
         // then
         assertThat(schedules)
@@ -538,6 +559,8 @@ class ScheduleServiceTest extends IntegrationTestSupport {
                     "2023-11-01 08:59:30", "2023-11-01 09:00:00", AlarmTime.ON_TIME.getContent(),
                     false, null)
             );
+        assertThat(mapResult)
+            .containsKeys("unscheduled", "2023-11-01");
     }
 
     @DisplayName("사용자의 미확정인 일정 목록을 조회한다.")
@@ -576,6 +599,8 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             "unscheduled", "true", "month", "", "day", "", "year", "");
         List<ScheduleListReadResponse> result = scheduleService.getScheduleListBySearchCondition(
             u1.getUserSeq(), searchCondition);
+        Map<String, List<ScheduleListReadResponse>> mapResult = scheduleService.getScheduleListByCondition(
+            u1.getUserSeq(), searchCondition);
 
         // then
         assertThat(result)
@@ -588,6 +613,9 @@ class ScheduleServiceTest extends IntegrationTestSupport {
                     List.of(UserReadResponse.of(u1)), UserReadResponse.of(u1), false, false, false,
                     "", "", AlarmTime.NONE.getContent(), false, null)
             );
+        assertThat(mapResult)
+            .hasSize(1)
+            .containsKeys("unscheduled");
     }
 
     @DisplayName("사용자의 이번달 일정 목록을 조회한다.")
@@ -679,6 +707,10 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             u1.getUserSeq(), searchCondition);
         List<ScheduleListReadResponse> result2 = scheduleService.getScheduleListBySearchCondition(
             u2.getUserSeq(), searchCondition);
+        Map<String, List<ScheduleListReadResponse>> mapResult1 = scheduleService.getScheduleListByCondition(
+            u1.getUserSeq(), searchCondition);
+        Map<String, List<ScheduleListReadResponse>> mapResult2 = scheduleService.getScheduleListByCondition(
+            u2.getUserSeq(), searchCondition);
 
         // then
         assertThat(result1)
@@ -696,6 +728,23 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .containsExactlyInAnyOrder(
                 tuple("2023-11-01 08:59:30", "2023-11-01 09:00:00")
             );
+
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + mapResult1.keySet());
+
+        assertThat(mapResult1)
+            .hasSize(30)
+            // 2023년 11월 1일부터 2023년 11월 30일까지 다 포함
+            .containsKeys("2023-11-01", "2023-11-02", "2023-11-03", "2023-11-04",
+                "2023-11-05",
+                "2023-11-06", "2023-11-07", "2023-11-08", "2023-11-09", "2023-11-10", "2023-11-11",
+                "2023-11-12", "2023-11-13", "2023-11-14", "2023-11-15", "2023-11-16", "2023-11-17",
+                "2023-11-18", "2023-11-19", "2023-11-20", "2023-11-21", "2023-11-22", "2023-11-23",
+                "2023-11-24", "2023-11-25", "2023-11-26", "2023-11-27", "2023-11-28", "2023-11-29",
+                "2023-11-30");
+
+        assertThat(mapResult2)
+            .hasSize(1)
+            .containsKeys("2023-11-01");
     }
 
     @DisplayName("사용자의 오늘 일정 목록을 조회한다.")
@@ -775,6 +824,10 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             u1.getUserSeq(), searchCondition);
         List<ScheduleListReadResponse> result2 = scheduleService.getScheduleListBySearchCondition(
             u2.getUserSeq(), searchCondition);
+        Map<String, List<ScheduleListReadResponse>> mapResult1 = scheduleService.getScheduleListByCondition(
+            u1.getUserSeq(), searchCondition);
+        Map<String, List<ScheduleListReadResponse>> mapResult2 = scheduleService.getScheduleListByCondition(
+            u2.getUserSeq(), searchCondition);
 
         // then
         assertThat(result1)
@@ -790,6 +843,12 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .containsExactlyInAnyOrder(
                 tuple("2023-11-01 08:59:30", "2023-11-01 09:00:00")
             );
+        assertThat(mapResult1)
+            .hasSize(1)
+            .containsKeys("2023-11-01");
+        assertThat(mapResult2)
+            .hasSize(1)
+            .containsKeys("2023-11-01");
     }
 
     @DisplayName("일정 참가자 명단에서 이름으로 유저를 검색한다.")
@@ -1011,7 +1070,6 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         assertThat(result2).isEmpty();
     }
 
-
     @DisplayName("카테고리에 새로운 일정을 추가한다.")
     @Transactional
     @Test
@@ -1065,7 +1123,6 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .extracting("scheduleSeq")
             .contains(schedule.scheduleSeq());
     }
-
 
     @DisplayName("카테고리에서 일정을 삭제한다.")
     @Transactional
@@ -1765,7 +1822,6 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .hasMessage("CATEGORY_ALREADY_EXISTS");
     }
 
-
     @DisplayName("날짜 조건으로 일정을 조회하려면 연 단위 입력이 있어야 한다.")
     @Transactional
     @Test
@@ -1927,7 +1983,6 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isInstanceOf(RestApiException.class)
             .hasMessage("SCHEDULE_INVALID_REQUEST");
     }
-
 
     @DisplayName("유효하지 않은 카테고리에 접근해 수정에 실패한다.")
     @Test

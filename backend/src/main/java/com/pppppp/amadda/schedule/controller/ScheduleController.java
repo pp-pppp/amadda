@@ -69,7 +69,7 @@ public class ScheduleController {
     }
 
     @GetMapping("")
-    public ApiResponse<List<ScheduleListReadResponse>> getScheduleList(
+    public ApiResponse<Map<String, List<ScheduleListReadResponse>>> getScheduleList(
         @RequestParam(value = "category", required = false) Optional<String> categorySeqList,
         @RequestParam(value = "searchKey", required = false) Optional<String> searchKey,
         @RequestParam(value = "unscheduled", required = false) Optional<String> unscheduled,
@@ -86,7 +86,7 @@ public class ScheduleController {
             year.orElse(""), "month",
             month.orElse(""), "day", day.orElse(""));
 
-        return ApiResponse.ok(scheduleService.getScheduleListBySearchCondition(mockUserSeq,
+        return ApiResponse.ok(scheduleService.getScheduleListByCondition(mockUserSeq,
             searchCondition));
     }
 
