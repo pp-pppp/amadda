@@ -15,6 +15,7 @@ import com.pppppp.amadda.alarm.entity.AlarmConfig;
 import com.pppppp.amadda.alarm.entity.AlarmType;
 import com.pppppp.amadda.alarm.service.AlarmService;
 import com.pppppp.amadda.alarm.service.KafkaProducer;
+import com.pppppp.amadda.global.util.TokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,6 +30,8 @@ class AlarmControllerTest extends ControllerTestSupport {
 
     @MockBean
     private AlarmService alarmService;
+    @MockBean
+    private TokenProvider tokenProvider;
 
     @DisplayName("알림 목록 가져오기")
     @Test

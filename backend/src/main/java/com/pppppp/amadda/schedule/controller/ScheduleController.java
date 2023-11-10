@@ -1,6 +1,7 @@
 package com.pppppp.amadda.schedule.controller;
 
 import com.pppppp.amadda.global.dto.ApiResponse;
+import com.pppppp.amadda.global.util.TokenProvider;
 import com.pppppp.amadda.schedule.dto.request.CategoryCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.CategoryUpdateRequest;
 import com.pppppp.amadda.schedule.dto.request.CommentCreateRequest;
@@ -15,6 +16,7 @@ import com.pppppp.amadda.schedule.dto.response.ScheduleListReadResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleUpdateResponse;
 import com.pppppp.amadda.schedule.service.ScheduleService;
 import com.pppppp.amadda.user.dto.response.UserReadResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
@@ -39,8 +41,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
+    private final TokenProvider tokenProvider;
 
-    private final Long mockUserSeq = 1111L;
 
     // TODO: 로그인 구현 후 코드 수정
 
@@ -48,9 +50,11 @@ public class ScheduleController {
 
     @PostMapping("")
     public ApiResponse<ScheduleCreateResponse> createSchedule(
+        HttpServletRequest http,
         @Valid @RequestBody ScheduleCreateRequest request) {
         log.info("POST /api/schedule");
-        ScheduleCreateResponse scheduleCreateResponse = scheduleService.createSchedule(mockUserSeq,
+        Long userSeq = tokenProvider.getUserSeq(http);
+        ScheduleCreateResponse scheduleCreateResponse = scheduleService.createSchedule(userSeq,
             request);
         return ApiResponse.ok(scheduleCreateResponse);
     }
@@ -63,13 +67,16 @@ public class ScheduleController {
     }
 
     @GetMapping("/{scheduleSeq}")
-    public ApiResponse<ScheduleDetailReadResponse> getSchedule(@PathVariable Long scheduleSeq) {
+    public ApiResponse<ScheduleDetailReadResponse> getSchedule(
+            HttpServletRequest http, @PathVariable Long scheduleSeq) {
         log.info("GET /api/schedule/" + scheduleSeq);
-        return ApiResponse.ok(scheduleService.getScheduleDetail(scheduleSeq, mockUserSeq));
+        Long userSeq = tokenProvider.getUserSeq(http);
+        return ApiResponse.ok(scheduleService.getScheduleDetail(scheduleSeq, userSeq));
     }
 
     @GetMapping("")
     public ApiResponse<Map<String, List<ScheduleListReadResponse>>> getScheduleList(
+        HttpServletRequest http,
         @RequestParam(value = "category", required = false) Optional<String> categorySeqList,
         @RequestParam(value = "searchKey", required = false) Optional<String> searchKey,
         @RequestParam(value = "unscheduled", required = false) Optional<String> unscheduled,
@@ -85,8 +92,8 @@ public class ScheduleController {
             "searchKey", searchKey.orElse(""), "unscheduled", unscheduled.orElse(""), "year",
             year.orElse(""), "month",
             month.orElse(""), "day", day.orElse(""));
-
-        return ApiResponse.ok(scheduleService.getScheduleListByCondition(mockUserSeq,
+        Long userSeq = tokenProvider.getUserSeq(http);
+        return ApiResponse.ok(scheduleService.getScheduleListByCondition(userSeq,
             searchCondition));
     }
 
@@ -103,37 +110,43 @@ public class ScheduleController {
     }
 
     @PutMapping("/{scheduleSeq}")
-    public ApiResponse<ScheduleUpdateResponse> updateSchedule(@PathVariable Long scheduleSeq,
+    public ApiResponse<ScheduleUpdateResponse> updateSchedule(
+        HttpServletRequest http,
+        @PathVariable Long scheduleSeq,
         @Valid @RequestBody ScheduleUpdateRequest request) {
         log.info("PUT /api/schedule/{}", scheduleSeq);
+        Long userSeq = tokenProvider.getUserSeq(http);
         ScheduleUpdateResponse response = scheduleService.updateSchedule(
-            mockUserSeq, scheduleSeq, request);
+            userSeq, scheduleSeq, request);
         return ApiResponse.of(HttpStatus.OK, "수정되었습니다.", response);
 
     }
 
     @DeleteMapping("/{scheduleSeq}")
-    public ApiResponse<String> deleteSchedule(@PathVariable Long scheduleSeq) {
+    public ApiResponse<String> deleteSchedule(HttpServletRequest http, @PathVariable Long scheduleSeq) {
         log.info("DELETE /api/schedule/{}", scheduleSeq);
-        scheduleService.deleteSchedule(mockUserSeq, scheduleSeq);
+        Long userSeq = tokenProvider.getUserSeq(http);
+        scheduleService.deleteSchedule(userSeq, scheduleSeq);
         return ApiResponse.ok("삭제되었습니다.");
     }
 
     // ==================== 댓글 ====================
 
     @PostMapping("/{scheduleSeq}/comment")
-    public ApiResponse<String> createComment(@PathVariable Long scheduleSeq,
+    public ApiResponse<String> createComment(HttpServletRequest http, @PathVariable Long scheduleSeq,
         @Valid @RequestBody CommentCreateRequest request) {
         log.info("POST /api/schedule/{}/comment", scheduleSeq);
-        scheduleService.createCommentOnSchedule(scheduleSeq, mockUserSeq, request);
+        Long userSeq = tokenProvider.getUserSeq(http);
+        scheduleService.createCommentOnSchedule(scheduleSeq, userSeq, request);
         return ApiResponse.ok("댓글이 생성되었습니다.");
     }
 
     @DeleteMapping("/{scheduleSeq}/comment/{commentSeq}")
-    public ApiResponse<String> deleteComment(@PathVariable Long scheduleSeq,
+    public ApiResponse<String> deleteComment(HttpServletRequest http, @PathVariable Long scheduleSeq,
         @PathVariable Long commentSeq) {
         log.info("DELETE /api/schedule/{}/comment/{}", scheduleSeq, commentSeq);
-        scheduleService.deleteComment(commentSeq, mockUserSeq);
+        Long userSeq = tokenProvider.getUserSeq(http);
+        scheduleService.deleteComment(commentSeq, userSeq);
         return ApiResponse.ok("삭제되었습니다.");
     }
 
@@ -141,62 +154,68 @@ public class ScheduleController {
 
     @PostMapping("/user/category")
     public ApiResponse<CategoryCreateResponse> createCategory(
+        HttpServletRequest http,
         @Valid @RequestBody CategoryCreateRequest request) {
         log.info("POST /api/schedule/user/category");
-        return ApiResponse.ok(scheduleService.createCategory(mockUserSeq, request));
+        Long userSeq = tokenProvider.getUserSeq(http);
+        return ApiResponse.ok(scheduleService.createCategory(userSeq, request));
     }
 
     @GetMapping("/user/category")
-    public ApiResponse<List<CategoryReadResponse>> getCategoryList() {
+    public ApiResponse<List<CategoryReadResponse>> getCategoryList(HttpServletRequest http) {
         log.info("GET /api/schedule/user/category");
-        return ApiResponse.ok(scheduleService.getCategoryList(mockUserSeq));
+        Long userSeq = tokenProvider.getUserSeq(http);
+        return ApiResponse.ok(scheduleService.getCategoryList(userSeq));
     }
 
     @PutMapping("/user/category/{categorySeq}")
-    public ApiResponse<CategoryUpdateResponse> updateCategory(@PathVariable Long categorySeq,
+    public ApiResponse<CategoryUpdateResponse> updateCategory(HttpServletRequest http,
+        @PathVariable Long categorySeq,
         @Valid @RequestBody CategoryUpdateRequest request) {
         log.info("PUT /api/schedule/user/category/{}", categorySeq);
+        Long userSeq = tokenProvider.getUserSeq(http);
         return ApiResponse.ok(
-            scheduleService.updateCategory(mockUserSeq, categorySeq, request));
+            scheduleService.updateCategory(userSeq, categorySeq, request));
     }
 
     @DeleteMapping("/user/category/{categorySeq}")
-    public ApiResponse<String> deleteCategory(@PathVariable Long categorySeq) {
+    public ApiResponse<String> deleteCategory(HttpServletRequest http, @PathVariable Long categorySeq) {
         log.info("DELETE /api/schedule/user/category/{}", categorySeq);
-        scheduleService.deleteCategory(mockUserSeq, categorySeq);
+        Long userSeq = tokenProvider.getUserSeq(http);
+        scheduleService.deleteCategory(userSeq, categorySeq);
         return ApiResponse.ok("삭제되었습니다.");
     }
 
     // ==================== 개별 알림 설정 ====================
 
     @PostMapping("/{scheduleSeq}/subscribe/mention")
-    public ApiResponse<String> subscribeMention(@PathVariable Long scheduleSeq) {
+    public ApiResponse<String> subscribeMention(HttpServletRequest http, @PathVariable Long scheduleSeq) {
         log.info("POST /api/schedule/{}/subscribe/mention", scheduleSeq);
-        Long userSeq = 1L;
+        Long userSeq = tokenProvider.getUserSeq(http);
         scheduleService.setMentionAlarm(userSeq, scheduleSeq, true);
         return ApiResponse.ok("일정의 댓글 멘션 알림을 설정합니다.");
     }
 
     @PostMapping("/{scheduleSeq}/unsubscribe/mention")
-    public ApiResponse<String> unsubscribeMention(@PathVariable Long scheduleSeq) {
+    public ApiResponse<String> unsubscribeMention(HttpServletRequest http, @PathVariable Long scheduleSeq) {
         log.info("POST /api/schedule/{}/unsubscribe/mention", scheduleSeq);
-        Long userSeq = 1L;
+        Long userSeq = tokenProvider.getUserSeq(http);
         scheduleService.setMentionAlarm(userSeq, scheduleSeq, false);
         return ApiResponse.ok("일정의 댓글 멘션 알림을 해제합니다.");
     }
 
     @PostMapping("/{scheduleSeq}/subscribe/update")
-    public ApiResponse<String> subscribeUpdate(@PathVariable Long scheduleSeq) {
+    public ApiResponse<String> subscribeUpdate(HttpServletRequest http, @PathVariable Long scheduleSeq) {
         log.info("POST /api/schedule/{}/subscribe/update", scheduleSeq);
-        Long userSeq = 1L;
+        Long userSeq = tokenProvider.getUserSeq(http);
         scheduleService.setUpdateAlarm(userSeq, scheduleSeq, true);
         return ApiResponse.ok("일정의 수정 알림을 설정합니다.");
     }
 
     @PostMapping("/{scheduleSeq}/unsubscribe/update")
-    public ApiResponse<String> unsubscribeUpdate(@PathVariable Long scheduleSeq) {
+    public ApiResponse<String> unsubscribeUpdate(HttpServletRequest http, @PathVariable Long scheduleSeq) {
         log.info("POST /api/schedule/{}/unsubscribe/update", scheduleSeq);
-        Long userSeq = 1L;
+        Long userSeq = tokenProvider.getUserSeq(http);
         scheduleService.setUpdateAlarm(userSeq, scheduleSeq, false);
         return ApiResponse.ok("일정의 수정 알림을 해제합니다.");
     }

@@ -471,7 +471,7 @@ public class ScheduleService {
     private void checkUserAuthorizedToSchedule(Long userSeq, Schedule schedule) {
         // 일정이 전체에게 공개되어 있지도 않은데 사용자가 권한이 없으면 안됨
         if (!(schedule.isAuthorizedAll()
-            || !isSameUser(userSeq, schedule.getAuthorizedUser().getUserSeq()))) {
+            || isSameUser(userSeq, schedule.getAuthorizedUser().getUserSeq()))) {
             throw new RestApiException(ScheduleErrorCode.SCHEDULE_FORBIDDEN);
         }
     }

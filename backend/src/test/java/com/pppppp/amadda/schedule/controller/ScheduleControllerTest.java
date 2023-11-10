@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pppppp.amadda.alarm.service.AlarmService;
+import com.pppppp.amadda.global.util.TokenProvider;
 import com.pppppp.amadda.schedule.dto.request.CategoryCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.CategoryUpdateRequest;
 import com.pppppp.amadda.schedule.dto.request.CommentCreateRequest;
@@ -49,6 +50,9 @@ class ScheduleControllerTest {
 
     @MockBean
     private AlarmService alarmService;
+
+    @MockBean
+    private TokenProvider tokenProvider;
 
     @DisplayName("일정을 생성한다.")
     @Test
