@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pppppp.amadda.alarm.service.AlarmService;
 import com.pppppp.amadda.friend.dto.request.FriendRequestRequest;
 import com.pppppp.amadda.friend.dto.request.GroupCreateRequest;
-import com.pppppp.amadda.friend.dto.request.GroupPatchRequest;
+import com.pppppp.amadda.friend.dto.request.GroupUpdateRequest;
 import com.pppppp.amadda.friend.dto.response.FriendRequestResponse;
 import com.pppppp.amadda.friend.service.FriendRequestService;
 import com.pppppp.amadda.friend.service.FriendService;
@@ -119,7 +119,7 @@ class FriendControllerTest {
 
         // when // then
         mockMvc.perform(
-                        patch("/api/friend/request/"+requestSeq)
+                        put("/api/friend/request/"+requestSeq)
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
@@ -233,7 +233,7 @@ class FriendControllerTest {
     @Test
     void editGroup() throws Exception {
         // given
-        GroupPatchRequest request = GroupPatchRequest.builder()
+        GroupUpdateRequest request = GroupUpdateRequest.builder()
                 .groupSeq(0L)
                 .groupName("그룹명1")
                 .userSeqs(List.of(1234L, 2222L))
@@ -241,7 +241,7 @@ class FriendControllerTest {
 
         // when // then
         mockMvc.perform(
-                        patch("/api/friend/group")
+                        put("/api/friend/group")
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -255,7 +255,7 @@ class FriendControllerTest {
     @Test
     void editGroupWithoutUsers() throws Exception {
         // given
-        GroupPatchRequest request = GroupPatchRequest.builder()
+        GroupUpdateRequest request = GroupUpdateRequest.builder()
                 .groupSeq(0L)
                 .groupName("그룹명1")
                 .userSeqs(List.of())
@@ -263,7 +263,7 @@ class FriendControllerTest {
 
         // when // then
         mockMvc.perform(
-                        patch("/api/friend/group")
+                        put("/api/friend/group")
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -275,14 +275,14 @@ class FriendControllerTest {
     @Test
     void editGroupWithoutName() throws Exception {
         // given
-        GroupPatchRequest request = GroupPatchRequest.builder()
+        GroupUpdateRequest request = GroupUpdateRequest.builder()
                 .groupSeq(0L)
                 .groupName(" ")
                 .userSeqs(List.of(1234L, 2222L))
                 .build();
         // when // then
         mockMvc.perform(
-                        patch("/api/friend/group")
+                        put("/api/friend/group")
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -294,13 +294,13 @@ class FriendControllerTest {
     @Test
     void editGroupWithoutGroupSeq() throws Exception {
         // given
-        GroupPatchRequest request = GroupPatchRequest.builder()
+        GroupUpdateRequest request = GroupUpdateRequest.builder()
                 .groupName("aaa")
                 .userSeqs(List.of(1234L, 2222L))
                 .build();
         // when // then
         mockMvc.perform(
-                        patch("/api/friend/group")
+                        put("/api/friend/group")
                                 .content(objectMapper.writeValueAsString(request))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )

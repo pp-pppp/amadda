@@ -107,6 +107,10 @@ spring:
     password: ${mysql.password}
 ---
 spring:
+  kafka:
+    listener:
+      auto-startup: false
+
   config:
     activate:
       on-profile: test

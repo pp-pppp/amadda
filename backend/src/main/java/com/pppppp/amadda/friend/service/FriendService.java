@@ -11,12 +11,14 @@ import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class FriendService {
 
     private final FriendRepository friendRepository;
@@ -24,6 +26,7 @@ public class FriendService {
     private final UserGroupRepository userGroupRepository;
     private final GroupMemberRepository groupMemberRepository;
 
+    @Transactional
     public List<FriendResponse> createFriend(FriendRequestResponse friendRequest) {
 
         // 상태가 ACCEPTED가 맞는지 확인
@@ -41,6 +44,7 @@ public class FriendService {
         return List.of(FriendResponse.of(f1), FriendResponse.of(f2));
     }
 
+    @Transactional
     public void deleteFriends(User u1, User u2) {
 
         Long relationSeq1 = findFriendByOwnerAndFriend(u1, u2)
