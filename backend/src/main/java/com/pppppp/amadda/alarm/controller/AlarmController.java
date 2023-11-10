@@ -5,6 +5,8 @@ import com.pppppp.amadda.alarm.dto.response.AlarmReadResponse;
 import com.pppppp.amadda.alarm.entity.AlarmConfig;
 import com.pppppp.amadda.alarm.service.AlarmService;
 import com.pppppp.amadda.global.dto.ApiResponse;
+import com.pppppp.amadda.global.util.TokenProvider;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -24,17 +26,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class AlarmController {
 
     private final AlarmService alarmService;
+    private final TokenProvider tokenProvider;
 
     @GetMapping
-    public ApiResponse<List<AlarmReadResponse>> readAlarms() {
-        Long userSeq = 1L;
+    public ApiResponse<List<AlarmReadResponse>> readAlarms(HttpServletRequest http) {
+        Long userSeq = tokenProvider.getUserSeq(http);
         List<AlarmReadResponse> alarms = alarmService.readAlarms(userSeq);
         return ApiResponse.of(HttpStatus.OK, alarms);
     }
 
     @PostMapping("/{alarmSeq}")
-    public ApiResponse<String> readAlarm(@PathVariable(required = true) Long alarmSeq) {
-        Long userSeq = 1L;
+    public ApiResponse<String> readAlarm(HttpServletRequest http, @PathVariable(required = true) Long alarmSeq) {
+        Long userSeq = tokenProvider.getUserSeq(http);
         alarmService.readAlarm(alarmSeq, userSeq);
         return ApiResponse.ok("해당 알림을 읽음 처리하였습니다.");
     }
