@@ -9,7 +9,6 @@ import lombok.Builder;
 
 @Builder
 public record ScheduleListReadResponse(
-
     Long scheduleSeq,
     Boolean isTimeSelected,
     Boolean isDateSelected,
@@ -44,8 +43,8 @@ public record ScheduleListReadResponse(
             .alarmTime(participation.getAlarmTime().getContent())
             .isAuthorizedAll(schedule.isAuthorizedAll())
             .authorizedUser(authorizedUser)
-            .category((participation.getCategory() != null) ? CategoryReadResponse.of(
-                participation.getCategory()) : null)
+            .category((participation.getCategory() != null) ?
+                CategoryReadResponse.of(participation.getCategory()) : null)
             .build();
     }
 

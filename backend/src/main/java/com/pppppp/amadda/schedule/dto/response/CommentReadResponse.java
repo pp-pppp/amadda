@@ -7,11 +7,8 @@ import lombok.Builder;
 @Builder
 public record CommentReadResponse(
     Long commentSeq,
-
     UserReadResponse user,
-
     String commentContent,
-
     String createdAt
 ) {
 

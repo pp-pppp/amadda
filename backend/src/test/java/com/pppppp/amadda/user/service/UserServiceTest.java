@@ -1,34 +1,48 @@
 package com.pppppp.amadda.user.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.tuple;
+
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.friend.entity.Friend;
 import com.pppppp.amadda.friend.repository.FriendRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.global.util.TokenProvider;
-import com.pppppp.amadda.user.dto.request.*;
-import com.pppppp.amadda.user.dto.response.*;
+import com.pppppp.amadda.user.dto.request.UserIdCheckRequest;
+import com.pppppp.amadda.user.dto.request.UserInitRequest;
+import com.pppppp.amadda.user.dto.request.UserJwtRequest;
+import com.pppppp.amadda.user.dto.request.UserNameCheckRequest;
+import com.pppppp.amadda.user.dto.request.UserRefreshRequest;
+import com.pppppp.amadda.user.dto.response.UserAccessResponse;
+import com.pppppp.amadda.user.dto.response.UserIdCheckResponse;
+import com.pppppp.amadda.user.dto.response.UserJwtInitResponse;
+import com.pppppp.amadda.user.dto.response.UserJwtResponse;
+import com.pppppp.amadda.user.dto.response.UserNameCheckResponse;
+import com.pppppp.amadda.user.dto.response.UserReadResponse;
+import com.pppppp.amadda.user.dto.response.UserRelationResponse;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
-
 class UserServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private FriendRepository friendRepository;
+
     @Autowired
     private UserService userService;
+
     @Autowired
     private TokenProvider tokenProvider;
 
@@ -52,7 +66,7 @@ class UserServiceTest extends IntegrationTestSupport {
         // then
         assertThat(u).isNotNull();
         assertThat(u).extracting("userName", "userId", "imageUrl")
-                .containsExactlyInAnyOrder("유저1", "id1", "imageUrl1");
+            .containsExactlyInAnyOrder("유저1", "id1", "imageUrl1");
     }
 
     @DisplayName("userSeq로 유저 리스폰스를 가져온다. ")
@@ -68,17 +82,16 @@ class UserServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(u).extracting("userSeq", "userName", "userId", "imageUrl")
-                .containsExactlyInAnyOrder(1111L, "유저1", "id1", "imageUrl1");
+            .containsExactlyInAnyOrder(1111L, "유저1", "id1", "imageUrl1");
     }
 
     @DisplayName("존재하지 않는 userSeq로 유저를 조회하면 예외가 발생한다. ")
     @Test
     void getUnexpectedUserByUserSeq() {
-
         // when // then
         assertThatThrownBy(() -> userService.getUserInfoBySeq(1111L))
-                .isInstanceOf(RestApiException.class)
-                .hasMessage("USER_NOT_FOUND");
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("USER_NOT_FOUND");
     }
 
     @DisplayName("로그인 후 토큰이랑 isInited 값을 잘 받아온다. ")
@@ -89,9 +102,9 @@ class UserServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1));
 
         UserJwtRequest request = UserJwtRequest.builder()
-                .userSeq("1111")
-                .imageUrl("url1")
-                .build();
+            .userSeq("1111")
+            .imageUrl("url1")
+            .build();
 
         // when
         UserJwtInitResponse response = userService.getTokensAndCheckInit(request);
@@ -115,14 +128,14 @@ class UserServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1));
 
         UserJwtRequest request = UserJwtRequest.builder()
-                .userSeq("1111")
-                .imageUrl("url1")
-                .build();
+            .userSeq("1111")
+            .imageUrl("url1")
+            .build();
         UserJwtInitResponse response = userService.getTokensAndCheckInit(request);
 
         UserRefreshRequest r = UserRefreshRequest.builder()
-                .refreshToken(response.refreshToken())
-                .build();
+            .refreshToken(response.refreshToken())
+            .build();
 
         // when
         UserJwtResponse res = userService.getNewTokens(r, 1111L);
@@ -154,24 +167,24 @@ class UserServiceTest extends IntegrationTestSupport {
     void saveUser() {
         // given
         UserInitRequest request = UserInitRequest.builder()
-                .userId("jammminjung")
-                .userName("잼민정")
-                .imageUrl("https://www.readersnews.com/news/photo/202305/108912_78151_1733.jpg")
-                .userSeq("1111")
-                .build();
+            .userId("jammminjung")
+            .userName("잼민정")
+            .imageUrl("https://www.readersnews.com/news/photo/202305/108912_78151_1733.jpg")
+            .userSeq("1111")
+            .build();
         String fileName = "https://amadda-bucket.s3.ap-northeast-2.amazonaws.com/1111_"
-                + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))
-                + ".jpg";
+            + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))
+            + ".jpg";
 
         // when
         userService.saveUser(request);
 
         // then
         assertThat(userRepository.findAll()).hasSize(1)
-                .extracting("userId", "userName", "imageUrl", "userSeq")
-                .containsExactly(
-                        tuple("jammminjung", "잼민정", fileName, 1111L)
-                );
+            .extracting("userId", "userName", "imageUrl", "userSeq")
+            .containsExactly(
+                tuple("jammminjung", "잼민정", fileName, 1111L)
+            );
     }
 
     @DisplayName("정상 토큰인 경우 ")
@@ -185,8 +198,8 @@ class UserServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(response)
-                .extracting("isExpired", "isBroken", "refreshAccessKey")
-                .containsExactly(false, false, "-");
+            .extracting("isExpired", "isBroken", "refreshAccessKey")
+            .containsExactly(false, false, "-");
 
     }
 
@@ -201,8 +214,8 @@ class UserServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(response)
-                .extracting("isExpired", "isBroken", "refreshAccessKey")
-                .containsExactly(true, true, "-");
+            .extracting("isExpired", "isBroken", "refreshAccessKey")
+            .containsExactly(true, true, "-");
     }
 
     @DisplayName("내 유저seq와 검색키로 해당 유저와 그 유저와의 친구관계를 조회한다. ")
@@ -222,8 +235,8 @@ class UserServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(response)
-                .extracting("userSeq", "userName", "userId", "imageUrl", "isFriend")
-                .containsExactlyInAnyOrder(1234L, "유저2", "id2", "imageUrl2", true);
+            .extracting("userSeq", "userName", "userId", "imageUrl", "isFriend")
+            .containsExactlyInAnyOrder(1234L, "유저2", "id2", "imageUrl2", true);
     }
 
     @DisplayName("내 유저seq와 검색키로 해당 유저와 그 유저와의 친구관계를 조회한다. ")
@@ -239,8 +252,8 @@ class UserServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(response)
-                .extracting("userSeq", "userName", "userId", "imageUrl", "isFriend")
-                .containsExactlyInAnyOrder(1234L, "유저2", "id2", "imageUrl2", false);
+            .extracting("userSeq", "userName", "userId", "imageUrl", "isFriend")
+            .containsExactlyInAnyOrder(1234L, "유저2", "id2", "imageUrl2", false);
     }
 
     @DisplayName("호버한 상대의 유저 seq로 해당 유저와 그 유저와의 친구관계를 조회한다. ")
@@ -260,8 +273,8 @@ class UserServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(response)
-                .extracting("userSeq", "userName", "userId", "imageUrl", "isFriend")
-                .containsExactlyInAnyOrder(1234L, "유저2", "id2", "imageUrl2", true);
+            .extracting("userSeq", "userName", "userId", "imageUrl", "isFriend")
+            .containsExactlyInAnyOrder(1234L, "유저2", "id2", "imageUrl2", true);
     }
 
     @DisplayName("호버한 상대의 유저 seq로 해당 유저와 그 유저와의 친구관계를 조회한다. ")
@@ -277,8 +290,8 @@ class UserServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(response)
-                .extracting("userSeq", "userName", "userId", "imageUrl", "isFriend")
-                .containsExactlyInAnyOrder(1234L, "유저2", "id2", "imageUrl2", false);
+            .extracting("userSeq", "userName", "userId", "imageUrl", "isFriend")
+            .containsExactlyInAnyOrder(1234L, "유저2", "id2", "imageUrl2", false);
     }
 
     @DisplayName("내 유저seq와 검색키로 검색해 대상이 존재하지 않는경우 dto를 비워 리턴한다. ")
@@ -294,8 +307,8 @@ class UserServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(response)
-                .extracting("userSeq", "userName", "userId", "imageUrl", "isFriend")
-                .containsExactlyInAnyOrder(null, "", "", "", false);
+            .extracting("userSeq", "userName", "userId", "imageUrl", "isFriend")
+            .containsExactlyInAnyOrder(null, "", "", "", false);
     }
 
     @DisplayName("친구의 양방향 관계가 유효한지 검사한다. - 유효1")
@@ -345,8 +358,8 @@ class UserServiceTest extends IntegrationTestSupport {
 
         // when // then
         assertThatThrownBy(() -> userService.isFriend(u1, u2))
-                .isInstanceOf(RestApiException.class)
-                .hasMessage("FRIEND_RELATION_DAMAGED");
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("FRIEND_RELATION_DAMAGED");
     }
 
     @DisplayName("아이디 중복/유효 여부를 반환한다. - 중복,유효")
@@ -358,8 +371,8 @@ class UserServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         UserIdCheckRequest request = UserIdCheckRequest.builder()
-                .userId("id1")
-                .build();
+            .userId("id1")
+            .build();
 
         // when
         UserIdCheckResponse response = userService.chkId(request);
@@ -378,8 +391,8 @@ class UserServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         UserIdCheckRequest request = UserIdCheckRequest.builder()
-                .userId("id")
-                .build();
+            .userId("id")
+            .build();
 
         // when
         UserIdCheckResponse response = userService.chkId(request);
@@ -398,8 +411,8 @@ class UserServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         UserIdCheckRequest request = UserIdCheckRequest.builder()
-                .userId("ASDF((#")
-                .build();
+            .userId("ASDF((#")
+            .build();
 
         // when
         UserIdCheckResponse response = userService.chkId(request);
@@ -414,8 +427,8 @@ class UserServiceTest extends IntegrationTestSupport {
     void chkName_valid() {
         // given
         UserNameCheckRequest request = UserNameCheckRequest.builder()
-                .userName("이름")
-                .build();
+            .userName("이름")
+            .build();
 
         // when
         UserNameCheckResponse response = userService.chkName(request);
@@ -429,8 +442,8 @@ class UserServiceTest extends IntegrationTestSupport {
     void chkName_notValid() {
         // given
         UserNameCheckRequest request = UserNameCheckRequest.builder()
-                .userName("@Zㅣ존민정@")
-                .build();
+            .userName("@Zㅣ존민정@")
+            .build();
 
         // when
         UserNameCheckResponse response = userService.chkName(request);

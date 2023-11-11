@@ -1,21 +1,16 @@
 package com.pppppp.amadda.global.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
-import com.pppppp.amadda.global.util.TokenProvider;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TokenProviderTest extends IntegrationTestSupport {
 
@@ -49,7 +44,7 @@ class TokenProviderTest extends IntegrationTestSupport {
 
         // when // then
         assertThatThrownBy(() -> tokenProvider.verifyToken(token))
-                .isInstanceOf(Exception.class);
+            .isInstanceOf(Exception.class);
     }
 
     @DisplayName("특정 유저의 rat는 언제나 동일하다. ")
@@ -103,8 +98,8 @@ class TokenProviderTest extends IntegrationTestSupport {
 
         // when // then
         assertThatThrownBy(() -> tokenProvider.getTokenFromCookie(http))
-                .isInstanceOf(RestApiException.class)
-                .hasMessage("HTTP_COOKIE_NULL");
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("HTTP_COOKIE_NULL");
     }
 
     @DisplayName("쿠키에서 토큰을 추출한다. - 쿠키 내에 해당 키 없음. ")
@@ -118,8 +113,8 @@ class TokenProviderTest extends IntegrationTestSupport {
 
         // when // then
         assertThatThrownBy(() -> tokenProvider.getTokenFromCookie(http))
-                .isInstanceOf(RestApiException.class)
-                .hasMessage("HTTP_COOKIE_KEY_NOT_FOUND");
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("HTTP_COOKIE_KEY_NOT_FOUND");
     }
 
     @DisplayName("쿠키를 주고 유저 seq를 반환받는다. ")
@@ -137,8 +132,6 @@ class TokenProviderTest extends IntegrationTestSupport {
 
         // then
         assertThat(userSeq).isEqualTo(1111L);
-
     }
-
 
 }

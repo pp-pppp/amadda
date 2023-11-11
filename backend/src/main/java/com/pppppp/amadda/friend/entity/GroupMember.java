@@ -1,14 +1,19 @@
 package com.pppppp.amadda.friend.entity;
 
+import static jakarta.persistence.FetchType.LAZY;
+
 import com.pppppp.amadda.global.entity.BaseEntity;
 import com.pppppp.amadda.user.entity.User;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
@@ -35,9 +40,9 @@ public class GroupMember extends BaseEntity {
 
     public static GroupMember create(UserGroup group, User member) {
         return GroupMember.builder()
-                .group(group)
-                .member(member)
-                .build();
+            .group(group)
+            .member(member)
+            .build();
     }
 
 }

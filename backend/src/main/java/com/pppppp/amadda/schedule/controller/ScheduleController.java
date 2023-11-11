@@ -43,14 +43,12 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
     private final TokenProvider tokenProvider;
 
-
     // TODO: 로그인 구현 후 코드 수정
 
     // ==================== 일정 ====================
 
     @PostMapping("")
-    public ApiResponse<ScheduleCreateResponse> createSchedule(
-        HttpServletRequest http,
+    public ApiResponse<ScheduleCreateResponse> createSchedule(HttpServletRequest http,
         @Valid @RequestBody ScheduleCreateRequest request) {
         log.info("POST /api/schedule");
         Long userSeq = tokenProvider.getUserSeq(http);
@@ -67,8 +65,8 @@ public class ScheduleController {
     }
 
     @GetMapping("/{scheduleSeq}")
-    public ApiResponse<ScheduleDetailReadResponse> getSchedule(
-            HttpServletRequest http, @PathVariable Long scheduleSeq) {
+    public ApiResponse<ScheduleDetailReadResponse> getSchedule(HttpServletRequest http,
+        @PathVariable Long scheduleSeq) {
         log.info("GET /api/schedule/" + scheduleSeq);
         Long userSeq = tokenProvider.getUserSeq(http);
         return ApiResponse.ok(scheduleService.getScheduleDetail(scheduleSeq, userSeq));
@@ -85,21 +83,17 @@ public class ScheduleController {
         @RequestParam(value = "day", required = false) Optional<String> day) {
         log.info(
             "GET /api/schedule?category={}&searchKey={}&unscheduled={}&year={}&month={}&day={}",
-            categorySeqList,
-            searchKey, unscheduled, year, month, day);
+            categorySeqList, searchKey, unscheduled, year, month, day);
 
         Map<String, String> searchCondition = Map.of("categories", categorySeqList.orElse(""),
             "searchKey", searchKey.orElse(""), "unscheduled", unscheduled.orElse(""), "year",
-            year.orElse(""), "month",
-            month.orElse(""), "day", day.orElse(""));
+            year.orElse(""), "month", month.orElse(""), "day", day.orElse(""));
         Long userSeq = tokenProvider.getUserSeq(http);
-        return ApiResponse.ok(scheduleService.getScheduleListByCondition(userSeq,
-            searchCondition));
+        return ApiResponse.ok(scheduleService.getScheduleListByCondition(userSeq, searchCondition));
     }
 
     @GetMapping("/{scheduleSeq}/participation")
-    public ApiResponse<List<UserReadResponse>> getParticipatingUsers(
-        @PathVariable Long scheduleSeq,
+    public ApiResponse<List<UserReadResponse>> getParticipatingUsers(@PathVariable Long scheduleSeq,
         @RequestParam(value = "userName", required = false) Optional<String> searchKey) {
         log.info("GET /api/schedule/{}/participation?userName={}", scheduleSeq, searchKey);
 
@@ -110,20 +104,19 @@ public class ScheduleController {
     }
 
     @PutMapping("/{scheduleSeq}")
-    public ApiResponse<ScheduleUpdateResponse> updateSchedule(
-        HttpServletRequest http,
-        @PathVariable Long scheduleSeq,
-        @Valid @RequestBody ScheduleUpdateRequest request) {
+    public ApiResponse<ScheduleUpdateResponse> updateSchedule(HttpServletRequest http,
+        @PathVariable Long scheduleSeq, @Valid @RequestBody ScheduleUpdateRequest request) {
         log.info("PUT /api/schedule/{}", scheduleSeq);
         Long userSeq = tokenProvider.getUserSeq(http);
-        ScheduleUpdateResponse response = scheduleService.updateSchedule(
-            userSeq, scheduleSeq, request);
+        ScheduleUpdateResponse response = scheduleService.updateSchedule(userSeq, scheduleSeq,
+            request);
         return ApiResponse.of(HttpStatus.OK, "수정되었습니다.", response);
 
     }
 
     @DeleteMapping("/{scheduleSeq}")
-    public ApiResponse<String> deleteSchedule(HttpServletRequest http, @PathVariable Long scheduleSeq) {
+    public ApiResponse<String> deleteSchedule(HttpServletRequest http,
+        @PathVariable Long scheduleSeq) {
         log.info("DELETE /api/schedule/{}", scheduleSeq);
         Long userSeq = tokenProvider.getUserSeq(http);
         scheduleService.deleteSchedule(userSeq, scheduleSeq);
@@ -133,8 +126,8 @@ public class ScheduleController {
     // ==================== 댓글 ====================
 
     @PostMapping("/{scheduleSeq}/comment")
-    public ApiResponse<String> createComment(HttpServletRequest http, @PathVariable Long scheduleSeq,
-        @Valid @RequestBody CommentCreateRequest request) {
+    public ApiResponse<String> createComment(HttpServletRequest http,
+        @PathVariable Long scheduleSeq, @Valid @RequestBody CommentCreateRequest request) {
         log.info("POST /api/schedule/{}/comment", scheduleSeq);
         Long userSeq = tokenProvider.getUserSeq(http);
         scheduleService.createCommentOnSchedule(scheduleSeq, userSeq, request);
@@ -142,8 +135,8 @@ public class ScheduleController {
     }
 
     @DeleteMapping("/{scheduleSeq}/comment/{commentSeq}")
-    public ApiResponse<String> deleteComment(HttpServletRequest http, @PathVariable Long scheduleSeq,
-        @PathVariable Long commentSeq) {
+    public ApiResponse<String> deleteComment(HttpServletRequest http,
+        @PathVariable Long scheduleSeq, @PathVariable Long commentSeq) {
         log.info("DELETE /api/schedule/{}/comment/{}", scheduleSeq, commentSeq);
         Long userSeq = tokenProvider.getUserSeq(http);
         scheduleService.deleteComment(commentSeq, userSeq);
@@ -153,8 +146,7 @@ public class ScheduleController {
     // ==================== 카테고리 ====================
 
     @PostMapping("/user/category")
-    public ApiResponse<CategoryCreateResponse> createCategory(
-        HttpServletRequest http,
+    public ApiResponse<CategoryCreateResponse> createCategory(HttpServletRequest http,
         @Valid @RequestBody CategoryCreateRequest request) {
         log.info("POST /api/schedule/user/category");
         Long userSeq = tokenProvider.getUserSeq(http);
@@ -170,16 +162,15 @@ public class ScheduleController {
 
     @PutMapping("/user/category/{categorySeq}")
     public ApiResponse<CategoryUpdateResponse> updateCategory(HttpServletRequest http,
-        @PathVariable Long categorySeq,
-        @Valid @RequestBody CategoryUpdateRequest request) {
+        @PathVariable Long categorySeq, @Valid @RequestBody CategoryUpdateRequest request) {
         log.info("PUT /api/schedule/user/category/{}", categorySeq);
         Long userSeq = tokenProvider.getUserSeq(http);
-        return ApiResponse.ok(
-            scheduleService.updateCategory(userSeq, categorySeq, request));
+        return ApiResponse.ok(scheduleService.updateCategory(userSeq, categorySeq, request));
     }
 
     @DeleteMapping("/user/category/{categorySeq}")
-    public ApiResponse<String> deleteCategory(HttpServletRequest http, @PathVariable Long categorySeq) {
+    public ApiResponse<String> deleteCategory(HttpServletRequest http,
+        @PathVariable Long categorySeq) {
         log.info("DELETE /api/schedule/user/category/{}", categorySeq);
         Long userSeq = tokenProvider.getUserSeq(http);
         scheduleService.deleteCategory(userSeq, categorySeq);
@@ -189,7 +180,8 @@ public class ScheduleController {
     // ==================== 개별 알림 설정 ====================
 
     @PostMapping("/{scheduleSeq}/subscribe/mention")
-    public ApiResponse<String> subscribeMention(HttpServletRequest http, @PathVariable Long scheduleSeq) {
+    public ApiResponse<String> subscribeMention(HttpServletRequest http,
+        @PathVariable Long scheduleSeq) {
         log.info("POST /api/schedule/{}/subscribe/mention", scheduleSeq);
         Long userSeq = tokenProvider.getUserSeq(http);
         scheduleService.setMentionAlarm(userSeq, scheduleSeq, true);
@@ -197,7 +189,8 @@ public class ScheduleController {
     }
 
     @PostMapping("/{scheduleSeq}/unsubscribe/mention")
-    public ApiResponse<String> unsubscribeMention(HttpServletRequest http, @PathVariable Long scheduleSeq) {
+    public ApiResponse<String> unsubscribeMention(HttpServletRequest http,
+        @PathVariable Long scheduleSeq) {
         log.info("POST /api/schedule/{}/unsubscribe/mention", scheduleSeq);
         Long userSeq = tokenProvider.getUserSeq(http);
         scheduleService.setMentionAlarm(userSeq, scheduleSeq, false);
@@ -205,7 +198,8 @@ public class ScheduleController {
     }
 
     @PostMapping("/{scheduleSeq}/subscribe/update")
-    public ApiResponse<String> subscribeUpdate(HttpServletRequest http, @PathVariable Long scheduleSeq) {
+    public ApiResponse<String> subscribeUpdate(HttpServletRequest http,
+        @PathVariable Long scheduleSeq) {
         log.info("POST /api/schedule/{}/subscribe/update", scheduleSeq);
         Long userSeq = tokenProvider.getUserSeq(http);
         scheduleService.setUpdateAlarm(userSeq, scheduleSeq, true);
@@ -213,7 +207,8 @@ public class ScheduleController {
     }
 
     @PostMapping("/{scheduleSeq}/unsubscribe/update")
-    public ApiResponse<String> unsubscribeUpdate(HttpServletRequest http, @PathVariable Long scheduleSeq) {
+    public ApiResponse<String> unsubscribeUpdate(HttpServletRequest http,
+        @PathVariable Long scheduleSeq) {
         log.info("POST /api/schedule/{}/unsubscribe/update", scheduleSeq);
         Long userSeq = tokenProvider.getUserSeq(http);
         scheduleService.setUpdateAlarm(userSeq, scheduleSeq, false);

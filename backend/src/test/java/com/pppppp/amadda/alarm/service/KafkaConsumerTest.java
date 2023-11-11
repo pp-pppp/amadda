@@ -77,8 +77,6 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         FriendRequest savedFriendRequest = friendRequestRepository.save(friendRequest);
 
         String topic = kafkaTopic.ALARM_FRIEND_REQUEST;
-        System.out.println("topic = " + topic);
-        System.out.println("kafkaTopic.ALARM_FRIEND_REQUEST = " + kafkaTopic.ALARM_FRIEND_REQUEST);
         String key = String.valueOf(friend.getUserSeq());
         AlarmFriendRequest value = AlarmFriendRequest.create(
             savedFriendRequest.getRequestSeq(), friend.getUserSeq(),

@@ -45,7 +45,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
-        AlarmConfig ac= AlarmConfig.create(user, alarmType, true);
+        AlarmConfig ac = AlarmConfig.create(user, alarmType, true);
         alarmConfigRepository.save(ac);
 
         // when
@@ -68,7 +68,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
-        AlarmConfig ac= AlarmConfig.create(user, alarmType, false);
+        AlarmConfig ac = AlarmConfig.create(user, alarmType, false);
         alarmConfigRepository.save(ac);
 
         // when
@@ -118,7 +118,8 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
 
         // then
         assertThat(config).isNotEmpty();
-        assertThat(config.get()).extracting("user.userSeq", "alarmType", "isEnabled")
+        assertThat(config.get())
+            .extracting("user.userSeq", "alarmType", "isEnabled")
             .containsExactly(user.getUserSeq(), alarmType, false);
     }
 

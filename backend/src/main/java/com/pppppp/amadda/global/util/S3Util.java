@@ -12,10 +12,11 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @Component
 public class S3Util {
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
 
     private final AmazonS3 amazonS3;
+    
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
     public String upload(MultipartFile multipartFile) throws IOException {
         String s3FileName = UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();

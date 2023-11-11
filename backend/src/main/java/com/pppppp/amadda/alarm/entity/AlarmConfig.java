@@ -23,6 +23,8 @@ import org.hibernate.annotations.ColumnDefault;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AlarmConfig extends BaseEntity {
 
+    public static final AlarmConfig DEFAULT = AlarmConfig.builder().isEnabled(true).build();
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long alarmConfigSeq;

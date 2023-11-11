@@ -5,8 +5,12 @@ import com.pppppp.amadda.alarm.entity.AlarmType;
 import lombok.Builder;
 
 @Builder
-public record AlarmReadResponse(Long alarmSeq, String content, boolean isRead,
-                                AlarmType alarmType, boolean isEnabled) {
+public record AlarmReadResponse(
+    Long alarmSeq,
+    String content,
+    boolean isRead,
+    AlarmType alarmType,
+    boolean isEnabled) {
 
     public static AlarmReadResponse of(Alarm alarm, boolean isEnabled) {
         return AlarmReadResponse.builder()

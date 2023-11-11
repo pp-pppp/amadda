@@ -4,15 +4,14 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.global.entity.exception.errorcode.ImageErrorCode;
-import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.*;
-import java.net.URL;
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor

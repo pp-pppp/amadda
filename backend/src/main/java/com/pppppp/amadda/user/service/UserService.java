@@ -7,20 +7,29 @@ import com.pppppp.amadda.global.entity.exception.errorcode.FriendErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
 import com.pppppp.amadda.global.service.ImageService;
 import com.pppppp.amadda.global.util.TokenProvider;
-import com.pppppp.amadda.user.dto.request.*;
-import com.pppppp.amadda.user.dto.response.*;
+import com.pppppp.amadda.user.dto.request.UserIdCheckRequest;
+import com.pppppp.amadda.user.dto.request.UserInitRequest;
+import com.pppppp.amadda.user.dto.request.UserJwtRequest;
+import com.pppppp.amadda.user.dto.request.UserNameCheckRequest;
+import com.pppppp.amadda.user.dto.request.UserRefreshRequest;
+import com.pppppp.amadda.user.dto.response.UserAccessResponse;
+import com.pppppp.amadda.user.dto.response.UserIdCheckResponse;
+import com.pppppp.amadda.user.dto.response.UserJwtInitResponse;
+import com.pppppp.amadda.user.dto.response.UserJwtResponse;
+import com.pppppp.amadda.user.dto.response.UserNameCheckResponse;
+import com.pppppp.amadda.user.dto.response.UserReadResponse;
+import com.pppppp.amadda.user.dto.response.UserRelationResponse;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
 import io.jsonwebtoken.ExpiredJwtException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +43,8 @@ public class UserService {
 
 
     public User getUserInfoBySeq(Long userSeq) {
-        return findUserByUserSeq(userSeq).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        return findUserByUserSeq(userSeq)
+            .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
     }
 
     public UserReadResponse getUserResponse(Long userSeq) {
@@ -42,7 +52,7 @@ public class UserService {
     }
 
     public boolean checkIsInited(Long userSeq) {
-        try{
+        try {
             getUserInfoBySeq(userSeq);
             return true;
         } catch (Exception e) {
@@ -52,12 +62,13 @@ public class UserService {
 
     @Transactional
     public void saveUser(UserInitRequest request) {
-        String fileName = request.userSeq()+"_"
-                + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))
-                + ".jpg";
+        String fileName = request.userSeq() + "_"
+            + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))
+            + ".jpg";
         String s3Url = imageService.saveKakaoImgInS3(request.imageUrl(), fileName);
 
-        User u = User.create(Long.parseLong(request.userSeq()), request.userName(), request.userId(), s3Url);
+        User u = User.create(Long.parseLong(request.userSeq()), request.userName(),
+            request.userId(), s3Url);
         saveUser(u);
     }
 
@@ -78,16 +89,17 @@ public class UserService {
         User target = getUserInfoBySeq(targetSeq);
         User owner = getUserInfoBySeq(mySeq);
         boolean isFriend = isFriend(owner, target);
-
         return UserRelationResponse.of(target, isFriend);
     }
 
     public UserRelationResponse getUserInfoAndIsFriend(Long userSeq, String searchKey) {
         User result = findUserWithExactId(searchKey).orElse(null);
+        if (result == null) {
+            return UserRelationResponse.notFound();
+        }
 
-        if(result == null) return UserRelationResponse.notFound();
         User owner = findUserByUserSeq(userSeq)
-                .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+            .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         boolean isFriend = isFriend(owner, result);
         return UserRelationResponse.of(result, isFriend);
     }
@@ -95,7 +107,9 @@ public class UserService {
     public boolean isFriend(User owner, User target) {
         boolean chk1 = findTargetUserInFriend(owner, target).isPresent();
         boolean chk2 = findTargetUserInFriend(target, owner).isPresent();
-        if(chk1^chk2) throw new RestApiException(FriendErrorCode.FRIEND_RELATION_DAMAGED);
+        if (chk1 ^ chk2) {
+            throw new RestApiException(FriendErrorCode.FRIEND_RELATION_DAMAGED);
+        }
         return chk1 && chk2;
     }
 
@@ -141,16 +155,15 @@ public class UserService {
     // =================== 유저 인증 관련 메소드들 ===================
 
     public UserJwtInitResponse getTokensAndCheckInit(UserJwtRequest request) {
-
         Long userSeq = Long.parseLong(request.userSeq());
         List<String> tokens = tokenProvider.createTokens(userSeq);
         boolean isInited = checkIsInited(userSeq);
 
         return UserJwtInitResponse.of(
-                tokens.get(0),
-                tokens.get(1),
-                tokens.get(2),
-                isInited
+            tokens.get(0),
+            tokens.get(1),
+            tokens.get(2),
+            isInited
         );
     }
 
@@ -159,9 +172,9 @@ public class UserService {
         List<String> tokens = tokenProvider.createTokens(userSeq);
 
         return UserJwtResponse.of(
-                tokens.get(0),
-                tokens.get(1),
-                tokens.get(2)
+            tokens.get(0),
+            tokens.get(1),
+            tokens.get(2)
         );
     }
 }

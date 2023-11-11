@@ -56,23 +56,28 @@ import org.springframework.test.annotation.DirtiesContext;
 )
 class AlarmServiceTest extends IntegrationTestSupport {
 
-    @Autowired
-    private KafkaTopic kafkaTopic;
-
     @MockBean
     KafkaTemplate<Long, BaseTopicValue> kafkaTemplate;
     @Autowired
+    private KafkaTopic kafkaTopic;
+    @Autowired
     private AlarmService alarmService;
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private FriendRequestRepository friendRequestRepository;
+
     @Autowired
     private ScheduleRepository scheduleRepository;
+
     @Autowired
     private ParticipationRepository participationRepository;
+
     @Autowired
     private AlarmConfigRepository alarmConfigRepository;
+
     @Autowired
     private AlarmRepository alarmRepository;
 
@@ -165,7 +170,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         alarmRepository.saveAll(alarms);
 
         // when
-        List<AlarmReadResponse> result = alarmService.readAlarms(user.getUserSeq());
+        List<AlarmReadResponse> result = alarmService.getAlarms(user.getUserSeq());
 
         // then
         assertThat(result).hasSize(3)
@@ -199,7 +204,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         alarmConfigRepository.saveAll(List.of(ac1, ac2));
 
         // when
-        List<AlarmReadResponse> result = alarmService.readAlarms(user.getUserSeq());
+        List<AlarmReadResponse> result = alarmService.getAlarms(user.getUserSeq());
 
         // then
         assertThat(result).hasSize(4)
@@ -230,7 +235,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         alarmRepository.saveAll(alarms);
 
         // when
-        List<AlarmReadResponse> result = alarmService.readAlarms(user.getUserSeq());
+        List<AlarmReadResponse> result = alarmService.getAlarms(user.getUserSeq());
 
         // then
         assertThat(result).hasSize(0);
@@ -240,7 +245,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
     @Test
     void getAlarms_wrongUser() {
         // when + then
-        assertThatThrownBy(() -> alarmService.readAlarms(2L))
+        assertThatThrownBy(() -> alarmService.getAlarms(2L))
             .isInstanceOf(RestApiException.class)
             .hasMessage("USER_NOT_FOUND");
     }
@@ -259,8 +264,10 @@ class AlarmServiceTest extends IntegrationTestSupport {
         alarmService.readAlarm(alarm.getAlarmSeq(), user.getUserSeq());
 
         // then
-        Alarm result = alarmRepository.findById(alarm.getAlarmSeq()).get();
-        assertTrue(result.isRead());
+        Optional<Alarm> result = alarmRepository.findByAlarmSeq(alarm.getAlarmSeq());
+
+        assertTrue(result.isPresent());
+        assertTrue(result.get().isRead());
     }
 
     @DisplayName("알림 읽음 처리 - 존재하지 않는 유저로 요청")
@@ -815,7 +822,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         alarmService.readFriendRequestAlarm(friendRequest.getRequestSeq());
 
         // then
-        Optional<Alarm> result = alarmRepository.findById(alarm.getAlarmSeq());
+        Optional<Alarm> result = alarmRepository.findByAlarmSeq(alarm.getAlarmSeq());
         assertTrue(result.isPresent());
         assertThat(result.get())
             .extracting("user.userSeq", "content", "isRead", "alarmType")

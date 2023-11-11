@@ -1,7 +1,13 @@
 package com.pppppp.amadda.friend.service;
 
-import com.pppppp.amadda.friend.dto.response.*;
-import com.pppppp.amadda.friend.entity.*;
+import com.pppppp.amadda.friend.dto.response.FriendReadResponse;
+import com.pppppp.amadda.friend.dto.response.FriendRequestResponse;
+import com.pppppp.amadda.friend.dto.response.FriendResponse;
+import com.pppppp.amadda.friend.dto.response.GroupResponse;
+import com.pppppp.amadda.friend.dto.response.MemberResponse;
+import com.pppppp.amadda.friend.entity.Friend;
+import com.pppppp.amadda.friend.entity.GroupMember;
+import com.pppppp.amadda.friend.entity.UserGroup;
 import com.pppppp.amadda.friend.repository.FriendRepository;
 import com.pppppp.amadda.friend.repository.GroupMemberRepository;
 import com.pppppp.amadda.friend.repository.UserGroupRepository;
@@ -9,12 +15,13 @@ import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.global.entity.exception.errorcode.FriendErrorCode;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.service.UserService;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,8 +37,9 @@ public class FriendService {
     public List<FriendResponse> createFriend(FriendRequestResponse friendRequest) {
 
         // 상태가 ACCEPTED가 맞는지 확인
-        if(!friendRequest.status().equals("ACCEPTED"))
+        if (!friendRequest.status().equals("ACCEPTED")) {
             throw new RestApiException(FriendErrorCode.FRIEND_INVALID);
+        }
 
         Long userSeq = friendRequest.ownerSeq();
         Long targetSeq = friendRequest.friendSeq();
@@ -48,11 +56,11 @@ public class FriendService {
     public void deleteFriends(User u1, User u2) {
 
         Long relationSeq1 = findFriendByOwnerAndFriend(u1, u2)
-                .orElseThrow(() -> new RestApiException(FriendErrorCode.FRIEND_NOT_FOUND))
-                .getRelationSeq();
+            .orElseThrow(() -> new RestApiException(FriendErrorCode.FRIEND_NOT_FOUND))
+            .getRelationSeq();
         Long relationSeq2 = findFriendByOwnerAndFriend(u2, u1)
-                .orElseThrow(() -> new RestApiException(FriendErrorCode.FRIEND_NOT_FOUND))
-                .getRelationSeq();
+            .orElseThrow(() -> new RestApiException(FriendErrorCode.FRIEND_NOT_FOUND))
+            .getRelationSeq();
         deleteFriendBySeq(relationSeq1);
         deleteFriendBySeq(relationSeq2);
     }
@@ -61,12 +69,13 @@ public class FriendService {
 
         List<GroupResponse> groupResponses = searchInGroups(userSeq, searchKey);
         List<MemberResponse> memberResponses = searchFriendsWithKey(userSeq, searchKey)
-                .stream().map(MemberResponse::of)
-                .toList();
+            .stream()
+            .map(MemberResponse::of)
+            .toList();
 
         return FriendReadResponse.of(
-                groupResponses,
-                memberResponses
+            groupResponses,
+            memberResponses
         );
     }
 
@@ -75,28 +84,27 @@ public class FriendService {
         List<UserGroup> myGroups = getMyUserGroups(userSeq); // 내 그룹들만 뽑음
 
         List<Long> myGroupSeqs = myGroups.stream() // 내 그룹들 seq만 뽑아 담은 리스트
-                .map(UserGroup::getGroupSeq)
-                .toList();
+            .map(UserGroup::getGroupSeq)
+            .toList();
 
         // 내 그룹에 해당하면서 검색키에 해당하는 멤버들만 뽑음
         List<GroupMember> searchedGroupMembers = getMySearchedGroupMembers(myGroupSeqs, searchKey);
 
         Set<Long> newHS = searchedGroupMembers.stream() // 검색에 해당하는 그룹 seq만 뽑아 담은 쎗
-                .map(mem -> mem.getGroup().getGroupSeq())
-                .collect(Collectors.toSet());
+            .map(mem -> mem.getGroup().getGroupSeq())
+            .collect(Collectors.toSet());
 
         return myGroups.stream()
-                .filter(group -> newHS.contains(group.getGroupSeq())) // 검색에서 걸러진 그룹들 여기서도 걸러주기
-                .map(group -> {
-                    List<MemberResponse> mems = searchedGroupMembers.stream()
-                            .filter(mem -> mem.getGroup().getGroupSeq() == group.getGroupSeq())
-                            .map(MemberResponse::of)
-                            .toList();
-                    return GroupResponse.of(group, mems);
-                })
-                .toList();
+            .filter(group -> newHS.contains(group.getGroupSeq())) // 검색에서 걸러진 그룹들 여기서도 걸러주기
+            .map(group -> {
+                List<MemberResponse> mems = searchedGroupMembers.stream()
+                    .filter(mem -> mem.getGroup().getGroupSeq() == group.getGroupSeq())
+                    .map(MemberResponse::of)
+                    .toList();
+                return GroupResponse.of(group, mems);
+            })
+            .toList();
     }
-
 
 
     // =============== 레포지토리에 직접 접근하는 메소드들 ===============

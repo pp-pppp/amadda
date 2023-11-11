@@ -11,14 +11,13 @@ import com.pppppp.amadda.global.entity.exception.errorcode.GroupErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,19 +37,19 @@ public class GroupMemberService {
     @Transactional
     public void createGroupMember(GroupCreateRequest request, Long groupSeq) {
         UserGroup ug = getGroup(groupSeq)
-                .orElseThrow(() -> new RestApiException(GroupErrorCode.GROUP_NOT_FOUND));
+            .orElseThrow(() -> new RestApiException(GroupErrorCode.GROUP_NOT_FOUND));
 
         request.userSeqs().stream()
-                .map(this::findUserBySeq)
-                .map(u -> GroupMember.create(ug, u))
-                .forEach(this::saveGroupMember);
+            .map(this::findUserBySeq)
+            .map(u -> GroupMember.create(ug, u))
+            .forEach(this::saveGroupMember);
     }
 
     @Transactional
     public void editGroup(GroupUpdateRequest request) {
 
         UserGroup ug = getGroup(request.groupSeq())
-                .orElseThrow(() -> new RestApiException(GroupErrorCode.GROUP_NOT_FOUND));
+            .orElseThrow(() -> new RestApiException(GroupErrorCode.GROUP_NOT_FOUND));
         List<GroupMember> members = getMembers(request.groupSeq());
         List<Long> newMems = request.userSeqs();
 
@@ -64,14 +63,19 @@ public class GroupMemberService {
 
         for (int i = 0; i < newMems.size(); i++) {
             Long mem = newMems.get(i);
-            if(hs.contains(mem)) hs.remove(mem);
-            else toAdd.add(
+            if (hs.contains(mem)) {
+                hs.remove(mem);
+            } else {
+                toAdd.add(
                     GroupMember.create(ug, findUserBySeq(mem))
-            );
+                );
+            }
         }
 
         List<Long> toDel = new ArrayList<>(hs);
-        for (int i = 0; i < toDel.size(); i++) deleteMember(request.groupSeq(), toDel.get(i));
+        for (int i = 0; i < toDel.size(); i++) {
+            deleteMember(request.groupSeq(), toDel.get(i));
+        }
 
         saveGroupMembers(toAdd);
     }
@@ -82,12 +86,11 @@ public class GroupMemberService {
 
         // 만약 그룹이 비어버리면 그룹 삭제
         findMyGroups(me.getUserSeq())
-                .stream()
-                .filter(group -> getMembers(group.getGroupSeq()).isEmpty())
-                .forEach(this::deleteGroup);
+            .stream()
+            .filter(group -> getMembers(group.getGroupSeq()).isEmpty())
+            .forEach(this::deleteGroup);
 
     }
-
 
     // =============== 레포지토리에 직접 접근하는 메소드들 ===============
 
@@ -105,7 +108,7 @@ public class GroupMemberService {
 
     private User findUserBySeq(Long seq) {
         return userRepository.findByUserSeq(seq)
-                .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+            .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
     }
 
     private List<GroupMember> getMembers(Long seq) {

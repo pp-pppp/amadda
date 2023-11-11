@@ -20,14 +20,12 @@ public record ScheduleDetailReadResponse(
     List<UserReadResponse> participants,
 
     // ================ Participation =================
-
     String alarmTime,
     String scheduleName,
     String scheduleMemo,
     CategoryReadResponse category,
 
     // ================= Comment ===================
-
     List<CommentReadResponse> comments
 ) {
 
@@ -48,8 +46,8 @@ public record ScheduleDetailReadResponse(
             .alarmTime(participation.getAlarmTime().getContent())
             .scheduleName(participation.getScheduleName())
             .scheduleMemo(participation.getScheduleMemo())
-            .category((participation.getCategory() != null) ? CategoryReadResponse.of(
-                participation.getCategory()) : null)
+            .category((participation.getCategory() != null) ?
+                CategoryReadResponse.of(participation.getCategory()) : null)
             .comments(comments)
             .build();
     }

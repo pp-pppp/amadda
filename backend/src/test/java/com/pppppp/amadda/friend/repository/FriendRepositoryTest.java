@@ -1,24 +1,24 @@
 package com.pppppp.amadda.friend.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.friend.entity.Friend;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
-
 class FriendRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
     private FriendRepository friendRepository;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -43,8 +43,8 @@ class FriendRepositoryTest extends IntegrationTestSupport {
 
         //then
         assertThat(f)
-                .extracting("owner", "friend")
-                .containsExactly(u1, u2);
+            .extracting("owner", "friend")
+            .containsExactly(u1, u2);
     }
 
     @DisplayName("주인 유저와 친구 유저로 친구관계를 조회할 수 있다. ")
@@ -64,8 +64,8 @@ class FriendRepositoryTest extends IntegrationTestSupport {
 
         // then
         assertThat(friend)
-                .extracting("owner", "friend")
-                .containsExactly(u1, u2);
+            .extracting("owner", "friend")
+            .containsExactly(u1, u2);
     }
 
     @DisplayName("친구를 삭제할 수 있다. ")
@@ -84,7 +84,7 @@ class FriendRepositoryTest extends IntegrationTestSupport {
 
         // then
         assertThat(friendRepository.findAll())
-                .hasSize(0);
+            .hasSize(0);
     }
 
     @DisplayName("내 유저 seq와 검색키로 해당 유저들을 조회할 수 있다. ")
@@ -105,10 +105,10 @@ class FriendRepositoryTest extends IntegrationTestSupport {
 
         // then
         assertThat(friends)
-                .extracting("friend.userSeq", "friend.userName")
-                .containsExactlyInAnyOrder(
-                        tuple(1234L, "유저2")
-                );
+            .extracting("friend.userSeq", "friend.userName")
+            .containsExactlyInAnyOrder(
+                tuple(1234L, "유저2")
+            );
     }
 
 }
