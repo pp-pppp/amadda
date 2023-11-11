@@ -91,6 +91,7 @@ const config: StorybookConfig = {
       '#': path.resolve(__dirname, '../../../_packages/@external-temporal/'),
       '@SCH': path.resolve(__dirname, '../../../_apps/schedule/'),
     };
+
     return config;
   },
 };
