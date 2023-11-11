@@ -41,7 +41,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(controllers = ScheduleController.class)
 class ScheduleControllerTest {
-    // TODO: 일정 수정 알림 controller 테스트
 
     @Autowired
     private MockMvc mockMvc;

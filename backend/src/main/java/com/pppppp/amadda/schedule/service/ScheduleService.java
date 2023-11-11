@@ -40,10 +40,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,35 +71,13 @@ public class ScheduleService {
 
     private final CategoryRepository categoryRepository;
 
-    private boolean isSameUser(Long requestUserSeq, Long userSeq) {
-        return Objects.equals(requestUserSeq, userSeq);
-    }
-
-    private boolean hasChangeField(ScheduleUpdateRequest request, Schedule schedule) {
-        if (!Objects.equals(schedule.getScheduleContent(), request.scheduleContent())) {
-            return true;
-        }
-        if (!Objects.equals(schedule.isDateSelected(), request.isDateSelected())) {
-            return true;
-        }
-        if (!Objects.equals(schedule.isTimeSelected(), request.isTimeSelected())) {
-            return true;
-        }
-        if (!Objects.equals(schedule.isAllDay(), request.isAllDay())) {
-            return true;
-        }
-        if (request.isDateSelected() && !Objects.equals(schedule.getScheduleStartAt(),
-            LocalDateTime.parse(request.scheduleStartAt()))) {
-            return true;
-        }
-        if (request.isTimeSelected() && !Objects.equals(schedule.getScheduleEndAt(),
-            LocalDateTime.parse(request.scheduleEndAt()))) {
-            return true;
-        }
-        return false;
+    public String getServerTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return LocalDateTime.now().format(formatter);
     }
 
     // ================== schedule & participation ==================
+
     @Transactional
     public ScheduleCreateResponse createSchedule(Long userSeq, ScheduleCreateRequest request) {
         User user = findUserInfo(userSeq);
@@ -114,11 +94,6 @@ public class ScheduleService {
         return ScheduleCreateResponse.of(newSchedule);
     }
 
-    public String getServerTime() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return LocalDateTime.now().format(formatter);
-    }
-
     public ScheduleDetailReadResponse getScheduleDetail(Long scheduleSeq, Long userSeq) {
         findUserInfo(userSeq);
         Schedule schedule = findScheduleInfo(scheduleSeq);
@@ -133,13 +108,6 @@ public class ScheduleService {
         List<CommentReadResponse> comments = findCommentListBySchedule(scheduleSeq);
 
         return ScheduleDetailReadResponse.of(schedule, participants, participation, comments);
-    }
-
-    public List<UserReadResponse> getParticipatingUserList(Long scheduleSeq) {
-        return participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(scheduleSeq)
-            .stream()
-            .map(participation -> UserReadResponse.of(participation.getUser()))
-            .toList();
     }
 
     public Map<String, List<ScheduleListReadResponse>> getScheduleListByCondition(
@@ -229,6 +197,13 @@ public class ScheduleService {
         return findScheduleListBySearchCondition(userSeq, searchCondition);
     }
 
+    public List<UserReadResponse> getParticipatingUserList(Long scheduleSeq) {
+        return participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(scheduleSeq)
+            .stream()
+            .map(participation -> UserReadResponse.of(participation.getUser()))
+            .toList();
+    }
+
     public List<UserReadResponse> getParticipatingUserListBySearchKey(Long scheduleSeq,
         String searchKey) {
         return findParticipatorListByUserName(scheduleSeq, searchKey);
@@ -280,21 +255,6 @@ public class ScheduleService {
     // ================== comment ==================
 
     @Transactional
-    public void deleteSchedule(Long userSeq, Long scheduleSeq) {
-        findUserInfo(userSeq);
-        Schedule schedule = findScheduleInfo(scheduleSeq);
-
-        // 사용자가 권한이 없으면 안됨
-        checkUserAuthorizedToSchedule(userSeq, schedule);
-
-        // 연결되어 있는 참가정보 삭제
-        List<Participation> participations = findParticipationListBySchedule(scheduleSeq);
-        participationRepository.deleteAllInBatch(participations);
-
-        scheduleRepository.delete(schedule);
-    }
-
-    @Transactional
     public void createCommentOnSchedule(Long scheduleSeq,
         Long userSeq, CommentCreateRequest request) {
 
@@ -304,7 +264,29 @@ public class ScheduleService {
         commentRepository.save(request.toEntity(user, schedule));
     }
 
-    // ================== category ==================
+    @Transactional
+    public void deleteSchedule(Long userSeq, Long scheduleSeq) {
+        findUserInfo(userSeq);
+        Schedule schedule = findScheduleInfo(scheduleSeq);
+
+        // 사용자가 권한이 없으면 안됨
+        checkUserAuthorizedToSchedule(userSeq, schedule);
+
+        // 연결되어 있는 참가정보 삭제
+        List<Participation> participations = findParticipationListBySchedule(scheduleSeq);
+
+        // 알림 보내기
+        participations.stream()
+            .filter(participation -> !isSameUser(userSeq, participation.getUser().getUserSeq()))
+            .forEach(participation -> {
+                Long targetSeq = participation.getUser().getUserSeq();
+                alarmService.sendScheduleUpdate(scheduleSeq, targetSeq);
+            });
+
+        participationRepository.deleteAllInBatch(participations);
+
+        scheduleRepository.delete(schedule);
+    }
 
     @Transactional
     public void deleteComment(Long commentSeq, Long userSeq) {
@@ -315,6 +297,8 @@ public class ScheduleService {
 
         commentRepository.delete(comment);
     }
+
+    // ================== category ==================
 
     @Transactional
     public CategoryCreateResponse createCategory(Long userSeq, CategoryCreateRequest request) {
@@ -364,6 +348,8 @@ public class ScheduleService {
         categoryRepository.delete(category);
     }
 
+    // ================== set alarm config ==================
+
     @Transactional
     public void setMentionAlarm(Long userSeq, Long scheduleSeq, boolean isEnabled) {
         findUserInfo(userSeq);
@@ -372,14 +358,42 @@ public class ScheduleService {
         participation.updateIsMentionAlarmOn(isEnabled);
     }
 
-    // ================== private methods ==================
-
     @Transactional
     public void setUpdateAlarm(Long userSeq, Long scheduleSeq, boolean isEnabled) {
         findUserInfo(userSeq);
         findScheduleInfo(scheduleSeq);
         Participation participation = findParticipationInfoBySchedule(scheduleSeq, userSeq);
         participation.updateIsUpdateAlarmOn(isEnabled);
+    }
+
+    // ================== private methods ==================
+
+    private boolean isSameUser(Long requestUserSeq, Long userSeq) {
+        return Objects.equals(requestUserSeq, userSeq);
+    }
+
+    private boolean hasChangeField(ScheduleUpdateRequest request, Schedule schedule) {
+        if (!Objects.equals(schedule.getScheduleContent(), request.scheduleContent())) {
+            return true;
+        }
+        if (!Objects.equals(schedule.isDateSelected(), request.isDateSelected())) {
+            return true;
+        }
+        if (!Objects.equals(schedule.isTimeSelected(), request.isTimeSelected())) {
+            return true;
+        }
+        if (!Objects.equals(schedule.isAllDay(), request.isAllDay())) {
+            return true;
+        }
+        if (request.isDateSelected() && !Objects.equals(schedule.getScheduleStartAt(),
+            LocalDateTime.parse(request.scheduleStartAt()))) {
+            return true;
+        }
+        if (request.isTimeSelected() && !Objects.equals(schedule.getScheduleEndAt(),
+            LocalDateTime.parse(request.scheduleEndAt()))) {
+            return true;
+        }
+        return false;
     }
 
     private void createParticipation(Long userSeq, ScheduleCreateRequest request,
@@ -554,13 +568,17 @@ public class ScheduleService {
 
         // 3. 수정할 사용자 목록과 비교해서 현재 사용자 중 삭제된 사용자가 있는지 확인, 있으면 참석정보 삭제
         boolean hasChangeField = hasChangeField(request, schedule);
+        boolean participationChanged = isParticipationChanged(previousParticipationList,
+            updateParticipationList);
+        boolean isChanged = hasChangeField || participationChanged;
         for (User user : previousParticipationList) {
             if (updateParticipationList.contains(user)) {
-                if (hasChangeField && !isSameUser(requestUserSeq, user.getUserSeq())) {
-                    alarmService.sendScheduleUpdate(schedule.getScheduleSeq(), user.getUserSeq());
+                if (isChanged) {
+                    sendUpdateAlarm(requestUserSeq, schedule, user);
                 }
             } else {
                 deleteParticipation(user.getUserSeq(), schedule);
+                sendUpdateAlarm(requestUserSeq, schedule, user);
             }
         }
 
@@ -594,6 +612,37 @@ public class ScheduleService {
             });
     }
 
+    private void sendUpdateAlarm(Long requestUserSeq, Schedule schedule, User user) {
+        if (!isSameUser(requestUserSeq, user.getUserSeq())) {
+            alarmService.sendScheduleUpdate(schedule.getScheduleSeq(), user.getUserSeq());
+        }
+    }
+    
+    private boolean isParticipationChanged(List<User> oldParticipations,
+        List<User> newParticipations) {
+        Set<User> oldSet = new HashSet<>(oldParticipations);
+        Set<User> newSet = new HashSet<>(newParticipations);
+
+        boolean hasAddedUsers = hasAddedUsers(oldSet, newSet);
+        boolean hasRemovedUsers = hasRemovedUsers(oldSet, newSet);
+
+        return hasAddedUsers || hasRemovedUsers;
+    }
+
+    // 이전 리스트에는 있지만 새로운 리스트에는 없는 유저 찾기
+    private boolean hasAddedUsers(Set<User> oldSet, Set<User> newSet) {
+        Set<User> targetSet = new HashSet<>(newSet);
+        targetSet.removeAll(oldSet);
+        return !targetSet.isEmpty();
+    }
+
+    // 이전 리스트에는 없지만 새로운 리스트에는 있는 유저 찾기
+    private boolean hasRemovedUsers(Set<User> oldSet, Set<User> newSet) {
+        Set<User> targetSet = new HashSet<>(oldSet);
+        targetSet.removeAll(newSet);
+        return !targetSet.isEmpty();
+    }
+
     private List<CommentReadResponse> findCommentListBySchedule(Long scheduleSeq) {
         return commentRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(scheduleSeq)
             .stream()
@@ -612,6 +661,18 @@ public class ScheduleService {
         if (categoryRepository.existsByUser_UserSeqAndCategoryNameAndIsDeletedFalse(userSeq,
             categoryName)) {
             throw new RestApiException(CategoryErrorCode.CATEGORY_ALREADY_EXISTS);
+        }
+    }
+
+    private void checkDateConditionValid(String year, String month, String day) {
+        // 만약 날짜 조건으로 검색하는데 연도가 없으면 예외 처리
+        if (year.isEmpty() && !(month.isEmpty() && day.isEmpty())) {
+            throw new RestApiException(ScheduleErrorCode.SCHEDULE_INVALID_REQUEST);
+        }
+
+        // 만약 일별 조회인데 월 단위 입력이 없으면 예외 처리
+        if (month.isEmpty() && !day.isEmpty()) {
+            throw new RestApiException(ScheduleErrorCode.SCHEDULE_INVALID_REQUEST);
         }
     }
 
@@ -689,16 +750,10 @@ public class ScheduleService {
             .toList();
     }
 
-    private void checkDateConditionValid(String year, String month, String day) {
-        // 만약 날짜 조건으로 검색하는데 연도가 없으면 예외 처리
-        if (year.isEmpty() && !(month.isEmpty() && day.isEmpty())) {
-            throw new RestApiException(ScheduleErrorCode.SCHEDULE_INVALID_REQUEST);
-        }
-
-        // 만약 일별 조회인데 월 단위 입력이 없으면 예외 처리
-        if (month.isEmpty() && !day.isEmpty()) {
-            throw new RestApiException(ScheduleErrorCode.SCHEDULE_INVALID_REQUEST);
-        }
+    // 메소드 오버로딩
+    private boolean checkScheduleInYearCondition(LocalDate date, String year) {
+        // 일정 시작 연도, 종료 연도가 해당 연도 이거나 해당 연도가 일정 중에 포함 되면 true
+        return date.getYear() == Integer.parseInt(year);
     }
 
     private boolean checkScheduleInYearCondition(Participation participation, String year) {
@@ -720,9 +775,11 @@ public class ScheduleService {
     }
 
     // 메소드 오버로딩
-    private boolean checkScheduleInYearCondition(LocalDate date, String year) {
-        // 일정 시작 연도, 종료 연도가 해당 연도 이거나 해당 연도가 일정 중에 포함 되면 true
-        return date.getYear() == Integer.parseInt(year);
+    private boolean checkScheduleInMonthCondition(LocalDate date, String year,
+        String month) {
+        // 일정 시작 시점이나 종료 시점이 해당 달이거나 해당 달이 일정 중에 포함되면 true
+        return date.getYear() == Integer.parseInt(year)
+            && date.getMonthValue() == Integer.parseInt(month);
     }
 
     private boolean checkScheduleInMonthCondition(Participation participation, String year,
@@ -754,11 +811,12 @@ public class ScheduleService {
     }
 
     // 메소드 오버로딩
-    private boolean checkScheduleInMonthCondition(LocalDate date, String year,
-        String month) {
-        // 일정 시작 시점이나 종료 시점이 해당 달이거나 해당 달이 일정 중에 포함되면 true
+    private boolean checkScheduleInDayCondition(LocalDate date, String year,
+        String month, String day) {
+        // 일정 시작 시점이나 종료 시점이 해당 날짜이거나 해당 날짜가 일정 중에 포함되면 true
         return date.getYear() == Integer.parseInt(year)
-            && date.getMonthValue() == Integer.parseInt(month);
+            && date.getMonthValue() == Integer.parseInt(month)
+            && date.getDayOfMonth() == Integer.parseInt(day);
     }
 
     private boolean checkScheduleInDayCondition(Participation participation, String year,
@@ -785,15 +843,6 @@ public class ScheduleService {
             && scheduleEndAt.getMonthValue() == Integer.parseInt(month)
             && scheduleEndAt.getDayOfMonth() == Integer.parseInt(day)) || (
             scheduleStartAt.isBefore(startTime) && scheduleEndAt.isAfter(endTime));
-    }
-
-    // 메소드 오버로딩
-    private boolean checkScheduleInDayCondition(LocalDate date, String year,
-        String month, String day) {
-        // 일정 시작 시점이나 종료 시점이 해당 날짜이거나 해당 날짜가 일정 중에 포함되면 true
-        return date.getYear() == Integer.parseInt(year)
-            && date.getMonthValue() == Integer.parseInt(month)
-            && date.getDayOfMonth() == Integer.parseInt(day);
     }
 
     private void deleteCategoryInfoInParticipation(Long categorySeq) {
