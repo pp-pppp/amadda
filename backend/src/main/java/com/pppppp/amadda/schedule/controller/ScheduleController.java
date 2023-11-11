@@ -110,7 +110,7 @@ public class ScheduleController {
         Long userSeq = tokenProvider.getUserSeq(http);
         ScheduleUpdateResponse response = scheduleService.updateSchedule(userSeq, scheduleSeq,
             request);
-        return ApiResponse.of(HttpStatus.OK, "수정되었습니다.", response);
+        return ApiResponse.of(HttpStatus.OK, "해당 일정을 수정했습니다", response);
 
     }
 
@@ -120,7 +120,7 @@ public class ScheduleController {
         log.info("DELETE /api/schedule/{}", scheduleSeq);
         Long userSeq = tokenProvider.getUserSeq(http);
         scheduleService.deleteSchedule(userSeq, scheduleSeq);
-        return ApiResponse.ok("삭제되었습니다.");
+        return ApiResponse.ok("해당 일정을 삭제했습니다.");
     }
 
     // ==================== 댓글 ====================
@@ -131,7 +131,7 @@ public class ScheduleController {
         log.info("POST /api/schedule/{}/comment", scheduleSeq);
         Long userSeq = tokenProvider.getUserSeq(http);
         scheduleService.createCommentOnSchedule(scheduleSeq, userSeq, request);
-        return ApiResponse.ok("댓글이 생성되었습니다.");
+        return ApiResponse.ok("댓글이 되었습니다.");
     }
 
     @DeleteMapping("/{scheduleSeq}/comment/{commentSeq}")
@@ -140,7 +140,7 @@ public class ScheduleController {
         log.info("DELETE /api/schedule/{}/comment/{}", scheduleSeq, commentSeq);
         Long userSeq = tokenProvider.getUserSeq(http);
         scheduleService.deleteComment(commentSeq, userSeq);
-        return ApiResponse.ok("삭제되었습니다.");
+        return ApiResponse.ok("댓글이 삭제되었습니다.");
     }
 
     // ==================== 카테고리 ====================

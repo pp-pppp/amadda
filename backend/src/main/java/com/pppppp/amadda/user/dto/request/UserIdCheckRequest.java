@@ -5,7 +5,7 @@ import lombok.Builder;
 
 @Builder
 public record UserIdCheckRequest(
-        @NotBlank(message = "유저의 아이디는 필수값입니다. ") String userId
+    @NotBlank(message = "유저의 아이디를 입력해 주세요.") String userId
 ) {
 
 }
