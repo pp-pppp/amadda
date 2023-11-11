@@ -1,7 +1,7 @@
 // import dynamic from 'next/dynamic';
 import { lazy } from 'react';
-import '#/util/global.css';
-import wrapper from '@/store/store';
+import { style } from 'external-temporal';
+import wrapper from '@SCH/store/store';
 
 function App({ Component, pageProps }) {
   return (
