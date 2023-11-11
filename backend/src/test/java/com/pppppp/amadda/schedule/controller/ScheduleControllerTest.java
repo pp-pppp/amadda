@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -19,6 +20,7 @@ import com.pppppp.amadda.schedule.dto.request.CategoryUpdateRequest;
 import com.pppppp.amadda.schedule.dto.request.CommentCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.ScheduleCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.ScheduleUpdateRequest;
+import com.pppppp.amadda.schedule.dto.response.CategoryUpdateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleCreateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleUpdateResponse;
 import com.pppppp.amadda.schedule.entity.AlarmTime;
@@ -29,6 +31,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -232,6 +236,55 @@ class ScheduleControllerTest {
             .andExpect(jsonPath("$.data").isArray());
     }
 
+    @DisplayName("일정을 수정한다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"ONE_DAY_BEFORE", "ONE_HOUR_BEFORE", "THIRTY_MINUTE_BEFORE",
+        "FIFTEEN_MINUTE_BEFORE", "ON_TIME", "NONE"})
+    void updateSchedule(String alarmTime) throws Exception {
+        User user = User.create(111L, "박동건", "icebearrrr", "imgUrl1");
+        Long scheduleSeq = 123L;
+
+        ScheduleUpdateRequest request = ScheduleUpdateRequest.builder()
+            // schedule
+            .scheduleName("합창단 공연")
+            .scheduleContent("수원 시민 회관")
+            .isDateSelected(true)
+            .isTimeSelected(true)
+            .isAllDay(false)
+            .scheduleStartAt("2023-11-18 18:30:00")
+            .scheduleEndAt("2023-11-18 20:30:00")
+            .participants(
+                List.of(UserReadResponse.of(user)))
+            // participation
+            .scheduleMemo("수원역에서 걸어서 10분")
+            .alarmTime(AlarmTime.valueOf(alarmTime))
+            .build();
+
+        // stubbing
+        when(scheduleService.updateSchedule(anyLong(), anyLong(),
+            any(ScheduleUpdateRequest.class)))
+            .thenReturn(ScheduleUpdateResponse.builder().scheduleSeq(scheduleSeq).build());
+
+        mockMvc.perform(put("/api/schedule/{scheduleSeq}", scheduleSeq)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"));
+    }
+
+    @DisplayName("일정을 삭제한다.")
+    @Test
+    void deleteSchedule() throws Exception {
+        Long scheduleSeq = anyLong();
+
+        mockMvc.perform(
+                delete("/api/schedule/{scheduleSeq}", scheduleSeq)
+                    .contentType(MediaType.APPLICATION_JSON)
+            ).andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"));
+    }
+
     @DisplayName("새로운 댓글을 등록한다.")
     @Test
     void createComment() throws Exception {
@@ -244,6 +297,20 @@ class ScheduleControllerTest {
         mockMvc.perform(
                 post("/api/schedule/{scheduleSeq}/comment", scheduleSeq)
                     .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+            ).andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"));
+    }
+
+    @DisplayName("댓글을 삭제한다.")
+    @Test
+    void deleteComment() throws Exception {
+        Long scheduleSeq = 123L;
+        Long commentSeq = 1L;
+
+        mockMvc.perform(
+                delete("/api/schedule/{scheduleSeq}/comment/{commentSeq}", scheduleSeq, commentSeq)
                     .contentType(MediaType.APPLICATION_JSON)
             ).andDo(print())
             .andExpect(status().isOk())
@@ -277,6 +344,42 @@ class ScheduleControllerTest {
             ).andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.data").isArray());
+    }
+
+    @DisplayName("카테고리를 수정한다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"SALMON", "YELLOW", "CYAN", "ORANGE", "HOTPINK", "GREEN", "GRAY"})
+    void updateCategory(String categoryColor) throws Exception {
+        Long categorySeq = 123L;
+        CategoryUpdateRequest request = CategoryUpdateRequest.builder()
+            .categoryName("합창단")
+            .categoryColor(categoryColor)
+            .build();
+
+        when(scheduleService.updateCategory(anyLong(), eq(categorySeq),
+            any(CategoryUpdateRequest.class)))
+            .thenReturn(CategoryUpdateResponse.builder().categorySeq(categorySeq).build());
+
+        mockMvc.perform(
+                put("/api/schedule/user/category/{categorySeq}", categorySeq)
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"));
+    }
+
+    @DisplayName("카테고리를 삭제한다.")
+    @Test
+    void deleteCategory() throws Exception {
+        Long categorySeq = anyLong();
+
+        mockMvc.perform(
+                delete("/api/schedule/user/category/{categorySeq}", categorySeq)
+                    .contentType(MediaType.APPLICATION_JSON)
+            ).andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"));
     }
 
     // ==================== 실패 테스트 ====================
