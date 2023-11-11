@@ -97,7 +97,7 @@ public class FriendController {
         groupMemberService.isUserValid(request.userSeqs()); // 전부 존재하는 유저들인지 검증
         Long groupSeq = userGroupService.createUserGroup(request); // 유저 그룹 만들기
         groupMemberService.createGroupMember(request, groupSeq); // 그룹 멤버 만들기
-        return ApiResponse.ok("성공적으로 친구 그룹을 생성했습니다.");
+        return ApiResponse.ok("친구 그룹을 생성했습니다.");
     }
 
     @PutMapping("/group")

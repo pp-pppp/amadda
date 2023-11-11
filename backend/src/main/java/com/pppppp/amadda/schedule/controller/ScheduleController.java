@@ -131,7 +131,7 @@ public class ScheduleController {
         log.info("POST /api/schedule/{}/comment", scheduleSeq);
         Long userSeq = tokenProvider.getUserSeq(http);
         scheduleService.createCommentOnSchedule(scheduleSeq, userSeq, request);
-        return ApiResponse.ok("댓글이 되었습니다.");
+        return ApiResponse.ok("댓글이 생성되었습니다.");
     }
 
     @DeleteMapping("/{scheduleSeq}/comment/{commentSeq}")
