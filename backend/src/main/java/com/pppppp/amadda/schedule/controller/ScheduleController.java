@@ -42,9 +42,7 @@ public class ScheduleController {
 
     private final ScheduleService scheduleService;
     private final TokenProvider tokenProvider;
-
-    // TODO: 로그인 구현 후 코드 수정
-
+    
     // ==================== 일정 ====================
 
     @PostMapping("")

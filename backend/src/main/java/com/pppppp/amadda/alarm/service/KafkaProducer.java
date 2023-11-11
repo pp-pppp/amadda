@@ -12,9 +12,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Slf4j
 public class KafkaProducer {
-    /*
-     * TODO: turn on/off 시 AlarmConfigRepository 수정
-     * */
 
     private final KafkaTemplate<Long, BaseTopicValue> kafkaTemplate;
 
@@ -35,7 +32,7 @@ public class KafkaProducer {
         send(topic, userSeq, value);
     }
 
-    private static String getSettingGlobalTopic(AlarmType type) {
+    private String getSettingGlobalTopic(AlarmType type) {
         return String.format("SETTING_GLOBAL_%s", type.getCode());
     }
 
