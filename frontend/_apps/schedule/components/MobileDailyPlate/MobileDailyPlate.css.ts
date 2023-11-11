@@ -10,7 +10,7 @@ export const LAYOUT = styleVariants({
     flexGrow: '1',
   },
   category: {
-    width: '4px',
+    width: '0.25rem',
     height: '2rem',
   },
   profiles: {
