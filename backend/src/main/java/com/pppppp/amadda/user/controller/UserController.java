@@ -48,7 +48,7 @@ public class UserController {
     @PostMapping("/login")
     public ApiResponse<String> signupUser(@Valid @RequestBody UserInitRequest request) {
         userService.saveUser(request);
-        return ApiResponse.ok("사용자 등록 완료");
+        return ApiResponse.ok("회원가입에 성공했습니다.");
     }
 
     @GetMapping("/access")
@@ -66,7 +66,7 @@ public class UserController {
             UserJwtResponse response = userService.getNewTokens(request, userSeq);
             return ApiResponse.ok(response);
         } catch (Exception e) {
-            return ApiResponse.of(HttpStatus.UNAUTHORIZED, "re-login", "재로그인 필요. ");
+            return ApiResponse.of(HttpStatus.UNAUTHORIZED, "re-login", "다시 로그인해주세요.");
         }
     }
 

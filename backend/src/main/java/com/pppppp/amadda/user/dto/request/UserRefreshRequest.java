@@ -5,6 +5,6 @@ import lombok.Builder;
 
 @Builder
 public record UserRefreshRequest(
-        @NotBlank(message = "리프레시 토큰은 필수값입니다. ") String refreshToken) {
+    @NotBlank(message = "리프레시 토큰을 입력해 주세요.") String refreshToken) {
 
 }

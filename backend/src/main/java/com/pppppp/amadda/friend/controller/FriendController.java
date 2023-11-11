@@ -54,7 +54,7 @@ public class FriendController {
             request);
         alarmService.sendFriendRequest(friendRequestResponse.ownerSeq(),
             friendRequestResponse.friendSeq());
-        return ApiResponse.ok("친구 신청 보내기 완료");
+        return ApiResponse.ok("친구를 신청했습니다.");
     }
 
     @PostMapping("/request/{requestSeq}")
@@ -67,7 +67,7 @@ public class FriendController {
         alarmService.sendFriendAccept(friendRequestResponse.ownerSeq(),
             friendRequestResponse.friendSeq());
         alarmService.readFriendRequestAlarm(requestSeq);
-        return ApiResponse.ok("받은 친구 신청 수락");
+        return ApiResponse.ok("친구 신청을 수락했습니다.");
     }
 
     @PutMapping("/request/{requestSeq}")
@@ -77,7 +77,7 @@ public class FriendController {
         Long userSeq = tokenProvider.getUserSeq(http);
         friendRequestService.declineFriendRequest(userSeq, requestSeq);
         alarmService.readFriendRequestAlarm(requestSeq);
-        return ApiResponse.ok("받은 친구 신청 거절");
+        return ApiResponse.ok("친구 신청을 거절했습니다.");
     }
 
     @DeleteMapping("/{friendUserSeq}")
@@ -86,7 +86,7 @@ public class FriendController {
         @PathVariable Long friendUserSeq) {
         Long userSeq = tokenProvider.getUserSeq(http);
         friendRequestService.deleteFriendAndRequest(userSeq, friendUserSeq);
-        return ApiResponse.ok("유저 삭제 완료");
+        return ApiResponse.ok("친구를 삭제했습니다.");
     }
 
     // ==================== 그룹 관련은 아래 ====================
@@ -97,19 +97,19 @@ public class FriendController {
         groupMemberService.isUserValid(request.userSeqs()); // 전부 존재하는 유저들인지 검증
         Long groupSeq = userGroupService.createUserGroup(request); // 유저 그룹 만들기
         groupMemberService.createGroupMember(request, groupSeq); // 그룹 멤버 만들기
-        return ApiResponse.ok("그룹 만들기 완료");
+        return ApiResponse.ok("친구 그룹을 생성했습니다.");
     }
 
     @PutMapping("/group")
     public ApiResponse<String> editGroup(@Valid @RequestBody GroupUpdateRequest request) {
         groupMemberService.isUserValid(request.userSeqs()); // 전부 존재하는 유저들인지 검증
         groupMemberService.editGroup(request);
-        return ApiResponse.ok("그룹 수정 완료");
+        return ApiResponse.ok("친구 그룹을 수정했습니다.");
     }
 
     @DeleteMapping("/group/{groupSeq}")
     public ApiResponse<String> deleteGroup(@PathVariable Long groupSeq) {
         userGroupService.deleteGroupAndMembers(groupSeq);
-        return ApiResponse.ok("그룹 삭제 완료");
+        return ApiResponse.ok("친구 그룹을 삭제했습니다.");
     }
 }

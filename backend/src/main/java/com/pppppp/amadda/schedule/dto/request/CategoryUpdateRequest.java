@@ -5,8 +5,8 @@ import lombok.Builder;
 
 @Builder
 public record CategoryUpdateRequest(
-    @NotBlank(message = "카테고리 이름을 입력해주세요!") String categoryName,
-    @NotBlank(message = "카테고리 색을 설정해주세요!") String categoryColor
+    @NotBlank(message = "카테고리 이름을 입력해 주세요!") String categoryName,
+    @NotBlank(message = "카테고리 색을 설정해 주세요!") String categoryColor
 ) {
 
 }

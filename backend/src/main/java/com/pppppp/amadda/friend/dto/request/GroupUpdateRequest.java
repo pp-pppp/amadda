@@ -8,8 +8,8 @@ import lombok.Builder;
 
 @Builder
 public record GroupUpdateRequest(
-    @NotNull(message = "그룹의 seq는 필수입니다. ") Long groupSeq,
-    @NotBlank(message = "그룹 이름은 필수입니다. ") String groupName,
+    @NotNull(message = "유효하지 않은 요청입니다.") Long groupSeq,
+    @NotBlank(message = "그룹의 이름을 입력해 주세요.") String groupName,
     @NotEmpty(message = "그룹은 한명 이상의 멤버가 필요합니다. ") List<Long> userSeqs) {
 
 }

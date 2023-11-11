@@ -309,7 +309,7 @@ class ScheduleControllerTest {
             ).andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.code").value("400"))
-            .andExpect(jsonPath("$.message").value("일정 이름을 입력해주세요!"));
+            .andExpect(jsonPath("$.message").value("일정 이름을 입력해 주세요!"));
     }
 
     @DisplayName("일정 생성 시 날짜 확정 여부를 입력해야 한다.")
@@ -499,7 +499,7 @@ class ScheduleControllerTest {
             ).andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.code").value("400"))
-            .andExpect(jsonPath("$.message").value("일정 이름을 입력해주세요!"));
+            .andExpect(jsonPath("$.message").value("일정 이름을 입력해 주세요!"));
     }
 
     @DisplayName("일정 수정 시 날짜 확정 여부를 입력해야 한다.")
@@ -651,7 +651,7 @@ class ScheduleControllerTest {
                     .contentType(MediaType.APPLICATION_JSON)
             ).andDo(print())
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value("댓글 내용을 입력해주세요!"));
+            .andExpect(jsonPath("$.message").value("댓글 내용을 입력해 주세요!"));
     }
 
     @DisplayName("카테고리 생성시 이름이 필요하다.")
@@ -699,7 +699,7 @@ class ScheduleControllerTest {
                     .contentType(MediaType.APPLICATION_JSON)
             ).andDo(print())
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value("카테고리 이름을 입력해주세요!"));
+            .andExpect(jsonPath("$.message").value("카테고리 이름을 입력해 주세요!"));
     }
 
     @DisplayName("카테고리 수정시 카테고리 색을 지정해야 한다.")
@@ -715,7 +715,7 @@ class ScheduleControllerTest {
                     .contentType(MediaType.APPLICATION_JSON)
             ).andDo(print())
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value("카테고리 색을 설정해주세요!"));
+            .andExpect(jsonPath("$.message").value("카테고리 색을 설정해 주세요!"));
     }
 
     @DisplayName("일정의 댓글 알림을 설정한다.")
