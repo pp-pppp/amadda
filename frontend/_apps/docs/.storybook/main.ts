@@ -89,7 +89,9 @@ const config: StorybookConfig = {
       //@ts-ignore
       ...config.resolve.alias,
       '#': path.resolve(__dirname, '../../../_packages/@external-temporal/'),
+      '@SCH': path.resolve(__dirname, '../../../_apps/schedule/'),
     };
+
     return config;
   },
 };

@@ -1,6 +1,7 @@
-import { Flex, Profile, Spacing, Span } from '#/index';
+import { Flex, Profile, Spacing, Span } from 'external-temporal';
 import React from 'react';
 import { CATEGORY, LAYOUT, PROFILE } from './MobileDailyPlate.css';
+import DAILYPLATE_TEXT from '@SCH/constants/DAILYPLATE_TEXT';
 
 export interface MobileDailyPlateProps {
   color: keyof typeof CATEGORY;
@@ -39,7 +40,9 @@ export function MobileDailyPlate({ MobileDailyPlateProps }: PropsObj) {
           </Flex>
           <Spacing size="0.25" dir="h" />
           {MobileDailyPlateProps.person > 3 && (
-            <Span>외 {MobileDailyPlateProps.person - 3}명</Span>
+            <Span>
+              {DAILYPLATE_TEXT.PARTICIPANTS(MobileDailyPlateProps.person - 3)}
+            </Span>
           )}
         </Flex>
       )}
@@ -47,12 +50,12 @@ export function MobileDailyPlate({ MobileDailyPlateProps }: PropsObj) {
         <Spacing size="2" dir="h" />
         {MobileDailyPlateProps.unscheduled && (
           <div className={LAYOUT.width}>
-            <Span color="lightgrey">―</Span>
+            <Span color="lightgrey">{DAILYPLATE_TEXT.UNSCHEDULED}</Span>
           </div>
         )}
         {MobileDailyPlateProps.allday && (
           <div className={LAYOUT.width}>
-            <Span>하루종일</Span>
+            <Span>{DAILYPLATE_TEXT.ALLDAY}</Span>
           </div>
         )}
         {!MobileDailyPlateProps.unscheduled &&
