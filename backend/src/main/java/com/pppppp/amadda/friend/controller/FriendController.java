@@ -54,7 +54,7 @@ public class FriendController {
             request);
         alarmService.sendFriendRequest(friendRequestResponse.ownerSeq(),
             friendRequestResponse.friendSeq());
-        return ApiResponse.ok("친구 신청을 성공적으로 전송했습니다.");
+        return ApiResponse.ok("친구를 신청했습니다.");
     }
 
     @PostMapping("/request/{requestSeq}")
