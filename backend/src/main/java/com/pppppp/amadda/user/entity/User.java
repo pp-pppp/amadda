@@ -1,17 +1,18 @@
 package com.pppppp.amadda.user.entity;
 
+import com.pppppp.amadda.global.entity.BaseEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
-
-import com.pppppp.amadda.global.entity.BaseEntity;
-import jakarta.persistence.*;
 
 @Entity
 @Getter
-@Table(name="users")
+@Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
 
@@ -37,10 +38,10 @@ public class User extends BaseEntity {
 
     public static User create(Long userSeq, String userName, String userId, String imageUrl) {
         return User.builder()
-                .userSeq(userSeq)
-                .userName(userName)
-                .userId(userId)
-                .imageUrl(imageUrl)
-                .build();
+            .userSeq(userSeq)
+            .userName(userName)
+            .userId(userId)
+            .imageUrl(imageUrl)
+            .build();
     }
 }

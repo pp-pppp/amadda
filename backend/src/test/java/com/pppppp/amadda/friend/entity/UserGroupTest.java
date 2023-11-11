@@ -1,26 +1,24 @@
 package com.pppppp.amadda.friend.entity;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+
 import com.pppppp.amadda.IntegrationTestSupport;
-import com.pppppp.amadda.friend.dto.request.GroupCreateRequest;
 import com.pppppp.amadda.friend.repository.UserGroupRepository;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
-import static org.junit.jupiter.api.Assertions.*;
-
 class UserGroupTest extends IntegrationTestSupport {
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private UserGroupRepository userGroupRepository;
 
@@ -46,10 +44,10 @@ class UserGroupTest extends IntegrationTestSupport {
 
         // then
         assertThat(userGroupRepository.findAll()).hasSize(1)
-                .extracting("groupName", "owner.userSeq")
-                .containsExactlyInAnyOrder(
-                        tuple("aaa", 1111L)
-                );
+            .extracting("groupName", "owner.userSeq")
+            .containsExactlyInAnyOrder(
+                tuple("aaa", 1111L)
+            );
     }
 
 }

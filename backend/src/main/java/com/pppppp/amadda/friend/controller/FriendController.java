@@ -16,7 +16,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,15 +41,15 @@ public class FriendController {
 
     @GetMapping
     public ApiResponse<FriendReadResponse> getFriendList(
-            HttpServletRequest http, @RequestParam String searchKey) {
-        log.info("searchKey="+searchKey);
+        HttpServletRequest http, @RequestParam String searchKey) {
+        log.info("searchKey=" + searchKey);
         Long userSeq = tokenProvider.getUserSeq(http);
         FriendReadResponse response = friendService.searchFriends(userSeq, searchKey);
         return ApiResponse.ok(response);
     }
 
     @PostMapping("/request")
-    public ApiResponse sendFriendRequest(@Valid @RequestBody FriendRequestRequest request) {
+    public ApiResponse<String> sendFriendRequest(@Valid @RequestBody FriendRequestRequest request) {
         FriendRequestResponse friendRequestResponse = friendRequestService.createFriendRequest(
             request);
         alarmService.sendFriendRequest(friendRequestResponse.ownerSeq(),
@@ -50,8 +58,8 @@ public class FriendController {
     }
 
     @PostMapping("/request/{requestSeq}")
-    public ApiResponse acceptFriendRequest(
-            HttpServletRequest http, @PathVariable Long requestSeq) {
+    public ApiResponse<String> acceptFriendRequest(
+        HttpServletRequest http, @PathVariable Long requestSeq) {
         Long userSeq = tokenProvider.getUserSeq(http);
 
         FriendRequestResponse friendRequestResponse = friendRequestService.acceptFriendRequest(
@@ -63,9 +71,9 @@ public class FriendController {
     }
 
     @PutMapping("/request/{requestSeq}")
-    public ApiResponse declineFriendRequest(
-            HttpServletRequest http,
-            @PathVariable Long requestSeq) {
+    public ApiResponse<String> declineFriendRequest(
+        HttpServletRequest http,
+        @PathVariable Long requestSeq) {
         Long userSeq = tokenProvider.getUserSeq(http);
         friendRequestService.declineFriendRequest(userSeq, requestSeq);
         alarmService.readFriendRequestAlarm(requestSeq);
@@ -73,9 +81,9 @@ public class FriendController {
     }
 
     @DeleteMapping("/{friendUserSeq}")
-    public ApiResponse deleteFriend(
-            HttpServletRequest http,
-            @PathVariable Long friendUserSeq) {
+    public ApiResponse<String> deleteFriend(
+        HttpServletRequest http,
+        @PathVariable Long friendUserSeq) {
         Long userSeq = tokenProvider.getUserSeq(http);
         friendRequestService.deleteFriendAndRequest(userSeq, friendUserSeq);
         return ApiResponse.ok("유저 삭제 완료");
@@ -84,7 +92,7 @@ public class FriendController {
     // ==================== 그룹 관련은 아래 ====================
 
     @PostMapping("/group")
-    public ApiResponse makeGroup(@Valid @RequestBody GroupCreateRequest request) {
+    public ApiResponse<String> makeGroup(@Valid @RequestBody GroupCreateRequest request) {
 
         groupMemberService.isUserValid(request.userSeqs()); // 전부 존재하는 유저들인지 검증
         Long groupSeq = userGroupService.createUserGroup(request); // 유저 그룹 만들기
@@ -93,14 +101,14 @@ public class FriendController {
     }
 
     @PutMapping("/group")
-    public ApiResponse editGroup(@Valid @RequestBody GroupUpdateRequest request) {
+    public ApiResponse<String> editGroup(@Valid @RequestBody GroupUpdateRequest request) {
         groupMemberService.isUserValid(request.userSeqs()); // 전부 존재하는 유저들인지 검증
         groupMemberService.editGroup(request);
         return ApiResponse.ok("그룹 수정 완료");
     }
 
     @DeleteMapping("/group/{groupSeq}")
-    public ApiResponse deleteGroup(@PathVariable Long groupSeq) {
+    public ApiResponse<String> deleteGroup(@PathVariable Long groupSeq) {
         userGroupService.deleteGroupAndMembers(groupSeq);
         return ApiResponse.ok("그룹 삭제 완료");
     }

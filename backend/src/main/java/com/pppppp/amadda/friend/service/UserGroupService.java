@@ -9,12 +9,11 @@ import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.global.entity.exception.errorcode.GroupErrorCode;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.service.UserService;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,13 +35,12 @@ public class UserGroupService {
     @Transactional
     public void deleteGroupAndMembers(Long groupSeq) {
         UserGroup ug = getGroup(groupSeq)
-                .orElseThrow(() -> new RestApiException(GroupErrorCode.GROUP_NOT_FOUND));
+            .orElseThrow(() -> new RestApiException(GroupErrorCode.GROUP_NOT_FOUND));
         List<GroupMember> members = getMembers(groupSeq);
 
         deleteAllMembersInGroup(members);
         deleteGroup(ug);
     }
-
 
     // =============== 레포지토리에 직접 접근하는 메소드들 ===============
 

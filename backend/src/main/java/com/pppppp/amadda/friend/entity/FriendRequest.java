@@ -1,15 +1,23 @@
 package com.pppppp.amadda.friend.entity;
 
+import static jakarta.persistence.FetchType.LAZY;
+
 import com.pppppp.amadda.friend.dto.response.FriendRequestResponse;
 import com.pppppp.amadda.global.entity.BaseEntity;
 import com.pppppp.amadda.user.entity.User;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
@@ -41,9 +49,9 @@ public class FriendRequest extends BaseEntity {
 
     public static FriendRequest create(User u1, User u2) {
         return FriendRequest.builder()
-                .u1(u1)
-                .u2(u2)
-                .build();
+            .u1(u1)
+            .u2(u2)
+            .build();
     }
 
     public FriendRequestResponse updateStatus(FriendRequestStatus status) {

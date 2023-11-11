@@ -1,26 +1,27 @@
 package com.pppppp.amadda.friend.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.friend.entity.GroupMember;
 import com.pppppp.amadda.friend.entity.UserGroup;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
-
 class UserGroupRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
     private UserGroupRepository userGroupRepository;
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private GroupMemberRepository groupMemberRepository;
 
@@ -44,8 +45,8 @@ class UserGroupRepositoryTest extends IntegrationTestSupport {
 
         // then
         assertThat(ug)
-                .extracting("groupName", "owner")
-                .containsExactly("그룹명1", u1);
+            .extracting("groupName", "owner")
+            .containsExactly("그룹명1", u1);
     }
 
     @DisplayName("리스트와 서치키로 해당 멤버들만 조회한다. ")
@@ -66,17 +67,17 @@ class UserGroupRepositoryTest extends IntegrationTestSupport {
 
         // when
         List<GroupMember> members = groupMemberRepository.findByGroupSeqsAndSearchKey(
-                List.of(ug.getGroupSeq()),
-                "유저"
+            List.of(ug.getGroupSeq()),
+            "유저"
         );
 
         // then
         assertThat(members)
-                .extracting("member.userSeq", "member.userName")
-                .containsExactlyInAnyOrder(
-                        tuple(1234L, "유저2"),
-                        tuple(2222L, "유저3")
-                );
+            .extracting("member.userSeq", "member.userName")
+            .containsExactlyInAnyOrder(
+                tuple(1234L, "유저2"),
+                tuple(2222L, "유저3")
+            );
     }
 
     @DisplayName("리스트와 빈 서치키로 해당 멤버들만 조회한다. ")
@@ -97,19 +98,16 @@ class UserGroupRepositoryTest extends IntegrationTestSupport {
 
         // when
         List<GroupMember> members = groupMemberRepository.findByGroupSeqsAndSearchKey(
-                List.of(ug.getGroupSeq()),
-                ""
-        );
+            List.of(ug.getGroupSeq()), "");
 
         // then
         assertThat(members)
-                .extracting("member.userSeq", "member.userName")
-                .containsExactlyInAnyOrder(
-                        tuple(1234L, "유저2"),
-                        tuple(2222L, "유저3")
-                );
+            .extracting("member.userSeq", "member.userName")
+            .containsExactlyInAnyOrder(
+                tuple(1234L, "유저2"),
+                tuple(2222L, "유저3")
+            );
 
     }
-
 
 }

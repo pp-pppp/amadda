@@ -1,18 +1,15 @@
 package com.pppppp.amadda.user.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+
 import com.pppppp.amadda.IntegrationTestSupport;
-import com.pppppp.amadda.global.entity.exception.RestApiException;
-import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
 import com.pppppp.amadda.user.entity.User;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 
 
 class UserRepositoryTest extends IntegrationTestSupport {
@@ -37,11 +34,11 @@ class UserRepositoryTest extends IntegrationTestSupport {
 
         //then
         assertThat(savedUsers).hasSize(2)
-                .extracting("userSeq", "userName", "userId", "imageUrl")
-                .containsExactlyInAnyOrder(
-                        tuple(1111L, "유저1", "id1", "imageUrl1"),
-                        tuple(1234L, "유저2", "id2", "imageUrl2")
-                );
+            .extracting("userSeq", "userName", "userId", "imageUrl")
+            .containsExactlyInAnyOrder(
+                tuple(1111L, "유저1", "id1", "imageUrl1"),
+                tuple(1234L, "유저2", "id2", "imageUrl2")
+            );
     }
 
     @DisplayName("userSeq로 유저를 조회할 수 있다. ")
@@ -58,7 +55,7 @@ class UserRepositoryTest extends IntegrationTestSupport {
         //then
         assertThat(u).isNotNull();
         assertThat(u).extracting("userSeq", "userName", "userId", "imageUrl")
-                .containsExactlyInAnyOrder(1111L, "유저1", "id1", "imageUrl1");
+            .containsExactlyInAnyOrder(1111L, "유저1", "id1", "imageUrl1");
     }
 
     @DisplayName("유저 아이디로 해당 유저를 조회한다. ")
@@ -75,7 +72,7 @@ class UserRepositoryTest extends IntegrationTestSupport {
         // then
         assertThat(u).isNotNull();
         assertThat(u).extracting("userSeq", "userName", "userId", "imageUrl")
-                .containsExactlyInAnyOrder(1234L, "유저2", "id2", "imageUrl2");
+            .containsExactlyInAnyOrder(1234L, "유저2", "id2", "imageUrl2");
     }
 
 }

@@ -1,14 +1,20 @@
 package com.pppppp.amadda.friend.entity;
 
+import static jakarta.persistence.FetchType.LAZY;
+
 import com.pppppp.amadda.global.entity.BaseEntity;
 import com.pppppp.amadda.user.entity.User;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
@@ -34,9 +40,9 @@ public class UserGroup extends BaseEntity {
 
     public static UserGroup create(String name, User u) {
         return UserGroup.builder()
-                .groupName(name)
-                .owner(u)
-                .build();
+            .groupName(name)
+            .owner(u)
+            .build();
     }
 
     public void updateGroupName(String name) {

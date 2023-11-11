@@ -69,8 +69,32 @@ public class ScheduleService {
 
     private final CategoryRepository categoryRepository;
 
-    private static boolean isSameUser(Long requestUserSeq, Long userSeq) {
+    private boolean isSameUser(Long requestUserSeq, Long userSeq) {
         return Objects.equals(requestUserSeq, userSeq);
+    }
+
+    private boolean hasChangeField(ScheduleUpdateRequest request, Schedule schedule) {
+        if (!Objects.equals(schedule.getScheduleContent(), request.scheduleContent())) {
+            return true;
+        }
+        if (!Objects.equals(schedule.isDateSelected(), request.isDateSelected())) {
+            return true;
+        }
+        if (!Objects.equals(schedule.isTimeSelected(), request.isTimeSelected())) {
+            return true;
+        }
+        if (!Objects.equals(schedule.isAllDay(), request.isAllDay())) {
+            return true;
+        }
+        if (request.isDateSelected() && !Objects.equals(schedule.getScheduleStartAt(),
+            LocalDateTime.parse(request.scheduleStartAt()))) {
+            return true;
+        }
+        if (request.isTimeSelected() && !Objects.equals(schedule.getScheduleEndAt(),
+            LocalDateTime.parse(request.scheduleEndAt()))) {
+            return true;
+        }
+        return false;
     }
 
     // ================== schedule & participation ==================
@@ -92,7 +116,6 @@ public class ScheduleService {
 
     public String getServerTime() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
         return LocalDateTime.now().format(formatter);
     }
 
@@ -113,8 +136,7 @@ public class ScheduleService {
     }
 
     public List<UserReadResponse> getParticipatingUserList(Long scheduleSeq) {
-        return participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
-                scheduleSeq)
+        return participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(scheduleSeq)
             .stream()
             .map(participation -> UserReadResponse.of(participation.getUser()))
             .toList();
@@ -123,8 +145,8 @@ public class ScheduleService {
     public Map<String, List<ScheduleListReadResponse>> getScheduleListByCondition(
         Long userSeq, Map<String, String> searchCondition) {
         // 조회 조건에 따라 일정 목록 가져오기
-        List<ScheduleListReadResponse> scheduleListByCondition = findScheduleListBySearchCondition(
-            userSeq, searchCondition);
+        List<ScheduleListReadResponse> scheduleListByCondition =
+            findScheduleListBySearchCondition(userSeq, searchCondition);
 
         // 반환할 map 생성
         Map<String, List<ScheduleListReadResponse>> response = new HashMap<>(Map.of());
@@ -141,6 +163,7 @@ public class ScheduleService {
                         response.get("unscheduled").add(schedule);
                     }
                 }
+
                 // 2. 날짜 정보가 있는 일정은 "yyyy-MM-dd" 키에 입력
                 else {
                     LocalDate startDate = LocalDate.parse(
@@ -159,11 +182,11 @@ public class ScheduleService {
                             response.get(date).add(schedule);
                         }
                     }
+
                     // 2-2. 시작일과 종료일이 다르면
                     else {
                         for (LocalDate date = startDate; date.isBefore(endDate.plusDays(1));
-                            date = date
-                                .plusDays(1)) {
+                            date = date.plusDays(1)) {
                             // 시작일부터 종료일까지 하루씩 입력, 그 중 searchCondition에 해당하는 날짜만 입력
                             if (!searchCondition.get("year").isEmpty()
                                 && !checkScheduleInYearCondition(
@@ -208,7 +231,6 @@ public class ScheduleService {
 
     public List<UserReadResponse> getParticipatingUserListBySearchKey(Long scheduleSeq,
         String searchKey) {
-
         return findParticipatorListByUserName(scheduleSeq, searchKey);
     }
 
@@ -241,30 +263,6 @@ public class ScheduleService {
         }
 
         return ScheduleUpdateResponse.of(schedule);
-    }
-
-    private static boolean hasChangeField(ScheduleUpdateRequest request, Schedule schedule) {
-        if (!Objects.equals(schedule.getScheduleContent(), request.scheduleContent())) {
-            return true;
-        }
-        if (!Objects.equals(schedule.isDateSelected(), request.isDateSelected())) {
-            return true;
-        }
-        if (!Objects.equals(schedule.isTimeSelected(), request.isTimeSelected())) {
-            return true;
-        }
-        if (!Objects.equals(schedule.isAllDay(), request.isAllDay())) {
-            return true;
-        }
-        if (request.isDateSelected() && !Objects.equals(schedule.getScheduleStartAt(),
-            LocalDateTime.parse(request.scheduleStartAt()))) {
-            return true;
-        }
-        if (request.isTimeSelected() && !Objects.equals(schedule.getScheduleEndAt(),
-            LocalDateTime.parse(request.scheduleEndAt()))) {
-            return true;
-        }
-        return false;
     }
 
     @Transactional
@@ -399,8 +397,8 @@ public class ScheduleService {
 
             // 카테고리 정보가 있는 경우 참석자가 생성자라면 카테고리 정보 입력
             Category category = null;
-            if ((request.categorySeq() != null) && isSameUser(participant.getUserSeq(),
-                userSeq)) {
+            if ((request.categorySeq() != null) &&
+                isSameUser(participant.getUserSeq(), userSeq)) {
                 category = findCategoryInfo(request.categorySeq());
             }
 
@@ -420,8 +418,7 @@ public class ScheduleService {
     private void checkRequestUserAndParticipantFriend(User requestUser, User participant) {
 
         // 우선 요청을 보낸 사용자의 친구목록에 참가자가 있는지 확인
-        if (friendRepository.findByOwnerAndFriend(requestUser, participant)
-            .isEmpty()) {
+        if (friendRepository.findByOwnerAndFriend(requestUser, participant).isEmpty()) {
             throw new RestApiException(ScheduleErrorCode.SCHEDULE_FORBIDDEN);
         }
 
@@ -430,8 +427,8 @@ public class ScheduleService {
     }
 
     private User findUserInfo(Long userSeq) {
-        return userRepository.findByUserSeq(userSeq).orElseThrow(
-            () -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        return userRepository.findByUserSeq(userSeq)
+            .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
     }
 
     private Schedule findScheduleInfo(Long scheduleSeq) {
@@ -521,7 +518,6 @@ public class ScheduleService {
     }
 
     private List<Participation> findParticipationListBySchedule(Long scheduleSeq) {
-
         return participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(scheduleSeq);
     }
 
@@ -582,7 +578,8 @@ public class ScheduleService {
             .alarmTime(alarmTime)
             .build();
 
-        updateParticipationList.stream()
+        updateParticipationList
+            .stream()
             .filter(participant -> !previousParticipationList.contains(participant))
             .forEach(participant -> {
 
@@ -590,8 +587,7 @@ public class ScheduleService {
                 checkRequestUserAndParticipantFriend(requestUser, participant);
 
                 Participation participation = Participation.create(createRequest, participant,
-                    schedule,
-                    null, true, true);
+                    schedule, null, true, true);
                 participationRepository.save(participation);
                 alarmService.sendScheduleAssigned(schedule.getScheduleSeq(), requestUserSeq,
                     participant.getUserSeq());
@@ -640,7 +636,6 @@ public class ScheduleService {
             // filter 1. 카테고리
             .filter(participation -> {
                 if (!categorySeqList.isEmpty()) {
-
                     // categorySeq 목록 가져오기
                     List<Long> categorySeqs = Arrays.stream(
                             categorySeqList.split(","))
@@ -707,7 +702,6 @@ public class ScheduleService {
     }
 
     private boolean checkScheduleInYearCondition(Participation participation, String year) {
-
         // 확인하려는 일정의 시작시점, 종료시점
         LocalDateTime scheduleStartAt = participation.getSchedule().getScheduleStartAt();
         LocalDateTime scheduleEndAt = participation.getSchedule().getScheduleEndAt();
@@ -727,7 +721,6 @@ public class ScheduleService {
 
     // 메소드 오버로딩
     private boolean checkScheduleInYearCondition(LocalDate date, String year) {
-
         // 일정 시작 연도, 종료 연도가 해당 연도 이거나 해당 연도가 일정 중에 포함 되면 true
         return date.getYear() == Integer.parseInt(year);
     }
@@ -763,7 +756,6 @@ public class ScheduleService {
     // 메소드 오버로딩
     private boolean checkScheduleInMonthCondition(LocalDate date, String year,
         String month) {
-
         // 일정 시작 시점이나 종료 시점이 해당 달이거나 해당 달이 일정 중에 포함되면 true
         return date.getYear() == Integer.parseInt(year)
             && date.getMonthValue() == Integer.parseInt(month);
@@ -771,7 +763,6 @@ public class ScheduleService {
 
     private boolean checkScheduleInDayCondition(Participation participation, String year,
         String month, String day) {
-
         // 확인하려는 일정의 시작시점, 종료시점
         LocalDateTime scheduleStartAt = participation.getSchedule().getScheduleStartAt();
         LocalDateTime scheduleEndAt = participation.getSchedule().getScheduleEndAt();
@@ -799,7 +790,6 @@ public class ScheduleService {
     // 메소드 오버로딩
     private boolean checkScheduleInDayCondition(LocalDate date, String year,
         String month, String day) {
-
         // 일정 시작 시점이나 종료 시점이 해당 날짜이거나 해당 날짜가 일정 중에 포함되면 true
         return date.getYear() == Integer.parseInt(year)
             && date.getMonthValue() == Integer.parseInt(month)

@@ -85,9 +85,7 @@ class ScheduleControllerTest {
                 post("/api/schedule")
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"))
             .andExpect(jsonPath("$.data.scheduleSeq").value(1L));
@@ -96,19 +94,16 @@ class ScheduleControllerTest {
     @DisplayName("서버 시간을 조회한다.")
     @Test
     void getServerTime() throws Exception {
-
         // stubbing
         String currentTime = String.valueOf(LocalDateTime.now());
-
         when(scheduleService.getServerTime())
             .thenReturn(currentTime);
 
+        // then
         mockMvc.perform(
                 get("/api/schedule/serverTime")
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"))
             .andExpect(jsonPath("$.data").value(currentTime));
@@ -120,9 +115,7 @@ class ScheduleControllerTest {
         mockMvc.perform(
                 get("/api/schedule/{scheduleSeq}", 1L)
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"));
     }
@@ -133,9 +126,7 @@ class ScheduleControllerTest {
         mockMvc.perform(
                 get("/api/schedule")
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"))
             .andExpect(jsonPath("$.data").isMap());
@@ -156,9 +147,8 @@ class ScheduleControllerTest {
                 get("/api/schedule?category={}&searchKey={}&unscheduled={}&year={}&month={}&day={}",
                     categorySeqList, searchKey, unscheduled, year, month, day)
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            ).andExpect(status().isOk())
+            ).andDo(print())
+            .andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"))
             .andExpect(jsonPath("$.data").isMap());
 
@@ -174,9 +164,7 @@ class ScheduleControllerTest {
         mockMvc.perform(
                 get("/api/schedule?category={}", categorySeqList)
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"))
             .andExpect(jsonPath("$.data").isMap());
@@ -192,9 +180,7 @@ class ScheduleControllerTest {
         mockMvc.perform(
                 get("/api/schedule?searchKey={}", searchKey)
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"))
             .andExpect(jsonPath("$.data").isMap());
@@ -210,9 +196,7 @@ class ScheduleControllerTest {
         mockMvc.perform(
                 get("/api/schedule?unscheduled={}", unscheduled)
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"))
             .andExpect(jsonPath("$.data").isMap());
@@ -230,9 +214,8 @@ class ScheduleControllerTest {
         mockMvc.perform(
                 get("/api/schedule?year={}&month={}&day={}", year, month, day)
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            ).andExpect(status().isOk())
+            ).andDo(print())
+            .andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"))
             .andExpect(jsonPath("$.data").isMap());
     }
@@ -243,9 +226,7 @@ class ScheduleControllerTest {
         mockMvc.perform(
                 get("/api/schedule/{scheduleSeq}/participation?userName={}", 1, "박동건")
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"))
             .andExpect(jsonPath("$.data").isArray());
@@ -264,9 +245,7 @@ class ScheduleControllerTest {
                 post("/api/schedule/{scheduleSeq}/comment", scheduleSeq)
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"));
     }
@@ -283,9 +262,7 @@ class ScheduleControllerTest {
                 post("/api/schedule/user/category")
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"));
     }
@@ -297,9 +274,7 @@ class ScheduleControllerTest {
         mockMvc.perform(
                 get("/api/schedule/user/category")
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.data").isArray());
     }
@@ -331,9 +306,7 @@ class ScheduleControllerTest {
                 post("/api/schedule")
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.code").value("400"))
             .andExpect(jsonPath("$.message").value("일정 이름을 입력해주세요!"));
@@ -365,9 +338,7 @@ class ScheduleControllerTest {
                 post("/api/schedule")
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value("날짜 확정 여부가 결정되지 않았어요!"));
     }
@@ -398,9 +369,7 @@ class ScheduleControllerTest {
                 post("/api/schedule")
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value("시간 확정 여부가 결정되지 않았어요!"));
     }
@@ -431,9 +400,7 @@ class ScheduleControllerTest {
                 post("/api/schedule")
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value("하루종일 지속되는 일정인지 알려주세요!"));
     }
@@ -464,9 +431,7 @@ class ScheduleControllerTest {
                 post("/api/schedule")
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value("일정에 대한 수정 권한을 설정해 주세요!"));
     }
@@ -497,9 +462,7 @@ class ScheduleControllerTest {
                 post("/api/schedule")
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value("알림 시간 설정이 필요해요!"));
     }
@@ -533,9 +496,7 @@ class ScheduleControllerTest {
                 put("/api/schedule/{scheduleSeq}", 1L)
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.code").value("400"))
             .andExpect(jsonPath("$.message").value("일정 이름을 입력해주세요!"));
@@ -571,9 +532,7 @@ class ScheduleControllerTest {
                 put("/api/schedule/{scheduleSeq}", 1L)
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value("날짜 확정 여부가 결정되지 않았어요!"));
     }
@@ -607,9 +566,7 @@ class ScheduleControllerTest {
                 put("/api/schedule/{scheduleSeq}", 1L)
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value("시간 확정 여부가 결정되지 않았어요!"));
     }
@@ -644,9 +601,7 @@ class ScheduleControllerTest {
                 put("/api/schedule/{scheduleSeq}", 1L)
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value("하루종일 지속되는 일정인지 알려주세요!"));
     }
@@ -677,9 +632,7 @@ class ScheduleControllerTest {
                 post("/api/schedule")
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value("알림 시간 설정이 필요해요!"));
     }
@@ -696,9 +649,7 @@ class ScheduleControllerTest {
                 post("/api/schedule/{scheduleSeq}/comment", scheduleSeq)
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value("댓글 내용을 입력해주세요!"));
     }
@@ -714,9 +665,7 @@ class ScheduleControllerTest {
                 post("/api/schedule/user/category")
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value("카테고리 이름을 입력해 주세요!"));
     }
@@ -732,9 +681,7 @@ class ScheduleControllerTest {
                 post("/api/schedule/user/category")
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value("카테고리 색을 선택해주세요!"));
     }
@@ -750,9 +697,7 @@ class ScheduleControllerTest {
                 put("/api/schedule/user/category/{categorySeq}", 1L)
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value("카테고리 이름을 입력해주세요!"));
     }
@@ -768,9 +713,7 @@ class ScheduleControllerTest {
                 put("/api/schedule/user/category/{categorySeq}", 1L)
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value("카테고리 색을 설정해주세요!"));
     }
@@ -780,9 +723,7 @@ class ScheduleControllerTest {
     void setMentionAlarmOnPerSchedule() throws Exception {
         mockMvc.perform(
                 post("/api/schedule/1/subscribe/mention")
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"))
             .andExpect(jsonPath("$.status").value("OK"))
@@ -795,9 +736,7 @@ class ScheduleControllerTest {
     void setMentionAlarmOffPerSchedule() throws Exception {
         mockMvc.perform(
                 post("/api/schedule/1/unsubscribe/mention")
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"))
             .andExpect(jsonPath("$.status").value("OK"))
@@ -810,9 +749,7 @@ class ScheduleControllerTest {
     void setUpdateAlarmOnPerSchedule() throws Exception {
         mockMvc.perform(
                 post("/api/schedule/1/subscribe/update")
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"))
             .andExpect(jsonPath("$.status").value("OK"))
@@ -825,9 +762,7 @@ class ScheduleControllerTest {
     void setUpdateAlarmOffPerSchedule() throws Exception {
         mockMvc.perform(
                 post("/api/schedule/1/unsubscribe/update")
-            ).andDo(
-                print()
-            )
+            ).andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"))
             .andExpect(jsonPath("$.status").value("OK"))

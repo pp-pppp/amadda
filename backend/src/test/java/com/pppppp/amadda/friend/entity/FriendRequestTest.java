@@ -1,24 +1,24 @@
 package com.pppppp.amadda.friend.entity;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.friend.repository.FriendRequestRepository;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
-
 class FriendRequestTest extends IntegrationTestSupport {
 
     @Autowired
     private FriendRequestRepository friendRequestRepository;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -46,10 +46,10 @@ class FriendRequestTest extends IntegrationTestSupport {
 
         //then
         assertThat(savedFr)
-                .extracting("owner", "friend", "status")
-                .containsExactlyInAnyOrder(
-                        tuple(u1, u2, FriendRequestStatus.ACCEPTED)
-                );
+            .extracting("owner", "friend", "status")
+            .containsExactlyInAnyOrder(
+                tuple(u1, u2, FriendRequestStatus.ACCEPTED)
+            );
     }
 
 }

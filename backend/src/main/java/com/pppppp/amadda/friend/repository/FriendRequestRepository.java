@@ -2,9 +2,8 @@ package com.pppppp.amadda.friend.repository;
 
 import com.pppppp.amadda.friend.entity.FriendRequest;
 import com.pppppp.amadda.user.entity.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FriendRequestRepository extends JpaRepository<FriendRequest, Long> {
 

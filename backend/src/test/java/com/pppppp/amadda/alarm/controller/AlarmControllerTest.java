@@ -70,7 +70,9 @@ class AlarmControllerTest extends ControllerTestSupport {
         // given
         AlarmType alarmType = AlarmType.of(type);
         AlarmConfigRequest request = AlarmConfigRequest.builder()
-            .userSeq(1L).alarmType(alarmType).build();
+            .userSeq(1L)
+            .alarmType(alarmType).
+            build();
 
         // stubbing
         when(alarmService.setGlobalAlarm(any(), eq(true)))

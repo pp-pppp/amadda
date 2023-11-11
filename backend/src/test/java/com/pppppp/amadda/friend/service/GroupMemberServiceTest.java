@@ -1,5 +1,9 @@
 package com.pppppp.amadda.friend.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.tuple;
+
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.friend.dto.request.GroupCreateRequest;
 import com.pppppp.amadda.friend.dto.request.GroupUpdateRequest;
@@ -10,29 +14,28 @@ import com.pppppp.amadda.friend.repository.UserGroupRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.AssertionsForClassTypes.tuple;
-
 
 class GroupMemberServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private GroupMemberService groupMemberService;
+
     @Autowired
     private UserGroupService userGroupService;
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private GroupMemberRepository groupMemberRepository;
+
     @Autowired
     private UserGroupRepository userGroupRepository;
 
@@ -54,10 +57,10 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
-                .ownerSeq(1111L)
-                .groupName("그룹명1")
-                .userSeqs(List.of(1234L, 2222L))
-                .build();
+            .ownerSeq(1111L)
+            .groupName("그룹명1")
+            .userSeqs(List.of(1234L, 2222L))
+            .build();
         Long groupSeq = userGroupService.createUserGroup(gcr);
 
         // when
@@ -65,10 +68,10 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(groupMemberRepository.findAll()).hasSize(2)
-                .extracting("member.userSeq")
-                .containsExactlyInAnyOrder(
-                        1234L, 2222L
-                );
+            .extracting("member.userSeq")
+            .containsExactlyInAnyOrder(
+                1234L, 2222L
+            );
     }
 
     @DisplayName("그룹 만들 모든 유저들이 유효 유저들이다. ")
@@ -81,10 +84,10 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
-                .ownerSeq(1111L)
-                .groupName("그룹명1")
-                .userSeqs(List.of(1234L, 2222L))
-                .build();
+            .ownerSeq(1111L)
+            .groupName("그룹명1")
+            .userSeqs(List.of(1234L, 2222L))
+            .build();
 
         // when // then
         groupMemberService.isUserValid(gcr.userSeqs());
@@ -101,15 +104,15 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
-                .ownerSeq(1111L)
-                .groupName("그룹명1")
-                .userSeqs(List.of(3333L, 2222L))
-                .build();
+            .ownerSeq(1111L)
+            .groupName("그룹명1")
+            .userSeqs(List.of(3333L, 2222L))
+            .build();
 
         // when // then
         assertThatThrownBy(() -> groupMemberService.isUserValid(gcr.userSeqs()))
-                .isInstanceOf(RestApiException.class)
-                .hasMessage("USER_NOT_FOUND");
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("USER_NOT_FOUND");
     }
 
     @DisplayName("유저그룹이 존재하지 않는 그룹멤버를 만들면 예외처리. ")
@@ -122,15 +125,15 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
-                .ownerSeq(1111L)
-                .groupName("그룹명1")
-                .userSeqs(List.of(1234L, 2222L))
-                .build();
+            .ownerSeq(1111L)
+            .groupName("그룹명1")
+            .userSeqs(List.of(1234L, 2222L))
+            .build();
 
         // when // then
         assertThatThrownBy(() -> groupMemberService.createGroupMember(gcr, 0L))
-                .isInstanceOf(RestApiException.class)
-                .hasMessage("GROUP_NOT_FOUND");
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("GROUP_NOT_FOUND");
     }
 
     @DisplayName("그룹의 이름과 멤버를 수정한다. ")
@@ -144,34 +147,34 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3, u4));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
-                .ownerSeq(1111L)
-                .groupName("그룹명1")
-                .userSeqs(List.of(1234L, 2222L))
-                .build();
+            .ownerSeq(1111L)
+            .groupName("그룹명1")
+            .userSeqs(List.of(1234L, 2222L))
+            .build();
         Long groupSeq = userGroupService.createUserGroup(gcr);
         groupMemberService.createGroupMember(gcr, groupSeq);
 
         GroupUpdateRequest gpr = GroupUpdateRequest.builder()
-                .groupSeq(groupSeq)
-                .groupName("새로운 이름")
-                .userSeqs(List.of(2222L, 3456L))
-                .build();
+            .groupSeq(groupSeq)
+            .groupName("새로운 이름")
+            .userSeqs(List.of(2222L, 3456L))
+            .build();
 
         // when
         groupMemberService.editGroup(gpr);
 
         // then
         assertThat(groupMemberRepository.findAll()).hasSize(2)
-                .extracting("group.groupSeq", "member.userSeq")
-                .containsExactly(
-                        tuple(groupSeq, 2222L),
-                        tuple(groupSeq, 3456L)
-                );
+            .extracting("group.groupSeq", "member.userSeq")
+            .containsExactly(
+                tuple(groupSeq, 2222L),
+                tuple(groupSeq, 3456L)
+            );
         assertThat(userGroupRepository.findAll()).hasSize(1)
-                .extracting("groupName", "owner.userSeq")
-                .containsExactly(
-                        tuple("새로운 이름", 1111L)
-                );
+            .extracting("groupName", "owner.userSeq")
+            .containsExactly(
+                tuple("새로운 이름", 1111L)
+            );
     }
 
     @DisplayName("그룹에서 손절한 친구 삭제")
@@ -203,18 +206,18 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(groupMemberRepository.findAll())
-                .extracting("group.groupSeq", "member.userSeq")
-                .containsExactlyInAnyOrder(
-                        tuple(ug1.getGroupSeq(), 1234L),
-                        tuple(ug1.getGroupSeq(), 2222L),
-                        tuple(ug2.getGroupSeq(), 3456L)
-                );
+            .extracting("group.groupSeq", "member.userSeq")
+            .containsExactlyInAnyOrder(
+                tuple(ug1.getGroupSeq(), 1234L),
+                tuple(ug1.getGroupSeq(), 2222L),
+                tuple(ug2.getGroupSeq(), 3456L)
+            );
         assertThat(userGroupRepository.findAll())
-                .extracting("groupSeq", "groupName", "owner.userSeq")
-                .containsExactly(
-                        tuple(ug1.getGroupSeq(), "그룹명1", 1111L),
-                        tuple(ug2.getGroupSeq(), "그룹명2", 1111L)
-                );
+            .extracting("groupSeq", "groupName", "owner.userSeq")
+            .containsExactly(
+                tuple(ug1.getGroupSeq(), "그룹명1", 1111L),
+                tuple(ug2.getGroupSeq(), "그룹명2", 1111L)
+            );
     }
 
     @DisplayName("그룹에서 손절한 친구 삭제 - 멤버 0명일때 그룹 삭제")
@@ -245,16 +248,16 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(groupMemberRepository.findAll())
-                .extracting("group.groupSeq", "member.userSeq")
-                .containsExactlyInAnyOrder(
-                        tuple(ug1.getGroupSeq(), 1234L),
-                        tuple(ug1.getGroupSeq(), 2222L)
-                );
+            .extracting("group.groupSeq", "member.userSeq")
+            .containsExactlyInAnyOrder(
+                tuple(ug1.getGroupSeq(), 1234L),
+                tuple(ug1.getGroupSeq(), 2222L)
+            );
         assertThat(userGroupRepository.findAll())
-                .extracting("groupSeq", "groupName", "owner.userSeq")
-                .containsExactly(
-                        tuple(ug1.getGroupSeq(), "그룹명1", 1111L)
-                );
+            .extracting("groupSeq", "groupName", "owner.userSeq")
+            .containsExactly(
+                tuple(ug1.getGroupSeq(), "그룹명1", 1111L)
+            );
     }
 
 }

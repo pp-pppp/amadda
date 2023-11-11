@@ -3,7 +3,10 @@ package com.pppppp.amadda.friend.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -18,9 +21,8 @@ import com.pppppp.amadda.friend.service.FriendRequestService;
 import com.pppppp.amadda.friend.service.FriendService;
 import com.pppppp.amadda.friend.service.GroupMemberService;
 import com.pppppp.amadda.friend.service.UserGroupService;
-import java.util.List;
-
 import com.pppppp.amadda.global.util.TokenProvider;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,14 +42,19 @@ class FriendControllerTest {
 
     @MockBean
     private FriendRequestService friendRequestService;
+
     @MockBean
     private UserGroupService userGroupService;
+
     @MockBean
     private GroupMemberService groupMemberService;
+
     @MockBean
     private AlarmService alarmService;
+
     @MockBean
     private FriendService friendService;
+
     @MockBean
     private TokenProvider tokenProvider;
 
@@ -56,9 +63,9 @@ class FriendControllerTest {
     void sendFriendRequest() throws Exception {
         // given
         FriendRequestRequest request = FriendRequestRequest.builder()
-                .userSeq(1111L)
-                .targetSeq(1234L)
-                .build();
+            .userSeq(1111L)
+            .targetSeq(1234L)
+            .build();
 
         // stubbing
         when(friendRequestService.createFriendRequest(any()))
@@ -68,14 +75,14 @@ class FriendControllerTest {
         // when // then
         mockMvc.perform(
                 post("/api/friend/request")
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("200"))
-                .andExpect(jsonPath("$.status").value("OK"))
-                .andExpect(jsonPath("$.message").value("OK"));
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"));
     }
 
     @DisplayName("대상 유저 없이 요청을 보낸 경우 예외가 발생한다. ")
@@ -83,17 +90,17 @@ class FriendControllerTest {
     void sendFriendRequestWithOutTarget() throws Exception {
         // given
         FriendRequestRequest request = FriendRequestRequest.builder()
-                .userSeq(1111L)
-                .build();
+            .userSeq(1111L)
+            .build();
 
         // when // then
         mockMvc.perform(
-                        post("/api/friend/request")
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andDo(print())
-                .andExpect(status().isBadRequest());
+                post("/api/friend/request")
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andDo(print())
+            .andExpect(status().isBadRequest());
     }
 
     @DisplayName("유저(본인) 없이 요청을 보낸 경우 예외가 발생한다. ")
@@ -101,17 +108,17 @@ class FriendControllerTest {
     void sendFriendRequestWithOutUser() throws Exception {
         // given
         FriendRequestRequest request = FriendRequestRequest.builder()
-                .targetSeq(1111L)
-                .build();
+            .targetSeq(1111L)
+            .build();
 
         // when // then
         mockMvc.perform(
-                        post("/api/friend/request")
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andDo(print())
-                .andExpect(status().isBadRequest());
+                post("/api/friend/request")
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andDo(print())
+            .andExpect(status().isBadRequest());
     }
 
 
@@ -123,14 +130,14 @@ class FriendControllerTest {
 
         // when // then
         mockMvc.perform(
-                        put("/api/friend/request/"+requestSeq)
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("200"))
-                .andExpect(jsonPath("$.status").value("OK"))
-                .andExpect(jsonPath("$.message").value("OK"));
+                put("/api/friend/request/" + requestSeq)
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"));
     }
 
     @DisplayName("받은 친구 요청을 수락한다. ")
@@ -145,13 +152,13 @@ class FriendControllerTest {
 
         // when // then
         mockMvc.perform(
-                post("/api/friend/request/"+requestSeq)
-                        .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("200"))
-                .andExpect(jsonPath("$.status").value("OK"))
-                .andExpect(jsonPath("$.message").value("OK"));
+                post("/api/friend/request/" + requestSeq)
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"));
     }
 
     @DisplayName("친구를 삭제한다.")
@@ -162,13 +169,13 @@ class FriendControllerTest {
 
         // when // then
         mockMvc.perform(
-                        delete("/api/friend/"+friendUserSeq)
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("200"))
-                .andExpect(jsonPath("$.status").value("OK"))
-                .andExpect(jsonPath("$.message").value("OK"));
+                delete("/api/friend/" + friendUserSeq)
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"));
     }
 
     @DisplayName("그룹을 만든다. ")
@@ -176,21 +183,21 @@ class FriendControllerTest {
     void makeGroup() throws Exception {
         // given
         GroupCreateRequest request = GroupCreateRequest.builder()
-                .ownerSeq(1111L)
-                .groupName("그룹명1")
-                .userSeqs(List.of(1234L, 2222L))
-                .build();
+            .ownerSeq(1111L)
+            .groupName("그룹명1")
+            .userSeqs(List.of(1234L, 2222L))
+            .build();
 
         // when // then
         mockMvc.perform(
                 post("/api/friend/group")
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("200"))
-                .andExpect(jsonPath("$.status").value("OK"))
-                .andExpect(jsonPath("$.message").value("OK"));
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"));
     }
 
     @DisplayName("그룹을 만들때 선택된 유저가 없으면 예외처리. ")
@@ -198,19 +205,19 @@ class FriendControllerTest {
     void makeGroupWithoutUsers() throws Exception {
         // given
         GroupCreateRequest request = GroupCreateRequest.builder()
-                .ownerSeq(1111L)
-                .groupName("그룹명1")
-                .userSeqs(List.of())
-                .build();
+            .ownerSeq(1111L)
+            .groupName("그룹명1")
+            .userSeqs(List.of())
+            .build();
 
         // when // then
         mockMvc.perform(
-                        post("/api/friend/group")
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andDo(print())
-                .andExpect(status().isBadRequest());
+                post("/api/friend/group")
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andDo(print())
+            .andExpect(status().isBadRequest());
     }
 
     @DisplayName("그룹을 만들때 그룹명이 없으면 예외처리. ")
@@ -218,19 +225,19 @@ class FriendControllerTest {
     void makeGroupWithoutName() throws Exception {
         // given
         GroupCreateRequest request = GroupCreateRequest.builder()
-                .ownerSeq(1111L)
-                .groupName("")
-                .userSeqs(List.of(1234L, 2222L))
-                .build();
+            .ownerSeq(1111L)
+            .groupName("")
+            .userSeqs(List.of(1234L, 2222L))
+            .build();
 
         // when // then
         mockMvc.perform(
-                        post("/api/friend/group")
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andDo(print())
-                .andExpect(status().isBadRequest());
+                post("/api/friend/group")
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andDo(print())
+            .andExpect(status().isBadRequest());
     }
 
     @DisplayName("그룹의 이름과 멤버를 수정한다. ")
@@ -238,21 +245,21 @@ class FriendControllerTest {
     void editGroup() throws Exception {
         // given
         GroupUpdateRequest request = GroupUpdateRequest.builder()
-                .groupSeq(0L)
-                .groupName("그룹명1")
-                .userSeqs(List.of(1234L, 2222L))
-                .build();
+            .groupSeq(0L)
+            .groupName("그룹명1")
+            .userSeqs(List.of(1234L, 2222L))
+            .build();
 
         // when // then
         mockMvc.perform(
-                        put("/api/friend/group")
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("200"))
-                .andExpect(jsonPath("$.status").value("OK"))
-                .andExpect(jsonPath("$.message").value("OK"));
+                put("/api/friend/group")
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"));
     }
 
     @DisplayName("그룹을 수정할 때 선택된 유저가 없으면 예외처리. ")
@@ -260,19 +267,19 @@ class FriendControllerTest {
     void editGroupWithoutUsers() throws Exception {
         // given
         GroupUpdateRequest request = GroupUpdateRequest.builder()
-                .groupSeq(0L)
-                .groupName("그룹명1")
-                .userSeqs(List.of())
-                .build();
+            .groupSeq(0L)
+            .groupName("그룹명1")
+            .userSeqs(List.of())
+            .build();
 
         // when // then
         mockMvc.perform(
-                        put("/api/friend/group")
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andDo(print())
-                .andExpect(status().isBadRequest());
+                put("/api/friend/group")
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andDo(print())
+            .andExpect(status().isBadRequest());
     }
 
     @DisplayName("그룹을 수정할 때 그룹명이 없으면 예외처리. ")
@@ -280,18 +287,18 @@ class FriendControllerTest {
     void editGroupWithoutName() throws Exception {
         // given
         GroupUpdateRequest request = GroupUpdateRequest.builder()
-                .groupSeq(0L)
-                .groupName(" ")
-                .userSeqs(List.of(1234L, 2222L))
-                .build();
+            .groupSeq(0L)
+            .groupName(" ")
+            .userSeqs(List.of(1234L, 2222L))
+            .build();
         // when // then
         mockMvc.perform(
-                        put("/api/friend/group")
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andDo(print())
-                .andExpect(status().isBadRequest());
+                put("/api/friend/group")
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andDo(print())
+            .andExpect(status().isBadRequest());
     }
 
     @DisplayName("그룹을 수정할 때 그룹seq이 없으면 예외처리. ")
@@ -299,17 +306,17 @@ class FriendControllerTest {
     void editGroupWithoutGroupSeq() throws Exception {
         // given
         GroupUpdateRequest request = GroupUpdateRequest.builder()
-                .groupName("aaa")
-                .userSeqs(List.of(1234L, 2222L))
-                .build();
+            .groupName("aaa")
+            .userSeqs(List.of(1234L, 2222L))
+            .build();
         // when // then
         mockMvc.perform(
-                        put("/api/friend/group")
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andDo(print())
-                .andExpect(status().isBadRequest());
+                put("/api/friend/group")
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andDo(print())
+            .andExpect(status().isBadRequest());
     }
 
     @DisplayName("그룹을 삭제한다. ")
@@ -320,13 +327,13 @@ class FriendControllerTest {
 
         // when // then
         mockMvc.perform(
-                        delete("/api/friend/group/"+groupSeq)
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("200"))
-                .andExpect(jsonPath("$.status").value("OK"))
-                .andExpect(jsonPath("$.message").value("OK"));
+                delete("/api/friend/group/" + groupSeq)
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"));
     }
 
     @DisplayName("친구를 검색한다. ")
@@ -337,14 +344,13 @@ class FriendControllerTest {
 
         // when // then
         mockMvc.perform(
-                        get("/api/friend?searchKey="+key)
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("200"))
-                .andExpect(jsonPath("$.status").value("OK"))
-                .andExpect(jsonPath("$.message").value("OK"));
+                get("/api/friend?searchKey=" + key)
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"));
     }
-
-
+    
 }

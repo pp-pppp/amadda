@@ -56,23 +56,28 @@ import org.springframework.test.annotation.DirtiesContext;
 )
 class AlarmServiceTest extends IntegrationTestSupport {
 
-    @Autowired
-    private KafkaTopic kafkaTopic;
-
     @MockBean
     KafkaTemplate<Long, BaseTopicValue> kafkaTemplate;
     @Autowired
+    private KafkaTopic kafkaTopic;
+    @Autowired
     private AlarmService alarmService;
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private FriendRequestRepository friendRequestRepository;
+
     @Autowired
     private ScheduleRepository scheduleRepository;
+
     @Autowired
     private ParticipationRepository participationRepository;
+
     @Autowired
     private AlarmConfigRepository alarmConfigRepository;
+
     @Autowired
     private AlarmRepository alarmRepository;
 

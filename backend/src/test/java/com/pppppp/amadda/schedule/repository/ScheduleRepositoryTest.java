@@ -29,7 +29,6 @@ class ScheduleRepositoryTest extends IntegrationTestSupport {
     void setUp() {
         User user = User.create(1L, "박동건", "icebearrrr", "url1");
         User user2 = User.create(2L, "정민영", "minyoung", "url2");
-
         userRepository.saveAll(List.of(user, user2));
     }
 
