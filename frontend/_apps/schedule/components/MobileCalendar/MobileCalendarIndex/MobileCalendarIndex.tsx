@@ -1,17 +1,18 @@
-import { Flex, Span } from '#/index';
 import React from 'react';
 import { BASE } from './MobileCalendarIndex.css';
+import WEEKDAY from '@SCH/constants/WEEKDAY';
+import { Span } from 'external-temporal';
 
 export function MobileCalendarIndex() {
   return (
     <div className={BASE}>
-      <Span color="warn">일</Span>
-      <Span>월</Span>
-      <Span>화</Span>
-      <Span>수</Span>
-      <Span>목</Span>
-      <Span>금</Span>
-      <Span color="warn">토</Span>
+      <Span color="warn">{WEEKDAY.SUN}</Span>
+      <Span>{WEEKDAY.MON}</Span>
+      <Span>{WEEKDAY.TUE}</Span>
+      <Span>{WEEKDAY.WED}</Span>
+      <Span>{WEEKDAY.THU}</Span>
+      <Span>{WEEKDAY.FRI}</Span>
+      <Span color="warn">{WEEKDAY.SAT}</Span>
     </div>
   );
 }

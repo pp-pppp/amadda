@@ -4,8 +4,7 @@
     "plugins": [{ "name": "next" }],
     "baseUrl": "./",
     "paths": {
-      "@/*": ["./*"],
-      "#/*": ["../../_packages/@external-temporal/*"],
+      "@SCH/*": ["./*"],
       "#/components/*": ["../../_packages/@external-temporal/components/*"],
       "#/constants/*": ["../../_packages/@external-temporal/constants/*"]
     }
