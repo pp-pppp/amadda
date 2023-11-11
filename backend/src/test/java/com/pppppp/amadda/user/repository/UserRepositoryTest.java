@@ -50,7 +50,7 @@ class UserRepositoryTest extends IntegrationTestSupport {
         userRepository.saveAll(List.of(u1, u2));
 
         // when
-        User u = userRepository.findByUserSeq(1111L).get();
+        User u = userRepository.findById(1111L).get();
 
         //then
         assertThat(u).isNotNull();

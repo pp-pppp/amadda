@@ -9,8 +9,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface ParticipationRepository extends JpaRepository<Participation, Long> {
 
-    Optional<Participation> findByParticipationSeqAndIsDeletedFalse(Long participationSeq);
-
     Optional<Participation> findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse
         (Long scheduleSeq, Long userSeq);
 
@@ -27,7 +25,5 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
 
     List<Participation> findByUser_UserSeqAndCategory_CategorySeqAndIsDeletedFalse
         (Long userSeq, Long categorySeq);
-
-    boolean existsBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse
-        (Long scheduleSeq, Long userSeq);
+    
 }

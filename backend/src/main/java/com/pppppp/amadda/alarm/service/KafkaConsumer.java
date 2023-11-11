@@ -96,7 +96,7 @@ public class KafkaConsumer {
     }
 
     private User getUser(Long userSeq) {
-        return userRepository.findByUserSeq(userSeq)
+        return userRepository.findById(userSeq)
             .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
     }
 

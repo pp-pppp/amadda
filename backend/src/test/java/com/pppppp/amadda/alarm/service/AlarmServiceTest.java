@@ -264,7 +264,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         alarmService.readAlarm(alarm.getAlarmSeq(), user.getUserSeq());
 
         // then
-        Optional<Alarm> result = alarmRepository.findByAlarmSeq(alarm.getAlarmSeq());
+        Optional<Alarm> result = alarmRepository.findById(alarm.getAlarmSeq());
 
         assertTrue(result.isPresent());
         assertTrue(result.get().isRead());
@@ -822,7 +822,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         alarmService.readFriendRequestAlarm(friendRequest.getRequestSeq());
 
         // then
-        Optional<Alarm> result = alarmRepository.findByAlarmSeq(alarm.getAlarmSeq());
+        Optional<Alarm> result = alarmRepository.findById(alarm.getAlarmSeq());
         assertTrue(result.isPresent());
         assertThat(result.get())
             .extracting("user.userSeq", "content", "isRead", "alarmType")

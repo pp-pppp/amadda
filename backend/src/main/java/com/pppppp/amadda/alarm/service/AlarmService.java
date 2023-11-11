@@ -211,12 +211,12 @@ public class AlarmService {
     }
 
     private User getUser(Long userSeq) {
-        return userRepository.findByUserSeq(userSeq)
+        return userRepository.findById(userSeq)
             .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
     }
 
     private FriendRequest getFriendRequestBySeq(Long requestSeq) {
-        return friendRequestRepository.findByRequestSeq(requestSeq)
+        return friendRequestRepository.findById(requestSeq)
             .orElseThrow(() -> new RestApiException(
                 FriendRequestErrorCode.FRIEND_REQUEST_NOT_FOUND));
     }
@@ -228,7 +228,7 @@ public class AlarmService {
     }
 
     private Schedule getSchedule(Long scheduleSeq) {
-        return scheduleRepository.findByScheduleSeqAndIsDeletedFalse(scheduleSeq)
+        return scheduleRepository.findById(scheduleSeq)
             .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
     }
 
@@ -239,7 +239,7 @@ public class AlarmService {
     }
 
     private Alarm getAlarm(Long alarmSeq) {
-        return alarmRepository.findByAlarmSeq(alarmSeq)
+        return alarmRepository.findById(alarmSeq)
             .orElseThrow(() -> new RestApiException(AlarmErrorCode.ALARM_NOT_EXIST));
     }
 }

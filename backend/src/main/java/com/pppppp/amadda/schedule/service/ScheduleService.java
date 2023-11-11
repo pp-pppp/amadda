@@ -427,12 +427,12 @@ public class ScheduleService {
     }
 
     private User findUserInfo(Long userSeq) {
-        return userRepository.findByUserSeq(userSeq)
+        return userRepository.findById(userSeq)
             .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
     }
 
     private Schedule findScheduleInfo(Long scheduleSeq) {
-        return scheduleRepository.findByScheduleSeqAndIsDeletedFalse(scheduleSeq)
+        return scheduleRepository.findById(scheduleSeq)
             .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
     }
 
@@ -443,12 +443,12 @@ public class ScheduleService {
     }
 
     private Comment findCommentInfo(Long commentSeq) {
-        return commentRepository.findByCommentSeq(commentSeq)
+        return commentRepository.findById(commentSeq)
             .orElseThrow(() -> new RestApiException(CommentErrorCode.COMMENT_NOT_FOUND));
     }
 
     private Category findCategoryInfo(Long categorySeq) {
-        return categoryRepository.findByCategorySeqAndIsDeletedFalse(categorySeq)
+        return categoryRepository.findById(categorySeq)
             .orElseThrow(() -> new RestApiException(CategoryErrorCode.CATEGORY_NOT_FOUND));
     }
 
@@ -497,7 +497,7 @@ public class ScheduleService {
 
         // 1. 참가하는 일정
         Long scheduleSeq = participation.getSchedule().getScheduleSeq();
-        Schedule schedule = scheduleRepository.findByScheduleSeqAndIsDeletedFalse(
+        Schedule schedule = scheduleRepository.findById(
                 scheduleSeq)
             .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
 
