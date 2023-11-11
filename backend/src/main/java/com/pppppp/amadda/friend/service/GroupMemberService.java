@@ -107,7 +107,7 @@ public class GroupMemberService {
     }
 
     private User findUserBySeq(Long seq) {
-        return userRepository.findByUserSeq(seq)
+        return userRepository.findById(seq)
             .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
     }
 

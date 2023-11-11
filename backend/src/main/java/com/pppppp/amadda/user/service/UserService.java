@@ -137,7 +137,7 @@ public class UserService {
     // =============== 레포지토리에 직접 접근하는 메소드들 ===============
 
     private Optional<User> findUserByUserSeq(Long userSeq) {
-        return Optional.ofNullable(userSeq).flatMap(userRepository::findByUserSeq);
+        return Optional.ofNullable(userSeq).flatMap(userRepository::findById);
     }
 
     private void saveUser(User user) {
