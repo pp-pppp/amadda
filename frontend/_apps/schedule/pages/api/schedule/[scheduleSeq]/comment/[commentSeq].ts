@@ -1,4 +1,4 @@
-import { http } from '@/utils/http';
+import { http } from '@SCH/utils/http';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const commentSeq = async (req: NextApiRequest, res: NextApiResponse) => {

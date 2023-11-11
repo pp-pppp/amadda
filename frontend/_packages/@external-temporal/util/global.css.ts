@@ -1,48 +1,50 @@
 import { globalFontFace, globalStyle } from '@vanilla-extract/css';
 import colors from '../constants/colors';
 
-globalFontFace('regular', {
-  src: 'url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/packages/pretendard/dist/web/static/woff/Pretendard-Regular.woff")',
-  fontWeight: 400,
-});
+export const style = {
+  all: globalStyle('*', {
+    boxSizing: 'border-box',
+    fontFamily: 'regular',
+  }),
 
-globalFontFace('bold', {
-  src: 'url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/packages/pretendard/dist/web/static/woff/Pretendard-Bold.woff")',
-  fontWeight: 700,
-});
+  texttag: globalStyle('html, body, h1, h2, h3, h4, h5, h6, p, span', {
+    margin: 0,
+    padding: 0,
+    fontWeight: 400,
+    fontSize: '100%',
+    lineHeight: '1',
+    color: colors.BLACK,
+  }),
 
-globalStyle('html, body, h1, h2, h3, h4, h5, h6, p, span', {
-  margin: 0,
-  padding: 0,
-  fontWeight: 400,
-  fontSize: '100%',
-  lineHeight: '1',
-  color: colors.BLACK,
-});
+  regularFont: globalFontFace('regular', {
+    src: 'url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/packages/pretendard/dist/web/static/woff/Pretendard-Regular.woff")',
+    fontWeight: 400,
+  }),
 
-globalStyle('*', {
-  boxSizing: 'border-box',
-  fontFamily: 'regular',
-});
+  boldFont: globalFontFace('bold', {
+    src: 'url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/packages/pretendard/dist/web/static/woff/Pretendard-Bold.woff")',
+    fontWeight: 700,
+  }),
 
-globalStyle('a', {
-  textDecoration: 'none',
-  color: 'inherit',
-});
+  atag: globalStyle('a', {
+    textDecoration: 'none',
+    color: 'inherit',
+  }),
 
-globalStyle('ul, li', {
-  margin: 0,
-  padding: 0,
-  listStyleType: 'none',
-});
+  listtag: globalStyle('ul, li', {
+    margin: 0,
+    padding: 0,
+    listStyleType: 'none',
+  }),
 
-globalStyle('img, svg', {
-  verticalAlign: 'middle',
-});
+  imagetag: globalStyle('img, svg', {
+    verticalAlign: 'middle',
+  }),
 
-globalStyle('textarea', {
-  fontFamily: 'pretendard',
-  resize: 'none',
-  margin: 0,
-  padding: 0,
-});
+  textarea: globalStyle('textarea', {
+    fontFamily: 'pretendard',
+    resize: 'none',
+    margin: 0,
+    padding: 0,
+  }),
+};

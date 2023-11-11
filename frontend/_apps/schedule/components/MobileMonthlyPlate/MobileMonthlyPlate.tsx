@@ -1,6 +1,6 @@
 import React from 'react';
 import { ReactNode } from 'react';
-import { Icon, Span } from '#/index';
+import { Icon, Span } from 'external-temporal';
 import { BASE, SELECTED } from './MobileMonthlyPlate.css';
 
 export interface MobileMonthPlateProps {
