@@ -19,6 +19,11 @@ public enum AlarmType {
     SCHEDULE_NOTIFICATION("SCHEDULE_NOTIFICATION", "일정 예정"),
     ;
 
+    private static final Map<String, AlarmType> CODE_CONTENT = Collections.unmodifiableMap(
+        Stream.of(values())
+            .collect(Collectors.toMap(AlarmType::getCode, Function.identity()))
+    );
+    
     private final String code;
     private final String content;
 
@@ -26,10 +31,6 @@ public enum AlarmType {
         this.code = code;
         this.content = content;
     }
-
-    private static final Map<String, AlarmType> CODE_CONTENT = Collections.unmodifiableMap(
-        Stream.of(values()).collect(Collectors.toMap(AlarmType::getCode, Function.identity()))
-    );
 
     public static AlarmType of(String code) {
         return CODE_CONTENT.get(code);

@@ -68,7 +68,8 @@ public class KafkaConsumer {
         throws IOException {
         Long userSeq = Long.valueOf(String.valueOf(record.key()));
         String scheduleName = record.value().getScheduleName();
-        saveAlarm(userSeq, AlarmContent.SCHEDULE_UPDATE.getMessage(scheduleName), AlarmType.SCHEDULE_UPDATE);
+        saveAlarm(userSeq, AlarmContent.SCHEDULE_UPDATE.getMessage(scheduleName),
+            AlarmType.SCHEDULE_UPDATE);
     }
 
     @KafkaListener(topics = "${spring.kafka.topic.alarm.schedule-notification}", groupId = "${spring.kafka.consumer.group-id}")
@@ -89,10 +90,14 @@ public class KafkaConsumer {
     }
 
     public void saveAlarm(Long userSeq, String message, AlarmType alarmType) {
-        User user = userRepository.findByUserSeq(userSeq)
-            .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        User user = getUser(userSeq);
         Alarm alarm = Alarm.create(user, message, alarmType);
         alarmRepository.save(alarm);
+    }
+
+    private User getUser(Long userSeq) {
+        return userRepository.findByUserSeq(userSeq)
+            .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
     }
 
 }

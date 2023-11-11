@@ -11,7 +11,6 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,14 +28,14 @@ public class AlarmController {
     private final TokenProvider tokenProvider;
 
     @GetMapping
-    public ApiResponse<List<AlarmReadResponse>> readAlarms(HttpServletRequest http) {
+    public ApiResponse<List<AlarmReadResponse>> getAlarms(HttpServletRequest http) {
         Long userSeq = tokenProvider.getUserSeq(http);
-        List<AlarmReadResponse> alarms = alarmService.readAlarms(userSeq);
-        return ApiResponse.of(HttpStatus.OK, alarms);
+        List<AlarmReadResponse> alarms = alarmService.getAlarms(userSeq);
+        return ApiResponse.ok(alarms);
     }
 
     @PostMapping("/{alarmSeq}")
-    public ApiResponse<String> readAlarm(HttpServletRequest http, @PathVariable(required = true) Long alarmSeq) {
+    public ApiResponse<String> readAlarm(HttpServletRequest http, @PathVariable Long alarmSeq) {
         Long userSeq = tokenProvider.getUserSeq(http);
         alarmService.readAlarm(alarmSeq, userSeq);
         return ApiResponse.ok("해당 알림을 읽음 처리하였습니다.");
@@ -45,15 +44,15 @@ public class AlarmController {
     @PostMapping("/subscribe")
     public ApiResponse<String> subscribeAlarm(@Valid @RequestBody AlarmConfigRequest request) {
         AlarmConfig alarmConfig = alarmService.setGlobalAlarm(request, true);
-        return ApiResponse.ok(
-            String.format("%s 알림을 설정합니다.", alarmConfig.getAlarmType().getContent()));
+        String alarmName = alarmConfig.getAlarmType().getContent();
+        return ApiResponse.ok(String.format("%s 알림을 설정합니다.", alarmName));
     }
 
     @PostMapping("/unsubscribe")
     public ApiResponse<String> unsubscribeAlarm(@Valid @RequestBody AlarmConfigRequest request) {
         AlarmConfig alarmConfig = alarmService.setGlobalAlarm(request, false);
-        return ApiResponse.ok(
-            String.format("%s 알림이 해제되었습니다.", alarmConfig.getAlarmType().getContent()));
+        String alarmName = alarmConfig.getAlarmType().getContent();
+        return ApiResponse.ok(String.format("%s 알림이 해제되었습니다.", alarmName));
     }
 
 }

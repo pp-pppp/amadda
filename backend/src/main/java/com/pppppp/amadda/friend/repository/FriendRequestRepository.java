@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FriendRequestRepository extends JpaRepository<FriendRequest, Long> {
 
+    Optional<FriendRequest> findByRequestSeq(Long requestSeq);
+
     Optional<FriendRequest> findByOwnerAndFriend(User owner, User friend);
 
 }
