@@ -6,10 +6,16 @@ import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.alarm.entity.KafkaTopic;
 import com.pppppp.amadda.alarm.repository.AlarmRepository;
+import com.pppppp.amadda.alarm.service.AlarmService;
 import com.pppppp.amadda.friend.entity.Friend;
 import com.pppppp.amadda.friend.repository.FriendRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
@@ -48,9 +54,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 class ScheduleServiceTest extends IntegrationTestSupport {
-    // TODO: 일정 수정 알림 service 테스트
+
+    @MockBean
+    private AlarmService alarmService;
 
     @Autowired
     private KafkaTopic kafkaTopic;
@@ -146,6 +155,11 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .containsExactlyInAnyOrder(
                 tuple("icebearrrr", "박동건", "url1"),
                 tuple("minyoung", "정민영", "url2"));
+
+        verify(alarmService, never())
+            .sendScheduleAssigned(anyLong(), anyLong(), eq(u1.getUserSeq()));
+        verify(alarmService, times(1))
+            .sendScheduleAssigned(schedule.scheduleSeq(), u1.getUserSeq(), u2.getUserSeq());
     }
 
     @DisplayName("시간이 미확정된 새로운 일정을 생성하고, 사용자의 개인화 된 설정이 반영 되었는지 확인한다.")
@@ -191,6 +205,11 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .containsExactlyInAnyOrder(
                 tuple("icebearrrr", "박동건", "url1"),
                 tuple("minyoung", "정민영", "url2"));
+
+        verify(alarmService, never())
+            .sendScheduleAssigned(anyLong(), anyLong(), eq(u1.getUserSeq()));
+        verify(alarmService, times(1))
+            .sendScheduleAssigned(schedule.scheduleSeq(), u1.getUserSeq(), u2.getUserSeq());
     }
 
     @DisplayName("일정이 확정된 새로운 일정을 생성하고, 사용자의 개인화 된 설정이 반영 되었는지 확인한다.")
@@ -236,6 +255,11 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .containsExactlyInAnyOrder(
                 tuple("icebearrrr", "박동건", "url1"),
                 tuple("minyoung", "정민영", "url2"));
+
+        verify(alarmService, never())
+            .sendScheduleAssigned(anyLong(), anyLong(), eq(u1.getUserSeq()));
+        verify(alarmService, times(1))
+            .sendScheduleAssigned(schedule.scheduleSeq(), u1.getUserSeq(), u2.getUserSeq());
     }
 
     @DisplayName("'하루종일'로 체크된 새로운 일정을 생성하고, 사용자의 개인화 된 설정이 반영 되었는지 확인한다.")
@@ -281,6 +305,11 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .containsExactlyInAnyOrder(
                 tuple("icebearrrr", "박동건", "url1"),
                 tuple("minyoung", "정민영", "url2"));
+
+        verify(alarmService, never())
+            .sendScheduleAssigned(anyLong(), anyLong(), eq(u1.getUserSeq()));
+        verify(alarmService, times(1))
+            .sendScheduleAssigned(schedule.scheduleSeq(), u1.getUserSeq(), u2.getUserSeq());
     }
 
     // =================== 일정 조회 ===================
@@ -951,6 +980,9 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         assertThat(response2)
             .extracting("scheduleName")
             .isEqualTo("안녕 내가 일정 이름이야");
+
+        verify(alarmService, never())
+            .sendScheduleUpdate(anyLong(), anyLong());
     }
 
     @DisplayName("기존 일정에 새로운 참가자를 할당한다. 이때 초기 정보는 할당한 참가자의 정보를 따른다.")
@@ -1012,6 +1044,15 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         assertThat(response2)
             .extracting("scheduleName", "alarmTime")
             .containsExactly("안녕 나는 바뀐 일정 이름이야", "알림 없음");
+
+        Long scheduleSeq = response1.scheduleSeq();
+        verify(alarmService, times(1))
+            .sendScheduleUpdate(scheduleSeq, u1.getUserSeq());
+        verify(alarmService, never())
+            .sendScheduleUpdate(scheduleSeq, u2.getUserSeq());
+        verify(alarmService, times(1))
+            .sendScheduleAssigned(scheduleSeq, u2.getUserSeq(), u3.getUserSeq()
+            );
     }
 
     @DisplayName("일정에서 참가자를 할당 취소하고 제외된 사람의 참가 정보는 삭제한다.")
@@ -1070,6 +1111,21 @@ class ScheduleServiceTest extends IntegrationTestSupport {
                 tuple(u3, schedule.scheduleSeq())
             );
         assertThat(result2).isEmpty();
+
+        Long scheduleSeq = schedule.scheduleSeq();
+        verify(alarmService, never())
+            .sendScheduleAssigned(scheduleSeq, u1.getUserSeq(), u1.getUserSeq());
+        verify(alarmService, times(1))
+            .sendScheduleAssigned(scheduleSeq, u1.getUserSeq(), u2.getUserSeq());
+        verify(alarmService, times(1))
+            .sendScheduleAssigned(scheduleSeq, u1.getUserSeq(), u3.getUserSeq());
+
+        verify(alarmService, never())
+            .sendScheduleUpdate(scheduleSeq, u1.getUserSeq());
+        verify(alarmService, times(1))
+            .sendScheduleUpdate(scheduleSeq, u2.getUserSeq());
+        verify(alarmService, times(1))
+            .sendScheduleUpdate(scheduleSeq, u3.getUserSeq());
     }
 
     @DisplayName("카테고리에 새로운 일정을 추가한다.")
@@ -1265,6 +1321,12 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(result).hasSize(0);
+
+        Long scheduleSeq = s.scheduleSeq();
+        verify(alarmService, never())
+            .sendScheduleUpdate(scheduleSeq, u1.getUserSeq());
+        verify(alarmService, times(1))
+            .sendScheduleUpdate(scheduleSeq, u2.getUserSeq());
     }
 
     // =================== 댓글 ===================
@@ -1459,7 +1521,8 @@ class ScheduleServiceTest extends IntegrationTestSupport {
     @Test
     void noStartTime() {
         // given
-        User user = userRepository.findAll().get(0);
+        User user1 = userRepository.findAll().get(0);
+        User user2 = userRepository.findAll().get(1);
 
         ScheduleCreateRequest request = ScheduleCreateRequest.builder()
             .scheduleName("안녕 내가 일정 이름이야")
@@ -1470,21 +1533,24 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .alarmTime(AlarmTime.NONE)
             .isAuthorizedAll(true)
             .participants(List.of(
-                UserReadResponse.of(user)))
+                UserReadResponse.of(user1), UserReadResponse.of(user2)))
             .build();
 
         // when // then
-        assertThatThrownBy(() -> scheduleService.createSchedule(user.getUserSeq(), request))
+        assertThatThrownBy(() -> scheduleService.createSchedule(user1.getUserSeq(), request))
             .isInstanceOf(RestApiException.class)
             .hasMessage("SCHEDULE_DATE_NOT_SELECTED");
 
+        verify(alarmService, never())
+            .sendScheduleAssigned(anyLong(), anyLong(), anyLong());
     }
 
     @DisplayName("시간이 설정된 일정에서 시간이 입력되지 않으면 일정 생성에 실패한다.")
     @Test
     void noEndTime() {
         // given
-        User user = userRepository.findAll().get(0);
+        User user1 = userRepository.findAll().get(0);
+        User user2 = userRepository.findAll().get(0);
 
         ScheduleCreateRequest request = ScheduleCreateRequest.builder()
             .scheduleName("안녕 내가 일정 이름이야")
@@ -1496,13 +1562,16 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .alarmTime(AlarmTime.NONE)
             .isAuthorizedAll(true)
             .participants(List.of(
-                UserReadResponse.of(user)))
+                UserReadResponse.of(user1), UserReadResponse.of(user2)))
             .build();
 
         // when // then
-        assertThatThrownBy(() -> scheduleService.createSchedule(user.getUserSeq(), request))
+        assertThatThrownBy(() -> scheduleService.createSchedule(user1.getUserSeq(), request))
             .isInstanceOf(RestApiException.class)
             .hasMessage("SCHEDULE_TIME_NOT_SELECTED");
+
+        verify(alarmService, never())
+            .sendScheduleAssigned(anyLong(), anyLong(), anyLong());
     }
 
     @DisplayName("유효하지 않은 일정에 접근해 일정 조회에 실패한다.")
@@ -1521,7 +1590,8 @@ class ScheduleServiceTest extends IntegrationTestSupport {
     @Test
     void invalidUpdateSchedule() {
         // given
-        User user = userRepository.findAll().get(0);
+        User user1 = userRepository.findAll().get(0);
+        User user2 = userRepository.findAll().get(0);
 
         ScheduleCreateRequest createRequest = ScheduleCreateRequest.builder()
             .scheduleName("안녕 내가 일정 이름이야")
@@ -1531,9 +1601,9 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isAuthorizedAll(false)
             .alarmTime(AlarmTime.NONE)
             .participants(List.of(
-                UserReadResponse.of(user)))
+                UserReadResponse.of(user1), UserReadResponse.of(user2)))
             .build();
-        scheduleService.createSchedule(user.getUserSeq(), createRequest);
+        scheduleService.createSchedule(user1.getUserSeq(), createRequest);
         Schedule schedule = scheduleRepository.findAll().get(0);
 
         ScheduleUpdateRequest updateRequest = ScheduleUpdateRequest.builder()
@@ -1542,10 +1612,13 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
         // when // then
         assertThatThrownBy(
-            () -> scheduleService.updateSchedule(user.getUserSeq(), schedule.getScheduleSeq() + 1,
+            () -> scheduleService.updateSchedule(user1.getUserSeq(), schedule.getScheduleSeq() + 1,
                 updateRequest))
             .isInstanceOf(RestApiException.class)
             .hasMessage("SCHEDULE_NOT_FOUND");
+
+        verify(alarmService, never())
+            .sendScheduleUpdate(anyLong(), anyLong());
     }
 
     @DisplayName("친구관계가 아닌 사용자는 추가할 수 없다.")
@@ -1584,6 +1657,11 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             schedule.getScheduleSeq(), scheduleUpdateRequest))
             .isInstanceOf(RestApiException.class)
             .hasMessage("SCHEDULE_FORBIDDEN");
+
+        verify(alarmService, never())
+            .sendScheduleAssigned(anyLong(), anyLong(), anyLong());
+        verify(alarmService, never())
+            .sendScheduleUpdate(anyLong(), anyLong());
     }
 
     @DisplayName("양방향으로 친구관계이지 않은 경우는 추가할 수 없다.")
@@ -1625,6 +1703,11 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             schedule.getScheduleSeq(), scheduleUpdateRequest))
             .isInstanceOf(RestApiException.class)
             .hasMessage("FRIEND_RELATION_DAMAGED");
+
+        verify(alarmService, never())
+            .sendScheduleAssigned(anyLong(), anyLong(), anyLong());
+        verify(alarmService, never())
+            .sendScheduleUpdate(anyLong(), anyLong());
     }
 
     @DisplayName("일정 수정 시 수정 권한이 없으면 수정할 수 없다.")
@@ -1657,6 +1740,9 @@ class ScheduleServiceTest extends IntegrationTestSupport {
                 updateRequest))
             .isInstanceOf(RestApiException.class)
             .hasMessage("SCHEDULE_FORBIDDEN");
+
+        verify(alarmService, never())
+            .sendScheduleUpdate(anyLong(), anyLong());
     }
 
     @DisplayName("유효하지 않은 일정에 접근해 일정 삭제에 실패한다.")
@@ -1682,6 +1768,9 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             schedule.getScheduleSeq() + 1))
             .isInstanceOf(RestApiException.class)
             .hasMessage("SCHEDULE_NOT_FOUND");
+
+        verify(alarmService, never())
+            .sendScheduleUpdate(anyLong(), anyLong());
     }
 
     @DisplayName("권한이 없는 경우 일정을 삭제할 수 없다.")
@@ -1709,6 +1798,9 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             schedule.getScheduleSeq()))
             .isInstanceOf(RestApiException.class)
             .hasMessage("SCHEDULE_FORBIDDEN");
+
+        verify(alarmService, never())
+            .sendScheduleUpdate(anyLong(), anyLong());
     }
 
     @DisplayName("유효하지 않은 일정에 접근해 댓글 생성에 실패한다.")
@@ -2075,7 +2167,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
     @DisplayName("멘션 알림 설정을 On으로 설정한다.")
     @Test
     void mention_alarm_on() {
-        // givne
+        // given
         User user = userRepository.findAll().get(0);
 
         ScheduleCreateRequest request = ScheduleCreateRequest.builder()
@@ -2107,7 +2199,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
     @DisplayName("멘션 알림 설정을 Off으로 설정한다.")
     @Test
     void mention_alarm_off() {
-        // givne
+        // given
         User user = userRepository.findAll().get(0);
 
         ScheduleCreateRequest request = ScheduleCreateRequest.builder()
@@ -2139,7 +2231,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
     @DisplayName("존재하지 않는 일정의 멘션 알림을 수정할 수 없다.")
     @Test
     void cannot_set_mention_alram_if_schedule_not_exist() {
-        // givne
+        // given
         User user = userRepository.findAll().get(0);
 
         // when + then
@@ -2151,7 +2243,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
     @DisplayName("수정 알림 설정을 On으로 설정한다.")
     @Test
     void update_alarm_on() {
-        // givne
+        // given
         User user = userRepository.findAll().get(0);
 
         ScheduleCreateRequest request = ScheduleCreateRequest.builder()
@@ -2183,7 +2275,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
     @DisplayName("수정 알림 설정을 Off으로 설정한다.")
     @Test
     void update_alarm_off() {
-        // givne
+        // given
         User user = userRepository.findAll().get(0);
 
         ScheduleCreateRequest request = ScheduleCreateRequest.builder()
@@ -2215,7 +2307,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
     @DisplayName("존재하지 않는 일정의 수정 알림을 수정할 수 없다.")
     @Test
     void cannot_set_update_alram_if_schedule_not_exist() {
-        // givne
+        // given
         User user = userRepository.findAll().get(0);
 
         // when + then
