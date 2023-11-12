@@ -5,12 +5,12 @@ import lombok.Builder;
 
 @Builder
 public record ParticipationUpdateResponse(
-    Long scheduleId
+    Long scheduleSeq
 ) {
 
     public static ParticipationUpdateResponse of(Participation participation) {
         return ParticipationUpdateResponse.builder()
-            .scheduleId(participation.getSchedule().getScheduleSeq())
+            .scheduleSeq(participation.getSchedule().getScheduleSeq())
             .build();
     }
 }
