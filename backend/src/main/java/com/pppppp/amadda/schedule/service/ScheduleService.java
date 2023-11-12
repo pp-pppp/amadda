@@ -397,11 +397,8 @@ public class ScheduleService {
             LocalDateTime.parse(request.scheduleStartAt()))) {
             return true;
         }
-        if (request.isTimeSelected() && !Objects.equals(schedule.getScheduleEndAt(),
-            LocalDateTime.parse(request.scheduleEndAt()))) {
-            return true;
-        }
-        return false;
+        return request.isTimeSelected() && !Objects.equals(schedule.getScheduleEndAt(),
+            LocalDateTime.parse(request.scheduleEndAt()));
     }
 
     private void createParticipation(Long userSeq, ScheduleCreateRequest request,
