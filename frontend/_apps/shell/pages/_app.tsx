@@ -6,6 +6,7 @@ import { SessionProvider } from 'next-auth/react';
 import wrapper from '@SH/store/store';
 
 function App({ Component, pageProps: { session, ...pageProps } }) {
+  const { store, props } = wrapper.useWrappedStore(pageProps);
   return (
     <SessionProvider session={session}>
       <AppLayout>
@@ -16,4 +17,4 @@ function App({ Component, pageProps: { session, ...pageProps } }) {
   );
 }
 
-export default wrapper.withRedux(App);
+export default App;

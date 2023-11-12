@@ -4,6 +4,7 @@ import { style } from 'external-temporal';
 import wrapper from '@U/store/store';
 
 function App({ Component, pageProps }) {
+  const { store, props } = wrapper.useWrappedStore(pageProps);
   return (
     <>
       {/* <Nav /> */}
@@ -12,4 +13,4 @@ function App({ Component, pageProps }) {
   );
 }
 
-export default wrapper.withRedux(App);
+export default App;
