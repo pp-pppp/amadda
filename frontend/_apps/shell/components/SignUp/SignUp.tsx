@@ -1,11 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Btn, Flex, Form, H1, Input, Label, P, Spacing } from '#/index';
-import { IndexLayout } from '@/layout/IndexLayout';
+import {
+  Btn,
+  Flex,
+  Form,
+  H1,
+  Input,
+  Label,
+  P,
+  Spacing,
+} from 'external-temporal';
+import { IndexLayout } from '@SH/layout/IndexLayout';
 import { useSession } from 'next-auth/react';
 // import { Profile } from '../../../user/components/Profile/Profile';
-import useNameValidator from '@/hooks/useNameValidator';
-import useIdValidator from '@/hooks/useIdValidator';
-import SIGNUP_TEXT from '@/constants/SIGNUP_TEXT';
+import useNameValidator from '@SH/hooks/useNameValidator';
+import useIdValidator from '@SH/hooks/useIdValidator';
+import SIGNUP_TEXT from '@SH/constants/SIGNUP_TEXT';
 import SignUpCaption from '../SignUpCaption/SignUpCaption';
 
 export interface UserInitRequest {
