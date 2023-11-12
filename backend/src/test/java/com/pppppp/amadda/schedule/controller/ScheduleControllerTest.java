@@ -18,9 +18,11 @@ import com.pppppp.amadda.global.util.TokenProvider;
 import com.pppppp.amadda.schedule.dto.request.CategoryCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.CategoryUpdateRequest;
 import com.pppppp.amadda.schedule.dto.request.CommentCreateRequest;
+import com.pppppp.amadda.schedule.dto.request.ParticipationUpdateRequest;
 import com.pppppp.amadda.schedule.dto.request.ScheduleCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.ScheduleUpdateRequest;
 import com.pppppp.amadda.schedule.dto.response.CategoryUpdateResponse;
+import com.pppppp.amadda.schedule.dto.response.ParticipationUpdateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleCreateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleUpdateResponse;
 import com.pppppp.amadda.schedule.entity.AlarmTime;
@@ -235,17 +237,14 @@ class ScheduleControllerTest {
             .andExpect(jsonPath("$.data").isArray());
     }
 
-    @DisplayName("일정을 수정한다.")
-    @ParameterizedTest
-    @ValueSource(strings = {"ONE_DAY_BEFORE", "ONE_HOUR_BEFORE", "THIRTY_MINUTE_BEFORE",
-        "FIFTEEN_MINUTE_BEFORE", "ON_TIME", "NONE"})
-    void updateSchedule(String alarmTime) throws Exception {
+    @DisplayName("일정의 동기화 부분을 수정한다.")
+    @Test
+    void updateSchedule() throws Exception {
         User user = User.create(111L, "박동건", "icebearrrr", "imgUrl1");
         Long scheduleSeq = 123L;
 
         ScheduleUpdateRequest request = ScheduleUpdateRequest.builder()
             // schedule
-            .scheduleName("합창단 공연")
             .scheduleContent("수원 시민 회관")
             .isDateSelected(true)
             .isTimeSelected(true)
@@ -254,9 +253,6 @@ class ScheduleControllerTest {
             .scheduleEndAt("2023-11-18 20:30:00")
             .participants(
                 List.of(UserReadResponse.of(user)))
-            // participation
-            .scheduleMemo("수원역에서 걸어서 10분")
-            .alarmTime(AlarmTime.valueOf(alarmTime))
             .build();
 
         // stubbing
@@ -267,6 +263,33 @@ class ScheduleControllerTest {
         mockMvc.perform(put("/api/schedule/{scheduleSeq}", scheduleSeq)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"));
+    }
+
+    @DisplayName("일정의 비동기화 부분을 수정한다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"ONE_DAY_BEFORE", "ONE_HOUR_BEFORE", "THIRTY_MINUTE_BEFORE",
+        "FIFTEEN_MINUTE_BEFORE", "ON_TIME", "NONE"})
+    void updateParticipation(String alarmTime) throws Exception {
+        Long scheduleSeq = 123L;
+        Long categorySeq = 1L;
+
+        ParticipationUpdateRequest request = ParticipationUpdateRequest.builder()
+            .scheduleName("합창단 공연")
+            .scheduleMemo("수원역에서 걸어서 10분")
+            .alarmTime(AlarmTime.valueOf(alarmTime))
+            .build();
+
+        // stubbing
+        when(scheduleService.updateParticipation(anyLong(), anyLong(),
+            any(ParticipationUpdateRequest.class)))
+            .thenReturn(ParticipationUpdateResponse.builder().scheduleSeq(scheduleSeq).build());
+
+        mockMvc.perform(
+                put("/api/schedule/{scheduleSeq}/participation", scheduleSeq, categorySeq)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.code").value("200"));
     }
@@ -569,41 +592,6 @@ class ScheduleControllerTest {
             .andExpect(jsonPath("$.message").value("알림 시간 설정이 필요해요!"));
     }
 
-    @DisplayName("일정 수정 시 일정 제목은 필수로 입력되어야 한다.")
-    @Test
-    void noScheduleNameToUpdate() throws Exception {
-
-        User user = User.create(1111L, "박동건", "icebearrrr", "imgUrl1");
-
-        ScheduleUpdateRequest request = ScheduleUpdateRequest.builder()
-            // schedule
-            .scheduleContent("수원 시민 회관")
-            .isDateSelected(true)
-            .isTimeSelected(true)
-            .isAllDay(false)
-            .scheduleStartAt("2023-11-18 18:30:00")
-            .scheduleEndAt("2023-11-18 20:30:00")
-            .participants(List.of(UserReadResponse.of(user)))
-            // participation
-            .scheduleMemo("수원역에서 걸어서 10분")
-            .alarmTime(AlarmTime.ONE_DAY_BEFORE)
-            .build();
-
-        // stubbing
-        when(scheduleService.updateSchedule(anyLong(), anyLong(),
-            any(ScheduleUpdateRequest.class)))
-            .thenReturn(ScheduleUpdateResponse.builder().scheduleSeq(1L).build());
-
-        mockMvc.perform(
-                put("/api/schedule/{scheduleSeq}", 1L)
-                    .content(objectMapper.writeValueAsString(request))
-                    .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(print())
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.code").value("400"))
-            .andExpect(jsonPath("$.message").value("일정 이름을 입력해 주세요!"));
-    }
-
     @DisplayName("일정 수정 시 날짜 확정 여부를 입력해야 한다.")
     @Test
     void noScheduleDateSelectedInfoToUpdate() throws Exception {
@@ -618,10 +606,6 @@ class ScheduleControllerTest {
             .scheduleStartAt("2023-11-18 18:30:00")
             .scheduleEndAt("2023-11-18 20:30:00")
             .participants(List.of(UserReadResponse.of(user)))
-            // participation
-            .scheduleName("합창단 공연")
-            .scheduleMemo("수원역에서 걸어서 10분")
-            .alarmTime(AlarmTime.ONE_DAY_BEFORE)
             .build();
 
         // stubbing
@@ -652,10 +636,6 @@ class ScheduleControllerTest {
             .scheduleStartAt("2023-11-18 18:30:00")
             .scheduleEndAt("2023-11-18 20:30:00")
             .participants(List.of(UserReadResponse.of(user)))
-            // participation
-            .scheduleName("합창단 공연")
-            .scheduleMemo("수원역에서 걸어서 10분")
-            .alarmTime(AlarmTime.ONE_DAY_BEFORE)
             .build();
 
         // stubbing
@@ -687,10 +667,6 @@ class ScheduleControllerTest {
             .scheduleStartAt("2023-11-18 18:30:00")
             .scheduleEndAt("2023-11-18 20:30:00")
             .participants(List.of(UserReadResponse.of(user)))
-            // participation
-            .scheduleName("합창단 공연")
-            .scheduleMemo("수원역에서 걸어서 10분")
-            .alarmTime(AlarmTime.ONE_DAY_BEFORE)
             .build();
 
         // stubbing
@@ -708,34 +684,49 @@ class ScheduleControllerTest {
             .andExpect(jsonPath("$.message").value("하루종일 지속되는 일정인지 알려주세요!"));
     }
 
-    @DisplayName("일정 수정 시 알림시간 설정은 필수다.")
+    @DisplayName("참가정보 수정 시 일정 제목은 필수로 입력되어야 한다.")
     @Test
-    void noScheduleAlarmTimeInfoToUpdate() throws Exception {
-        // given
-        User user = User.create(1111L, "박동건", "icebearrrr", "imgUrl1");
-
-        ScheduleCreateRequest request = ScheduleCreateRequest.builder()
-            // schedule
-            .scheduleContent("수원 시민 회관")
-            .isDateSelected(true)
-            .isTimeSelected(true)
-            .isAllDay(false)
-            .isAuthorizedAll(true)
-            .scheduleStartAt("2023-11-18 18:30:00")
-            .scheduleEndAt("2023-11-18 20:30:00")
-            .participants(List.of(UserReadResponse.of(user)))
-            // participation
-            .scheduleName("합창단 공연")
+    void noScheduleNameToUpdate() throws Exception {
+        ParticipationUpdateRequest request = ParticipationUpdateRequest.builder()
             .scheduleMemo("수원역에서 걸어서 10분")
+            .alarmTime(AlarmTime.NONE)
             .build();
 
-        // when  // then
+        // stubbing
+        when(scheduleService.updateSchedule(anyLong(), anyLong(),
+            any(ScheduleUpdateRequest.class)))
+            .thenReturn(ScheduleUpdateResponse.builder().scheduleSeq(1L).build());
+
         mockMvc.perform(
-                post("/api/schedule")
+                put("/api/schedule/{scheduleSeq}/participation", 1L)
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
             ).andDo(print())
             .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code").value("400"))
+            .andExpect(jsonPath("$.message").value("일정 이름을 입력해 주세요!"));
+    }
+
+    @DisplayName("참가정보 수정 시 알림시간 설정은 필수다.")
+    @Test
+    void noScheduleAlarmTimeInfoToUpdate() throws Exception {
+        ParticipationUpdateRequest request = ParticipationUpdateRequest.builder()
+            .scheduleName("합창단 공연")
+            .scheduleMemo("수원역에서 걸어서 10분")
+            .build();
+
+        // stubbing
+        when(scheduleService.updateSchedule(anyLong(), anyLong(),
+            any(ScheduleUpdateRequest.class)))
+            .thenReturn(ScheduleUpdateResponse.builder().scheduleSeq(1L).build());
+
+        mockMvc.perform(
+                put("/api/schedule/{scheduleSeq}/participation", 1L)
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+            ).andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code").value("400"))
             .andExpect(jsonPath("$.message").value("알림 시간 설정이 필요해요!"));
     }
 
