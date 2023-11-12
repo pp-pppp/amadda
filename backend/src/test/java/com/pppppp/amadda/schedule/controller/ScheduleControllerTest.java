@@ -592,32 +592,6 @@ class ScheduleControllerTest {
             .andExpect(jsonPath("$.message").value("알림 시간 설정이 필요해요!"));
     }
 
-    @DisplayName("참가정보 수정 시 일정 제목은 필수로 입력되어야 한다.")
-    @Test
-    void noScheduleNameToUpdate() throws Exception {
-
-        User user = User.create(1111L, "박동건", "icebearrrr", "imgUrl1");
-
-        ParticipationUpdateRequest request = ParticipationUpdateRequest.builder()
-            .scheduleMemo("수원역에서 걸어서 10분")
-            .alarmTime(AlarmTime.NONE)
-            .build();
-
-        // stubbing
-        when(scheduleService.updateSchedule(anyLong(), anyLong(),
-            any(ScheduleUpdateRequest.class)))
-            .thenReturn(ScheduleUpdateResponse.builder().scheduleSeq(1L).build());
-
-        mockMvc.perform(
-                put("/api/schedule/{scheduleSeq}/participation", 1L)
-                    .content(objectMapper.writeValueAsString(request))
-                    .contentType(MediaType.APPLICATION_JSON)
-            ).andDo(print())
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.code").value("400"))
-            .andExpect(jsonPath("$.message").value("일정 이름을 입력해 주세요!"));
-    }
-
     @DisplayName("일정 수정 시 날짜 확정 여부를 입력해야 한다.")
     @Test
     void noScheduleDateSelectedInfoToUpdate() throws Exception {
@@ -710,34 +684,49 @@ class ScheduleControllerTest {
             .andExpect(jsonPath("$.message").value("하루종일 지속되는 일정인지 알려주세요!"));
     }
 
-    @DisplayName("일정 수정 시 알림시간 설정은 필수다.")
+    @DisplayName("참가정보 수정 시 일정 제목은 필수로 입력되어야 한다.")
     @Test
-    void noScheduleAlarmTimeInfoToUpdate() throws Exception {
-        // given
-        User user = User.create(1111L, "박동건", "icebearrrr", "imgUrl1");
-
-        ScheduleCreateRequest request = ScheduleCreateRequest.builder()
-            // schedule
-            .scheduleContent("수원 시민 회관")
-            .isDateSelected(true)
-            .isTimeSelected(true)
-            .isAllDay(false)
-            .isAuthorizedAll(true)
-            .scheduleStartAt("2023-11-18 18:30:00")
-            .scheduleEndAt("2023-11-18 20:30:00")
-            .participants(List.of(UserReadResponse.of(user)))
-            // participation
-            .scheduleName("합창단 공연")
+    void noScheduleNameToUpdate() throws Exception {
+        ParticipationUpdateRequest request = ParticipationUpdateRequest.builder()
             .scheduleMemo("수원역에서 걸어서 10분")
+            .alarmTime(AlarmTime.NONE)
             .build();
 
-        // when  // then
+        // stubbing
+        when(scheduleService.updateSchedule(anyLong(), anyLong(),
+            any(ScheduleUpdateRequest.class)))
+            .thenReturn(ScheduleUpdateResponse.builder().scheduleSeq(1L).build());
+
         mockMvc.perform(
-                post("/api/schedule")
+                put("/api/schedule/{scheduleSeq}/participation", 1L)
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
             ).andDo(print())
             .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code").value("400"))
+            .andExpect(jsonPath("$.message").value("일정 이름을 입력해 주세요!"));
+    }
+
+    @DisplayName("참가정보 수정 시 알림시간 설정은 필수다.")
+    @Test
+    void noScheduleAlarmTimeInfoToUpdate() throws Exception {
+        ParticipationUpdateRequest request = ParticipationUpdateRequest.builder()
+            .scheduleName("합창단 공연")
+            .scheduleMemo("수원역에서 걸어서 10분")
+            .build();
+
+        // stubbing
+        when(scheduleService.updateSchedule(anyLong(), anyLong(),
+            any(ScheduleUpdateRequest.class)))
+            .thenReturn(ScheduleUpdateResponse.builder().scheduleSeq(1L).build());
+
+        mockMvc.perform(
+                put("/api/schedule/{scheduleSeq}/participation", 1L)
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+            ).andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code").value("400"))
             .andExpect(jsonPath("$.message").value("알림 시간 설정이 필요해요!"));
     }
 
