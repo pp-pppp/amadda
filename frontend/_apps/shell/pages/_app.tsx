@@ -1,9 +1,9 @@
 // import dynamic from 'next/dynamic';
 import { lazy } from 'react';
-import '#/util/global.css';
-import { AppLayout } from '@/layout/AppLayout';
+import { style } from 'external-temporal';
+import { AppLayout } from '@SH/layout/AppLayout';
 import { SessionProvider } from 'next-auth/react';
-import wrapper from '@/store/store';
+import wrapper from '@SH/store/store';
 
 function App({ Component, pageProps: { session, ...pageProps } }) {
   return (
