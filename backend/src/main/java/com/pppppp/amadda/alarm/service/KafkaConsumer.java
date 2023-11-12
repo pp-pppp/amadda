@@ -53,10 +53,7 @@ public class KafkaConsumer {
     public void consumeScheduleAssigned(ConsumerRecord<String, AlarmScheduleAssigned> record)
         throws IOException {
         Long userSeq = Long.valueOf(String.valueOf(record.key()));
-        String scheduleOwnerUserName = record.value().getScheduleOwnerUserName();
-        String scheduleName = record.value().getScheduleName();
-        String message = AlarmContent.SCHEDULE_ASSIGNED.getMessage(scheduleOwnerUserName,
-            scheduleName);
+        String message = getScheduleAssignedMessage(record.value());
         saveAlarm(userSeq, message, AlarmType.SCHEDULE_ASSIGNED);
     }
 
@@ -75,8 +72,7 @@ public class KafkaConsumer {
 
     @KafkaListener(topics = "${spring.kafka.topic.alarm.schedule-notification}", groupId = "${spring.kafka.consumer.group-id}")
     public void consumeScheduleNotification(
-        ConsumerRecord<String, AlarmScheduleNotification> record)
-        throws IOException {
+        ConsumerRecord<String, AlarmScheduleNotification> record) throws IOException {
         Long userSeq = Long.valueOf(String.valueOf(record.key()));
         String message = getScheduleNotificationMessage(record.value());
         saveAlarm(userSeq, message, AlarmType.SCHEDULE_NOTIFICATION);
@@ -97,6 +93,12 @@ public class KafkaConsumer {
         User user = getUser(userSeq);
         Alarm alarm = Alarm.create(user, message, alarmType);
         alarmRepository.save(alarm);
+    }
+
+    private String getScheduleAssignedMessage(AlarmScheduleAssigned value) {
+        String scheduleOwnerUserName = value.getScheduleOwnerUserName();
+        String scheduleName = value.getScheduleName();
+        return AlarmContent.SCHEDULE_ASSIGNED.getMessage(scheduleOwnerUserName, scheduleName);
     }
 
     private String getScheduleNotificationMessage(AlarmScheduleNotification value) {
