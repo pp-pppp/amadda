@@ -1,11 +1,12 @@
 // import dynamic from 'next/dynamic';
 import { lazy } from 'react';
-import '#/util/global.css';
+import { style } from 'external-temporal';
 import { AppLayout } from '@/layout/AppLayout';
 import { SessionProvider } from 'next-auth/react';
 import wrapper from '@/store/store';
 
 function App({ Component, pageProps: { session, ...pageProps } }) {
+  const { store, props } = wrapper.useWrappedStore(pageProps);
   return (
     <SessionProvider session={session}>
       <AppLayout>
@@ -16,4 +17,4 @@ function App({ Component, pageProps: { session, ...pageProps } }) {
   );
 }
 
-export default wrapper.withRedux(App);
+export default App;

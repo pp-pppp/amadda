@@ -1,9 +1,10 @@
 // import dynamic from 'next/dynamic';
 import { lazy } from 'react';
-import '#/util/global.css';
+import { style } from 'external-temporal';
 import wrapper from 'store/store';
 
 function App({ Component, pageProps }) {
+  const { store, props } = wrapper.useWrappedStore(pageProps);
   return (
     <>
       {/* <Nav /> */}
@@ -12,4 +13,4 @@ function App({ Component, pageProps }) {
   );
 }
 
-export default wrapper.withRedux(App);
+export default App;
