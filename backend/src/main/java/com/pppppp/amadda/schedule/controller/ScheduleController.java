@@ -110,7 +110,7 @@ public class ScheduleController {
         Long userSeq = tokenProvider.getUserSeq(http);
         ScheduleUpdateResponse response = scheduleService.updateSchedule(userSeq, scheduleSeq,
             request);
-        return ApiResponse.of(HttpStatus.OK, "해당 일정을 수정했습니다", response);
+        return ApiResponse.of(HttpStatus.OK, "해당 일정을 수정했습니다.", response);
 
     }
 
@@ -122,7 +122,7 @@ public class ScheduleController {
         ParticipationUpdateResponse response = scheduleService.updateParticipation(userSeq,
             scheduleSeq,
             request);
-        return ApiResponse.of(HttpStatus.OK, "해당 일정의 참여자를 수정했습니다", response);
+        return ApiResponse.of(HttpStatus.OK, "해당 일정을 수정했습니다.", response);
 
     }
 
