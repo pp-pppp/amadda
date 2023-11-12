@@ -12,6 +12,7 @@ import com.pppppp.amadda.alarm.entity.AlarmContent;
 import com.pppppp.amadda.alarm.entity.AlarmType;
 import com.pppppp.amadda.alarm.repository.AlarmRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
+import com.pppppp.amadda.global.entity.exception.errorcode.AlarmErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
@@ -54,9 +55,9 @@ public class KafkaConsumer {
         Long userSeq = Long.valueOf(String.valueOf(record.key()));
         String scheduleOwnerUserName = record.value().getScheduleOwnerUserName();
         String scheduleName = record.value().getScheduleName();
-        saveAlarm(userSeq,
-            AlarmContent.SCHEDULE_ASSIGNED.getMessage(scheduleOwnerUserName, scheduleName),
-            AlarmType.SCHEDULE_ASSIGNED);
+        String message = AlarmContent.SCHEDULE_ASSIGNED.getMessage(scheduleOwnerUserName,
+            scheduleName);
+        saveAlarm(userSeq, message, AlarmType.SCHEDULE_ASSIGNED);
     }
 
     @KafkaListener(topics = "${spring.kafka.topic.alarm.mentioned}", groupId = "${spring.kafka.consumer.group-id}")
@@ -76,6 +77,9 @@ public class KafkaConsumer {
     public void consumeScheduleNotification(
         ConsumerRecord<String, AlarmScheduleNotification> record)
         throws IOException {
+        Long userSeq = Long.valueOf(String.valueOf(record.key()));
+        String message = getScheduleNotificationMessage(record.value());
+        saveAlarm(userSeq, message, AlarmType.SCHEDULE_NOTIFICATION);
     }
 
     @KafkaListener(topics = "test", groupId = "${spring.kafka.consumer.group-id}")
@@ -93,6 +97,29 @@ public class KafkaConsumer {
         User user = getUser(userSeq);
         Alarm alarm = Alarm.create(user, message, alarmType);
         alarmRepository.save(alarm);
+    }
+
+    private String getScheduleNotificationMessage(AlarmScheduleNotification value) {
+        String scheduleName = value.getScheduleName();
+        int minute = value.getAlarmTime().getMinute();
+        String time = minuteToString(minute);
+        return AlarmContent.SCHEDULE_NOTIFICATION.getMessage(scheduleName, time);
+    }
+
+    private String minuteToString(int minute) {
+        if (minute == 1440) {
+            return "하루 뒤에";
+        }
+        if (minute == 60) {
+            return "한 시간 뒤에";
+        }
+        if (minute == 30 || minute == 15) {
+            return String.format("%d분 뒤에", minute);
+        }
+        if (minute == 0) {
+            return "곧";
+        }
+        throw new RestApiException(AlarmErrorCode.ALARM_NOT_EXIST);
     }
 
     private User getUser(Long userSeq) {
