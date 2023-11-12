@@ -22,10 +22,12 @@ import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.schedule.dto.request.CategoryCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.CategoryUpdateRequest;
 import com.pppppp.amadda.schedule.dto.request.CommentCreateRequest;
+import com.pppppp.amadda.schedule.dto.request.ParticipationUpdateRequest;
 import com.pppppp.amadda.schedule.dto.request.ScheduleCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.ScheduleUpdateRequest;
 import com.pppppp.amadda.schedule.dto.response.CategoryReadResponse;
 import com.pppppp.amadda.schedule.dto.response.CommentReadResponse;
+import com.pppppp.amadda.schedule.dto.response.ParticipationUpdateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleCreateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleDetailReadResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleListReadResponse;
@@ -923,7 +925,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             );
     }
 
-    @DisplayName("일정 정보를 수정한다. 이때 동기화되지 않는 부분에 대해서는 다른 참가자는 변경되지 않는다.")
+    @DisplayName("일정 중 참가자들 간 동기화되는 정보를 수정한다. 이때 동기화되지 않는 부분에 대해서는 변경되지 않는다.")
     @Transactional
     @Test
     void updateSchedule() {
@@ -946,13 +948,10 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             scheduleCreateRequest);
 
         ScheduleUpdateRequest scheduleUpdateRequest = ScheduleUpdateRequest.builder()
-            .scheduleName("안녕 나는 바뀐 일정 이름이야")
             .scheduleContent("여기는 동기화 되는 메모야")
-            .scheduleMemo("이거는 안되는 메모고")
             .isDateSelected(false)
             .isTimeSelected(false)
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
@@ -975,7 +974,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
                 "isDateSelected", "isTimeSelected", "isAllDay", "scheduleStartAt", "scheduleEndAt",
                 "alarmTime", "isAuthorizedAll")
             .containsExactly(
-                "안녕 나는 바뀐 일정 이름이야", "이거는 안되는 메모고", "여기는 동기화 되는 메모야", false, false, false,
+                "안녕 내가 일정 이름이야", "이거는 안되는 메모고", "여기는 동기화 되는 메모야", false, false, false,
                 "null", "null", "알림 없음", false);
         assertThat(response2)
             .extracting("scheduleName")
@@ -1009,13 +1008,10 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             scheduleCreateRequest);
 
         ScheduleUpdateRequest scheduleUpdateRequest = ScheduleUpdateRequest.builder()
-            .scheduleName("안녕 나는 바뀐 일정 이름이야")
             .scheduleContent("여기는 동기화 되는 메모야")
-            .scheduleMemo("이거는 안되는 메모고")
             .isDateSelected(false)
             .isTimeSelected(false)
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2), UserReadResponse.of(u3)))
             .build();
@@ -1043,7 +1039,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
                 "null", "null", "알림 없음", true);
         assertThat(response2)
             .extracting("scheduleName", "alarmTime")
-            .containsExactly("안녕 나는 바뀐 일정 이름이야", "알림 없음");
+            .containsExactly("안녕 내가 일정 이름이야", "알림 없음");
 
         Long scheduleSeq = response1.scheduleSeq();
         verify(alarmService, times(1))
@@ -1083,13 +1079,10 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             createRequest);
 
         ScheduleUpdateRequest request = ScheduleUpdateRequest.builder()
-            .scheduleName("안녕 나는 바뀐 일정 이름이야")
             .scheduleContent("여기는 동기화 되는 메모야")
-            .scheduleMemo("이거는 안되는 메모고")
             .isDateSelected(false)
             .isTimeSelected(false)
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u3)))
             .build();
@@ -1152,20 +1145,15 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         Category category = categoryRepository.findAll().get(0);
 
         // when
-        ScheduleUpdateRequest updateRequest = ScheduleUpdateRequest.builder()
+        ParticipationUpdateRequest updateRequest = ParticipationUpdateRequest.builder()
             .scheduleName("안녕 나는 바뀐 일정 이름이야")
-            .scheduleContent("여기는 동기화 되는 메모야")
-            .scheduleMemo("이거는 안되는 메모고")
-            .isDateSelected(false)
-            .isTimeSelected(false)
-            .isAllDay(false)
+            .scheduleMemo("이거는 동기화 안되는 메모야")
             .alarmTime(AlarmTime.NONE)
-            .participants(List.of(
-                UserReadResponse.of(u1)))
             .categorySeq(category.getCategorySeq())
             .build();
 
-        ScheduleUpdateResponse updateResponse = scheduleService.updateSchedule(u1.getUserSeq(),
+        ParticipationUpdateResponse updateResponse = scheduleService.updateParticipation(
+            u1.getUserSeq(),
             schedule.scheduleSeq(),
             updateRequest);
         Optional<Participation> result1 = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
@@ -1220,20 +1208,15 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         ScheduleCreateResponse s2 = scheduleService.createSchedule(u1.getUserSeq(), sr2);
 
         // when
-        ScheduleUpdateRequest updateRequest = ScheduleUpdateRequest.builder()
+        ParticipationUpdateRequest updateRequest = ParticipationUpdateRequest.builder()
             .scheduleName("안녕 나는 바뀐 일정 이름이야")
-            .scheduleContent("여기는 동기화 되는 메모야")
-            .scheduleMemo("이거는 안되는 메모고")
-            .isDateSelected(false)
-            .isTimeSelected(false)
-            .isAllDay(false)
+            .scheduleMemo("이거는 동기화 안되는 메모야")
             .alarmTime(AlarmTime.NONE)
-            .participants(List.of(
-                UserReadResponse.of(u1)))
             .categorySeq(null)
             .build();
 
-        ScheduleUpdateResponse updateResponse = scheduleService.updateSchedule(u1.getUserSeq(),
+        ParticipationUpdateResponse updateResponse = scheduleService.updateParticipation(
+            u1.getUserSeq(),
             s1.scheduleSeq(),
             updateRequest);
         List<ScheduleListReadResponse> result = scheduleService.getScheduleListBySearchCondition(
@@ -1606,13 +1589,14 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         scheduleService.createSchedule(user1.getUserSeq(), createRequest);
         Schedule schedule = scheduleRepository.findAll().get(0);
 
-        ScheduleUpdateRequest updateRequest = ScheduleUpdateRequest.builder()
+        ParticipationUpdateRequest updateRequest = ParticipationUpdateRequest.builder()
             .scheduleName("안녕 나는 바뀐 일정 이름이야")
             .build();
 
         // when // then
         assertThatThrownBy(
-            () -> scheduleService.updateSchedule(user1.getUserSeq(), schedule.getScheduleSeq() + 1,
+            () -> scheduleService.updateParticipation(user1.getUserSeq(),
+                schedule.getScheduleSeq() + 1,
                 updateRequest))
             .isInstanceOf(RestApiException.class)
             .hasMessage("SCHEDULE_NOT_FOUND");
@@ -1643,11 +1627,9 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
         // when
         ScheduleUpdateRequest scheduleUpdateRequest = ScheduleUpdateRequest.builder()
-            .scheduleName("안녕 나는 바뀐 일정 이름이야")
             .isDateSelected(false)
             .isTimeSelected(false)
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u3)))
             .build();
@@ -1689,11 +1671,9 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
         // when
         ScheduleUpdateRequest scheduleUpdateRequest = ScheduleUpdateRequest.builder()
-            .scheduleName("안녕 나는 바뀐 일정 이름이야")
             .isDateSelected(false)
             .isTimeSelected(false)
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u3)))
             .build();
@@ -1710,7 +1690,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .sendScheduleUpdate(anyLong(), anyLong());
     }
 
-    @DisplayName("일정 수정 시 수정 권한이 없으면 수정할 수 없다.")
+    @DisplayName("일정 수정 시 동기화되는 부분은 수정 권한이 없으면 수정할 수 없다.")
     @Test
     void forbiddenToUpdateSchedule() {
         // given
@@ -1731,7 +1711,42 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         Schedule schedule = scheduleRepository.findAll().get(0);
 
         ScheduleUpdateRequest updateRequest = ScheduleUpdateRequest.builder()
-            .scheduleName("안녕 나는 바뀐 일정 이름이야")
+            .scheduleContent("안녕 나는 바뀐 일정 동기화 메모야")
+            .build();
+
+        // when // then
+        assertThatThrownBy(
+            () -> scheduleService.updateSchedule(u2.getUserSeq(), schedule.getScheduleSeq(),
+                updateRequest))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("SCHEDULE_FORBIDDEN");
+
+        verify(alarmService, never())
+            .sendScheduleUpdate(anyLong(), anyLong());
+    }
+
+    @DisplayName("일정 수정 시 동기화되는 부분은 수정 권한이 없으면 수정할 수 없다.")
+    @Test
+    void forbiddenToUpdateParticipation() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+        User u2 = userRepository.findAll().get(1);
+
+        ScheduleCreateRequest createRequest = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .isTimeSelected(false)
+            .isDateSelected(false)
+            .isAllDay(false)
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.NONE)
+            .participants(List.of(
+                UserReadResponse.of(u1), UserReadResponse.of(u2)))
+            .build();
+        scheduleService.createSchedule(u1.getUserSeq(), createRequest);
+        Schedule schedule = scheduleRepository.findAll().get(0);
+
+        ScheduleUpdateRequest updateRequest = ScheduleUpdateRequest.builder()
+            .scheduleContent("안녕 나는 바뀐 일정 동기화 메모야")
             .build();
 
         // when // then
