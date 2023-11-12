@@ -10,12 +10,14 @@ import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
 import com.pppppp.amadda.schedule.dto.request.CategoryCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.CategoryUpdateRequest;
 import com.pppppp.amadda.schedule.dto.request.CommentCreateRequest;
+import com.pppppp.amadda.schedule.dto.request.ParticipationUpdateRequest;
 import com.pppppp.amadda.schedule.dto.request.ScheduleCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.ScheduleUpdateRequest;
 import com.pppppp.amadda.schedule.dto.response.CategoryCreateResponse;
 import com.pppppp.amadda.schedule.dto.response.CategoryReadResponse;
 import com.pppppp.amadda.schedule.dto.response.CategoryUpdateResponse;
 import com.pppppp.amadda.schedule.dto.response.CommentReadResponse;
+import com.pppppp.amadda.schedule.dto.response.ParticipationUpdateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleCreateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleDetailReadResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleListReadResponse;
@@ -221,23 +223,29 @@ public class ScheduleService {
         // 1. 전체 참가자에게 동기화되는 일정 정보 수정
         schedule.updateScheduleInfo(request);
 
-        // 2. 참가자 참석 정보 가져오기
-        Participation participation = findParticipationInfoBySchedule(scheduleSeq, userSeq);
-
-        // 3. 개인 참석 정보 수정
-        participation.updateParticipationInfo(request);
-
         // 4. 추가되는 사용자가 있으면 새롭게 참가자 추가, 없으면 참가자 목록 수정
         updateParticipantList(userSeq, request, schedule);
 
-        // 5. 생성자라면 카테고리 정보가 있는 경우 카테고리 정보 입력
+        return ScheduleUpdateResponse.of(schedule);
+    }
+
+    public ParticipationUpdateResponse updateParticipation(Long requestUserSeq, Long scheduleSeq,
+        ParticipationUpdateRequest request) {
+        findUserInfo(requestUserSeq);
+        Participation participation = findParticipationInfoBySchedule(scheduleSeq, requestUserSeq);
+
+        // 참가정보 수정
+        participation.updateParticipationInfo(request);
+
+        // 카테고리 정보가 있는 경우 카테고리 정보 입력
         if (request.categorySeq() != null) {
             participation.updateCategory(findCategoryInfo(request.categorySeq()));
         } else {
             participation.updateCategory(null);
         }
 
-        return ScheduleUpdateResponse.of(schedule);
+        // 결과 반환
+        return ParticipationUpdateResponse.of(participation);
     }
 
     @Transactional
@@ -389,11 +397,8 @@ public class ScheduleService {
             LocalDateTime.parse(request.scheduleStartAt()))) {
             return true;
         }
-        if (request.isTimeSelected() && !Objects.equals(schedule.getScheduleEndAt(),
-            LocalDateTime.parse(request.scheduleEndAt()))) {
-            return true;
-        }
-        return false;
+        return request.isTimeSelected() && !Objects.equals(schedule.getScheduleEndAt(),
+            LocalDateTime.parse(request.scheduleEndAt()));
     }
 
     private void createParticipation(Long userSeq, ScheduleCreateRequest request,
@@ -582,15 +587,13 @@ public class ScheduleService {
             }
         }
 
-        // 4. 이전 사용자 목록과 비교해서 현재 사용자 중 추가된 사용자가 있는지 확인, 있으면 참석정보 생성.
+        // 이전 사용자 목록과 비교해서 현재 사용자 중 추가된 사용자가 있는지 확인, 있으면 참석정보 생성.
         Participation requestUserParticipation = findParticipationInfoBySchedule(
             schedule.getScheduleSeq(), requestUserSeq);
 
-        // 생성할 참석 정보는 이번 요청으로 수정되는 필드가 아니면 요청자의 참석정보를 기본값으로 사용
-        String scheduleName = (request.scheduleName() != null) ? request.scheduleName()
-            : requestUserParticipation.getScheduleName();
-        AlarmTime alarmTime = (request.alarmTime() != null) ? request.alarmTime()
-            : requestUserParticipation.getAlarmTime();
+        // 생성할 참석 정보는 요청자의 참석정보를 기본값으로 사용
+        String scheduleName = requestUserParticipation.getScheduleName();
+        AlarmTime alarmTime = requestUserParticipation.getAlarmTime();
         ScheduleCreateRequest createRequest = ScheduleCreateRequest.builder()
             .scheduleName(scheduleName)
             .alarmTime(alarmTime)
@@ -617,7 +620,7 @@ public class ScheduleService {
             alarmService.sendScheduleUpdate(schedule.getScheduleSeq(), user.getUserSeq());
         }
     }
-    
+
     private boolean isParticipationChanged(List<User> oldParticipations,
         List<User> newParticipations) {
         Set<User> oldSet = new HashSet<>(oldParticipations);

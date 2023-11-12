@@ -1,7 +1,7 @@
 import { H1, Flex, Spacing } from 'external-temporal';
 import { signIn } from 'next-auth/react';
-import { IndexLayout } from '@/layout/IndexLayout';
-import { BASE } from '@/components/KakaoBtn/KakaoBtn.css';
+import { IndexLayout } from '@SH/layout/IndexLayout';
+import { BASE } from '@SH/components/KakaoBtn/KakaoBtn.css';
 
 export default function Page() {
   return (

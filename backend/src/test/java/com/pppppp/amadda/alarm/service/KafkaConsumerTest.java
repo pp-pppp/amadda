@@ -1,5 +1,6 @@
 package com.pppppp.amadda.alarm.service;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -9,22 +10,28 @@ import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendAccept;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendRequest;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleAssigned;
+import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleNotification;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleUpdate;
 import com.pppppp.amadda.alarm.entity.KafkaTopic;
 import com.pppppp.amadda.alarm.repository.AlarmRepository;
 import com.pppppp.amadda.friend.entity.FriendRequest;
 import com.pppppp.amadda.friend.repository.FriendRequestRepository;
+import com.pppppp.amadda.global.entity.exception.RestApiException;
+import com.pppppp.amadda.schedule.entity.AlarmTime;
 import com.pppppp.amadda.schedule.entity.Schedule;
 import com.pppppp.amadda.schedule.repository.ScheduleRepository;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 
@@ -173,5 +180,58 @@ class KafkaConsumerTest extends IntegrationTestSupport {
 
         // then
         verify(alarmRepository, times(1)).save(any());
+    }
+
+    @DisplayName("alarm.schedule-notification consume 검증")
+    @ParameterizedTest
+    @ValueSource(strings = {"ONE_DAY_BEFORE", "ONE_HOUR_BEFORE", "THIRTY_MINUTE_BEFORE",
+        "FIFTEEN_MINUTE_BEFORE", "ON_TIME"})
+    public void alarm_schedule_notification(String type) throws IOException {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User user = userRepository.save(u1);
+
+        Schedule s = Schedule.create(user, "집가야돼");
+        Schedule schedule = scheduleRepository.save(s);
+
+        AlarmTime alarmTime = AlarmTime.valueOf(type);
+
+        String topic = kafkaTopic.ALARM_SCHEDULE_UPDATE;
+        String key = String.valueOf(user.getUserSeq());
+        AlarmScheduleNotification value = AlarmScheduleNotification.create(
+            schedule.getScheduleSeq(), "집가야돼", alarmTime, LocalDateTime.now());
+        ConsumerRecord<String, AlarmScheduleNotification> consumerRecord
+            = new ConsumerRecord<>(topic, 0, 0, key, value);
+
+        // when
+        kafkaConsumer.consumeScheduleNotification(consumerRecord);
+
+        // then
+        verify(alarmRepository, times(1)).save(any());
+    }
+
+    @DisplayName("alarm.schedule-notification consume 'None' 예외 검증")
+    @Test
+    public void alarm_schedule_notification() throws IOException {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User user = userRepository.save(u1);
+
+        Schedule s = Schedule.create(user, "집가야돼");
+        Schedule schedule = scheduleRepository.save(s);
+
+        AlarmTime alarmTime = AlarmTime.NONE;
+
+        String topic = kafkaTopic.ALARM_SCHEDULE_UPDATE;
+        String key = String.valueOf(user.getUserSeq());
+        AlarmScheduleNotification value = AlarmScheduleNotification.create(
+            schedule.getScheduleSeq(), "집가야돼", alarmTime, LocalDateTime.now());
+        ConsumerRecord<String, AlarmScheduleNotification> consumerRecord
+            = new ConsumerRecord<>(topic, 0, 0, key, value);
+
+        // when + then
+        assertThatThrownBy(() -> kafkaConsumer.consumeScheduleNotification(consumerRecord))
+            .isInstanceOf(RestApiException.class)
+            .hasMessage("ALARM_NOT_EXIST");
     }
 }

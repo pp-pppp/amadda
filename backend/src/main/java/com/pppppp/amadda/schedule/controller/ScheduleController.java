@@ -5,11 +5,13 @@ import com.pppppp.amadda.global.util.TokenProvider;
 import com.pppppp.amadda.schedule.dto.request.CategoryCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.CategoryUpdateRequest;
 import com.pppppp.amadda.schedule.dto.request.CommentCreateRequest;
+import com.pppppp.amadda.schedule.dto.request.ParticipationUpdateRequest;
 import com.pppppp.amadda.schedule.dto.request.ScheduleCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.ScheduleUpdateRequest;
 import com.pppppp.amadda.schedule.dto.response.CategoryCreateResponse;
 import com.pppppp.amadda.schedule.dto.response.CategoryReadResponse;
 import com.pppppp.amadda.schedule.dto.response.CategoryUpdateResponse;
+import com.pppppp.amadda.schedule.dto.response.ParticipationUpdateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleCreateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleDetailReadResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleListReadResponse;
@@ -42,7 +44,7 @@ public class ScheduleController {
 
     private final ScheduleService scheduleService;
     private final TokenProvider tokenProvider;
-    
+
     // ==================== 일정 ====================
 
     @PostMapping("")
@@ -108,7 +110,19 @@ public class ScheduleController {
         Long userSeq = tokenProvider.getUserSeq(http);
         ScheduleUpdateResponse response = scheduleService.updateSchedule(userSeq, scheduleSeq,
             request);
-        return ApiResponse.of(HttpStatus.OK, "해당 일정을 수정했습니다", response);
+        return ApiResponse.of(HttpStatus.OK, "해당 일정을 수정했습니다.", response);
+
+    }
+
+    @PutMapping("/{scheduleSeq}/participation")
+    public ApiResponse<ParticipationUpdateResponse> updateParticipation(HttpServletRequest http,
+        @PathVariable Long scheduleSeq, @Valid @RequestBody ParticipationUpdateRequest request) {
+        log.info("PUT /api/schedule/{}/participation", scheduleSeq);
+        Long userSeq = tokenProvider.getUserSeq(http);
+        ParticipationUpdateResponse response = scheduleService.updateParticipation(userSeq,
+            scheduleSeq,
+            request);
+        return ApiResponse.of(HttpStatus.OK, "해당 일정을 수정했습니다.", response);
 
     }
 

@@ -1,5 +1,5 @@
-import { P } from '#/index';
-import SignUp from '@/components/SignUp/SignUp';
+import { P } from 'external-temporal';
+import SignUp from '@SH/components/SignUp/SignUp';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 

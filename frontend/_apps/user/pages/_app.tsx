@@ -1,7 +1,7 @@
 // import dynamic from 'next/dynamic';
 import { lazy } from 'react';
 import { style } from 'external-temporal';
-import wrapper from '@/store/store';
+import wrapper from '@U/store/store';
 
 function App({ Component, pageProps }) {
   const { store, props } = wrapper.useWrappedStore(pageProps);
