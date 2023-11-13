@@ -13,7 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pppppp.amadda.alarm.service.AlarmService;
 import com.pppppp.amadda.global.util.TokenProvider;
 import com.pppppp.amadda.schedule.dto.request.CategoryCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.CategoryUpdateRequest;
@@ -52,9 +51,6 @@ class ScheduleControllerTest {
 
     @MockBean
     private ScheduleService scheduleService;
-
-    @MockBean
-    private AlarmService alarmService;
 
     @MockBean
     private TokenProvider tokenProvider;

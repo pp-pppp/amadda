@@ -28,7 +28,15 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 
+@EmbeddedKafka(
+    partitions = 1,
+    brokerProperties = {
+        "listeners=PLAINTEXT://localhost:9095",
+        "port=9095"
+    }
+)
 class FriendServiceTest extends IntegrationTestSupport {
 
     @Autowired

@@ -58,7 +58,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 
+@EmbeddedKafka(
+    partitions = 1,
+    brokerProperties = {
+        "listeners=PLAINTEXT://localhost:9096",
+        "port=9096"
+    }
+)
 class ScheduleServiceTest extends IntegrationTestSupport {
 
     @MockBean
