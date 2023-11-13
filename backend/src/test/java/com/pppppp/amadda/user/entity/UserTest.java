@@ -43,5 +43,4 @@ class UserTest extends IntegrationTestSupport {
                 );
     }
 
-
 }

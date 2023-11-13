@@ -35,11 +35,11 @@ public class User extends BaseEntity {
 
     public static User create(Long userSeq, String userName, String userId, String imageUrl) {
         return User.builder()
-            .userSeq(userSeq)
-            .userName(userName)
-            .userId(userId)
-            .imageUrl(imageUrl)
-            .build();
+                .userSeq(userSeq)
+                .userName(userName)
+                .userId(userId)
+                .imageUrl(imageUrl)
+                .build();
     }
 
     public void delete() {

@@ -74,7 +74,7 @@ public class UserController {
     public ApiResponse deleteUser(HttpServletRequest http) {
         Long userSeq = tokenProvider.getUserSeq(http);
         userService.deleteUserInfo(userSeq);
-        return ApiResponse.ok("유저 탈퇴 완료");
+        return ApiResponse.ok("회원탈퇴가 완료되었습니다. ");
     }
 
     @GetMapping
