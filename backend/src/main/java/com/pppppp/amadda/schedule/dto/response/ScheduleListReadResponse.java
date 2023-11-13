@@ -9,6 +9,7 @@ import lombok.Builder;
 
 @Builder
 public record ScheduleListReadResponse(
+    // ================= Schedule ===================
     Long scheduleSeq,
     Boolean isTimeSelected,
     Boolean isDateSelected,
@@ -18,6 +19,10 @@ public record ScheduleListReadResponse(
     Boolean isAuthorizedAll,
     UserReadResponse authorizedUser,
     List<UserReadResponse> participants,
+    Boolean isFinished,
+
+    // ================ Participation =================
+
     String alarmTime,
     String scheduleName,
     CategoryReadResponse category
@@ -48,4 +53,29 @@ public record ScheduleListReadResponse(
             .build();
     }
 
+    public static ScheduleListReadResponse of(Schedule schedule,
+        UserReadResponse authorizedUser, List<UserReadResponse> participants,
+        Participation participation, Boolean isFinished) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        return ScheduleListReadResponse.builder()
+            .scheduleSeq(schedule.getScheduleSeq())
+            .isTimeSelected(schedule.isTimeSelected())
+            .isDateSelected(schedule.isDateSelected())
+            .isAllDay(schedule.isAllDay())
+            .scheduleStartAt(
+                (schedule.isDateSelected()) ? schedule.getScheduleStartAt().format(formatter) : "")
+            .scheduleEndAt(
+                (schedule.isTimeSelected()) ? schedule.getScheduleEndAt().format(formatter) : "")
+            .isAuthorizedAll(schedule.isAuthorizedAll())
+            .authorizedUser(authorizedUser)
+            .participants(participants)
+            .isFinished(isFinished)
+            .alarmTime(participation.getAlarmTime().getContent())
+            .scheduleName(participation.getScheduleName())
+            .category((participation.getCategory() != null) ?
+                CategoryReadResponse.of(participation.getCategory()) : null)
+            .build();
+    }
 }

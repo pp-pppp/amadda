@@ -18,6 +18,7 @@ public record ScheduleDetailReadResponse(
     String scheduleStartAt,
     String scheduleEndAt,
     List<UserReadResponse> participants,
+    Boolean isFinished,
 
     // ================ Participation =================
     String alarmTime,
@@ -43,6 +44,29 @@ public record ScheduleDetailReadResponse(
             .scheduleStartAt(String.valueOf(schedule.getScheduleStartAt()))
             .scheduleEndAt(String.valueOf(schedule.getScheduleEndAt()))
             .participants(participants)
+            .alarmTime(participation.getAlarmTime().getContent())
+            .scheduleName(participation.getScheduleName())
+            .scheduleMemo(participation.getScheduleMemo())
+            .category((participation.getCategory() != null) ?
+                CategoryReadResponse.of(participation.getCategory()) : null)
+            .comments(comments)
+            .build();
+    }
+
+    public static ScheduleDetailReadResponse of(Schedule schedule,
+        List<UserReadResponse> participants,
+        Participation participation, List<CommentReadResponse> comments, Boolean isFinished) {
+        return ScheduleDetailReadResponse.builder()
+            .scheduleSeq(schedule.getScheduleSeq())
+            .scheduleContent(schedule.getScheduleContent())
+            .isTimeSelected(schedule.isTimeSelected())
+            .isDateSelected(schedule.isDateSelected())
+            .isAllDay(schedule.isAllDay())
+            .isAuthorizedAll(schedule.isAuthorizedAll())
+            .scheduleStartAt(String.valueOf(schedule.getScheduleStartAt()))
+            .scheduleEndAt(String.valueOf(schedule.getScheduleEndAt()))
+            .participants(participants)
+            .isFinished(isFinished)
             .alarmTime(participation.getAlarmTime().getContent())
             .scheduleName(participation.getScheduleName())
             .scheduleMemo(participation.getScheduleMemo())
