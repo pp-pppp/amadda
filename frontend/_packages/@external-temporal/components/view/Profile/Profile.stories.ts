@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Profile } from './Profile';
 
 const meta = {
-  title: 'View/Profile',
+  title: 'External-temporal/Views/Profile',
   component: Profile,
   parameters: {
     layout: 'centered',
