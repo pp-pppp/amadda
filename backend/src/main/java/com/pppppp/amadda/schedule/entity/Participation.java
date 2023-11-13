@@ -14,6 +14,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -51,6 +53,9 @@ public class Participation extends BaseEntity {
     @Column(length = 20)
     private AlarmTime alarmTime;
 
+    @Column
+    private LocalDateTime alarmAt;
+
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
     @ColumnDefault("1")
     private boolean isMentionAlarmOn;
@@ -59,31 +64,45 @@ public class Participation extends BaseEntity {
     @ColumnDefault("1")
     private boolean isUpdateAlarmOn;
 
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    private boolean isAlarmed;
+
     @Builder
     public Participation(User user, Schedule schedule, Category category, String scheduleName,
-        String scheduleMemo, AlarmTime alarmTime, boolean isMentionAlarmOn,
-        boolean isUpdateAlarmOn) {
+        String scheduleMemo, AlarmTime alarmTime, LocalDateTime alarmAt, boolean isMentionAlarmOn,
+        boolean isUpdateAlarmOn, boolean isAlarmed) {
         this.user = user;
         this.schedule = schedule;
         this.category = category;
         this.scheduleName = scheduleName;
         this.scheduleMemo = scheduleMemo;
         this.alarmTime = alarmTime;
+        this.alarmAt = alarmAt;
         this.isMentionAlarmOn = isMentionAlarmOn;
         this.isUpdateAlarmOn = isUpdateAlarmOn;
+        this.isAlarmed = isAlarmed;
     }
 
     public static Participation create(ScheduleCreateRequest request, User participant,
         Schedule schedule, Category category, boolean isMentionAlarmOn, boolean isUpdateAlarmOn) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        LocalDateTime alarmAt =
+            (request.isTimeSelected()) ? LocalDateTime.parse(request.scheduleStartAt(), formatter)
+                .minusMinutes(request.alarmTime().getMinute()) : null;
+
         return Participation.builder()
             .scheduleName(request.scheduleName())
             .scheduleMemo(request.scheduleMemo())
             .alarmTime(request.alarmTime())
+            .alarmAt(alarmAt)
             .user(participant)
             .schedule(schedule)
             .category(category)
             .isMentionAlarmOn(isMentionAlarmOn)
             .isUpdateAlarmOn(isUpdateAlarmOn)
+            .isAlarmed(false)
             .build();
     }
 
@@ -91,6 +110,12 @@ public class Participation extends BaseEntity {
         this.scheduleName = request.scheduleName();
         this.scheduleMemo = request.scheduleMemo();
         this.alarmTime = request.alarmTime();
+    }
+
+    public void updateAlarmAt(LocalDateTime startAt) {
+        if (startAt != null) {
+            this.alarmAt = startAt.minusMinutes(this.alarmTime.getMinute());
+        }
     }
 
     public void updateCategory(Category category) {
@@ -103,5 +128,9 @@ public class Participation extends BaseEntity {
 
     public void updateIsUpdateAlarmOn(boolean isUpdateAlarmOn) {
         this.isUpdateAlarmOn = isUpdateAlarmOn;
+    }
+
+    public void updateIsAlarmed(boolean isAlarmed) {
+        this.isAlarmed = isAlarmed;
     }
 }

@@ -189,8 +189,8 @@ class KafkaConsumerTest extends IntegrationTestSupport {
 
     @DisplayName("alarm.schedule-notification consume 검증")
     @ParameterizedTest
-    @ValueSource(strings = {"ONE_DAY_BEFORE", "ONE_HOUR_BEFORE", "THIRTY_MINUTE_BEFORE",
-        "FIFTEEN_MINUTE_BEFORE", "ON_TIME"})
+    @ValueSource(strings = {"ONE_DAY_BEFORE", "ONE_HOUR_BEFORE", "THIRTY_MINUTES_BEFORE",
+        "FIFTEEN_MINUTES_BEFORE", "ON_TIME"})
     public void alarm_schedule_notification(String type) throws IOException {
         // given
         User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
