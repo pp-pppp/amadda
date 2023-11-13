@@ -810,7 +810,7 @@ public class ScheduleService {
             && date.getMonthValue() == Integer.parseInt(month);
     }
 
-    public boolean checkScheduleInMonthCondition(Participation participation, String year,
+    private boolean checkScheduleInMonthCondition(Participation participation, String year,
         String month) {
         // 확인하려는 일정의 시작시점, 종료시점
         LocalDateTime scheduleStartAt = participation.getSchedule().getScheduleStartAt();
