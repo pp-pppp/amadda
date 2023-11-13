@@ -3,9 +3,12 @@ package com.pppppp.amadda.friend.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.alarm.repository.AlarmRepository;
+import com.pppppp.amadda.alarm.service.AlarmService;
 import com.pppppp.amadda.friend.dto.request.FriendRequestRequest;
 import com.pppppp.amadda.friend.dto.response.FriendReadResponse;
 import com.pppppp.amadda.friend.dto.response.FriendRequestResponse;
@@ -28,6 +31,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 
 @EmbeddedKafka(
@@ -63,6 +67,9 @@ class FriendServiceTest extends IntegrationTestSupport {
     @Autowired
     private AlarmRepository alarmRepository;
 
+    @MockBean
+    private AlarmService alarmService;
+
     @AfterEach
     void tearDown() {
         alarmRepository.deleteAllInBatch();
@@ -80,11 +87,13 @@ class FriendServiceTest extends IntegrationTestSupport {
         User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
         User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
+        User user1 = users.get(0);
+        User user2 = users.get(1);
 
         // 친구 요청을 만들고 ACCEPTED 상태로 바꿔줘 친구 요청을 수락한 상황으로 가정
         FriendRequestRequest request = FriendRequestRequest.builder()
-            .userSeq(users.get(0).getUserSeq())
-            .targetSeq(users.get(1).getUserSeq())
+            .userSeq(user1.getUserSeq())
+            .targetSeq(user2.getUserSeq())
             .build();
         FriendRequestResponse response = friendRequestService.createFriendRequest(request);
         FriendRequest fr = friendRequestService.findFriendRequestBySeq(response.requestSeq()).get();
@@ -97,9 +106,12 @@ class FriendServiceTest extends IntegrationTestSupport {
         assertThat(friendResponse).hasSize(2)
             .extracting("ownerSeq", "friendSeq")
             .containsExactlyInAnyOrder(
-                tuple(users.get(0).getUserSeq(), users.get(1).getUserSeq()),
-                tuple(users.get(1).getUserSeq(), users.get(0).getUserSeq())
+                tuple(user1.getUserSeq(), user2.getUserSeq()),
+                tuple(user2.getUserSeq(), user1.getUserSeq())
             );
+
+        verify(alarmService, times(1))
+            .sendFriendRequest(user1.getUserSeq(), user2.getUserSeq());
     }
 
     @DisplayName("두 유저의 friendRequest의 상태가 ACCEPTED가 아니라면 예외가 발생한다. ")
@@ -109,10 +121,12 @@ class FriendServiceTest extends IntegrationTestSupport {
         User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
         User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
+        User user1 = users.get(0);
+        User user2 = users.get(1);
 
         FriendRequestRequest request = FriendRequestRequest.builder()
-            .userSeq(users.get(0).getUserSeq())
-            .targetSeq(users.get(1).getUserSeq())
+            .userSeq(user1.getUserSeq())
+            .targetSeq(user2.getUserSeq())
             .build();
         FriendRequestResponse response = friendRequestService.createFriendRequest(request);
 
@@ -120,6 +134,9 @@ class FriendServiceTest extends IntegrationTestSupport {
         assertThatThrownBy(() -> friendService.createFriend(response))
             .isInstanceOf(RestApiException.class)
             .hasMessage("FRIEND_INVALID");
+
+        verify(alarmService, times(1))
+            .sendFriendRequest(user1.getUserSeq(), user2.getUserSeq());
     }
 
     @DisplayName("이미 친구인지 판별한다 - true인 경우")

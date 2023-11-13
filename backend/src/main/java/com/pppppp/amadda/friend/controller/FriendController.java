@@ -1,11 +1,9 @@
 package com.pppppp.amadda.friend.controller;
 
-import com.pppppp.amadda.alarm.service.AlarmService;
 import com.pppppp.amadda.friend.dto.request.FriendRequestRequest;
 import com.pppppp.amadda.friend.dto.request.GroupCreateRequest;
 import com.pppppp.amadda.friend.dto.request.GroupUpdateRequest;
 import com.pppppp.amadda.friend.dto.response.FriendReadResponse;
-import com.pppppp.amadda.friend.dto.response.FriendRequestResponse;
 import com.pppppp.amadda.friend.service.FriendRequestService;
 import com.pppppp.amadda.friend.service.FriendService;
 import com.pppppp.amadda.friend.service.GroupMemberService;
@@ -35,7 +33,6 @@ public class FriendController {
     private final FriendRequestService friendRequestService;
     private final UserGroupService userGroupService;
     private final GroupMemberService groupMemberService;
-    private final AlarmService alarmService;
     private final FriendService friendService;
     private final TokenProvider tokenProvider;
 
@@ -50,10 +47,7 @@ public class FriendController {
 
     @PostMapping("/request")
     public ApiResponse<String> sendFriendRequest(@Valid @RequestBody FriendRequestRequest request) {
-        FriendRequestResponse friendRequestResponse = friendRequestService.createFriendRequest(
-            request);
-        alarmService.sendFriendRequest(friendRequestResponse.ownerSeq(),
-            friendRequestResponse.friendSeq());
+        friendRequestService.createFriendRequest(request);
         return ApiResponse.ok("친구를 신청했습니다.");
     }
 
@@ -61,12 +55,7 @@ public class FriendController {
     public ApiResponse<String> acceptFriendRequest(
         HttpServletRequest http, @PathVariable Long requestSeq) {
         Long userSeq = tokenProvider.getUserSeq(http);
-
-        FriendRequestResponse friendRequestResponse = friendRequestService.acceptFriendRequest(
-            userSeq, requestSeq);
-        alarmService.sendFriendAccept(friendRequestResponse.ownerSeq(),
-            friendRequestResponse.friendSeq());
-        alarmService.readFriendRequestAlarm(requestSeq);
+        friendRequestService.acceptFriendRequest(userSeq, requestSeq);
         return ApiResponse.ok("친구 신청을 수락했습니다.");
     }
 
@@ -76,7 +65,6 @@ public class FriendController {
         @PathVariable Long requestSeq) {
         Long userSeq = tokenProvider.getUserSeq(http);
         friendRequestService.declineFriendRequest(userSeq, requestSeq);
-        alarmService.readFriendRequestAlarm(requestSeq);
         return ApiResponse.ok("친구 신청을 거절했습니다.");
     }
 

@@ -86,7 +86,6 @@ class FriendControllerTest extends ControllerTestSupport {
             .andExpect(status().isBadRequest());
     }
 
-
     @DisplayName("받은 친구 요청을 거절한다. ")
     @Test
     void declineFriendRequest() throws Exception {
