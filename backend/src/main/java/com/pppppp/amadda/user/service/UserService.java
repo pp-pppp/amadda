@@ -128,7 +128,7 @@ public class UserService {
         boolean isValid = isValidName(request.userName());
         return UserNameCheckResponse.of(isValid);
     }
-/**/
+
     private boolean isValidName(String name) {
         String regex = "^[^A-Z!@#$%^&*()_+={}|\\[\\]\\\\:\";'<>?,./\\s]{1,20}$";
         return Pattern.matches(regex, name);
