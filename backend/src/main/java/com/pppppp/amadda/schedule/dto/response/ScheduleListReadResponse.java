@@ -9,6 +9,7 @@ import lombok.Builder;
 
 @Builder
 public record ScheduleListReadResponse(
+    // ================= Schedule ===================
     Long scheduleSeq,
     Boolean isTimeSelected,
     Boolean isDateSelected,
@@ -18,6 +19,10 @@ public record ScheduleListReadResponse(
     Boolean isAuthorizedAll,
     UserReadResponse authorizedUser,
     List<UserReadResponse> participants,
+    Boolean isFinished,
+
+    // ================ Participation =================
+
     String alarmTime,
     String scheduleName,
     CategoryReadResponse category

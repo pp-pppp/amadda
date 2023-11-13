@@ -18,6 +18,7 @@ public record ScheduleDetailReadResponse(
     String scheduleStartAt,
     String scheduleEndAt,
     List<UserReadResponse> participants,
+    Boolean isFinished,
 
     // ================ Participation =================
     String alarmTime,
