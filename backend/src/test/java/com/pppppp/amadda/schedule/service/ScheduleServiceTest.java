@@ -1156,8 +1156,6 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         ScheduleDetailReadResponse u1Response = scheduleService.getScheduleDetail(
             scheduleCreateResponse.scheduleSeq(), u1.getUserSeq(), LocalDate.of(2023, 11, 1));
 
-        System.out.println(u1Response);
-
         // when
         ParticipationUpdateRequest u2ParticipationUpdateRequest = ParticipationUpdateRequest.builder()
             .scheduleName("안녕 내가 일정 이름이야")
@@ -1177,9 +1175,6 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             scheduleCreateResponse.scheduleSeq(), u2.getUserSeq(), LocalDate.of(2023, 11, 1));
         ScheduleDetailReadResponse u3Response = scheduleService.getScheduleDetail(
             scheduleCreateResponse.scheduleSeq(), u3.getUserSeq(), LocalDate.of(2023, 11, 1));
-
-        System.out.println(u2Response);
-        System.out.println(u3Response);
 
         // then
         assertThat(u1Response)
