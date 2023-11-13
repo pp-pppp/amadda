@@ -78,8 +78,8 @@ class GroupMemberRepositoryTest extends IntegrationTestSupport {
         assertThat(members)
             .extracting("group.groupSeq", "member.userSeq")
             .containsExactly(
-                tuple(groupSeq, 1234L),
-                tuple(groupSeq, 2222L)
+                tuple(groupSeq, users.get(1).getUserSeq()),
+                tuple(groupSeq, users.get(2).getUserSeq())
             );
     }
 
@@ -101,13 +101,13 @@ class GroupMemberRepositoryTest extends IntegrationTestSupport {
         groupMemberRepository.saveAll(List.of(gm1, gm2));
 
         // when
-        groupMemberRepository.deleteByGroup_GroupSeqAndMember_UserSeq(groupSeq, 1234L);
+        groupMemberRepository.deleteByGroup_GroupSeqAndMember_UserSeq(groupSeq, users.get(1).getUserSeq());
 
         // then
         assertThat(groupMemberRepository.findAll())
             .extracting("group.groupSeq", "member.userSeq")
             .containsExactly(
-                tuple(groupSeq, 2222L)
+                tuple(groupSeq, users.get(2).getUserSeq())
             );
     }
 
@@ -135,7 +135,7 @@ class GroupMemberRepositoryTest extends IntegrationTestSupport {
         assertThat(members)
             .extracting("group.groupName", "member.userSeq", "member.userName")
             .containsExactlyInAnyOrder(
-                tuple("그룹명1", 2222L, "유저3")
+                tuple("그룹명1", users.get(2).getUserSeq(), "유저3")
             );
     }
 
@@ -171,11 +171,11 @@ class GroupMemberRepositoryTest extends IntegrationTestSupport {
         assertThat(members)
             .extracting("group.groupName", "member.userSeq", "member.userName")
             .containsExactlyInAnyOrder(
-                tuple("그룹명1", 1234L, "유저2"),
-                tuple("그룹명1", 2222L, "유저3"),
-                tuple("그룹명1", 9999L, "유저4"),
-                tuple("그룹명2", 9999L, "유저4"),
-                tuple("그룹명2", 3456L, "유저5")
+                tuple("그룹명1", users.get(1).getUserSeq(), "유저2"),
+                tuple("그룹명1", users.get(2).getUserSeq(), "유저3"),
+                tuple("그룹명1", users.get(3).getUserSeq(), "유저4"),
+                tuple("그룹명2", users.get(3).getUserSeq(), "유저4"),
+                tuple("그룹명2", users.get(4).getUserSeq(), "유저5")
             );
     }
 
@@ -211,9 +211,9 @@ class GroupMemberRepositoryTest extends IntegrationTestSupport {
         assertThat(groupMemberRepository.findAll())
             .extracting("group.groupName", "member.userSeq", "member.userName")
             .containsExactlyInAnyOrder(
-                tuple("그룹명1", 1234L, "유저2"),
-                tuple("그룹명1", 2222L, "유저3"),
-                tuple("그룹명2", 3456L, "유저5")
+                tuple("그룹명1", users.get(1).getUserSeq(), "유저2"),
+                tuple("그룹명1", users.get(2).getUserSeq(), "유저3"),
+                tuple("그룹명2", users.get(4).getUserSeq(), "유저5")
             );
     }
 

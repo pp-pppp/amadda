@@ -44,10 +44,8 @@ class UserGroupTest extends IntegrationTestSupport {
 
         // then
         assertThat(userGroupRepository.findAll()).hasSize(1)
-            .extracting("groupName", "owner.userSeq")
-            .containsExactlyInAnyOrder(
-                tuple("aaa", 1111L)
-            );
+            .extracting("groupName")
+            .containsExactlyInAnyOrder("aaa");
     }
 
 }

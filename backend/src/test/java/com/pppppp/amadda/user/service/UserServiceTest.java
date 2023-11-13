@@ -58,10 +58,10 @@ class UserServiceTest extends IntegrationTestSupport {
         // given
         User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
         User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        userRepository.saveAll(List.of(u1, u2));
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         // when
-        User u = userService.getUserInfoBySeq(1111L);
+        User u = userService.getUserInfoBySeq(users.get(0).getUserSeq());
 
         // then
         assertThat(u).isNotNull();
@@ -75,14 +75,14 @@ class UserServiceTest extends IntegrationTestSupport {
         // given
         User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
         User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        userRepository.saveAll(List.of(u1, u2));
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         // when
-        UserReadResponse u = userService.getUserResponse(1111L);
+        UserReadResponse u = userService.getUserResponse(users.get(0).getUserSeq());
 
         // then
         assertThat(u).extracting("userSeq", "userName", "userId", "imageUrl")
-            .containsExactlyInAnyOrder(1111L, "유저1", "id1", "imageUrl1");
+            .containsExactlyInAnyOrder(users.get(0).getUserSeq(), "유저1", "id1", "imageUrl1");
     }
 
     @DisplayName("존재하지 않는 userSeq로 유저를 조회하면 예외가 발생한다. ")
@@ -102,7 +102,7 @@ class UserServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1));
 
         UserJwtRequest request = UserJwtRequest.builder()
-            .userSeq("1111")
+            .userSeq(users.get(0).getUserSeq().toString())
             .imageUrl("url1")
             .build();
 
@@ -116,7 +116,7 @@ class UserServiceTest extends IntegrationTestSupport {
         // then
         assertThat(at).isTrue();
         assertThat(rt).isTrue();
-        assertThat(rak).isEqualTo(1111L);
+        assertThat(rak).isEqualTo(users.get(0).getUserSeq());
         assertThat(isInited).isTrue();
     }
 
@@ -128,7 +128,7 @@ class UserServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1));
 
         UserJwtRequest request = UserJwtRequest.builder()
-            .userSeq("1111")
+            .userSeq(users.get(0).getUserSeq().toString())
             .imageUrl("url1")
             .build();
         UserJwtInitResponse response = userService.getTokensAndCheckInit(request);
@@ -138,7 +138,7 @@ class UserServiceTest extends IntegrationTestSupport {
             .build();
 
         // when
-        UserJwtResponse res = userService.getNewTokens(r, 1111L);
+        UserJwtResponse res = userService.getNewTokens(r, users.get(0).getUserSeq());
         boolean at = tokenProvider.verifyToken(res.accessToken());
         boolean rt = tokenProvider.verifyToken(res.refreshToken());
         Long rak = tokenProvider.decodeRefreshAccessKey(res.refreshAccessKey());
@@ -146,7 +146,7 @@ class UserServiceTest extends IntegrationTestSupport {
         // then
         assertThat(at).isTrue();
         assertThat(rt).isTrue();
-        assertThat(rak).isEqualTo(1111L);
+        assertThat(rak).isEqualTo(users.get(0).getUserSeq());
     }
 
     @DisplayName("신규/기존 유저를 구분한다. ")
@@ -181,9 +181,9 @@ class UserServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(userRepository.findAll()).hasSize(1)
-            .extracting("userId", "userName", "imageUrl", "userSeq")
+            .extracting("userId", "userName", "imageUrl")
             .containsExactly(
-                tuple("jammminjung", "잼민정", fileName, 1111L)
+                tuple("jammminjung", "잼민정", fileName)
             );
     }
 
@@ -231,12 +231,12 @@ class UserServiceTest extends IntegrationTestSupport {
         friendRepository.saveAll(List.of(f1, f2));
 
         // when
-        UserRelationResponse response = userService.getUserInfoAndIsFriend(1111L, "id2");
+        UserRelationResponse response = userService.getUserInfoAndIsFriend(users.get(0).getUserSeq(), "id2");
 
         // then
         assertThat(response)
             .extracting("userSeq", "userName", "userId", "imageUrl", "isFriend")
-            .containsExactlyInAnyOrder(1234L, "유저2", "id2", "imageUrl2", true);
+            .containsExactlyInAnyOrder(users.get(1).getUserSeq(), "유저2", "id2", "imageUrl2", true);
     }
 
     @DisplayName("내 유저seq와 검색키로 해당 유저와 그 유저와의 친구관계를 조회한다. ")
@@ -248,12 +248,12 @@ class UserServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         // when
-        UserRelationResponse response = userService.getUserInfoAndIsFriend(1111L, "id2");
+        UserRelationResponse response = userService.getUserInfoAndIsFriend(users.get(0).getUserSeq(), "id2");
 
         // then
         assertThat(response)
             .extracting("userSeq", "userName", "userId", "imageUrl", "isFriend")
-            .containsExactlyInAnyOrder(1234L, "유저2", "id2", "imageUrl2", false);
+            .containsExactlyInAnyOrder(users.get(1).getUserSeq(), "유저2", "id2", "imageUrl2", false);
     }
 
     @DisplayName("호버한 상대의 유저 seq로 해당 유저와 그 유저와의 친구관계를 조회한다. ")
@@ -269,12 +269,12 @@ class UserServiceTest extends IntegrationTestSupport {
         friendRepository.saveAll(List.of(f1, f2));
 
         // when
-        UserRelationResponse response = userService.getUserInfoAndIsFriend(1111L, 1234L);
+        UserRelationResponse response = userService.getUserInfoAndIsFriend(users.get(0).getUserSeq(), users.get(1).getUserSeq());
 
         // then
         assertThat(response)
             .extracting("userSeq", "userName", "userId", "imageUrl", "isFriend")
-            .containsExactlyInAnyOrder(1234L, "유저2", "id2", "imageUrl2", true);
+            .containsExactlyInAnyOrder(users.get(1).getUserSeq(), "유저2", "id2", "imageUrl2", true);
     }
 
     @DisplayName("호버한 상대의 유저 seq로 해당 유저와 그 유저와의 친구관계를 조회한다. ")
@@ -286,12 +286,12 @@ class UserServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         // when
-        UserRelationResponse response = userService.getUserInfoAndIsFriend(1111L, 1234L);
+        UserRelationResponse response = userService.getUserInfoAndIsFriend(users.get(0).getUserSeq(), users.get(1).getUserSeq());
 
         // then
         assertThat(response)
             .extracting("userSeq", "userName", "userId", "imageUrl", "isFriend")
-            .containsExactlyInAnyOrder(1234L, "유저2", "id2", "imageUrl2", false);
+            .containsExactlyInAnyOrder(users.get(1).getUserSeq(), "유저2", "id2", "imageUrl2", false);
     }
 
     @DisplayName("내 유저seq와 검색키로 검색해 대상이 존재하지 않는경우 dto를 비워 리턴한다. ")
@@ -303,7 +303,7 @@ class UserServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         // when
-        UserRelationResponse response = userService.getUserInfoAndIsFriend(1111L, "id3");
+        UserRelationResponse response = userService.getUserInfoAndIsFriend(users.get(0).getUserSeq(), "id3");
 
         // then
         assertThat(response)

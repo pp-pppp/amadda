@@ -75,8 +75,8 @@ class FriendServiceTest extends IntegrationTestSupport {
 
         // 친구 요청을 만들고 ACCEPTED 상태로 바꿔줘 친구 요청을 수락한 상황으로 가정
         FriendRequestRequest request = FriendRequestRequest.builder()
-            .userSeq(1111L)
-            .targetSeq(1234L)
+            .userSeq(users.get(0).getUserSeq())
+            .targetSeq(users.get(1).getUserSeq())
             .build();
         FriendRequestResponse response = friendRequestService.createFriendRequest(request);
         FriendRequest fr = friendRequestService.findFriendRequestBySeq(response.requestSeq()).get();
@@ -89,8 +89,8 @@ class FriendServiceTest extends IntegrationTestSupport {
         assertThat(friendResponse).hasSize(2)
             .extracting("ownerSeq", "friendSeq")
             .containsExactlyInAnyOrder(
-                tuple(1111L, 1234L),
-                tuple(1234L, 1111L)
+                tuple(users.get(0).getUserSeq(), users.get(1).getUserSeq()),
+                tuple(users.get(1).getUserSeq(), users.get(0).getUserSeq())
             );
     }
 
@@ -103,8 +103,8 @@ class FriendServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         FriendRequestRequest request = FriendRequestRequest.builder()
-            .userSeq(1111L)
-            .targetSeq(1234L)
+            .userSeq(users.get(0).getUserSeq())
+            .targetSeq(users.get(1).getUserSeq())
             .build();
         FriendRequestResponse response = friendRequestService.createFriendRequest(request);
 
@@ -196,7 +196,7 @@ class FriendServiceTest extends IntegrationTestSupport {
         groupMemberRepository.saveAll(List.of(mem4, mem5));
 
         // when
-        List<GroupResponse> mems = friendService.searchInGroups(1111L, "유저");
+        List<GroupResponse> mems = friendService.searchInGroups(users.get(0).getUserSeq(), "유저");
 
         // then
         assertThat(mems).hasSize(2)
@@ -208,13 +208,13 @@ class FriendServiceTest extends IntegrationTestSupport {
         assertThat(mems.get(0).members()).hasSize(2)
             .extracting("userSeq", "userName", "userId", "imageUrl")
             .containsExactlyInAnyOrder(
-                tuple(1234L, "유저2", "id2", "imageUrl2"),
-                tuple(2222L, "유저3", "id3", "imageUrl3")
+                tuple(users.get(1).getUserSeq(), "유저2", "id2", "imageUrl2"),
+                tuple(users.get(2).getUserSeq(), "유저3", "id3", "imageUrl3")
             );
         assertThat(mems.get(1).members()).hasSize(1)
             .extracting("userSeq", "userName", "userId", "imageUrl")
             .containsExactlyInAnyOrder(
-                tuple(3456L, "유저5", "id5", "imageUrl5")
+                tuple(users.get(4).getUserSeq(), "유저5", "id5", "imageUrl5")
             );
     }
 
@@ -250,7 +250,7 @@ class FriendServiceTest extends IntegrationTestSupport {
         groupMemberRepository.saveAll(List.of(mem4, mem5));
 
         // when
-        FriendReadResponse response = friendService.searchFriends(1111L, "유저");
+        FriendReadResponse response = friendService.searchFriends(users.get(0).getUserSeq(), "유저");
 
         // then
         assertThat(response.groups()).hasSize(2)
@@ -262,20 +262,20 @@ class FriendServiceTest extends IntegrationTestSupport {
         assertThat(response.groups().get(0).members()).hasSize(2)
             .extracting("userSeq", "userName", "userId", "imageUrl")
             .containsExactlyInAnyOrder(
-                tuple(1234L, "유저2", "id2", "imageUrl2"),
-                tuple(2222L, "유저3", "id3", "imageUrl3")
+                tuple(users.get(1).getUserSeq(), "유저2", "id2", "imageUrl2"),
+                tuple(users.get(2).getUserSeq(), "유저3", "id3", "imageUrl3")
             );
         assertThat(response.groups().get(1).members()).hasSize(1)
             .extracting("userSeq", "userName", "userId", "imageUrl")
             .containsExactlyInAnyOrder(
-                tuple(3456L, "유저5", "id5", "imageUrl5")
+                tuple(users.get(4).getUserSeq(), "유저5", "id5", "imageUrl5")
             );
         assertThat(response.members()).hasSize(3)
             .extracting("userSeq", "userName", "userId", "imageUrl")
             .containsExactlyInAnyOrder(
-                tuple(1234L, "유저2", "id2", "imageUrl2"),
-                tuple(2222L, "유저3", "id3", "imageUrl3"),
-                tuple(3456L, "유저5", "id5", "imageUrl5")
+                tuple(users.get(1).getUserSeq(), "유저2", "id2", "imageUrl2"),
+                tuple(users.get(2).getUserSeq(), "유저3", "id3", "imageUrl3"),
+                tuple(users.get(4).getUserSeq(), "유저5", "id5", "imageUrl5")
             );
     }
 

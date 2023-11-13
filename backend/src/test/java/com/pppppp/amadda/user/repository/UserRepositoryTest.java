@@ -30,14 +30,14 @@ class UserRepositoryTest extends IntegrationTestSupport {
         User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
 
         // when
-        List<User> savedUsers = userRepository.saveAll(List.of(u1, u2));
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         //then
-        assertThat(savedUsers).hasSize(2)
+        assertThat(users).hasSize(2)
             .extracting("userSeq", "userName", "userId", "imageUrl")
             .containsExactlyInAnyOrder(
-                tuple(1111L, "유저1", "id1", "imageUrl1"),
-                tuple(1234L, "유저2", "id2", "imageUrl2")
+                tuple(users.get(0).getUserSeq(), "유저1", "id1", "imageUrl1"),
+                tuple(users.get(1).getUserSeq(), "유저2", "id2", "imageUrl2")
             );
     }
 
@@ -47,15 +47,15 @@ class UserRepositoryTest extends IntegrationTestSupport {
         // given
         User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
         User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        userRepository.saveAll(List.of(u1, u2));
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         // when
-        User u = userRepository.findById(1111L).get();
+        User u = userRepository.findById(users.get(0).getUserSeq()).get();
 
         //then
         assertThat(u).isNotNull();
         assertThat(u).extracting("userSeq", "userName", "userId", "imageUrl")
-            .containsExactlyInAnyOrder(1111L, "유저1", "id1", "imageUrl1");
+            .containsExactlyInAnyOrder(users.get(0).getUserSeq(), "유저1", "id1", "imageUrl1");
     }
 
     @DisplayName("유저 아이디로 해당 유저를 조회한다. ")
@@ -64,7 +64,7 @@ class UserRepositoryTest extends IntegrationTestSupport {
         // given
         User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
         User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        userRepository.saveAll(List.of(u1, u2));
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         // when
         User u = userRepository.findByUserId("id2").get();
@@ -72,7 +72,7 @@ class UserRepositoryTest extends IntegrationTestSupport {
         // then
         assertThat(u).isNotNull();
         assertThat(u).extracting("userSeq", "userName", "userId", "imageUrl")
-            .containsExactlyInAnyOrder(1234L, "유저2", "id2", "imageUrl2");
+            .containsExactlyInAnyOrder(users.get(1).getUserSeq(), "유저2", "id2", "imageUrl2");
     }
 
 }

@@ -75,8 +75,8 @@ class UserGroupRepositoryTest extends IntegrationTestSupport {
         assertThat(members)
             .extracting("member.userSeq", "member.userName")
             .containsExactlyInAnyOrder(
-                tuple(1234L, "유저2"),
-                tuple(2222L, "유저3")
+                tuple(users.get(1).getUserSeq(), "유저2"),
+                tuple(users.get(2).getUserSeq(), "유저3")
             );
     }
 
@@ -104,8 +104,8 @@ class UserGroupRepositoryTest extends IntegrationTestSupport {
         assertThat(members)
             .extracting("member.userSeq", "member.userName")
             .containsExactlyInAnyOrder(
-                tuple(1234L, "유저2"),
-                tuple(2222L, "유저3")
+                tuple(users.get(1).getUserSeq(), "유저2"),
+                tuple(users.get(2).getUserSeq(), "유저3")
             );
 
     }

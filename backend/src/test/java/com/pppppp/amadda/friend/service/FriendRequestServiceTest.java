@@ -54,6 +54,7 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         userGroupRepository.deleteAllInBatch();
         friendRequestRepository.deleteAllInBatch();
         friendRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
     }
 
     @DisplayName("다른 유저에게 친구 신청을 할 수 있다. ")
@@ -65,8 +66,8 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         FriendRequestRequest request = FriendRequestRequest.builder()
-            .userSeq(1111L)
-            .targetSeq(1234L)
+            .userSeq(users.get(0).getUserSeq())
+            .targetSeq(users.get(1).getUserSeq())
             .build();
 
         // when
@@ -75,7 +76,7 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         //then
         assertThat(response).isNotNull();
         assertThat(response).extracting("ownerSeq", "friendSeq", "status")
-            .containsExactlyInAnyOrder(1111L, 1234L, "REQUESTED");
+            .containsExactlyInAnyOrder(users.get(0).getUserSeq(), users.get(1).getUserSeq(), "REQUESTED");
     }
 
     @DisplayName("이미 친구인 유저에게 친구 신청을 하면 예외가 발생한다. ")
@@ -90,8 +91,8 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         List<FriendRequest> friendRequests = friendRequestRepository.saveAll(List.of(fr));
 
         FriendRequestRequest request = FriendRequestRequest.builder()
-            .userSeq(1111L)
-            .targetSeq(1234L)
+            .userSeq(users.get(0).getUserSeq())
+            .targetSeq(users.get(1).getUserSeq())
             .build();
 
         // when // then
@@ -115,8 +116,8 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         savedFr.get(0).updateStatus(FriendRequestStatus.ACCEPTED); // 수정
 
         FriendRequestRequest request = FriendRequestRequest.builder()
-            .userSeq(1111L)
-            .targetSeq(1234L)
+            .userSeq(users.get(0).getUserSeq())
+            .targetSeq(users.get(1).getUserSeq())
             .build();
 
         // when // then
@@ -134,20 +135,20 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         FriendRequestRequest request = FriendRequestRequest.builder()
-            .userSeq(1111L)
-            .targetSeq(1234L)
+            .userSeq(users.get(0).getUserSeq())
+            .targetSeq(users.get(1).getUserSeq())
             .build();
 
         FriendRequestResponse response = friendRequestService.createFriendRequest(request);
         Long requestSeq = response.requestSeq();
 
         // when
-        response = friendRequestService.declineFriendRequest(1234L, requestSeq);
+        response = friendRequestService.declineFriendRequest(users.get(1).getUserSeq(), requestSeq);
 
         // then
         assertThat(response).isNotNull();
         assertThat(response).extracting("ownerSeq", "friendSeq", "status")
-            .containsExactlyInAnyOrder(1111L, 1234L, "DECLINED");
+            .containsExactlyInAnyOrder(users.get(0).getUserSeq(), users.get(1).getUserSeq(), "DECLINED");
     }
 
     @DisplayName("친구 요청을 한사람이 요청을 거절할 수는 없다. 예외가 발생한다. ")
@@ -159,15 +160,15 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         FriendRequestRequest request = FriendRequestRequest.builder()
-            .userSeq(1111L)
-            .targetSeq(1234L)
+            .userSeq(users.get(0).getUserSeq())
+            .targetSeq(users.get(1).getUserSeq())
             .build();
 
         FriendRequestResponse response = friendRequestService.createFriendRequest(request);
         Long requestSeq = response.requestSeq();
 
         // when // then
-        assertThatThrownBy(() -> friendRequestService.declineFriendRequest(1111L, requestSeq))
+        assertThatThrownBy(() -> friendRequestService.declineFriendRequest(users.get(0).getUserSeq(), requestSeq))
             .isInstanceOf(RestApiException.class)
             .hasMessage("FRIEND_REQUEST_INVALID");
     }
@@ -180,20 +181,20 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         FriendRequestRequest request = FriendRequestRequest.builder()
-            .userSeq(1111L)
-            .targetSeq(1234L)
+            .userSeq(users.get(0).getUserSeq())
+            .targetSeq(users.get(1).getUserSeq())
             .build();
         FriendRequestResponse response = friendRequestService.createFriendRequest(request);
         FriendRequest fr = friendRequestService.findFriendRequestBySeq(response.requestSeq()).get();
 
         // when
-        FriendRequestResponse res = friendRequestService.acceptFriendRequest(1234L,
+        FriendRequestResponse res = friendRequestService.acceptFriendRequest(users.get(1).getUserSeq(),
             fr.getRequestSeq());
 
         //then
         assertThat(res).isNotNull();
         assertThat(res).extracting("ownerSeq", "friendSeq", "status")
-            .containsExactlyInAnyOrder(1111L, 1234L, "ACCEPTED");
+            .containsExactlyInAnyOrder(users.get(0).getUserSeq(), users.get(1).getUserSeq(), "ACCEPTED");
 
         // 추가로 친구 테이블에도 잘 저장되었는지 확인
         assertThat(
@@ -204,8 +205,8 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         ).hasSize(2)
             .extracting("ownerSeq", "friendSeq")
             .containsExactlyInAnyOrder(
-                tuple(1111L, 1234L),
-                tuple(1234L, 1111L)
+                tuple(users.get(0).getUserSeq(), users.get(1).getUserSeq()),
+                tuple(users.get(1).getUserSeq(), users.get(0).getUserSeq())
             );
     }
 
@@ -218,16 +219,16 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         FriendRequestRequest request = FriendRequestRequest.builder()
-            .userSeq(1111L)
-            .targetSeq(1234L)
+            .userSeq(users.get(0).getUserSeq())
+            .targetSeq(users.get(1).getUserSeq())
             .build();
         FriendRequestResponse response = friendRequestService.createFriendRequest(request);
         FriendRequest fr = friendRequestService.findFriendRequestBySeq(response.requestSeq()).get();
-        friendRequestService.acceptFriendRequest(1234L, fr.getRequestSeq());
+        friendRequestService.acceptFriendRequest(users.get(1).getUserSeq(), fr.getRequestSeq());
 
         // when // then
         assertThatThrownBy(
-            () -> friendRequestService.acceptFriendRequest(1234L, fr.getRequestSeq()))
+            () -> friendRequestService.acceptFriendRequest(users.get(1).getUserSeq(), fr.getRequestSeq()))
             .isInstanceOf(RestApiException.class)
             .hasMessage("FRIEND_REQUEST_INVALID");
     }
@@ -241,8 +242,8 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         FriendRequestRequest request = FriendRequestRequest.builder()
-            .userSeq(1111L)
-            .targetSeq(1234L)
+            .userSeq(users.get(0).getUserSeq())
+            .targetSeq(users.get(1).getUserSeq())
             .build();
         FriendRequestResponse response = friendRequestService.createFriendRequest(request);
         response = friendRequestService.findFriendRequestBySeq(response.requestSeq())
@@ -255,7 +256,7 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         groupMemberRepository.saveAll(List.of(mem1));
 
         // when
-        friendRequestService.deleteFriendAndRequest(1111L, 1234L);
+        friendRequestService.deleteFriendAndRequest(users.get(0).getUserSeq(), users.get(1).getUserSeq());
 
         // then
         assertThat(friendRequestRepository.findAll()).hasSize(0);
@@ -273,7 +274,7 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         // when // then
-        assertThatThrownBy(() -> friendRequestService.deleteFriendAndRequest(1111L, 1234L))
+        assertThatThrownBy(() -> friendRequestService.deleteFriendAndRequest(users.get(0).getUserSeq(), users.get(1).getUserSeq()))
             .isInstanceOf(RestApiException.class)
             .hasMessage("FRIEND_REQUEST_NOT_FOUND");
     }

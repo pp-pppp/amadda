@@ -92,23 +92,23 @@ class FriendRepositoryTest extends IntegrationTestSupport {
     void findByOwnerSeqAndSearchKey() {
         // given
         User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User user1 = userRepository.save(u1);
         User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User user2 = userRepository.save(u2);
         User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
-        List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
+        User user3 = userRepository.save(u3);
 
-        Friend f1 = Friend.create(u1, u2);
-        Friend f2 = Friend.create(u1, u3);
+        Friend f1 = Friend.create(user1, user2);
+        Friend f2 = Friend.create(user1, user3);
         friendRepository.saveAll(List.of(f1, f2));
 
         // when
-        List<Friend> friends = friendRepository.findByOwnerSeqAndSearchKey(1111L, "유저2");
+        List<Friend> friends = friendRepository.findByOwnerSeqAndSearchKey(user1.getUserSeq(), "유저2");
 
         // then
         assertThat(friends)
-            .extracting("friend.userSeq", "friend.userName")
-            .containsExactlyInAnyOrder(
-                tuple(1234L, "유저2")
-            );
+            .extracting("friend.userName")
+            .containsExactlyInAnyOrder("유저2");
     }
 
 }
