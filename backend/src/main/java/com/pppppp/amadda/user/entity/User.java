@@ -28,7 +28,6 @@ public class User extends BaseEntity {
 
     @Builder
     private User(Long userSeq, String userName, String userId, String imageUrl) {
-        this.userSeq = userSeq;
         this.userName = userName;
         this.userId = userId;
         this.imageUrl = imageUrl;
@@ -36,10 +35,16 @@ public class User extends BaseEntity {
 
     public static User create(Long userSeq, String userName, String userId, String imageUrl) {
         return User.builder()
-            .userSeq(userSeq)
-            .userName(userName)
-            .userId(userId)
-            .imageUrl(imageUrl)
-            .build();
+                .userSeq(userSeq)
+                .userName(userName)
+                .userId(userId)
+                .imageUrl(imageUrl)
+                .build();
+    }
+
+    public void delete() {
+        this.userName = "";
+        this.userId = "";
+        this.imageUrl = "";
     }
 }
