@@ -5,6 +5,7 @@ import com.pppppp.amadda.alarm.dto.response.AlarmReadResponse;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendAccept;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendRequest;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleAssigned;
+import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleNotification;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleUpdate;
 import com.pppppp.amadda.alarm.entity.Alarm;
 import com.pppppp.amadda.alarm.entity.AlarmConfig;
@@ -19,12 +20,15 @@ import com.pppppp.amadda.global.entity.exception.errorcode.AlarmErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.FriendRequestErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.ScheduleErrorCode;
 import com.pppppp.amadda.global.entity.exception.errorcode.UserErrorCode;
+import com.pppppp.amadda.schedule.entity.AlarmTime;
 import com.pppppp.amadda.schedule.entity.Participation;
 import com.pppppp.amadda.schedule.entity.Schedule;
 import com.pppppp.amadda.schedule.repository.ParticipationRepository;
 import com.pppppp.amadda.schedule.repository.ScheduleRepository;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -32,6 +36,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -150,6 +155,40 @@ public class AlarmService {
         }
     }
 
+    @Scheduled(cron = "${schedules.cron.schedule-notification}", zone = "Asia/Seoul")
+    public void sendScheduleNotification() {
+        LocalDateTime now = printLog();
+        List<Participation> participations = getParticipations(now);
+        participations.forEach(participation -> {
+            Long userSeq = participation.getUser().getUserSeq();
+            AlarmScheduleNotification value = getAlarmScheduleNotificationMessage(participation);
+            kafkaProducer.sendAlarm(kafkaTopic.ALARM_SCHEDULE_NOTIFICATION, userSeq, value);
+        });
+    }
+
+    private LocalDateTime printLog() {
+        ZoneId zoneId = ZoneId.of("Asia/Seoul");
+        LocalDateTime now = LocalDateTime.now(zoneId);
+        log.info("schedule tasks using cron jobs - {}", now);
+        return now;
+    }
+
+    private List<Participation> getParticipations(LocalDateTime now) {
+        LocalDateTime start = now.minusMinutes(5);
+        LocalDateTime end = now.plusMinutes(5);
+        return participationRepository
+            .findAllByIsAlarmedFalseAndAlarmTimeNotAndAlarmAtBetween(AlarmTime.NONE, start, end);
+    }
+
+    private AlarmScheduleNotification getAlarmScheduleNotificationMessage(
+        Participation participation) {
+        Long scheduleSeq = participation.getSchedule().getScheduleSeq();
+        String scheduleName = participation.getScheduleName();
+        AlarmTime alarmTime = participation.getAlarmTime();
+        LocalDateTime alarmDateTime = participation.getAlarmAt();
+        return AlarmScheduleNotification.create(scheduleSeq, scheduleName, alarmTime,
+            alarmDateTime);
+    }
 
     /* 클래스 내부에서 사용하는 메소드 */
 

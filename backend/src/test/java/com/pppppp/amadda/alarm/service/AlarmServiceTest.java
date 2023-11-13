@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -26,14 +27,22 @@ import com.pppppp.amadda.friend.entity.FriendRequest;
 import com.pppppp.amadda.friend.repository.FriendRequestRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.global.entity.exception.errorcode.AlarmErrorCode;
+import com.pppppp.amadda.schedule.dto.request.ScheduleCreateRequest;
+import com.pppppp.amadda.schedule.entity.AlarmTime;
 import com.pppppp.amadda.schedule.entity.Participation;
 import com.pppppp.amadda.schedule.entity.Schedule;
 import com.pppppp.amadda.schedule.repository.ParticipationRepository;
 import com.pppppp.amadda.schedule.repository.ScheduleRepository;
+import com.pppppp.amadda.schedule.service.ScheduleService;
+import com.pppppp.amadda.user.dto.response.UserReadResponse;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,10 +67,18 @@ class AlarmServiceTest extends IntegrationTestSupport {
 
     @MockBean
     KafkaTemplate<Long, BaseTopicValue> kafkaTemplate;
+
+    @MockBean
+    Participation participation;
+
     @Autowired
     private KafkaTopic kafkaTopic;
+
     @Autowired
     private AlarmService alarmService;
+
+    @Autowired
+    private ScheduleService scheduleService;
 
     @Autowired
     private UserRepository userRepository;
@@ -836,6 +853,46 @@ class AlarmServiceTest extends IntegrationTestSupport {
         assertThatThrownBy(() -> alarmService.readFriendRequestAlarm(1L))
             .isInstanceOf(RestApiException.class)
             .hasMessage("FRIEND_REQUEST_NOT_FOUND");
+    }
+
+    @DisplayName("일정 예정 알림 테스트")
+    @Test
+    void scheduleNotification() throws InterruptedException {
+        // given
+        User u = User.create(1L, "유저1", "user1", "img1");
+        User user = userRepository.save(u);
+
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String startTime = now.format(formatter);
+        String endTime = now.plusMinutes(60).format(formatter);
+
+        ScheduleCreateRequest request = ScheduleCreateRequest.builder()
+            // schedule
+            .scheduleContent("수원 시민 회관")
+            .isDateSelected(true)
+            .isTimeSelected(true)
+            .isAllDay(false)
+            .isAuthorizedAll(true)
+            .scheduleStartAt(startTime)
+            .scheduleEndAt(endTime)
+            .participants(List.of(UserReadResponse.of(user)))
+            // participation
+            .alarmTime(AlarmTime.ON_TIME)
+            .scheduleName("합창단 공연")
+            .scheduleMemo("수원역에서 걸어서 10분")
+            .build();
+        scheduleService.createSchedule(user.getUserSeq(), request);
+
+        // when + then
+        Awaitility.await()
+            .atMost(1500, TimeUnit.MILLISECONDS)
+            .pollInterval(100, TimeUnit.MILLISECONDS)
+            .untilAsserted(() -> {
+                verify(kafkaTemplate, atLeastOnce())
+                    .send(eq(kafkaTopic.ALARM_SCHEDULE_NOTIFICATION),
+                        eq(user.getUserSeq()), any());
+            });
     }
 
     private List<User> create3users() {

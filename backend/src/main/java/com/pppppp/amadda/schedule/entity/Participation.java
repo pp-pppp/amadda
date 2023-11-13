@@ -65,6 +65,7 @@ public class Participation extends BaseEntity {
     private boolean isUpdateAlarmOn;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    @ColumnDefault("0")
     private boolean isAlarmed;
 
     @Builder
