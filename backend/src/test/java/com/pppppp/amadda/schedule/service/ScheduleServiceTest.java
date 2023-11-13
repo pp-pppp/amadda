@@ -150,7 +150,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
                 "alarmTime", "isAuthorizedAll")
             .containsExactly(
                 "안녕 내가 일정 이름이야", "이거는 안되는 메모고", "여기는 동기화 되는 메모야", false, false, false,
-                "null", "null", "알림 없음", false);
+                "", "", "알림 없음", false);
 
         List<UserReadResponse> participants = schedule.participants();
         assertThat(participants)
@@ -201,7 +201,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
                 "alarmTime", "isAuthorizedAll")
             .containsExactly(
                 "안녕 내가 일정 이름이야", "이거는 안되는 메모고", "여기는 동기화 되는 메모야", true, false, false,
-                "2023-11-02T00:00", "null", "알림 없음", false);
+                "2023-11-02 00:00:00", "", "알림 없음", false);
 
         List<UserReadResponse> participants = schedule.participants();
         assertThat(participants)
@@ -252,7 +252,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
                 "alarmTime", "isAuthorizedAll")
             .containsExactly(
                 "안녕 내가 일정 이름이야", "이거는 안되는 메모고", "여기는 동기화 되는 메모야", true, true, false,
-                "2023-11-01T09:00", "2023-11-01T18:00", "알림 없음", false);
+                "2023-11-01 09:00:00", "2023-11-01 18:00:00", "알림 없음", false);
 
         List<UserReadResponse> participants = schedule.participants();
         assertThat(participants)
@@ -303,7 +303,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
                 "alarmTime", "isAuthorizedAll")
             .containsExactly(
                 "안녕 내가 일정 이름이야", "이거는 안되는 메모고", "여기는 동기화 되는 메모야", true, true, true,
-                "2023-11-01T00:00", "2023-11-01T23:59:59", "알림 없음", false);
+                "2023-11-01 00:00:00", "2023-11-01 23:59:59", "알림 없음", false);
 
         List<UserReadResponse> participants = schedule.participants();
         assertThat(participants)
@@ -1116,13 +1116,81 @@ class ScheduleServiceTest extends IntegrationTestSupport {
                 "alarmTime", "isAuthorizedAll")
             .containsExactly(
                 "안녕 내가 일정 이름이야", "이거는 안되는 메모고", "여기는 동기화 되는 메모야", false, false, false,
-                "null", "null", "알림 없음", false);
+                "", "", "알림 없음", false);
         assertThat(response2)
             .extracting("scheduleName")
             .isEqualTo("안녕 내가 일정 이름이야");
 
         verify(alarmService, never())
             .sendScheduleUpdate(anyLong(), anyLong());
+    }
+
+    @DisplayName("일정 시작 시간을 변경한다. 이때 참가자 별 알림 시간 설정에 따라 알림 시간이 변경된다.")
+    @Test
+    void updateAlarmAtByScheduleStartAt() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+        User u2 = userRepository.findAll().get(1);
+        User u3 = userRepository.findAll().get(2);
+
+        friendRepository.save(Friend.create(u1, u3));
+        friendRepository.save(Friend.create(u3, u1));
+
+        ScheduleCreateRequest scheduleCreateRequest = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleContent("여기는 동기화 되는 메모야")
+            .scheduleMemo("이거는 안되는 메모고")
+            .isDateSelected(true)
+            .isTimeSelected(true)
+            .isAllDay(false)
+            .scheduleStartAt("2023-11-01 09:00:00")
+            .scheduleEndAt("2023-11-01 10:00:00")
+            .alarmTime(AlarmTime.THIRTY_MINUTE_BEFORE)
+            .isAuthorizedAll(false)
+            .participants(List.of(
+                UserReadResponse.of(u1), UserReadResponse.of(u2), UserReadResponse.of(u3)))
+            .build();
+        ScheduleCreateResponse scheduleCreateResponse = scheduleService.createSchedule(
+            u1.getUserSeq(), scheduleCreateRequest);
+
+        ScheduleDetailReadResponse u1Response = scheduleService.getScheduleDetail(
+            scheduleCreateResponse.scheduleSeq(), u1.getUserSeq(), LocalDate.of(2023, 11, 1));
+
+        System.out.println(u1Response);
+
+        // when
+        ParticipationUpdateRequest u2ParticipationUpdateRequest = ParticipationUpdateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleMemo("이거는 동기화 안되는 메모고")
+            .alarmTime(AlarmTime.ONE_HOUR_BEFORE)
+            .build();
+        ParticipationUpdateRequest u3ParticipationUpdateRequest = ParticipationUpdateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .scheduleMemo("이거는 동기화 안되는 메모고")
+            .alarmTime(AlarmTime.FIFTEEN_MINUTE_BEFORE)
+            .build();
+        scheduleService.updateParticipation(u2.getUserSeq(), scheduleCreateResponse.scheduleSeq(),
+            u2ParticipationUpdateRequest);
+        scheduleService.updateParticipation(u3.getUserSeq(), scheduleCreateResponse.scheduleSeq(),
+            u3ParticipationUpdateRequest);
+        ScheduleDetailReadResponse u2Response = scheduleService.getScheduleDetail(
+            scheduleCreateResponse.scheduleSeq(), u2.getUserSeq(), LocalDate.of(2023, 11, 1));
+        ScheduleDetailReadResponse u3Response = scheduleService.getScheduleDetail(
+            scheduleCreateResponse.scheduleSeq(), u3.getUserSeq(), LocalDate.of(2023, 11, 1));
+
+        System.out.println(u2Response);
+        System.out.println(u3Response);
+
+        // then
+        assertThat(u1Response)
+            .extracting("scheduleStartAt", "alarmTime", "alarmAt")
+            .contains("2023-11-01 09:00:00", "30분 전", "2023-11-01 08:30:00");
+        assertThat(u2Response)
+            .extracting("scheduleStartAt", "alarmTime", "alarmAt")
+            .contains("2023-11-01 09:00:00", "1시간 전", "2023-11-01 08:00:00");
+        assertThat(u3Response)
+            .extracting("scheduleStartAt", "alarmTime", "alarmAt")
+            .contains("2023-11-01 09:00:00", "15분 전", "2023-11-01 08:45:00");
     }
 
     @DisplayName("기존 일정에 새로운 참가자를 할당한다. 이때 초기 정보는 할당한 참가자의 정보를 따른다.")
@@ -1178,7 +1246,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
                 "alarmTime", "isAuthorizedAll")
             .containsExactly(
                 "안녕 내가 일정 이름이야", "이거는 안되는 메모고", "여기는 동기화 되는 메모야", false, false, false,
-                "null", "null", "알림 없음", true);
+                "", "", "알림 없음", true);
         assertThat(response2)
             .extracting("scheduleName", "alarmTime")
             .containsExactly("안녕 내가 일정 이름이야", "알림 없음");

@@ -226,22 +226,38 @@ public class ScheduleService {
         // 사용자가 권한이 없으면 안됨
         checkUserAuthorizedToSchedule(userSeq, schedule);
 
-        // 1. 전체 참가자에게 동기화되는 일정 정보 수정
+        // 전체 참가자에게 동기화되는 일정 정보 수정
         schedule.updateScheduleInfo(request);
 
-        // 4. 추가되는 사용자가 있으면 새롭게 참가자 추가, 없으면 참가자 목록 수정
+        // 관련 참가자들의 알림 시간 변경
+        if (request.isTimeSelected()) {
+            List<Participation> participations = findParticipationListBySchedule(scheduleSeq);
+            participations.forEach(participation -> {
+                LocalDateTime startAt = LocalDateTime.parse(request.scheduleStartAt());
+                participation.updateAlarmAt(startAt);
+            });
+        }
+
+        // 추가되는 사용자가 있으면 새롭게 참가자 추가, 없으면 참가자 목록 수정
         updateParticipantList(userSeq, request, schedule);
 
         return ScheduleUpdateResponse.of(schedule);
     }
 
+    @Transactional
     public ParticipationUpdateResponse updateParticipation(Long requestUserSeq, Long scheduleSeq,
         ParticipationUpdateRequest request) {
         findUserInfo(requestUserSeq);
         Participation participation = findParticipationInfoBySchedule(scheduleSeq, requestUserSeq);
 
-        // 참가정보 수정
+        checkUserAuthorizedToParticipation(requestUserSeq, participation);
+
+        // 참가 정보 수정
         participation.updateParticipationInfo(request);
+
+        // 알림 정보 수정
+        LocalDateTime startAt = findScheduleInfo(scheduleSeq).getScheduleStartAt();
+        participation.updateAlarmAt(startAt);
 
         // 카테고리 정보가 있는 경우 카테고리 정보 입력
         if (request.categorySeq() != null) {
@@ -614,6 +630,13 @@ public class ScheduleService {
         String scheduleName = requestUserParticipation.getScheduleName();
         AlarmTime alarmTime = requestUserParticipation.getAlarmTime();
         ScheduleCreateRequest createRequest = ScheduleCreateRequest.builder()
+            .scheduleContent(request.scheduleContent())
+            .isTimeSelected(request.isTimeSelected())
+            .isDateSelected(request.isDateSelected())
+            .isAllDay(request.isAllDay())
+            .scheduleStartAt(request.scheduleStartAt())
+            .scheduleEndAt(request.scheduleEndAt())
+            .participants(request.participants())
             .scheduleName(scheduleName)
             .alarmTime(alarmTime)
             .build();

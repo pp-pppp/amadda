@@ -3,6 +3,7 @@ package com.pppppp.amadda.schedule.dto.response;
 import com.pppppp.amadda.schedule.entity.Participation;
 import com.pppppp.amadda.schedule.entity.Schedule;
 import com.pppppp.amadda.user.dto.response.UserReadResponse;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.Builder;
 
@@ -22,6 +23,7 @@ public record ScheduleDetailReadResponse(
 
     // ================ Participation =================
     String alarmTime,
+    String alarmAt,
     String scheduleName,
     String scheduleMemo,
     CategoryReadResponse category,
@@ -32,30 +34,10 @@ public record ScheduleDetailReadResponse(
 
     public static ScheduleDetailReadResponse of(Schedule schedule,
         List<UserReadResponse> participants,
-        Participation participation,
-        List<CommentReadResponse> comments) {
-        return ScheduleDetailReadResponse.builder()
-            .scheduleSeq(schedule.getScheduleSeq())
-            .scheduleContent(schedule.getScheduleContent())
-            .isTimeSelected(schedule.isTimeSelected())
-            .isDateSelected(schedule.isDateSelected())
-            .isAllDay(schedule.isAllDay())
-            .isAuthorizedAll(schedule.isAuthorizedAll())
-            .scheduleStartAt(String.valueOf(schedule.getScheduleStartAt()))
-            .scheduleEndAt(String.valueOf(schedule.getScheduleEndAt()))
-            .participants(participants)
-            .alarmTime(participation.getAlarmTime().getContent())
-            .scheduleName(participation.getScheduleName())
-            .scheduleMemo(participation.getScheduleMemo())
-            .category((participation.getCategory() != null) ?
-                CategoryReadResponse.of(participation.getCategory()) : null)
-            .comments(comments)
-            .build();
-    }
-
-    public static ScheduleDetailReadResponse of(Schedule schedule,
-        List<UserReadResponse> participants,
         Participation participation, List<CommentReadResponse> comments, Boolean isFinished) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
         return ScheduleDetailReadResponse.builder()
             .scheduleSeq(schedule.getScheduleSeq())
             .scheduleContent(schedule.getScheduleContent())
@@ -63,11 +45,15 @@ public record ScheduleDetailReadResponse(
             .isDateSelected(schedule.isDateSelected())
             .isAllDay(schedule.isAllDay())
             .isAuthorizedAll(schedule.isAuthorizedAll())
-            .scheduleStartAt(String.valueOf(schedule.getScheduleStartAt()))
-            .scheduleEndAt(String.valueOf(schedule.getScheduleEndAt()))
+            .scheduleStartAt(
+                (schedule.isDateSelected()) ? schedule.getScheduleStartAt().format(formatter) : "")
+            .scheduleEndAt(
+                (schedule.isTimeSelected()) ? schedule.getScheduleEndAt().format(formatter) : "")
             .participants(participants)
             .isFinished(isFinished)
             .alarmTime(participation.getAlarmTime().getContent())
+            .alarmAt(!(participation.getAlarmTime().getContent().equals("알림 없음"))
+                ? participation.getAlarmAt().format(formatter) : "")
             .scheduleName(participation.getScheduleName())
             .scheduleMemo(participation.getScheduleMemo())
             .category((participation.getCategory() != null) ?

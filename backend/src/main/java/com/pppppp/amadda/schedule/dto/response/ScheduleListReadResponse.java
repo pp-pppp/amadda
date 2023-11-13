@@ -24,6 +24,7 @@ public record ScheduleListReadResponse(
     // ================ Participation =================
 
     String alarmTime,
+    String alarmAt,
     String scheduleName,
     CategoryReadResponse category
 ) {
@@ -73,6 +74,7 @@ public record ScheduleListReadResponse(
             .participants(participants)
             .isFinished(isFinished)
             .alarmTime(participation.getAlarmTime().getContent())
+            .alarmAt(String.valueOf(participation.getAlarmAt()))
             .scheduleName(participation.getScheduleName())
             .category((participation.getCategory() != null) ?
                 CategoryReadResponse.of(participation.getCategory()) : null)
