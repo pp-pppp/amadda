@@ -304,8 +304,8 @@ class ScheduleControllerTest {
 
     @DisplayName("일정의 비동기화 부분을 수정한다.")
     @ParameterizedTest
-    @ValueSource(strings = {"ONE_DAY_BEFORE", "ONE_HOUR_BEFORE", "THIRTY_MINUTE_BEFORE",
-        "FIFTEEN_MINUTE_BEFORE", "ON_TIME", "NONE"})
+    @ValueSource(strings = {"ONE_DAY_BEFORE", "ONE_HOUR_BEFORE", "THIRTY_MINUTES_BEFORE",
+        "FIFTEEN_MINUTES_BEFORE", "ON_TIME", "NONE"})
     void updateParticipation(String alarmTime) throws Exception {
         Long scheduleSeq = 123L;
         Long categorySeq = 1L;

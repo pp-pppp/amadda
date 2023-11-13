@@ -1146,7 +1146,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isAllDay(false)
             .scheduleStartAt("2023-11-01 09:00:00")
             .scheduleEndAt("2023-11-01 10:00:00")
-            .alarmTime(AlarmTime.THIRTY_MINUTE_BEFORE)
+            .alarmTime(AlarmTime.THIRTY_MINUTES_BEFORE)
             .isAuthorizedAll(false)
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2), UserReadResponse.of(u3)))
@@ -1167,7 +1167,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         ParticipationUpdateRequest u3ParticipationUpdateRequest = ParticipationUpdateRequest.builder()
             .scheduleName("안녕 내가 일정 이름이야")
             .scheduleMemo("이거는 동기화 안되는 메모고")
-            .alarmTime(AlarmTime.FIFTEEN_MINUTE_BEFORE)
+            .alarmTime(AlarmTime.FIFTEEN_MINUTES_BEFORE)
             .build();
         scheduleService.updateParticipation(u2.getUserSeq(), scheduleCreateResponse.scheduleSeq(),
             u2ParticipationUpdateRequest);
@@ -1184,13 +1184,13 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isEqualTo(LocalDateTime.of(2023, 11, 1, 9, 0));
         assertThat(u1Participation)
             .extracting("alarmTime", "alarmAt")
-            .contains(AlarmTime.THIRTY_MINUTE_BEFORE, LocalDateTime.of(2023, 11, 1, 8, 30));
+            .contains(AlarmTime.THIRTY_MINUTES_BEFORE, LocalDateTime.of(2023, 11, 1, 8, 30));
         assertThat(u2Participation)
             .extracting("alarmTime", "alarmAt")
             .contains(AlarmTime.ONE_HOUR_BEFORE, LocalDateTime.of(2023, 11, 1, 8, 0));
         assertThat(u3Participation)
             .extracting("alarmTime", "alarmAt")
-            .contains(AlarmTime.FIFTEEN_MINUTE_BEFORE, LocalDateTime.of(2023, 11, 1, 8, 45));
+            .contains(AlarmTime.FIFTEEN_MINUTES_BEFORE, LocalDateTime.of(2023, 11, 1, 8, 45));
     }
 
     @DisplayName("기존 일정에 새로운 참가자를 할당한다. 이때 초기 정보는 할당한 참가자의 정보를 따른다.")
