@@ -35,6 +35,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.kafka.test.context.EmbeddedKafka;
+import org.springframework.transaction.annotation.Transactional;
 
 @EmbeddedKafka(
     partitions = 1,
@@ -192,13 +193,10 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         alarmRepository.save(a);
 
         // when
-        response = friendRequestService.declineFriendRequest(user2.getUserSeq(), requestSeq);
+        friendRequestService.declineFriendRequest(user2.getUserSeq(), requestSeq);
 
         // then
-        assertThat(response).isNotNull();
-        assertThat(response).extracting("ownerSeq", "friendSeq", "status")
-            .containsExactlyInAnyOrder(user1.getUserSeq(), user2.getUserSeq(),
-                "DECLINED");
+        assertThat(friendRequestRepository.findAll()).hasSize(0);
 
         verify(alarmService, times(1))
             .sendFriendRequest(user1.getUserSeq(), user2.getUserSeq());
