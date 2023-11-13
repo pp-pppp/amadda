@@ -6,6 +6,7 @@ export const BASE = style({
   borderRadius: '1.25rem',
   paddingLeft: '0.75rem',
   paddingRight: '0.75rem',
+  cursor: 'pointer',
 });
 
 export const VARIANTS = styleVariants({
