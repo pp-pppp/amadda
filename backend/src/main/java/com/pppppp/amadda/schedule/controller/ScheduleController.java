@@ -20,6 +20,7 @@ import com.pppppp.amadda.schedule.service.ScheduleService;
 import com.pppppp.amadda.user.dto.response.UserReadResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -69,7 +70,11 @@ public class ScheduleController {
         @PathVariable Long scheduleSeq) {
         log.info("GET /api/schedule/" + scheduleSeq);
         Long userSeq = tokenProvider.getUserSeq(http);
-        return ApiResponse.ok(scheduleService.getScheduleDetail(scheduleSeq, userSeq));
+
+        LocalDateTime currentServerTime = LocalDateTime.parse(scheduleService.getServerTime());
+
+        return ApiResponse.ok(
+            scheduleService.getScheduleDetail(scheduleSeq, userSeq, currentServerTime));
     }
 
     @GetMapping("")
@@ -85,11 +90,14 @@ public class ScheduleController {
             "GET /api/schedule?category={}&searchKey={}&unscheduled={}&year={}&month={}&day={}",
             categorySeqList, searchKey, unscheduled, year, month, day);
 
+        LocalDateTime currentServerTime = LocalDateTime.parse(scheduleService.getServerTime());
+
         Map<String, String> searchCondition = Map.of("categories", categorySeqList.orElse(""),
             "searchKey", searchKey.orElse(""), "unscheduled", unscheduled.orElse(""), "year",
             year.orElse(""), "month", month.orElse(""), "day", day.orElse(""));
         Long userSeq = tokenProvider.getUserSeq(http);
-        return ApiResponse.ok(scheduleService.getScheduleListByCondition(userSeq, searchCondition));
+        return ApiResponse.ok(scheduleService.getScheduleListByCondition(userSeq, searchCondition,
+            currentServerTime));
     }
 
     @GetMapping("/{scheduleSeq}/participation")

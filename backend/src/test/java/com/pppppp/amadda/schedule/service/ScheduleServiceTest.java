@@ -48,6 +48,7 @@ import com.pppppp.amadda.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -136,10 +137,11 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .build();
 
         // when
+        LocalDateTime testServerTime = LocalDateTime.of(2021, 10, 31, 0, 0, 0);
         ScheduleCreateResponse response = scheduleService.createSchedule(u1.getUserSeq(),
             request);
         ScheduleDetailReadResponse schedule = scheduleService.getScheduleDetail(
-            response.scheduleSeq(), u1.getUserSeq());
+            response.scheduleSeq(), u1.getUserSeq(), testServerTime);
 
         // then
         assertThat(schedule).isNotNull()
@@ -186,10 +188,11 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .build();
 
         // when
+        LocalDateTime testServerTime = LocalDateTime.of(2021, 10, 31, 0, 0, 0);
         ScheduleCreateResponse response = scheduleService.createSchedule(u1.getUserSeq(),
             request);
         ScheduleDetailReadResponse schedule = scheduleService.getScheduleDetail(
-            response.scheduleSeq(), u1.getUserSeq());
+            response.scheduleSeq(), u1.getUserSeq(), testServerTime);
 
         // then
         assertThat(schedule).isNotNull()
@@ -236,10 +239,11 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .build();
 
         // when
+        LocalDateTime testServerTime = LocalDateTime.of(2021, 10, 31, 0, 0, 0);
         ScheduleCreateResponse response = scheduleService.createSchedule(u1.getUserSeq(),
             request);
         ScheduleDetailReadResponse schedule = scheduleService.getScheduleDetail(
-            response.scheduleSeq(), u1.getUserSeq());
+            response.scheduleSeq(), u1.getUserSeq(), testServerTime);
 
         // then
         assertThat(schedule).isNotNull()
@@ -286,10 +290,11 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .build();
 
         // when
+        LocalDateTime testServerTime = LocalDateTime.of(2021, 10, 31, 0, 0, 0);
         ScheduleCreateResponse response = scheduleService.createSchedule(u1.getUserSeq(),
             request);
         ScheduleDetailReadResponse schedule = scheduleService.getScheduleDetail(
-            response.scheduleSeq(), u1.getUserSeq());
+            response.scheduleSeq(), u1.getUserSeq(), testServerTime);
 
         // then
         assertThat(schedule).isNotNull()
@@ -320,7 +325,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
     @Test
     void getServerTime() {
         // given
-        String expectedFormat = "yyyy-MM-dd HH:mm:ss";
+        String expectedFormat = "yyyy-MM-dd";
 
         // when
         String serverTime = scheduleService.getServerTime();
@@ -372,16 +377,17 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         scheduleService.createSchedule(u2.getUserSeq(), r2);
 
         // when
+        LocalDateTime testServerTime = LocalDateTime.of(2021, 10, 31, 0, 0, 0);
         Map<String, String> searchCondition = Map.of("categories", "", "searchKey", "",
             "unscheduled", "", "month", "", "day", "", "year", "");
         List<ScheduleListReadResponse> user1Schedules = scheduleService.getScheduleListBySearchCondition(
-            u1.getUserSeq(), searchCondition);
+            u1.getUserSeq(), searchCondition, testServerTime);
         List<ScheduleListReadResponse> user2Schedules = scheduleService.getScheduleListBySearchCondition(
-            u2.getUserSeq(), searchCondition);
+            u2.getUserSeq(), searchCondition, testServerTime);
         Map<String, List<ScheduleListReadResponse>> user1Result = scheduleService.getScheduleListByCondition(
-            u1.getUserSeq(), searchCondition);
+            u1.getUserSeq(), searchCondition, testServerTime);
         Map<String, List<ScheduleListReadResponse>> user2Result = scheduleService.getScheduleListByCondition(
-            u2.getUserSeq(), searchCondition);
+            u2.getUserSeq(), searchCondition, testServerTime);
 
         // then
         assertThat(user1Schedules)
@@ -431,10 +437,11 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         ScheduleCreateResponse createResponse = scheduleService.createSchedule(u1.getUserSeq(), r1);
 
         // when
+        LocalDateTime testServerTime = LocalDateTime.of(2021, 10, 31, 0, 0, 0);
         ScheduleDetailReadResponse u1Response = scheduleService.getScheduleDetail(
-            createResponse.scheduleSeq(), u1.getUserSeq());
+            createResponse.scheduleSeq(), u1.getUserSeq(), testServerTime);
         ScheduleDetailReadResponse u2Response = scheduleService.getScheduleDetail(
-            createResponse.scheduleSeq(), u2.getUserSeq());
+            createResponse.scheduleSeq(), u2.getUserSeq(), testServerTime);
 
         // then
         assertThat(u1Response).isNotNull();
@@ -499,14 +506,15 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             String.valueOf(categories.get(0).getCategorySeq()), "searchKey", "", "unscheduled", "",
             "month", "", "day", "", "year", "");
 
+        LocalDateTime testServerTime = LocalDateTime.of(2021, 10, 31, 0, 0, 0);
         List<ScheduleListReadResponse> result1 = scheduleService.getScheduleListBySearchCondition(
-            u1.getUserSeq(), searchCondition1);
+            u1.getUserSeq(), searchCondition1, testServerTime);
         List<ScheduleListReadResponse> result2 = scheduleService.getScheduleListBySearchCondition(
-            u1.getUserSeq(), searchCondition2);
+            u1.getUserSeq(), searchCondition2, testServerTime);
         Map<String, List<ScheduleListReadResponse>> mapResult1 = scheduleService.getScheduleListByCondition(
-            u1.getUserSeq(), searchCondition1);
+            u1.getUserSeq(), searchCondition1, testServerTime);
         Map<String, List<ScheduleListReadResponse>> mapResult2 = scheduleService.getScheduleListByCondition(
-            u1.getUserSeq(), searchCondition2);
+            u1.getUserSeq(), searchCondition2, testServerTime);
 
         // then
         assertThat(result1)
@@ -572,12 +580,13 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         scheduleService.createSchedule(u1.getUserSeq(), r2);
 
         // when
+        LocalDateTime testServerTime = LocalDateTime.of(2021, 10, 31, 0, 0, 0);
         Map<String, String> searchCondition = Map.of("searchKey", "일정", "unscheduled", "",
             "categories", "", "month", "", "day", "", "year", "");
         List<ScheduleListReadResponse> schedules = scheduleService.getScheduleListBySearchCondition(
-            u1.getUserSeq(), searchCondition);
+            u1.getUserSeq(), searchCondition, testServerTime);
         Map<String, List<ScheduleListReadResponse>> mapResult = scheduleService.getScheduleListByCondition(
-            u1.getUserSeq(), searchCondition);
+            u1.getUserSeq(), searchCondition, testServerTime);
 
         // then
         assertThat(schedules)
@@ -630,12 +639,13 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         scheduleService.createSchedule(u1.getUserSeq(), r2);
 
         // when
+        LocalDateTime testServerTime = LocalDateTime.of(2021, 10, 31, 0, 0, 0);
         Map<String, String> searchCondition = Map.of("categories", "", "searchKey", "",
             "unscheduled", "true", "month", "", "day", "", "year", "");
         List<ScheduleListReadResponse> result = scheduleService.getScheduleListBySearchCondition(
-            u1.getUserSeq(), searchCondition);
+            u1.getUserSeq(), searchCondition, testServerTime);
         Map<String, List<ScheduleListReadResponse>> mapResult = scheduleService.getScheduleListByCondition(
-            u1.getUserSeq(), searchCondition);
+            u1.getUserSeq(), searchCondition, testServerTime);
 
         // then
         assertThat(result)
@@ -736,16 +746,17 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         scheduleService.createSchedule(u1.getUserSeq(), r6);
 
         // when
+        LocalDateTime testServerTime = LocalDateTime.of(2023, 11, 1, 9, 0, 0);
         Map<String, String> searchCondition = Map.of("categories", "", "searchKey", "",
             "unscheduled", "", "month", "11", "day", "", "year", "2023");
         List<ScheduleListReadResponse> result1 = scheduleService.getScheduleListBySearchCondition(
-            u1.getUserSeq(), searchCondition);
+            u1.getUserSeq(), searchCondition, testServerTime);
         List<ScheduleListReadResponse> result2 = scheduleService.getScheduleListBySearchCondition(
-            u2.getUserSeq(), searchCondition);
+            u2.getUserSeq(), searchCondition, testServerTime);
         Map<String, List<ScheduleListReadResponse>> mapResult1 = scheduleService.getScheduleListByCondition(
-            u1.getUserSeq(), searchCondition);
+            u1.getUserSeq(), searchCondition, testServerTime);
         Map<String, List<ScheduleListReadResponse>> mapResult2 = scheduleService.getScheduleListByCondition(
-            u2.getUserSeq(), searchCondition);
+            u2.getUserSeq(), searchCondition, testServerTime);
 
         // then
         assertThat(result1)
@@ -778,6 +789,134 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         assertThat(mapResult2)
             .hasSize(1)
             .containsKeys("2023-11-01");
+    }
+
+    @DisplayName("사용자의 이번달 일정 목록을 조회한다. 그 중 현재 시점에서 이전 일정은 종료되었다고 표시한다.")
+    @Transactional
+    @Test
+    void getScheduleListByMonthWithIsFinished() {
+        // given
+        User u1 = userRepository.findAll().get(0);
+        User u2 = userRepository.findAll().get(1);
+
+        ScheduleCreateRequest r1 = ScheduleCreateRequest.builder()
+            .scheduleName("안녕 내가 일정 이름이야")
+            .isTimeSelected(true)
+            .isDateSelected(true)
+            .isAllDay(false)
+            .scheduleStartAt("2023-10-01 08:59:30")
+            .scheduleEndAt("2023-11-01 09:00:00")
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.NONE)
+            .participants(List.of(
+                UserReadResponse.of(u1)))
+            .build();
+        ScheduleCreateRequest r2 = ScheduleCreateRequest.builder()
+            .scheduleName("나도 일정이야")
+            .isTimeSelected(true)
+            .isDateSelected(true)
+            .isAllDay(false)
+            .scheduleStartAt("2023-11-01 08:59:30")
+            .scheduleEndAt("2023-11-01 09:00:00")
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.ON_TIME)
+            .participants(List.of(UserReadResponse.of(u1), UserReadResponse.of(u2)))
+            .build();
+        ScheduleCreateRequest r3 = ScheduleCreateRequest.builder()
+            .scheduleName("나도 일정이야")
+            .isTimeSelected(true)
+            .isDateSelected(true)
+            .isAllDay(false)
+            .scheduleStartAt("2023-10-30 08:59:30")
+            .scheduleEndAt("2023-10-30 09:00:00")
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.ON_TIME)
+            .participants(List.of(UserReadResponse.of(u1), UserReadResponse.of(u2)))
+            .build();
+        ScheduleCreateRequest r4 = ScheduleCreateRequest.builder()
+            .scheduleName("나도 일정이야")
+            .isTimeSelected(true)
+            .isDateSelected(true)
+            .isAllDay(false)
+            .scheduleStartAt("2023-11-30 08:59:30")
+            .scheduleEndAt("2023-12-01 09:00:00")
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.ON_TIME)
+            .participants(List.of(UserReadResponse.of(u1)))
+            .build();
+        ScheduleCreateRequest r5 = ScheduleCreateRequest.builder()
+            .scheduleName("나도 일정이야")
+            .isTimeSelected(false)
+            .isDateSelected(true)
+            .isAllDay(false)
+            .scheduleStartAt("2023-11-30 00:00:00")
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.ON_TIME)
+            .participants(List.of(UserReadResponse.of(u2)))
+            .build();
+        ScheduleCreateRequest r6 = ScheduleCreateRequest.builder()
+            .scheduleName("나도 일정이야")
+            .isTimeSelected(true)
+            .isDateSelected(true)
+            .isAllDay(false)
+            .scheduleStartAt("2023-10-30 08:59:30")
+            .scheduleEndAt("2023-12-01 09:00:00")
+            .isAuthorizedAll(false)
+            .alarmTime(AlarmTime.ON_TIME)
+            .participants(List.of(UserReadResponse.of(u1)))
+            .build();
+        scheduleService.createSchedule(u1.getUserSeq(), r1);
+        scheduleService.createSchedule(u1.getUserSeq(), r2);
+        scheduleService.createSchedule(u1.getUserSeq(), r3);
+        scheduleService.createSchedule(u1.getUserSeq(), r4);
+        scheduleService.createSchedule(u2.getUserSeq(), r5);
+        scheduleService.createSchedule(u1.getUserSeq(), r6);
+
+        // when
+        LocalDateTime testServerTime = LocalDateTime.of(2023, 11, 15, 0, 0, 0);
+        Map<String, String> searchCondition = Map.of("categories", "", "searchKey", "",
+            "unscheduled", "", "month", "11", "day", "", "year", "2023");
+        List<ScheduleListReadResponse> result1 = scheduleService.getScheduleListBySearchCondition(
+            u1.getUserSeq(), searchCondition, testServerTime);
+        List<ScheduleListReadResponse> result2 = scheduleService.getScheduleListBySearchCondition(
+            u2.getUserSeq(), searchCondition, testServerTime);
+        Map<String, List<ScheduleListReadResponse>> mapResult1 = scheduleService.getScheduleListByCondition(
+            u1.getUserSeq(), searchCondition, testServerTime);
+        Map<String, List<ScheduleListReadResponse>> mapResult2 = scheduleService.getScheduleListByCondition(
+            u2.getUserSeq(), searchCondition, testServerTime);
+
+        // then
+        assertThat(result1)
+            .hasSize(4)
+            .extracting("scheduleStartAt", "scheduleEndAt", "isFinished")
+            .containsExactlyInAnyOrder(
+                tuple("2023-10-01 08:59:30", "2023-11-01 09:00:00", true),
+                tuple("2023-11-01 08:59:30", "2023-11-01 09:00:00", true),
+                tuple("2023-11-30 08:59:30", "2023-12-01 09:00:00", false),
+                tuple("2023-10-30 08:59:30", "2023-12-01 09:00:00", false)
+            );
+        assertThat(result2)
+            .hasSize(2)
+            .extracting("scheduleStartAt", "scheduleEndAt", "isFinished")
+            .containsExactlyInAnyOrder(
+                tuple("2023-11-01 08:59:30", "2023-11-01 09:00:00", true),
+                tuple("2023-11-30 00:00:00", "", false)
+            );
+
+        assertThat(mapResult1)
+            .hasSize(30)
+            // 2023년 11월 1일부터 2023년 11월 30일까지 다 포함
+            .containsKeys("2023-11-01", "2023-11-02", "2023-11-03", "2023-11-04",
+                "2023-11-05",
+                "2023-11-06", "2023-11-07", "2023-11-08", "2023-11-09", "2023-11-10", "2023-11-11",
+                "2023-11-12", "2023-11-13", "2023-11-14", "2023-11-15", "2023-11-16", "2023-11-17",
+                "2023-11-18", "2023-11-19", "2023-11-20", "2023-11-21", "2023-11-22", "2023-11-23",
+                "2023-11-24", "2023-11-25", "2023-11-26", "2023-11-27", "2023-11-28", "2023-11-29",
+                "2023-11-30");
+
+        assertThat(mapResult2)
+            .hasSize(2)
+            .containsKeys("2023-11-01", "2023-11-30");
     }
 
     @DisplayName("사용자의 오늘 일정 목록을 조회한다.")
@@ -851,16 +990,17 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         scheduleService.createSchedule(u2.getUserSeq(), r5);
 
         // when
+        LocalDateTime testServerTime = LocalDateTime.of(2023, 11, 1, 9, 0, 0);
         Map<String, String> searchCondition = Map.of("categories", "", "searchKey", "",
             "unscheduled", "", "month", "11", "day", "1", "year", "2023");
         List<ScheduleListReadResponse> result1 = scheduleService.getScheduleListBySearchCondition(
-            u1.getUserSeq(), searchCondition);
+            u1.getUserSeq(), searchCondition, testServerTime);
         List<ScheduleListReadResponse> result2 = scheduleService.getScheduleListBySearchCondition(
-            u2.getUserSeq(), searchCondition);
+            u2.getUserSeq(), searchCondition, testServerTime);
         Map<String, List<ScheduleListReadResponse>> mapResult1 = scheduleService.getScheduleListByCondition(
-            u1.getUserSeq(), searchCondition);
+            u1.getUserSeq(), searchCondition, testServerTime);
         Map<String, List<ScheduleListReadResponse>> mapResult2 = scheduleService.getScheduleListByCondition(
-            u2.getUserSeq(), searchCondition);
+            u2.getUserSeq(), searchCondition, testServerTime);
 
         // then
         assertThat(result1)
@@ -957,15 +1097,16 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .build();
 
         // when
+        LocalDateTime testServerTime = LocalDateTime.of(2021, 10, 31, 0, 0, 0);
         scheduleService.updateSchedule(
             u1.getUserSeq(), schedule.scheduleSeq(), scheduleUpdateRequest);
 
         ScheduleDetailReadResponse response1 = scheduleService.getScheduleDetail(
             schedule.scheduleSeq(),
-            u1.getUserSeq());
+            u1.getUserSeq(), testServerTime);
         ScheduleDetailReadResponse response2 = scheduleService.getScheduleDetail(
             schedule.scheduleSeq(),
-            u2.getUserSeq());
+            u2.getUserSeq(), testServerTime);
 
         // then
         assertThat(response1.scheduleSeq()).isEqualTo(response2.scheduleSeq());
@@ -1017,14 +1158,15 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .build();
 
         // when
+        LocalDateTime testServerTime = LocalDateTime.of(2021, 10, 31, 0, 0, 0);
         ScheduleUpdateResponse updateResponse = scheduleService.updateSchedule(
             u2.getUserSeq(), createResponse.scheduleSeq(), scheduleUpdateRequest);
         ScheduleDetailReadResponse response1 = scheduleService.getScheduleDetail(
             updateResponse.scheduleSeq(),
-            u1.getUserSeq());
+            u1.getUserSeq(), testServerTime);
         ScheduleDetailReadResponse response2 = scheduleService.getScheduleDetail(
             updateResponse.scheduleSeq(),
-            u3.getUserSeq());
+            u3.getUserSeq(), testServerTime);
 
         // then
         assertThat(response2).isNotNull();
@@ -1156,11 +1298,14 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             u1.getUserSeq(),
             schedule.scheduleSeq(),
             updateRequest);
+
+        LocalDateTime testServerTime = LocalDateTime.of(2021, 10, 31, 0, 0, 0);
         Optional<Participation> result1 = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
             updateResponse.scheduleSeq(), u1.getUserSeq());
         List<ScheduleListReadResponse> result2 = scheduleService.getScheduleListBySearchCondition(
             u1.getUserSeq(), Map.of("categories", String.valueOf(category.getCategorySeq()),
-                "searchKey", "", "unscheduled", "", "month", "", "day", "", "year", ""));
+                "searchKey", "", "unscheduled", "", "month", "", "day", "", "year", ""),
+            testServerTime);
 
         // then
         assertThat(result1).isPresent();
@@ -1219,12 +1364,15 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             u1.getUserSeq(),
             s1.scheduleSeq(),
             updateRequest);
+
+        LocalDateTime testServerTime = LocalDateTime.of(2021, 10, 31, 0, 0, 0);
         List<ScheduleListReadResponse> result = scheduleService.getScheduleListBySearchCondition(
             u1.getUserSeq(), Map.of("categories", String.valueOf(category.getCategorySeq()),
-                "searchKey", "", "unscheduled", "", "month", "", "day", "", "year", ""));
+                "searchKey", "", "unscheduled", "", "month", "", "day", "", "year", ""),
+            testServerTime);
         ScheduleDetailReadResponse result2 = scheduleService.getScheduleDetail(
             updateResponse.scheduleSeq(),
-            u1.getUserSeq());
+            u1.getUserSeq(), testServerTime);
 
         // then
         assertThat(result).hasSize(1)
@@ -1340,8 +1488,9 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         scheduleService.createCommentOnSchedule(
             schedule.scheduleSeq(), user.getUserSeq(), CommentCreateRequest.of("세상에서 제일 불행한 사람임"));
 
+        LocalDateTime testServerTime = LocalDateTime.of(2021, 10, 31, 0, 0, 0);
         CommentReadResponse response = scheduleService.getScheduleDetail(schedule.scheduleSeq(),
-            user.getUserSeq()).comments().get(0);
+            user.getUserSeq(), testServerTime).comments().get(0);
 
         // then
         assertThat(response).isNotNull()
@@ -1370,14 +1519,15 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         ScheduleCreateResponse schedule = scheduleService.createSchedule(user.getUserSeq(),
             request);
 
+        LocalDateTime testServerTime = LocalDateTime.of(2021, 10, 31, 0, 0, 0);
         scheduleService.createCommentOnSchedule(
             schedule.scheduleSeq(), user.getUserSeq(), CommentCreateRequest.of("세상에서 제일 불행한 사람임"));
         CommentReadResponse r1 = scheduleService.getScheduleDetail(schedule.scheduleSeq(),
-            user.getUserSeq()).comments().get(0);
+            user.getUserSeq(), testServerTime).comments().get(0);
         scheduleService.createCommentOnSchedule(schedule.scheduleSeq(),
             user.getUserSeq(), CommentCreateRequest.of("얘는 삭제될거임"));
         CommentReadResponse r2 = scheduleService.getScheduleDetail(schedule.scheduleSeq(),
-            user.getUserSeq()).comments().get(1);
+            user.getUserSeq(), testServerTime).comments().get(1);
 
         // when
         scheduleService.deleteComment(r2.commentSeq(), user.getUserSeq());
@@ -1564,7 +1714,9 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         Long scheduleSeq = 3L;
         User user = userRepository.findAll().get(0);
 
-        assertThatThrownBy(() -> scheduleService.getScheduleDetail(scheduleSeq, user.getUserSeq()))
+        LocalDateTime testServerTime = LocalDateTime.of(2021, 10, 31, 0, 0, 0);
+        assertThatThrownBy(
+            () -> scheduleService.getScheduleDetail(scheduleSeq, user.getUserSeq(), testServerTime))
             .isInstanceOf(RestApiException.class)
             .hasMessage("SCHEDULE_NOT_FOUND");
     }
@@ -1871,8 +2023,10 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
         scheduleService.createCommentOnSchedule(
             s.getScheduleSeq(), user.getUserSeq(), CommentCreateRequest.of("세상에서 제일 불행한 사람임"));
+
+        LocalDateTime testServerTime = LocalDateTime.of(2021, 10, 31, 0, 0, 0);
         CommentReadResponse response = scheduleService.getScheduleDetail(s.getScheduleSeq(),
-            user.getUserSeq()).comments().get(0);
+            user.getUserSeq(), testServerTime).comments().get(0);
 
         // when // then
         assertThatThrownBy(
@@ -1906,8 +2060,9 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         scheduleService.createCommentOnSchedule(
             s.getScheduleSeq(), u1.getUserSeq(), CommentCreateRequest.of("세상에서 제일 불행한 사람임"));
 
+        LocalDateTime testServerTime = LocalDateTime.of(2021, 10, 31, 0, 0, 0);
         CommentReadResponse response = scheduleService.getScheduleDetail(s.getScheduleSeq(),
-            u1.getUserSeq()).comments().get(0);
+            u1.getUserSeq(), testServerTime).comments().get(0);
 
         // when // then
         assertThatThrownBy(
@@ -2004,10 +2159,11 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         // when
         Map<String, String> searchCondition = Map.of("categories", "", "searchKey", "",
             "unscheduled", "", "month", "11", "day", "1", "year", "");
+        LocalDateTime testServerTime = LocalDateTime.of(2021, 10, 31, 0, 0, 0);
 
         // then
         assertThatThrownBy(() -> scheduleService.getScheduleListBySearchCondition(
-            u1.getUserSeq(), searchCondition))
+            u1.getUserSeq(), searchCondition, testServerTime))
             .isInstanceOf(RestApiException.class)
             .hasMessage("SCHEDULE_INVALID_REQUEST");
     }
@@ -2085,10 +2241,11 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         // when
         Map<String, String> searchCondition = Map.of("categories", "", "searchKey", "",
             "unscheduled", "", "month", "", "day", "1", "year", "2023");
+        LocalDateTime testServerTime = LocalDateTime.of(2021, 10, 31, 0, 0, 0);
 
         // then
         assertThatThrownBy(() -> scheduleService.getScheduleListBySearchCondition(
-            u1.getUserSeq(), searchCondition))
+            u1.getUserSeq(), searchCondition, testServerTime))
             .isInstanceOf(RestApiException.class)
             .hasMessage("SCHEDULE_INVALID_REQUEST");
     }

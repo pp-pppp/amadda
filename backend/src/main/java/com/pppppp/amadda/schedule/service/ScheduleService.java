@@ -74,8 +74,8 @@ public class ScheduleService {
     private final CategoryRepository categoryRepository;
 
     public String getServerTime() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return LocalDateTime.now().format(formatter);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.now().format(formatter);
     }
 
     // ================== schedule & participation ==================
@@ -96,7 +96,8 @@ public class ScheduleService {
         return ScheduleCreateResponse.of(newSchedule);
     }
 
-    public ScheduleDetailReadResponse getScheduleDetail(Long scheduleSeq, Long userSeq) {
+    public ScheduleDetailReadResponse getScheduleDetail(Long scheduleSeq, Long userSeq,
+        LocalDateTime currentServerTime) {
         findUserInfo(userSeq);
         Schedule schedule = findScheduleInfo(scheduleSeq);
 
@@ -109,14 +110,25 @@ public class ScheduleService {
         // 댓글 가져오기
         List<CommentReadResponse> comments = findCommentListBySchedule(scheduleSeq);
 
-        return ScheduleDetailReadResponse.of(schedule, participants, participation, comments);
+        // 미확정 일정, 시간이 미확정 일정인 경우에 따라 일정 종료 여부 계산
+        Boolean isFinished = null;
+        if (schedule.isDateSelected()) {
+            if (schedule.isTimeSelected()) {
+                isFinished = schedule.getScheduleEndAt().isBefore(currentServerTime);
+            } else {
+                isFinished = schedule.getScheduleStartAt().isBefore(currentServerTime);
+            }
+        }
+
+        return ScheduleDetailReadResponse.of(schedule, participants, participation, comments,
+            isFinished);
     }
 
     public Map<String, List<ScheduleListReadResponse>> getScheduleListByCondition(
-        Long userSeq, Map<String, String> searchCondition) {
+        Long userSeq, Map<String, String> searchCondition, LocalDateTime currentServerTime) {
         // 조회 조건에 따라 일정 목록 가져오기
         List<ScheduleListReadResponse> scheduleListByCondition =
-            findScheduleListBySearchCondition(userSeq, searchCondition);
+            findScheduleListBySearchCondition(userSeq, searchCondition, currentServerTime);
 
         // 반환할 map 생성
         Map<String, List<ScheduleListReadResponse>> response = new HashMap<>(Map.of());
@@ -195,8 +207,8 @@ public class ScheduleService {
     }
 
     public List<ScheduleListReadResponse> getScheduleListBySearchCondition(Long userSeq,
-        Map<String, String> searchCondition) {
-        return findScheduleListBySearchCondition(userSeq, searchCondition);
+        Map<String, String> searchCondition, LocalDateTime currentServerTime) {
+        return findScheduleListBySearchCondition(userSeq, searchCondition, currentServerTime);
     }
 
     public List<UserReadResponse> getParticipatingUserList(Long scheduleSeq) {
@@ -512,7 +524,7 @@ public class ScheduleService {
     }
 
     private ScheduleListReadResponse findScheduleByParticipation(
-        Participation participation) {
+        Participation participation, LocalDateTime currentServerTime) {
 
         // 1. 참가하는 일정
         Long scheduleSeq = participation.getSchedule().getScheduleSeq();
@@ -532,8 +544,20 @@ public class ScheduleService {
             return ScheduleListReadResponse.of(schedule, null, participants,
                 participation);
         }
+
+        // 4. 일정이 현재 시점에서 지난 일정인지 체크
+        Boolean isFinished = null;
+        if (schedule.isDateSelected()) {
+            if (schedule.isTimeSelected()) {
+                isFinished = schedule.getScheduleEndAt()
+                    .isBefore(currentServerTime);
+            } else {
+                isFinished = schedule.getScheduleStartAt().isBefore(currentServerTime);
+            }
+        }
         return ScheduleListReadResponse.of(schedule,
-            UserReadResponse.of(schedule.getAuthorizedUser()), participants, participation);
+            UserReadResponse.of(schedule.getAuthorizedUser()), participants, participation,
+            isFinished);
     }
 
     private List<Participation> findParticipationListBySchedule(Long scheduleSeq) {
@@ -680,7 +704,7 @@ public class ScheduleService {
     }
 
     private List<ScheduleListReadResponse> findScheduleListBySearchCondition(Long userSeq,
-        Map<String, String> searchCondition) {
+        Map<String, String> searchCondition, LocalDateTime currentServerTime) {
         // 사용자 체크
         findUserInfo(userSeq);
 
@@ -749,7 +773,7 @@ public class ScheduleService {
                 }
                 return true;
             })
-            .map(this::findScheduleByParticipation)
+            .map(participation -> findScheduleByParticipation(participation, currentServerTime))
             .toList();
     }
 
@@ -762,7 +786,8 @@ public class ScheduleService {
     private boolean checkScheduleInYearCondition(Participation participation, String year) {
         // 확인하려는 일정의 시작시점, 종료시점
         LocalDateTime scheduleStartAt = participation.getSchedule().getScheduleStartAt();
-        LocalDateTime scheduleEndAt = participation.getSchedule().getScheduleEndAt();
+        LocalDateTime scheduleEndAt = (participation.getSchedule().getScheduleEndAt() == null) ?
+            scheduleStartAt : participation.getSchedule().getScheduleEndAt();
 
         LocalTime startOfTheDay = LocalTime.of(0, 0, 0);
         LocalTime endOfTheDay = LocalTime.of(23, 59, 59);
@@ -785,11 +810,12 @@ public class ScheduleService {
             && date.getMonthValue() == Integer.parseInt(month);
     }
 
-    private boolean checkScheduleInMonthCondition(Participation participation, String year,
+    public boolean checkScheduleInMonthCondition(Participation participation, String year,
         String month) {
         // 확인하려는 일정의 시작시점, 종료시점
         LocalDateTime scheduleStartAt = participation.getSchedule().getScheduleStartAt();
-        LocalDateTime scheduleEndAt = participation.getSchedule().getScheduleEndAt();
+        LocalDateTime scheduleEndAt = (participation.getSchedule().getScheduleEndAt() == null) ?
+            scheduleStartAt : participation.getSchedule().getScheduleEndAt();
 
         LocalTime startOfTheDay = LocalTime.of(0, 0, 0);
         LocalTime endOfTheDay = LocalTime.of(23, 59, 59);
@@ -826,7 +852,8 @@ public class ScheduleService {
         String month, String day) {
         // 확인하려는 일정의 시작시점, 종료시점
         LocalDateTime scheduleStartAt = participation.getSchedule().getScheduleStartAt();
-        LocalDateTime scheduleEndAt = participation.getSchedule().getScheduleEndAt();
+        LocalDateTime scheduleEndAt = (participation.getSchedule().getScheduleEndAt() == null) ?
+            scheduleStartAt : participation.getSchedule().getScheduleEndAt();
 
         LocalTime startOfTheDay = LocalTime.of(0, 0, 0);
         LocalTime endOfTheDay = LocalTime.of(23, 59, 59);
