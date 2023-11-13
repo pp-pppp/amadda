@@ -79,7 +79,7 @@ public class UserController {
 
     @GetMapping
     public ApiResponse<UserRelationResponse> searchUserInfoAndRelation(
-        HttpServletRequest http, @RequestParam String searchKey) {
+        HttpServletRequest http, @RequestParam(value = "search-key") String searchKey) {
         Long userSeq = tokenProvider.getUserSeq(http);
         UserRelationResponse response = userService.getUserInfoAndIsFriend(userSeq, searchKey);
         return ApiResponse.ok(response);
