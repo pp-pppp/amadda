@@ -111,19 +111,12 @@ public class ScheduleService {
         List<CommentReadResponse> comments = findCommentListBySchedule(scheduleSeq);
 
         // 미확정 일정, 시간이 미확정 일정인 경우에 따라 일정 종료 여부 계산
-        Boolean isFinished = null;
-        if (schedule.isDateSelected()) {
-            if (schedule.isTimeSelected()) {
-                isFinished = schedule.getScheduleEndAt().isBefore(currentServerDate.atStartOfDay());
-            } else {
-                isFinished = schedule.getScheduleStartAt()
-                    .isBefore(currentServerDate.atStartOfDay());
-            }
-        }
+        Boolean isFinished = checkScheduleIsFinished(schedule, currentServerDate);
 
         return ScheduleDetailReadResponse.of(schedule, participants, participation, comments,
             isFinished);
     }
+
 
     public Map<String, List<ScheduleListReadResponse>> getScheduleListByCondition(
         Long userSeq, Map<String, String> searchCondition, LocalDate currentServerDate) {
@@ -428,11 +421,7 @@ public class ScheduleService {
             }
 
             // 카테고리 정보가 있는 경우 참석자가 생성자라면 카테고리 정보 입력
-            Category category = null;
-            if ((request.categorySeq() != null) &&
-                isSameUser(participant.getUserSeq(), userSeq)) {
-                category = findCategoryInfo(request.categorySeq());
-            }
+            Category category = setCategoryInfo(request, participant, userSeq);
 
             Participation participation = Participation.create(request, participant, newSchedule,
                 category, true, true);
@@ -497,6 +486,18 @@ public class ScheduleService {
         }
     }
 
+    private Boolean checkScheduleIsFinished(Schedule schedule, LocalDate currentServerDate) {
+        if (schedule.isDateSelected()) {
+            if (schedule.isTimeSelected()) {
+                return schedule.getScheduleEndAt().isBefore(currentServerDate.atStartOfDay());
+            } else {
+                return schedule.getScheduleStartAt()
+                    .isBefore(currentServerDate.atStartOfDay());
+            }
+        }
+        return null;
+    }
+
     private void checkUserAuthorizedToSchedule(Long userSeq, Schedule schedule) {
         // 일정이 전체에게 공개되어 있지도 않은데 사용자가 권한이 없으면 안됨
         if (!(schedule.isAuthorizedAll()
@@ -547,16 +548,8 @@ public class ScheduleService {
         }
 
         // 4. 일정이 현재 시점에서 지난 일정인지 체크
-        Boolean isFinished = null;
-        if (schedule.isDateSelected()) {
-            if (schedule.isTimeSelected()) {
-                isFinished = schedule.getScheduleEndAt()
-                    .isBefore(currentServerDate.atStartOfDay());
-            } else {
-                isFinished = schedule.getScheduleStartAt()
-                    .isBefore(currentServerDate.atStartOfDay());
-            }
-        }
+        Boolean isFinished = checkScheduleIsFinished(schedule, currentServerDate);
+
         return ScheduleListReadResponse.of(schedule,
             UserReadResponse.of(schedule.getAuthorizedUser()), participants, participation,
             isFinished);
@@ -639,6 +632,15 @@ public class ScheduleService {
                 alarmService.sendScheduleAssigned(schedule.getScheduleSeq(), requestUserSeq,
                     participant.getUserSeq());
             });
+    }
+
+    private Category setCategoryInfo(ScheduleCreateRequest request, User participant,
+        Long userSeq) {
+        if ((request.categorySeq() != null) &&
+            isSameUser(participant.getUserSeq(), userSeq)) {
+            return findCategoryInfo(request.categorySeq());
+        }
+        return null;
     }
 
     private void sendUpdateAlarm(Long requestUserSeq, Schedule schedule, User user) {
