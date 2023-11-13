@@ -117,6 +117,11 @@ class ScheduleControllerTest {
     @DisplayName("사용자의 단일 일정을 조회한다.")
     @Test
     void getSchedule() throws Exception {
+        // stubbing
+        String currentTime = String.valueOf(LocalDateTime.now());
+        when(scheduleService.getServerTime())
+            .thenReturn(currentTime);
+
         mockMvc.perform(
                 get("/api/schedule/{scheduleSeq}", 1L)
                     .contentType(MediaType.APPLICATION_JSON)
@@ -128,6 +133,11 @@ class ScheduleControllerTest {
     @DisplayName("사용자의 전체 일정을 조회한다.")
     @Test
     void getAllScheduleList() throws Exception {
+        // stubbing
+        String currentTime = String.valueOf(LocalDateTime.now());
+        when(scheduleService.getServerTime())
+            .thenReturn(currentTime);
+
         mockMvc.perform(
                 get("/api/schedule")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -140,6 +150,11 @@ class ScheduleControllerTest {
     @DisplayName("query string을 통해 입력받은 조건에 맞는 일정 목록을 조회한다.")
     @Test
     void getScheduleListByConditions() throws Exception {
+        // stubbing
+        String currentTime = String.valueOf(LocalDateTime.now());
+        when(scheduleService.getServerTime())
+            .thenReturn(currentTime);
+
         // given
         String categorySeqList = "1,2";
         String searchKey = "합창단";
@@ -165,6 +180,11 @@ class ScheduleControllerTest {
         // given
         String categorySeqList = "1,2";
 
+        // stubbing
+        String currentTime = String.valueOf(LocalDateTime.now());
+        when(scheduleService.getServerTime())
+            .thenReturn(currentTime);
+
         // when // then
         mockMvc.perform(
                 get("/api/schedule?category={}", categorySeqList)
@@ -181,6 +201,11 @@ class ScheduleControllerTest {
         // given
         String searchKey = "합창단";
 
+        // stubbing
+        String currentTime = String.valueOf(LocalDateTime.now());
+        when(scheduleService.getServerTime())
+            .thenReturn(currentTime);
+
         // when // then
         mockMvc.perform(
                 get("/api/schedule?searchKey={}", searchKey)
@@ -196,6 +221,11 @@ class ScheduleControllerTest {
     void getUnscheduledScheduleList() throws Exception {
         // given
         String unscheduled = "true";
+
+        // stubbing
+        String currentTime = String.valueOf(LocalDateTime.now());
+        when(scheduleService.getServerTime())
+            .thenReturn(currentTime);
 
         // when // then
         mockMvc.perform(
@@ -214,6 +244,11 @@ class ScheduleControllerTest {
         String year = "2023";
         String month = "11";
         String day = "18";
+
+        // stubbing
+        String currentTime = String.valueOf(LocalDateTime.now());
+        when(scheduleService.getServerTime())
+            .thenReturn(currentTime);
 
         // when // then
         mockMvc.perform(
