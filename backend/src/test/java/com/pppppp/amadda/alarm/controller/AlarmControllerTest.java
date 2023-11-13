@@ -13,14 +13,10 @@ import com.pppppp.amadda.ControllerTestSupport;
 import com.pppppp.amadda.alarm.dto.request.AlarmConfigRequest;
 import com.pppppp.amadda.alarm.entity.AlarmConfig;
 import com.pppppp.amadda.alarm.entity.AlarmType;
-import com.pppppp.amadda.alarm.service.AlarmService;
-import com.pppppp.amadda.alarm.service.KafkaProducer;
-import com.pppppp.amadda.global.util.TokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 
@@ -32,14 +28,6 @@ import org.springframework.kafka.test.context.EmbeddedKafka;
     }
 )
 class AlarmControllerTest extends ControllerTestSupport {
-
-    @MockBean
-    private KafkaProducer kafkaProducer;
-
-    @MockBean
-    private AlarmService alarmService;
-    @MockBean
-    private TokenProvider tokenProvider;
 
     @DisplayName("알림 목록 가져오기")
     @Test
