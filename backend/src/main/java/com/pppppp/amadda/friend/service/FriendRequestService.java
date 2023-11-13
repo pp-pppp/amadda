@@ -70,18 +70,22 @@ public class FriendRequestService {
         FriendRequest chk = findFriendRequestBySeq(requestSeq).orElse(null);
 
         // userSeq == chk.friendSeq && REQUESTED && 이미 친구가 아닌 상태일때만 허용
-        User owner = chk.getOwner();
-        User friend = chk.getFriend();
-        if (chk != null && isTarget(userSeq, chk) && isRequested(chk)
-            && !friendService.isAlreadyFriends(owner, friend)) {
+        if (chk != null) {
+            User owner = chk.getOwner();
+            User friend = chk.getFriend();
+            if (isTarget(userSeq, chk) && isRequested(chk)
+                && !friendService.isAlreadyFriends(owner, friend)) {
 
-            chk.updateStatus(FriendRequestStatus.ACCEPTED);
-            friendService.createFriend(FriendRequestResponse.of(chk));
+                chk.updateStatus(FriendRequestStatus.ACCEPTED);
+                friendService.createFriend(FriendRequestResponse.of(chk));
 
-            alarmService.sendFriendAccept(owner.getUserSeq(), friend.getUserSeq());
-            alarmService.readFriendRequestAlarm(requestSeq);
+                alarmService.sendFriendAccept(owner.getUserSeq(), friend.getUserSeq());
+                alarmService.readFriendRequestAlarm(requestSeq);
 
-            return FriendRequestResponse.of(chk);
+                return FriendRequestResponse.of(chk);
+            } else {
+                throw new RestApiException(FriendRequestErrorCode.FRIEND_REQUEST_INVALID);
+            }
         } else {
             throw new RestApiException(FriendRequestErrorCode.FRIEND_REQUEST_INVALID);
         }
