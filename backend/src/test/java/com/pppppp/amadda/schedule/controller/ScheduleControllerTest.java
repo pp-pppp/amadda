@@ -29,7 +29,7 @@ import com.pppppp.amadda.schedule.entity.AlarmTime;
 import com.pppppp.amadda.schedule.service.ScheduleService;
 import com.pppppp.amadda.user.dto.response.UserReadResponse;
 import com.pppppp.amadda.user.entity.User;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -100,8 +100,8 @@ class ScheduleControllerTest {
     @Test
     void getServerTime() throws Exception {
         // stubbing
-        String currentTime = String.valueOf(LocalDateTime.now());
-        when(scheduleService.getServerTime())
+        String currentTime = String.valueOf(LocalDate.now());
+        when(scheduleService.getServerDate())
             .thenReturn(currentTime);
 
         // then
@@ -118,8 +118,8 @@ class ScheduleControllerTest {
     @Test
     void getSchedule() throws Exception {
         // stubbing
-        String currentTime = String.valueOf(LocalDateTime.now());
-        when(scheduleService.getServerTime())
+        String currentTime = String.valueOf(LocalDate.now());
+        when(scheduleService.getServerDate())
             .thenReturn(currentTime);
 
         mockMvc.perform(
@@ -134,8 +134,8 @@ class ScheduleControllerTest {
     @Test
     void getAllScheduleList() throws Exception {
         // stubbing
-        String currentTime = String.valueOf(LocalDateTime.now());
-        when(scheduleService.getServerTime())
+        String currentTime = String.valueOf(LocalDate.now());
+        when(scheduleService.getServerDate())
             .thenReturn(currentTime);
 
         mockMvc.perform(
@@ -151,8 +151,8 @@ class ScheduleControllerTest {
     @Test
     void getScheduleListByConditions() throws Exception {
         // stubbing
-        String currentTime = String.valueOf(LocalDateTime.now());
-        when(scheduleService.getServerTime())
+        String currentTime = String.valueOf(LocalDate.now());
+        when(scheduleService.getServerDate())
             .thenReturn(currentTime);
 
         // given
@@ -181,8 +181,8 @@ class ScheduleControllerTest {
         String categorySeqList = "1,2";
 
         // stubbing
-        String currentTime = String.valueOf(LocalDateTime.now());
-        when(scheduleService.getServerTime())
+        String currentTime = String.valueOf(LocalDate.now());
+        when(scheduleService.getServerDate())
             .thenReturn(currentTime);
 
         // when // then
@@ -202,8 +202,8 @@ class ScheduleControllerTest {
         String searchKey = "합창단";
 
         // stubbing
-        String currentTime = String.valueOf(LocalDateTime.now());
-        when(scheduleService.getServerTime())
+        String currentTime = String.valueOf(LocalDate.now());
+        when(scheduleService.getServerDate())
             .thenReturn(currentTime);
 
         // when // then
@@ -223,8 +223,8 @@ class ScheduleControllerTest {
         String unscheduled = "true";
 
         // stubbing
-        String currentTime = String.valueOf(LocalDateTime.now());
-        when(scheduleService.getServerTime())
+        String currentTime = String.valueOf(LocalDate.now());
+        when(scheduleService.getServerDate())
             .thenReturn(currentTime);
 
         // when // then
@@ -246,8 +246,8 @@ class ScheduleControllerTest {
         String day = "18";
 
         // stubbing
-        String currentTime = String.valueOf(LocalDateTime.now());
-        when(scheduleService.getServerTime())
+        String currentTime = String.valueOf(LocalDate.now());
+        when(scheduleService.getServerDate())
             .thenReturn(currentTime);
 
         // when // then

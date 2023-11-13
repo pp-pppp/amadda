@@ -73,7 +73,7 @@ public class ScheduleService {
 
     private final CategoryRepository categoryRepository;
 
-    public String getServerTime() {
+    public String getServerDate() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return LocalDate.now().format(formatter);
     }
@@ -97,7 +97,7 @@ public class ScheduleService {
     }
 
     public ScheduleDetailReadResponse getScheduleDetail(Long scheduleSeq, Long userSeq,
-        LocalDateTime currentServerTime) {
+        LocalDate currentServerDate) {
         findUserInfo(userSeq);
         Schedule schedule = findScheduleInfo(scheduleSeq);
 
@@ -114,9 +114,10 @@ public class ScheduleService {
         Boolean isFinished = null;
         if (schedule.isDateSelected()) {
             if (schedule.isTimeSelected()) {
-                isFinished = schedule.getScheduleEndAt().isBefore(currentServerTime);
+                isFinished = schedule.getScheduleEndAt().isBefore(currentServerDate.atStartOfDay());
             } else {
-                isFinished = schedule.getScheduleStartAt().isBefore(currentServerTime);
+                isFinished = schedule.getScheduleStartAt()
+                    .isBefore(currentServerDate.atStartOfDay());
             }
         }
 
@@ -125,10 +126,10 @@ public class ScheduleService {
     }
 
     public Map<String, List<ScheduleListReadResponse>> getScheduleListByCondition(
-        Long userSeq, Map<String, String> searchCondition, LocalDateTime currentServerTime) {
+        Long userSeq, Map<String, String> searchCondition, LocalDate currentServerDate) {
         // 조회 조건에 따라 일정 목록 가져오기
         List<ScheduleListReadResponse> scheduleListByCondition =
-            findScheduleListBySearchCondition(userSeq, searchCondition, currentServerTime);
+            findScheduleListBySearchCondition(userSeq, searchCondition, currentServerDate);
 
         // 반환할 map 생성
         Map<String, List<ScheduleListReadResponse>> response = new HashMap<>(Map.of());
@@ -207,8 +208,8 @@ public class ScheduleService {
     }
 
     public List<ScheduleListReadResponse> getScheduleListBySearchCondition(Long userSeq,
-        Map<String, String> searchCondition, LocalDateTime currentServerTime) {
-        return findScheduleListBySearchCondition(userSeq, searchCondition, currentServerTime);
+        Map<String, String> searchCondition, LocalDate currentServerDate) {
+        return findScheduleListBySearchCondition(userSeq, searchCondition, currentServerDate);
     }
 
     public List<UserReadResponse> getParticipatingUserList(Long scheduleSeq) {
@@ -524,7 +525,7 @@ public class ScheduleService {
     }
 
     private ScheduleListReadResponse findScheduleByParticipation(
-        Participation participation, LocalDateTime currentServerTime) {
+        Participation participation, LocalDate currentServerDate) {
 
         // 1. 참가하는 일정
         Long scheduleSeq = participation.getSchedule().getScheduleSeq();
@@ -550,9 +551,10 @@ public class ScheduleService {
         if (schedule.isDateSelected()) {
             if (schedule.isTimeSelected()) {
                 isFinished = schedule.getScheduleEndAt()
-                    .isBefore(currentServerTime);
+                    .isBefore(currentServerDate.atStartOfDay());
             } else {
-                isFinished = schedule.getScheduleStartAt().isBefore(currentServerTime);
+                isFinished = schedule.getScheduleStartAt()
+                    .isBefore(currentServerDate.atStartOfDay());
             }
         }
         return ScheduleListReadResponse.of(schedule,
@@ -704,7 +706,7 @@ public class ScheduleService {
     }
 
     private List<ScheduleListReadResponse> findScheduleListBySearchCondition(Long userSeq,
-        Map<String, String> searchCondition, LocalDateTime currentServerTime) {
+        Map<String, String> searchCondition, LocalDate currentServerDate) {
         // 사용자 체크
         findUserInfo(userSeq);
 
@@ -773,7 +775,7 @@ public class ScheduleService {
                 }
                 return true;
             })
-            .map(participation -> findScheduleByParticipation(participation, currentServerTime))
+            .map(participation -> findScheduleByParticipation(participation, currentServerDate))
             .toList();
     }
 
