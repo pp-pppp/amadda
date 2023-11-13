@@ -49,6 +49,7 @@ import jakarta.transaction.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -1153,8 +1154,9 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         ScheduleCreateResponse scheduleCreateResponse = scheduleService.createSchedule(
             u1.getUserSeq(), scheduleCreateRequest);
 
-        ScheduleDetailReadResponse u1Response = scheduleService.getScheduleDetail(
-            scheduleCreateResponse.scheduleSeq(), u1.getUserSeq(), LocalDate.of(2023, 11, 1));
+        Schedule schedule = scheduleRepository.findAll().get(0);
+        Participation u1Participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+            schedule.getScheduleSeq(), u1.getUserSeq()).get();
 
         // when
         ParticipationUpdateRequest u2ParticipationUpdateRequest = ParticipationUpdateRequest.builder()
@@ -1171,21 +1173,24 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             u2ParticipationUpdateRequest);
         scheduleService.updateParticipation(u3.getUserSeq(), scheduleCreateResponse.scheduleSeq(),
             u3ParticipationUpdateRequest);
-        ScheduleDetailReadResponse u2Response = scheduleService.getScheduleDetail(
-            scheduleCreateResponse.scheduleSeq(), u2.getUserSeq(), LocalDate.of(2023, 11, 1));
-        ScheduleDetailReadResponse u3Response = scheduleService.getScheduleDetail(
-            scheduleCreateResponse.scheduleSeq(), u3.getUserSeq(), LocalDate.of(2023, 11, 1));
+        Participation u2Participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+            schedule.getScheduleSeq(), u2.getUserSeq()).get();
+        Participation u3Participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+            schedule.getScheduleSeq(), u3.getUserSeq()).get();
 
         // then
-        assertThat(u1Response)
-            .extracting("scheduleStartAt", "alarmTime", "alarmAt")
-            .contains("2023-11-01 09:00:00", "30분 전", "2023-11-01 08:30:00");
-        assertThat(u2Response)
-            .extracting("scheduleStartAt", "alarmTime", "alarmAt")
-            .contains("2023-11-01 09:00:00", "1시간 전", "2023-11-01 08:00:00");
-        assertThat(u3Response)
-            .extracting("scheduleStartAt", "alarmTime", "alarmAt")
-            .contains("2023-11-01 09:00:00", "15분 전", "2023-11-01 08:45:00");
+        assertThat(schedule)
+            .extracting("scheduleStartAt")
+            .isEqualTo(LocalDateTime.of(2023, 11, 1, 9, 0));
+        assertThat(u1Participation)
+            .extracting("alarmTime", "alarmAt")
+            .contains(AlarmTime.THIRTY_MINUTE_BEFORE, LocalDateTime.of(2023, 11, 1, 8, 30));
+        assertThat(u2Participation)
+            .extracting("alarmTime", "alarmAt")
+            .contains(AlarmTime.ONE_HOUR_BEFORE, LocalDateTime.of(2023, 11, 1, 8, 0));
+        assertThat(u3Participation)
+            .extracting("alarmTime", "alarmAt")
+            .contains(AlarmTime.FIFTEEN_MINUTE_BEFORE, LocalDateTime.of(2023, 11, 1, 8, 45));
     }
 
     @DisplayName("기존 일정에 새로운 참가자를 할당한다. 이때 초기 정보는 할당한 참가자의 정보를 따른다.")

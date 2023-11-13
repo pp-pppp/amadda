@@ -557,14 +557,14 @@ public class ScheduleService {
             .map(p -> UserReadResponse.of(p.getUser()))
             .toList();
 
-        // 3. 전체에게 권한이 있는 경우 authorizedUser 필드는 null로 만들어 response 반환
+        // 3. 일정이 현재 시점에서 지난 일정인지 체크
+        Boolean isFinished = checkScheduleIsFinished(schedule, currentServerDate);
+
+        // 4. 전체에게 권한이 있는 경우 authorizedUser 필드는 null로 만들어 response 반환
         if (schedule.isAuthorizedAll()) {
             return ScheduleListReadResponse.of(schedule, null, participants,
-                participation);
+                participation, isFinished);
         }
-
-        // 4. 일정이 현재 시점에서 지난 일정인지 체크
-        Boolean isFinished = checkScheduleIsFinished(schedule, currentServerDate);
 
         return ScheduleListReadResponse.of(schedule,
             UserReadResponse.of(schedule.getAuthorizedUser()), participants, participation,

@@ -23,7 +23,6 @@ public record ScheduleDetailReadResponse(
 
     // ================ Participation =================
     String alarmTime,
-    String alarmAt,
     String scheduleName,
     String scheduleMemo,
     CategoryReadResponse category,
@@ -52,8 +51,6 @@ public record ScheduleDetailReadResponse(
             .participants(participants)
             .isFinished(isFinished)
             .alarmTime(participation.getAlarmTime().getContent())
-            .alarmAt(!(participation.getAlarmTime().getContent().equals("알림 없음"))
-                ? participation.getAlarmAt().format(formatter) : "")
             .scheduleName(participation.getScheduleName())
             .scheduleMemo(participation.getScheduleMemo())
             .category((participation.getCategory() != null) ?
