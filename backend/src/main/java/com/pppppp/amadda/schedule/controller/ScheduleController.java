@@ -58,9 +58,9 @@ public class ScheduleController {
         return ApiResponse.ok(scheduleCreateResponse);
     }
 
-    @GetMapping("/serverTime")
+    @GetMapping("/server-time")
     public ApiResponse<String> getServerTime() {
-        log.info("GET /api/schedule/serverTime");
+        log.info("GET /api/schedule/server-time");
         log.info("time: {}", scheduleService.getServerDate());
         return ApiResponse.ok(scheduleService.getServerDate());
     }
@@ -87,7 +87,7 @@ public class ScheduleController {
         @RequestParam(value = "month", required = false) Optional<String> month,
         @RequestParam(value = "day", required = false) Optional<String> day) {
         log.info(
-            "GET /api/schedule?category={}&searchKey={}&unscheduled={}&year={}&month={}&day={}",
+            "GET /api/schedule?category={}&search-key={}&unscheduled={}&year={}&month={}&day={}",
             categorySeqList, searchKey, unscheduled, year, month, day);
 
         LocalDate currentServerTime = LocalDate.parse(scheduleService.getServerDate());
@@ -103,7 +103,7 @@ public class ScheduleController {
     @GetMapping("/{scheduleSeq}/participation")
     public ApiResponse<List<UserReadResponse>> getParticipatingUsers(@PathVariable Long scheduleSeq,
         @RequestParam(value = "userName", required = false) Optional<String> searchKey) {
-        log.info("GET /api/schedule/{}/participation?userName={}", scheduleSeq, searchKey);
+        log.info("GET /api/schedule/{}/participation?username={}", scheduleSeq, searchKey);
 
         // searchKey가 존재하면 검색 결과를, 존재하지 않으면 전체 참여자 목록을 반환
         return searchKey.map(s -> ApiResponse.ok(
