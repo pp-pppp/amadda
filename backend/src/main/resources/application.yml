@@ -99,6 +99,10 @@ spring:
     url: ${aws.rds.prod.url}
     username: ${aws.rds.prod.username}
     password: ${aws.rds.prod.password}
+
+schedules:
+  cron:
+    schedule-notification: "0 0/10 * * * ?"
 ---
 spring:
   config:
@@ -115,6 +119,10 @@ spring:
     url: ${mysql.url}
     username: ${mysql.username}
     password: ${mysql.password}
+
+schedules:
+  cron:
+    schedule-notification: "0 0/10 * * * ?"
 ---
 spring:
   config:
@@ -143,3 +151,7 @@ spring:
   sql:
     init:
       mode: never
+
+schedules:
+  cron:
+    schedule-notification: "0/1 * * * * ?"
