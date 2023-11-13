@@ -70,9 +70,11 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("")
-    public void deleteUser() {
-        log.info("회원 탈퇴");
+    @DeleteMapping
+    public ApiResponse deleteUser(HttpServletRequest http) {
+        Long userSeq = tokenProvider.getUserSeq(http);
+        userService.deleteUserInfo(userSeq);
+        return ApiResponse.ok("유저 탈퇴 완료");
     }
 
     @GetMapping

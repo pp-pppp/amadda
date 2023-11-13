@@ -134,6 +134,11 @@ public class UserService {
         return Pattern.matches(regex, name);
     }
 
+    @Transactional
+    public void deleteUserInfo(Long userSeq) {
+        getUserInfoBySeq(userSeq).delete();
+    }
+
     // =============== 레포지토리에 직접 접근하는 메소드들 ===============
 
     private Optional<User> findUserByUserSeq(Long userSeq) {

@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 class UserServiceTest extends IntegrationTestSupport {
 
@@ -450,6 +451,25 @@ class UserServiceTest extends IntegrationTestSupport {
 
         // then
         Assertions.assertFalse(response.isValid());
+    }
+
+    @DisplayName("회원탈퇴시 유저 정보가 초기화 된다. ")
+    @Test
+    @Transactional
+    void deleteUserInfo() {
+        // given
+        User u1 = User.create(0L, "유저1", "id1", "imageUrl1");
+        User u = userRepository.save(u1);
+
+        // when
+        userService.deleteUserInfo(u.getUserSeq());
+
+        // then
+        assertThat(userRepository.findAll())
+                .extracting("userSeq", "userName", "userId", "imageUrl")
+                .containsExactlyInAnyOrder(
+                        tuple(u.getUserSeq(), "", "", "")
+                );
     }
 
 }
