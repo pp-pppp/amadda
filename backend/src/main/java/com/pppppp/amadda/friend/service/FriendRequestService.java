@@ -50,7 +50,7 @@ public class FriendRequestService {
     }
 
     @Transactional
-    public FriendRequestResponse declineFriendRequest(Long userSeq, Long requestSeq) {
+    public void declineFriendRequest(Long userSeq, Long requestSeq) {
 
         FriendRequest chk = findFriendRequestBySeq(requestSeq).orElse(null);
 
@@ -58,7 +58,7 @@ public class FriendRequestService {
         if (chk != null && isTarget(userSeq, chk) && isRequested(chk)) {
             chk.updateStatus(FriendRequestStatus.DECLINED);
             alarmService.readFriendRequestAlarm(requestSeq);
-            return FriendRequestResponse.of(chk);
+            deleteFriendRequestBySeq(chk.getRequestSeq());
         } else {
             throw new RestApiException(FriendRequestErrorCode.FRIEND_REQUEST_INVALID);
         }
