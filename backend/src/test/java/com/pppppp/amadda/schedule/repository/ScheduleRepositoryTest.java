@@ -164,7 +164,7 @@ class ScheduleRepositoryTest extends IntegrationTestSupport {
 
         // when
         List<Schedule> schedules = scheduleRepository.findAllByAuthorizedUser_UserSeqAndIsDeletedFalse(
-            1L);
+            user.getUserSeq());
 
         // then
         assertThat(schedules).hasSize(2)
@@ -208,7 +208,7 @@ class ScheduleRepositoryTest extends IntegrationTestSupport {
         int pivotMinute = pivot.getMinute();
 
         List<Schedule> schedules = scheduleRepository.findAllByAuthorizedUser_UserSeqAndScheduleStartAtBeforeAndIsDeletedFalse(
-            1L, pivot);
+            user.getUserSeq(), pivot);
 
         // then
         assertThat(schedules).hasSize(1)
@@ -261,7 +261,7 @@ class ScheduleRepositoryTest extends IntegrationTestSupport {
         int pivotMinute = pivot.getMinute();
 
         List<Schedule> schedules = scheduleRepository.findAllByAuthorizedUser_UserSeqAndScheduleStartAtAfterAndIsDeletedFalse(
-            1L, pivot);
+            user.getUserSeq(), pivot);
 
         // then
         assertThat(schedules).hasSize(1)

@@ -53,9 +53,9 @@ class UserGroupServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
-            .ownerSeq(1111L)
+            .ownerSeq(users.get(0).getUserSeq())
             .groupName("그룹명1")
-            .userSeqs(List.of(1234L, 2222L))
+            .userSeqs(List.of(users.get(1).getUserSeq(), users.get(2).getUserSeq()))
             .build();
 
         // when
@@ -78,9 +78,9 @@ class UserGroupServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
-            .ownerSeq(1111L)
+            .ownerSeq(users.get(0).getUserSeq())
             .groupName("그룹명1")
-            .userSeqs(List.of(1234L, 2222L))
+            .userSeqs(List.of(users.get(1).getUserSeq(), users.get(2).getUserSeq()))
             .build();
 
         Long groupSeq = userGroupService.createUserGroup(gcr);
@@ -103,9 +103,9 @@ class UserGroupServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
-            .ownerSeq(1111L)
+            .ownerSeq(users.get(0).getUserSeq())
             .groupName("그룹명1")
-            .userSeqs(List.of(1234L, 2222L))
+            .userSeqs(List.of(users.get(1).getUserSeq(), users.get(2).getUserSeq()))
             .build();
 
         Long groupSeq = userGroupService.createUserGroup(gcr);

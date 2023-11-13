@@ -57,9 +57,9 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
-            .ownerSeq(1111L)
+            .ownerSeq(users.get(0).getUserSeq())
             .groupName("그룹명1")
-            .userSeqs(List.of(1234L, 2222L))
+            .userSeqs(List.of(users.get(1).getUserSeq(), users.get(2).getUserSeq()))
             .build();
         Long groupSeq = userGroupService.createUserGroup(gcr);
 
@@ -70,7 +70,7 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
         assertThat(groupMemberRepository.findAll()).hasSize(2)
             .extracting("member.userSeq")
             .containsExactlyInAnyOrder(
-                1234L, 2222L
+                users.get(1).getUserSeq(), users.get(2).getUserSeq()
             );
     }
 
@@ -84,9 +84,9 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
-            .ownerSeq(1111L)
+            .ownerSeq(users.get(0).getUserSeq())
             .groupName("그룹명1")
-            .userSeqs(List.of(1234L, 2222L))
+            .userSeqs(List.of(users.get(1).getUserSeq(), users.get(2).getUserSeq()))
             .build();
 
         // when // then
@@ -104,9 +104,9 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
-            .ownerSeq(1111L)
+            .ownerSeq(users.get(0).getUserSeq())
             .groupName("그룹명1")
-            .userSeqs(List.of(3333L, 2222L))
+            .userSeqs(List.of(3333L, users.get(2).getUserSeq()))
             .build();
 
         // when // then
@@ -125,9 +125,9 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
-            .ownerSeq(1111L)
+            .ownerSeq(users.get(0).getUserSeq())
             .groupName("그룹명1")
-            .userSeqs(List.of(1234L, 2222L))
+            .userSeqs(List.of(users.get(1).getUserSeq(), users.get(2).getUserSeq()))
             .build();
 
         // when // then
@@ -147,9 +147,9 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3, u4));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
-            .ownerSeq(1111L)
+            .ownerSeq(users.get(0).getUserSeq())
             .groupName("그룹명1")
-            .userSeqs(List.of(1234L, 2222L))
+            .userSeqs(List.of(users.get(0).getUserSeq(), users.get(0).getUserSeq()))
             .build();
         Long groupSeq = userGroupService.createUserGroup(gcr);
         groupMemberService.createGroupMember(gcr, groupSeq);
@@ -157,7 +157,7 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
         GroupUpdateRequest gpr = GroupUpdateRequest.builder()
             .groupSeq(groupSeq)
             .groupName("새로운 이름")
-            .userSeqs(List.of(2222L, 3456L))
+            .userSeqs(List.of(users.get(2).getUserSeq(), users.get(3).getUserSeq()))
             .build();
 
         // when
@@ -167,13 +167,13 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
         assertThat(groupMemberRepository.findAll()).hasSize(2)
             .extracting("group.groupSeq", "member.userSeq")
             .containsExactly(
-                tuple(groupSeq, 2222L),
-                tuple(groupSeq, 3456L)
+                tuple(groupSeq, users.get(2).getUserSeq()),
+                tuple(groupSeq, users.get(3).getUserSeq())
             );
         assertThat(userGroupRepository.findAll()).hasSize(1)
             .extracting("groupName", "owner.userSeq")
             .containsExactly(
-                tuple("새로운 이름", 1111L)
+                tuple("새로운 이름", users.get(0).getUserSeq())
             );
     }
 
@@ -208,15 +208,15 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
         assertThat(groupMemberRepository.findAll())
             .extracting("group.groupSeq", "member.userSeq")
             .containsExactlyInAnyOrder(
-                tuple(ug1.getGroupSeq(), 1234L),
-                tuple(ug1.getGroupSeq(), 2222L),
-                tuple(ug2.getGroupSeq(), 3456L)
+                tuple(ug1.getGroupSeq(), users.get(1).getUserSeq()),
+                tuple(ug1.getGroupSeq(), users.get(2).getUserSeq()),
+                tuple(ug2.getGroupSeq(), users.get(4).getUserSeq())
             );
         assertThat(userGroupRepository.findAll())
             .extracting("groupSeq", "groupName", "owner.userSeq")
             .containsExactly(
-                tuple(ug1.getGroupSeq(), "그룹명1", 1111L),
-                tuple(ug2.getGroupSeq(), "그룹명2", 1111L)
+                tuple(ug1.getGroupSeq(), "그룹명1", users.get(0).getUserSeq()),
+                tuple(ug2.getGroupSeq(), "그룹명2", users.get(0).getUserSeq())
             );
     }
 
@@ -250,13 +250,13 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
         assertThat(groupMemberRepository.findAll())
             .extracting("group.groupSeq", "member.userSeq")
             .containsExactlyInAnyOrder(
-                tuple(ug1.getGroupSeq(), 1234L),
-                tuple(ug1.getGroupSeq(), 2222L)
+                tuple(ug1.getGroupSeq(), users.get(1).getUserSeq()),
+                tuple(ug1.getGroupSeq(), users.get(2).getUserSeq())
             );
         assertThat(userGroupRepository.findAll())
             .extracting("groupSeq", "groupName", "owner.userSeq")
             .containsExactly(
-                tuple(ug1.getGroupSeq(), "그룹명1", 1111L)
+                tuple(ug1.getGroupSeq(), "그룹명1", users.get(0).getUserSeq())
             );
     }
 
