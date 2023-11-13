@@ -3,11 +3,12 @@ package com.pppppp.amadda.alarm.entity;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.pppppp.amadda.IntegrationTestSupport;
 import java.util.MissingFormatArgumentException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class AlarmContentTest {
+class AlarmContentTest extends IntegrationTestSupport {
 
     @DisplayName("friend_request")
     @Test
