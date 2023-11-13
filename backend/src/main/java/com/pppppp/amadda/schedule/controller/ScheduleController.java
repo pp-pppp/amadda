@@ -81,7 +81,7 @@ public class ScheduleController {
     public ApiResponse<Map<String, List<ScheduleListReadResponse>>> getScheduleList(
         HttpServletRequest http,
         @RequestParam(value = "category", required = false) Optional<String> categorySeqList,
-        @RequestParam(value = "searchKey", required = false) Optional<String> searchKey,
+        @RequestParam(value = "search-key", required = false) Optional<String> searchKey,
         @RequestParam(value = "unscheduled", required = false) Optional<String> unscheduled,
         @RequestParam(value = "year", required = false) Optional<String> year,
         @RequestParam(value = "month", required = false) Optional<String> month,
