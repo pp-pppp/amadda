@@ -83,7 +83,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
 
         // then
         mockMvc.perform(
-                get("/api/schedule/serverTime")
+                get("/api/schedule/server-time")
                     .contentType(MediaType.APPLICATION_JSON)
             ).andDo(print())
             .andExpect(status().isOk())
@@ -141,7 +141,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
         String day = "18";
 
         mockMvc.perform(
-                get("/api/schedule?category={}&searchKey={}&unscheduled={}&year={}&month={}&day={}",
+                get("/api/schedule?category={}&search-key={}&unscheduled={}&year={}&month={}&day={}",
                     categorySeqList, searchKey, unscheduled, year, month, day)
                     .contentType(MediaType.APPLICATION_JSON)
             ).andDo(print())
@@ -185,7 +185,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                get("/api/schedule?searchKey={}", searchKey)
+                get("/api/schedule?search-key={}", searchKey)
                     .contentType(MediaType.APPLICATION_JSON)
             ).andDo(print())
             .andExpect(status().isOk())
@@ -241,7 +241,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
     @Test
     void getParticipatingUserListBySearchKey() throws Exception {
         mockMvc.perform(
-                get("/api/schedule/{scheduleSeq}/participation?userName={}", 1, "박동건")
+                get("/api/schedule/{scheduleSeq}/participation?username={}", 1, "박동건")
                     .contentType(MediaType.APPLICATION_JSON)
             ).andDo(print())
             .andExpect(status().isOk())

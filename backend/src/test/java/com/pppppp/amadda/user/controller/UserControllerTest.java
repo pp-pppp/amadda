@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 class UserControllerTest extends ControllerTestSupport {
-    
+
     @DisplayName("로그인 후 3개의 토큰들을 받는다. ")
     @Test
     void getTokens() throws Exception {
@@ -88,7 +88,7 @@ class UserControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                get("/api/user?searchKey=" + key)
+                get("/api/user?search-key=" + key)
                     .contentType(MediaType.APPLICATION_JSON)
             )
             .andExpect(status().isOk())
