@@ -190,6 +190,25 @@ class UserServiceTest extends IntegrationTestSupport {
                 );
     }
 
+    @DisplayName("유저id가 중복되는 경우 저장하지 않는다. ")
+    @Test
+    void saveUser_duplicatedUserId() {
+        // given
+        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        List<User> users = userRepository.saveAll(List.of(u1));
+        UserInitRequest request = UserInitRequest.builder()
+                .userId("id1")
+                .userName("잼민정")
+                .imageUrl("https://www.readersnews.com/news/photo/202305/108912_78151_1733.jpg")
+                .userSeq("")
+                .build();
+
+        // when // then
+        assertThatThrownBy(() -> userService.saveUser(request))
+                .isInstanceOf(RestApiException.class)
+                .hasMessage("USER_ID_DUPLICATED");
+    }
+
     @DisplayName("정상 토큰인 경우 ")
     @Test
     void validateUser1() {

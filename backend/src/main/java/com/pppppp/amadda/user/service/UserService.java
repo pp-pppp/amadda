@@ -67,6 +67,9 @@ public class UserService {
             + ".jpg";
         String s3Url = imageService.saveKakaoImgInS3(request.imageUrl(), fileName);
 
+        if(findUserWithExactId(request.userId()).isPresent())
+            throw new RestApiException(UserErrorCode.USER_ID_DUPLICATED);
+
         User u = User.create(Long.parseLong(request.userSeq()), request.userName(),
             request.userId(), s3Url);
         saveUser(u);
