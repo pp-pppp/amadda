@@ -12,8 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pppppp.amadda.global.util.TokenProvider;
+import com.pppppp.amadda.ControllerTestSupport;
 import com.pppppp.amadda.schedule.dto.request.CategoryCreateRequest;
 import com.pppppp.amadda.schedule.dto.request.CategoryUpdateRequest;
 import com.pppppp.amadda.schedule.dto.request.CommentCreateRequest;
@@ -25,7 +24,6 @@ import com.pppppp.amadda.schedule.dto.response.ParticipationUpdateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleCreateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleUpdateResponse;
 import com.pppppp.amadda.schedule.entity.AlarmTime;
-import com.pppppp.amadda.schedule.service.ScheduleService;
 import com.pppppp.amadda.user.dto.response.UserReadResponse;
 import com.pppppp.amadda.user.entity.User;
 import java.time.LocalDate;
@@ -34,26 +32,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(controllers = ScheduleController.class)
-class ScheduleControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @MockBean
-    private ScheduleService scheduleService;
-
-    @MockBean
-    private TokenProvider tokenProvider;
+class ScheduleControllerTest extends ControllerTestSupport {
 
     @DisplayName("일정을 생성한다.")
     @Test

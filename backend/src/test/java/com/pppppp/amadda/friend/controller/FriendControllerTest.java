@@ -11,52 +11,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pppppp.amadda.alarm.service.AlarmService;
+import com.pppppp.amadda.ControllerTestSupport;
 import com.pppppp.amadda.friend.dto.request.FriendRequestRequest;
 import com.pppppp.amadda.friend.dto.request.GroupCreateRequest;
 import com.pppppp.amadda.friend.dto.request.GroupUpdateRequest;
 import com.pppppp.amadda.friend.dto.response.FriendRequestResponse;
-import com.pppppp.amadda.friend.service.FriendRequestService;
-import com.pppppp.amadda.friend.service.FriendService;
-import com.pppppp.amadda.friend.service.GroupMemberService;
-import com.pppppp.amadda.friend.service.UserGroupService;
-import com.pppppp.amadda.global.util.TokenProvider;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(controllers = FriendController.class)
-class FriendControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @MockBean
-    private FriendRequestService friendRequestService;
-
-    @MockBean
-    private UserGroupService userGroupService;
-
-    @MockBean
-    private GroupMemberService groupMemberService;
-
-    @MockBean
-    private AlarmService alarmService;
-
-    @MockBean
-    private FriendService friendService;
-
-    @MockBean
-    private TokenProvider tokenProvider;
+class FriendControllerTest extends ControllerTestSupport {
 
     @DisplayName("친구 요청을 보낸다. ")
     @Test
@@ -352,5 +317,5 @@ class FriendControllerTest {
             .andExpect(jsonPath("$.status").value("OK"))
             .andExpect(jsonPath("$.message").value("OK"));
     }
-    
+
 }
