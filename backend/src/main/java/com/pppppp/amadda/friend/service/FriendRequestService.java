@@ -27,9 +27,8 @@ public class FriendRequestService {
     private final AlarmService alarmService;
 
     @Transactional
-    public FriendRequestResponse createFriendRequest(FriendRequestRequest request) {
+    public FriendRequestResponse createFriendRequest(Long userSeq, FriendRequestRequest request) {
 
-        Long userSeq = request.userSeq();
         Long targetSeq = request.targetSeq();
         User u1 = userService.getUserInfoBySeq(userSeq);
         User u2 = userService.getUserInfoBySeq(targetSeq);

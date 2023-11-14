@@ -28,14 +28,8 @@ class FriendControllerTest extends ControllerTestSupport {
     void sendFriendRequest() throws Exception {
         // given
         FriendRequestRequest request = FriendRequestRequest.builder()
-            .userSeq(1111L)
             .targetSeq(1234L)
             .build();
-
-        // stubbing
-        when(friendRequestService.createFriendRequest(any()))
-            .thenReturn(FriendRequestResponse.builder().ownerSeq(request.userSeq())
-                .friendSeq(request.targetSeq()).build());
 
         // when // then
         mockMvc.perform(
@@ -55,25 +49,6 @@ class FriendControllerTest extends ControllerTestSupport {
     void sendFriendRequestWithOutTarget() throws Exception {
         // given
         FriendRequestRequest request = FriendRequestRequest.builder()
-            .userSeq(1111L)
-            .build();
-
-        // when // then
-        mockMvc.perform(
-                post("/api/friend/request")
-                    .content(objectMapper.writeValueAsString(request))
-                    .contentType(MediaType.APPLICATION_JSON)
-            )
-            .andDo(print())
-            .andExpect(status().isBadRequest());
-    }
-
-    @DisplayName("유저(본인) 없이 요청을 보낸 경우 예외가 발생한다. ")
-    @Test
-    void sendFriendRequestWithOutUser() throws Exception {
-        // given
-        FriendRequestRequest request = FriendRequestRequest.builder()
-            .targetSeq(1111L)
             .build();
 
         // when // then
@@ -147,7 +122,6 @@ class FriendControllerTest extends ControllerTestSupport {
     void makeGroup() throws Exception {
         // given
         GroupCreateRequest request = GroupCreateRequest.builder()
-            .ownerSeq(1111L)
             .groupName("그룹명1")
             .userSeqs(List.of(1234L, 2222L))
             .build();
@@ -169,7 +143,6 @@ class FriendControllerTest extends ControllerTestSupport {
     void makeGroupWithoutUsers() throws Exception {
         // given
         GroupCreateRequest request = GroupCreateRequest.builder()
-            .ownerSeq(1111L)
             .groupName("그룹명1")
             .userSeqs(List.of())
             .build();
@@ -189,7 +162,6 @@ class FriendControllerTest extends ControllerTestSupport {
     void makeGroupWithoutName() throws Exception {
         // given
         GroupCreateRequest request = GroupCreateRequest.builder()
-            .ownerSeq(1111L)
             .groupName("")
             .userSeqs(List.of(1234L, 2222L))
             .build();
