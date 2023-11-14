@@ -51,9 +51,9 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
     @Transactional
     void createGroupMemberjp() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
+        User u3 = User.create("2222L", "유저3", "id3", "imageUrl3");
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
@@ -77,9 +77,9 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
     @Test
     void isUserValid() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
+        User u3 = User.create("2222L", "유저3", "id3", "imageUrl3");
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
@@ -96,9 +96,9 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
     @Test
     void userNotValid() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
+        User u3 = User.create("2222L", "유저3", "id3", "imageUrl3");
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
@@ -116,9 +116,9 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
     @Test
     void userGroupNotFound() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
+        User u3 = User.create("2222L", "유저3", "id3", "imageUrl3");
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
@@ -136,10 +136,10 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
     @Test
     void editGroup() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
-        User u4 = User.create(3456L, "유저4", "id4", "imageUrl4");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
+        User u3 = User.create("2222L", "유저3", "id3", "imageUrl3");
+        User u4 = User.create("3456L", "유저4", "id4", "imageUrl4");
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3, u4));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
@@ -176,11 +176,11 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
     @Test
     void deleteFriend() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
-        User u4 = User.create(9999L, "유저4", "id4", "imageUrl4");
-        User u5 = User.create(3456L, "유저5", "id5", "imageUrl5");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
+        User u3 = User.create("2222L", "유저3", "id3", "imageUrl3");
+        User u4 = User.create("9999L", "유저4", "id4", "imageUrl4");
+        User u5 = User.create("3456L", "유저5", "id5", "imageUrl5");
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3, u4, u5));
 
         UserGroup ug1 = UserGroup.create("그룹명1", u1);
@@ -219,11 +219,11 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
     @Test
     void deleteFriend_groupDelete() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
-        User u4 = User.create(9999L, "유저4", "id4", "imageUrl4");
-        User u5 = User.create(3456L, "유저5", "id5", "imageUrl5");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
+        User u3 = User.create("2222L", "유저3", "id3", "imageUrl3");
+        User u4 = User.create("9999L", "유저4", "id4", "imageUrl4");
+        User u5 = User.create("3456L", "유저5", "id5", "imageUrl5");
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3, u4, u5));
 
         UserGroup ug1 = UserGroup.create("그룹명1", u1);

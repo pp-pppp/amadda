@@ -42,7 +42,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         // given
         AlarmType alarmType = AlarmType.of(type);
 
-        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
         AlarmConfig ac = AlarmConfig.create(user, alarmType, true);
@@ -65,7 +65,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         // given
         AlarmType alarmType = AlarmType.of(type);
 
-        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
         AlarmConfig ac = AlarmConfig.create(user, alarmType, false);
@@ -88,7 +88,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         // given
         AlarmType alarmType = AlarmType.of(type);
 
-        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
         // when
@@ -105,7 +105,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         "SCHEDULE_UPDATE"})
     void existAndOff(String type) {
         // given
-        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
         AlarmType alarmType = AlarmType.of(type);
@@ -129,7 +129,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         "SCHEDULE_UPDATE"})
     void notExistAndOn(String type) {
         // given
-        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
         AlarmType alarmType = AlarmType.of(type);
@@ -150,7 +150,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         "SCHEDULE_UPDATE"})
     void notExist(String type) {
         // given
-        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
         AlarmType alarmType = AlarmType.of(type);
@@ -167,8 +167,8 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
     @Test
     void findAllByUser_UserSeqAndIsDeletedFalse() {
         // given
-        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(2L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
         User user1 = users.get(0);
         User user2 = users.get(1);

@@ -23,7 +23,7 @@ class UserControllerTest extends ControllerTestSupport {
     void getTokens() throws Exception {
         // given
         UserJwtRequest request = UserJwtRequest.builder()
-            .userSeq("1111")
+            .kakaoId("1111")
             .imageUrl("imgUrl1")
             .build();
 
@@ -45,7 +45,7 @@ class UserControllerTest extends ControllerTestSupport {
     void signupUser() throws Exception {
         // given
         UserInitRequest request = UserInitRequest.builder()
-            .userSeq("1111")
+            .kakaoId("1111")
             .imageUrl("imgUrl")
             .userId("aaa")
             .userName("sss")

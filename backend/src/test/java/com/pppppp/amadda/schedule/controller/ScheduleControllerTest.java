@@ -40,7 +40,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
     @Test
     void createSchedule() throws Exception {
         // given
-        User user = User.create(1111L, "박동건", "icebearrrr", "imgUrl1");
+        User user = User.create("1111L", "박동건", "icebearrrr", "imgUrl1");
 
         ScheduleCreateRequest request = ScheduleCreateRequest.builder()
             // schedule
@@ -252,7 +252,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
     @DisplayName("일정의 동기화 부분을 수정한다.")
     @Test
     void updateSchedule() throws Exception {
-        User user = User.create(111L, "박동건", "icebearrrr", "imgUrl1");
+        User user = User.create("111L", "박동건", "icebearrrr", "imgUrl1");
         Long scheduleSeq = 123L;
 
         ScheduleUpdateRequest request = ScheduleUpdateRequest.builder()
@@ -422,7 +422,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
     @Test
     void noScheduleName() throws Exception {
 
-        User user = User.create(1111L, "박동건", "icebearrrr", "imgUrl1");
+        User user = User.create("1111L", "박동건", "icebearrrr", "imgUrl1");
 
         ScheduleCreateRequest request = ScheduleCreateRequest.builder()
             // schedule
@@ -453,7 +453,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
     @Test
     void noScheduleDateSelectedInfo() throws Exception {
         // given
-        User user = User.create(1111L, "박동건", "icebearrrr", "imgUrl1");
+        User user = User.create("1111L", "박동건", "icebearrrr", "imgUrl1");
 
         ScheduleCreateRequest request = ScheduleCreateRequest.builder()
             // schedule
@@ -484,7 +484,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
     @Test
     void noScheduleTimeSelectedInfo() throws Exception {
         // given
-        User user = User.create(1111L, "박동건", "icebearrrr", "imgUrl1");
+        User user = User.create("1111L", "박동건", "icebearrrr", "imgUrl1");
 
         ScheduleCreateRequest request = ScheduleCreateRequest.builder()
             // schedule
@@ -515,7 +515,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
     @Test
     void noScheduleIsAllDayInfo() throws Exception {
         // given
-        User user = User.create(1111L, "박동건", "icebearrrr", "imgUrl1");
+        User user = User.create("1111L", "박동건", "icebearrrr", "imgUrl1");
 
         ScheduleCreateRequest request = ScheduleCreateRequest.builder()
             // schedule
@@ -546,7 +546,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
     @Test
     void noScheduleAuthorizationInfo() throws Exception {
         // given
-        User user = User.create(1111L, "박동건", "icebearrrr", "imgUrl1");
+        User user = User.create("1111L", "박동건", "icebearrrr", "imgUrl1");
 
         ScheduleCreateRequest request = ScheduleCreateRequest.builder()
             // schedule
@@ -577,7 +577,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
     @Test
     void noScheduleAlarmTimeInfo() throws Exception {
         // given
-        User user = User.create(1111L, "박동건", "icebearrrr", "imgUrl1");
+        User user = User.create("1111L", "박동건", "icebearrrr", "imgUrl1");
 
         ScheduleCreateRequest request = ScheduleCreateRequest.builder()
             // schedule
@@ -608,7 +608,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
     @Test
     void noScheduleDateSelectedInfoToUpdate() throws Exception {
         // given
-        User user = User.create(1111L, "박동건", "icebearrrr", "imgUrl1");
+        User user = User.create("1111L", "박동건", "icebearrrr", "imgUrl1");
 
         ScheduleUpdateRequest request = ScheduleUpdateRequest.builder()
             // schedule
@@ -639,7 +639,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
     @Test
     void noScheduleTimeSelectedInfoToUpdate() throws Exception {
         // given
-        User user = User.create(1111L, "박동건", "icebearrrr", "imgUrl1");
+        User user = User.create("1111L", "박동건", "icebearrrr", "imgUrl1");
 
         ScheduleUpdateRequest request = ScheduleUpdateRequest.builder()
             .scheduleContent("수원 시민 회관")
@@ -669,7 +669,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
     @Test
     void noScheduleIsAllDayInfoToUpdate() throws Exception {
         // given
-        User user = User.create(1111L, "박동건", "icebearrrr", "imgUrl1");
+        User user = User.create("1111L", "박동건", "icebearrrr", "imgUrl1");
 
         ScheduleUpdateRequest request = ScheduleUpdateRequest.builder()
             // schedule

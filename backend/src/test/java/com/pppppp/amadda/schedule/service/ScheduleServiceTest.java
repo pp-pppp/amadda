@@ -102,9 +102,9 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
     @BeforeEach
     void setUp() {
-        User user1 = User.create(1L, "박동건", "icebearrrr", "url1");
-        User user2 = User.create(2L, "정민영", "minyoung", "url2");
-        User user3 = User.create(3L, "김민정", "mindy0414", "url3");
+        User user1 = User.create("1L", "박동건", "icebearrrr", "url1");
+        User user2 = User.create("2L", "정민영", "minyoung", "url2");
+        User user3 = User.create("3L", "김민정", "mindy0414", "url3");
         userRepository.saveAll(List.of(user1, user2, user3));
 
         friendRepository.save(Friend.create(user1, user2));

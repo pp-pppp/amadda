@@ -79,8 +79,8 @@ class KafkaConsumerTest extends IntegrationTestSupport {
     @Test
     public void alarm_friend_request() throws IOException {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
         User owner = users.get(0);
         User friend = users.get(1);
@@ -108,8 +108,8 @@ class KafkaConsumerTest extends IntegrationTestSupport {
     @Test
     public void alarm_friend_accept() throws IOException {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
         User owner = users.get(0);
         User friend = users.get(1);
@@ -136,8 +136,8 @@ class KafkaConsumerTest extends IntegrationTestSupport {
     @Test
     public void alarm_schedule_assigned() throws IOException {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
         User user1 = users.get(0);
         User user2 = users.get(1);
@@ -164,8 +164,8 @@ class KafkaConsumerTest extends IntegrationTestSupport {
     @Test
     public void alarm_schedule_update() throws IOException {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
         User user1 = users.get(0);
         User user2 = users.get(1);
@@ -193,7 +193,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         "FIFTEEN_MINUTES_BEFORE", "ON_TIME"})
     public void alarm_schedule_notification(String type) throws IOException {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
         Schedule s = Schedule.create(user, "집가야돼");
@@ -219,7 +219,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
     @Test
     public void alarm_schedule_notification() throws IOException {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
         Schedule s = Schedule.create(user, "집가야돼");

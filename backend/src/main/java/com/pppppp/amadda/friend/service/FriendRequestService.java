@@ -53,7 +53,7 @@ public class FriendRequestService {
 
         FriendRequest chk = findFriendRequestBySeq(requestSeq).orElse(null);
 
-        // userSeq == chk.friendSeq && REQUESTED 상태일때만 허용
+        // kakaoId == chk.friendSeq && REQUESTED 상태일때만 허용
         if (chk != null && isTarget(userSeq, chk) && isRequested(chk)) {
             chk.updateStatus(FriendRequestStatus.DECLINED);
             alarmService.readFriendRequestAlarm(requestSeq);
@@ -68,7 +68,7 @@ public class FriendRequestService {
 
         FriendRequest chk = findFriendRequestBySeq(requestSeq).orElse(null);
 
-        // userSeq == chk.friendSeq && REQUESTED && 이미 친구가 아닌 상태일때만 허용
+        // kakaoId == chk.friendSeq && REQUESTED && 이미 친구가 아닌 상태일때만 허용
         if (chk != null) {
             User owner = chk.getOwner();
             User friend = chk.getFriend();

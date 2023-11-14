@@ -17,7 +17,10 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userSeq;
 
-    @Column(nullable = false, length = 50, updatable = false)
+    @Column(nullable = false, length = 20)
+    private String kakaoId;
+
+    @Column(nullable = false, length = 50)
     private String userName;
 
     @Column(length = 50, unique = true)
@@ -27,15 +30,16 @@ public class User extends BaseEntity {
     private String imageUrl;
 
     @Builder
-    private User(Long userSeq, String userName, String userId, String imageUrl) {
+    private User(String kakaoId, String userName, String userId, String imageUrl) {
+        this.kakaoId = kakaoId;
         this.userName = userName;
         this.userId = userId;
         this.imageUrl = imageUrl;
     }
 
-    public static User create(Long userSeq, String userName, String userId, String imageUrl) {
+    public static User create(String kakaoId, String userName, String userId, String imageUrl) {
         return User.builder()
-                .userSeq(userSeq)
+                .kakaoId(kakaoId)
                 .userName(userName)
                 .userId(userId)
                 .imageUrl(imageUrl)
@@ -43,6 +47,7 @@ public class User extends BaseEntity {
     }
 
     public void delete() {
+        this.kakaoId = "";
         this.userName = "";
         this.userId = "";
         this.imageUrl = "";

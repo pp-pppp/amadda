@@ -37,8 +37,8 @@ class GroupMemberRepositoryTest extends IntegrationTestSupport {
     @Test
     void createGroupMember() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
         UserGroup ug = UserGroup.create("그룹명1", u1);
         ug = userGroupRepository.save(ug);
@@ -58,9 +58,9 @@ class GroupMemberRepositoryTest extends IntegrationTestSupport {
     @Test
     void findAllByGroup_GroupSeq() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
+        User u3 = User.create("3333", "유저3", "id3", "imageUrl3");
 
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
         UserGroup ug = UserGroup.create("그룹명1", u1);
@@ -88,9 +88,9 @@ class GroupMemberRepositoryTest extends IntegrationTestSupport {
     @Transactional
     void deleteByGroup_GroupSeqAndMember_UserSeq() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
+        User u3 = User.create("3333", "유저3", "id3", "imageUrl3");
 
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
         UserGroup ug = UserGroup.create("그룹명1", u1);
@@ -115,9 +115,9 @@ class GroupMemberRepositoryTest extends IntegrationTestSupport {
     @Test
     void findByGroupSeqAndSearchKey() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
+        User u3 = User.create("3333", "유저3", "id3", "imageUrl3");
 
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
         UserGroup ug = UserGroup.create("그룹명1", u1);
@@ -143,11 +143,11 @@ class GroupMemberRepositoryTest extends IntegrationTestSupport {
     @Test
     void findByGroupSeqsAndSearchKey() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
-        User u4 = User.create(9999L, "유저4", "id4", "imageUrl4");
-        User u5 = User.create(3456L, "유저5", "id5", "imageUrl5");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
+        User u3 = User.create("3333", "유저3", "id3", "imageUrl3");
+        User u4 = User.create("4444", "유저4", "id4", "imageUrl4");
+        User u5 = User.create("5555", "유저5", "id5", "imageUrl5");
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3, u4, u5));
 
         UserGroup ug1 = UserGroup.create("그룹명1", u1);
@@ -184,11 +184,11 @@ class GroupMemberRepositoryTest extends IntegrationTestSupport {
     @Transactional
     void deleteByGroup_OwnerAndMember() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
-        User u4 = User.create(9999L, "유저4", "id4", "imageUrl4");
-        User u5 = User.create(3456L, "유저5", "id5", "imageUrl5");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
+        User u3 = User.create("3333", "유저3", "id3", "imageUrl3");
+        User u4 = User.create("4444", "유저4", "id4", "imageUrl4");
+        User u5 = User.create("5555", "유저5", "id5", "imageUrl5");
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3, u4, u5));
 
         UserGroup ug1 = UserGroup.create("그룹명1", u1);
