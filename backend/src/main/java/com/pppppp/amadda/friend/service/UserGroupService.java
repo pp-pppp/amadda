@@ -25,8 +25,8 @@ public class UserGroupService {
     private final UserService userService;
 
     @Transactional
-    public Long createUserGroup(GroupCreateRequest request) {
-        User u = userService.getUserInfoBySeq(request.ownerSeq());
+    public Long createUserGroup(Long ownerSeq, GroupCreateRequest request) {
+        User u = userService.getUserInfoBySeq(ownerSeq);
         UserGroup ug = UserGroup.create(request.groupName(), u);
         ug = saveUserGroup(ug);
         return ug.getGroupSeq();

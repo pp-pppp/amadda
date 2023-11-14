@@ -53,13 +53,12 @@ class UserGroupServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
-            .ownerSeq(users.get(0).getUserSeq())
             .groupName("그룹명1")
             .userSeqs(List.of(users.get(1).getUserSeq(), users.get(2).getUserSeq()))
             .build();
 
         // when
-        Long groupSeq = userGroupService.createUserGroup(gcr);
+        Long groupSeq = userGroupService.createUserGroup(users.get(0).getUserSeq(), gcr);
 
         // then
         assertThat(userGroupRepository.findAll()).hasSize(1)
@@ -78,12 +77,11 @@ class UserGroupServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
-            .ownerSeq(users.get(0).getUserSeq())
             .groupName("그룹명1")
             .userSeqs(List.of(users.get(1).getUserSeq(), users.get(2).getUserSeq()))
             .build();
 
-        Long groupSeq = userGroupService.createUserGroup(gcr);
+        Long groupSeq = userGroupService.createUserGroup(users.get(0).getUserSeq(), gcr);
         groupMemberService.createGroupMember(gcr, groupSeq);
 
         // when
@@ -103,12 +101,11 @@ class UserGroupServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
-            .ownerSeq(users.get(0).getUserSeq())
             .groupName("그룹명1")
             .userSeqs(List.of(users.get(1).getUserSeq(), users.get(2).getUserSeq()))
             .build();
 
-        Long groupSeq = userGroupService.createUserGroup(gcr);
+        Long groupSeq = userGroupService.createUserGroup(users.get(0).getUserSeq(), gcr);
         groupMemberService.createGroupMember(gcr, groupSeq);
 
         // when // then

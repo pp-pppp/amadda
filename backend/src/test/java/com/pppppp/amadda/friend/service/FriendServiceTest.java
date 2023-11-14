@@ -92,10 +92,9 @@ class FriendServiceTest extends IntegrationTestSupport {
 
         // 친구 요청을 만들고 ACCEPTED 상태로 바꿔줘 친구 요청을 수락한 상황으로 가정
         FriendRequestRequest request = FriendRequestRequest.builder()
-            .userSeq(user1.getUserSeq())
             .targetSeq(user2.getUserSeq())
             .build();
-        FriendRequestResponse response = friendRequestService.createFriendRequest(request);
+        FriendRequestResponse response = friendRequestService.createFriendRequest(user1.getUserSeq(), request);
         FriendRequest fr = friendRequestService.findFriendRequestBySeq(response.requestSeq()).get();
         response = fr.updateStatus(FriendRequestStatus.ACCEPTED);
 
@@ -125,10 +124,9 @@ class FriendServiceTest extends IntegrationTestSupport {
         User user2 = users.get(1);
 
         FriendRequestRequest request = FriendRequestRequest.builder()
-            .userSeq(user1.getUserSeq())
             .targetSeq(user2.getUserSeq())
             .build();
-        FriendRequestResponse response = friendRequestService.createFriendRequest(request);
+        FriendRequestResponse response = friendRequestService.createFriendRequest(user1.getUserSeq(), request);
 
         // when // then
         assertThatThrownBy(() -> friendService.createFriend(response))

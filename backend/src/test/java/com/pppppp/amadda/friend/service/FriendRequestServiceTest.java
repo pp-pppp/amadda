@@ -94,12 +94,11 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         User user2 = users.get(1);
 
         FriendRequestRequest request = FriendRequestRequest.builder()
-            .userSeq(user1.getUserSeq())
             .targetSeq(user2.getUserSeq())
             .build();
 
         // when
-        FriendRequestResponse response = friendRequestService.createFriendRequest(request);
+        FriendRequestResponse response = friendRequestService.createFriendRequest(user1.getUserSeq(), request);
 
         //then
         assertThat(response).isNotNull();
@@ -125,12 +124,11 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         List<FriendRequest> friendRequests = friendRequestRepository.saveAll(List.of(fr));
 
         FriendRequestRequest request = FriendRequestRequest.builder()
-            .userSeq(user1.getUserSeq())
             .targetSeq(user2.getUserSeq())
             .build();
 
         // when // then
-        assertThatThrownBy(() -> friendRequestService.createFriendRequest(request))
+        assertThatThrownBy(() -> friendRequestService.createFriendRequest(user1.getUserSeq(), request))
             .isInstanceOf(RestApiException.class)
             .hasMessage("FRIEND_REQUEST_INVALID");
 
@@ -155,12 +153,11 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         savedFr.get(0).updateStatus(FriendRequestStatus.ACCEPTED); // 수정
 
         FriendRequestRequest request = FriendRequestRequest.builder()
-            .userSeq(users.get(0).getUserSeq())
             .targetSeq(users.get(1).getUserSeq())
             .build();
 
         // when // then
-        assertThatThrownBy(() -> friendRequestService.createFriendRequest(request))
+        assertThatThrownBy(() -> friendRequestService.createFriendRequest(users.get(0).getUserSeq(), request))
             .isInstanceOf(RestApiException.class)
             .hasMessage("FRIEND_REQUEST_INVALID");
 
@@ -180,11 +177,10 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         User user2 = users.get(1);
 
         FriendRequestRequest request = FriendRequestRequest.builder()
-            .userSeq(user1.getUserSeq())
             .targetSeq(user2.getUserSeq())
             .build();
 
-        FriendRequestResponse response = friendRequestService.createFriendRequest(request);
+        FriendRequestResponse response = friendRequestService.createFriendRequest(user1.getUserSeq(), request);
         Long requestSeq = response.requestSeq();
 
         Alarm a = Alarm.create(user2,
@@ -215,11 +211,10 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         FriendRequestRequest request = FriendRequestRequest.builder()
-            .userSeq(users.get(0).getUserSeq())
             .targetSeq(users.get(1).getUserSeq())
             .build();
 
-        FriendRequestResponse response = friendRequestService.createFriendRequest(request);
+        FriendRequestResponse response = friendRequestService.createFriendRequest(users.get(0).getUserSeq(), request);
         Long requestSeq = response.requestSeq();
 
         // when // then
@@ -239,10 +234,9 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         User user1 = users.get(0);
         User user2 = users.get(1);
         FriendRequestRequest request = FriendRequestRequest.builder()
-            .userSeq(user1.getUserSeq())
             .targetSeq(user2.getUserSeq())
             .build();
-        FriendRequestResponse response = friendRequestService.createFriendRequest(request);
+        FriendRequestResponse response = friendRequestService.createFriendRequest(user1.getUserSeq(), request);
 
         Alarm a = Alarm.create(user2,
             AlarmContent.FRIEND_REQUEST.getMessage(user1.getUserName()),
@@ -293,10 +287,9 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         User user2 = users.get(1);
 
         FriendRequestRequest request = FriendRequestRequest.builder()
-            .userSeq(user1.getUserSeq())
             .targetSeq(user2.getUserSeq())
             .build();
-        FriendRequestResponse response = friendRequestService.createFriendRequest(request);
+        FriendRequestResponse response = friendRequestService.createFriendRequest(user1.getUserSeq(), request);
 
         Alarm a = Alarm.create(user2,
             AlarmContent.FRIEND_REQUEST.getMessage(user1.getUserName()),
@@ -323,10 +316,9 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         FriendRequestRequest request = FriendRequestRequest.builder()
-            .userSeq(users.get(0).getUserSeq())
             .targetSeq(users.get(1).getUserSeq())
             .build();
-        FriendRequestResponse response = friendRequestService.createFriendRequest(request);
+        FriendRequestResponse response = friendRequestService.createFriendRequest(users.get(0).getUserSeq(), request);
         response = friendRequestService.findFriendRequestBySeq(response.requestSeq())
             .get().updateStatus(FriendRequestStatus.ACCEPTED);
         friendService.createFriend(response);

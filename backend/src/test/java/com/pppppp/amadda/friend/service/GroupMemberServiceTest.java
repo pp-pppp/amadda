@@ -57,11 +57,10 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
-            .ownerSeq(users.get(0).getUserSeq())
             .groupName("그룹명1")
             .userSeqs(List.of(users.get(1).getUserSeq(), users.get(2).getUserSeq()))
             .build();
-        Long groupSeq = userGroupService.createUserGroup(gcr);
+        Long groupSeq = userGroupService.createUserGroup(users.get(0).getUserSeq(), gcr);
 
         // when
         groupMemberService.createGroupMember(gcr, groupSeq);
@@ -84,7 +83,6 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
-            .ownerSeq(users.get(0).getUserSeq())
             .groupName("그룹명1")
             .userSeqs(List.of(users.get(1).getUserSeq(), users.get(2).getUserSeq()))
             .build();
@@ -104,7 +102,6 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
-            .ownerSeq(users.get(0).getUserSeq())
             .groupName("그룹명1")
             .userSeqs(List.of(3333L, users.get(2).getUserSeq()))
             .build();
@@ -125,7 +122,6 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
-            .ownerSeq(users.get(0).getUserSeq())
             .groupName("그룹명1")
             .userSeqs(List.of(users.get(1).getUserSeq(), users.get(2).getUserSeq()))
             .build();
@@ -147,11 +143,10 @@ class GroupMemberServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3, u4));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
-            .ownerSeq(users.get(0).getUserSeq())
             .groupName("그룹명1")
             .userSeqs(List.of(users.get(0).getUserSeq(), users.get(0).getUserSeq()))
             .build();
-        Long groupSeq = userGroupService.createUserGroup(gcr);
+        Long groupSeq = userGroupService.createUserGroup(users.get(0).getUserSeq(), gcr);
         groupMemberService.createGroupMember(gcr, groupSeq);
 
         GroupUpdateRequest gpr = GroupUpdateRequest.builder()
