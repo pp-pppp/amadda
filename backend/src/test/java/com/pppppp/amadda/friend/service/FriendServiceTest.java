@@ -84,8 +84,8 @@ class FriendServiceTest extends IntegrationTestSupport {
     @Test
     void beFriends() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
         User user1 = users.get(0);
         User user2 = users.get(1);
@@ -117,8 +117,8 @@ class FriendServiceTest extends IntegrationTestSupport {
     @Test
     void cantBeFriends() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
         User user1 = users.get(0);
         User user2 = users.get(1);
@@ -141,8 +141,8 @@ class FriendServiceTest extends IntegrationTestSupport {
     @Test
     void alreadyFriends() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         FriendRequest fr = FriendRequest.create(u1, u2);
@@ -160,8 +160,8 @@ class FriendServiceTest extends IntegrationTestSupport {
     @Test
     void notFriends() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         // when
@@ -176,8 +176,8 @@ class FriendServiceTest extends IntegrationTestSupport {
     @Test
     void deleteFriend() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         FriendRequest fr = FriendRequest.create(u1, u2);
@@ -195,11 +195,11 @@ class FriendServiceTest extends IntegrationTestSupport {
     @Test
     void searchInGroups() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
-        User u4 = User.create(9999L, "유자4", "id4", "imageUrl4");
-        User u5 = User.create(3456L, "유저5", "id5", "imageUrl5");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
+        User u3 = User.create("2222L", "유저3", "id3", "imageUrl3");
+        User u4 = User.create("9999L", "유자4", "id4", "imageUrl4");
+        User u5 = User.create("3456L", "유저5", "id5", "imageUrl5");
 
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3, u4, u5));
 
@@ -245,11 +245,11 @@ class FriendServiceTest extends IntegrationTestSupport {
     @Test
     void searchFriends() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
-        User u4 = User.create(9999L, "유자4", "id4", "imageUrl4");
-        User u5 = User.create(3456L, "유저5", "id5", "imageUrl5");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
+        User u3 = User.create("2222L", "유저3", "id3", "imageUrl3");
+        User u4 = User.create("9999L", "유자4", "id4", "imageUrl4");
+        User u5 = User.create("3456L", "유저5", "id5", "imageUrl5");
 
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3, u4, u5));
 

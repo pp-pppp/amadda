@@ -30,8 +30,8 @@ class CategoryRepositoryTest extends IntegrationTestSupport {
 
     @BeforeEach
     void setUp() {
-        User user1 = User.create(1L, "박동건", "icebearrrr", "url1");
-        User user2 = User.create(2L, "정민영", "minyoung", "url2");
+        User user1 = User.create("1L", "박동건", "icebearrrr", "url1");
+        User user2 = User.create("2L", "정민영", "minyoung", "url2");
         userRepository.saveAll(List.of(user1, user2));
 
         Schedule schedule1 = Schedule.builder()

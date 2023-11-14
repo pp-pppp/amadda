@@ -47,9 +47,9 @@ class UserGroupServiceTest extends IntegrationTestSupport {
     @Transactional
     void createGroup() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
+        User u3 = User.create("2222L", "유저3", "id3", "imageUrl3");
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
@@ -71,9 +71,9 @@ class UserGroupServiceTest extends IntegrationTestSupport {
     @DisplayName("그룹과 해당 멤버들을 삭제한다. ")
     @Test
     void deleteNotExistingGroup() {
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
+        User u3 = User.create("2222L", "유저3", "id3", "imageUrl3");
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()
@@ -95,9 +95,9 @@ class UserGroupServiceTest extends IntegrationTestSupport {
     @DisplayName("존재하지 않는 그룹을 삭제하면 예외가 발생한다. ")
     @Test
     void deleteGroupAndMembers() {
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
+        User u3 = User.create("2222L", "유저3", "id3", "imageUrl3");
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         GroupCreateRequest gcr = GroupCreateRequest.builder()

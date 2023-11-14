@@ -26,8 +26,8 @@ class UserRepositoryTest extends IntegrationTestSupport {
     @Test
     void saveUser() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
 
         // when
         List<User> users = userRepository.saveAll(List.of(u1, u2));
@@ -45,8 +45,8 @@ class UserRepositoryTest extends IntegrationTestSupport {
     @Test
     void findUserByUserSeq() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         // when
@@ -62,8 +62,8 @@ class UserRepositoryTest extends IntegrationTestSupport {
     @Test
     void findByUserId() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         // when

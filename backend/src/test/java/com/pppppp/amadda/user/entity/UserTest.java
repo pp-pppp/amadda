@@ -29,7 +29,7 @@ class UserTest extends IntegrationTestSupport {
     @Transactional
     void deleteUser() {
         // given
-        User u1 = User.create(0L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("0L", "유저1", "id1", "imageUrl1");
         User u = userRepository.save(u1);
 
         // when

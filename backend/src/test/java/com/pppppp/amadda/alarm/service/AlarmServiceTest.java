@@ -114,7 +114,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         "SCHEDULE_UPDATE"})
     void checkAlarmConfigOn(String type) {
         // given
-        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
         AlarmType alarmType = AlarmType.of(type);
@@ -134,7 +134,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         "SCHEDULE_UPDATE"})
     void checkAlarmConfigOff(String type) {
         // given
-        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
         AlarmType alarmType = AlarmType.of(type);
@@ -154,7 +154,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         "SCHEDULE_UPDATE"})
     void checkAlarmConfig(String type) {
         // given
-        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
         AlarmType alarmType = AlarmType.of(type);
@@ -170,7 +170,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
     @Test
     void getAlarms() {
         // given
-        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
         Alarm a1 = Alarm.create(user, "알람 테스트", AlarmType.FRIEND_REQUEST);
@@ -200,7 +200,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
     @Test
     void getAlarmsAndConfig() {
         // given
-        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
         Alarm a1 = Alarm.create(user, "알람 테스트", AlarmType.FRIEND_REQUEST);
@@ -238,7 +238,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
     @Test
     void getAlarms_allRead() {
         // given
-        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
         Alarm a1 = Alarm.create(user, "알람 테스트", AlarmType.FRIEND_REQUEST);
@@ -271,7 +271,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
     @Test
     void readAlarm() {
         // given
-        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
         Alarm a = Alarm.create(user, "알람 테스트", AlarmType.FRIEND_ACCEPT);
@@ -291,7 +291,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
     @Test
     void readAlarm_unauthorized() {
         // given
-        User u1 = User.create(1L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
         Alarm a = Alarm.create(user, "알람 테스트", AlarmType.SCHEDULE_ASSIGNED);
@@ -326,7 +326,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         "SCHEDULE_UPDATE"})
     void forGlobalSettingCreateAlarmConfigAndOn(String type) {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
         AlarmType alarmType = AlarmType.of(type);
@@ -348,7 +348,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         "SCHEDULE_UPDATE"})
     void forGlobalSettingFindAlarmConfigAndOn(String type) {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
         AlarmType alarmType = AlarmType.of(type);
@@ -373,7 +373,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         "SCHEDULE_UPDATE"})
     void forGlobalSettingCreateAlarmConfigAndOff(String type) {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
         AlarmType alarmType = AlarmType.of(type);
 
@@ -395,7 +395,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         "SCHEDULE_UPDATE"})
     void forGlobalSettingFindAlarmConfigAndOff(String type) {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
         AlarmType alarmType = AlarmType.of(type);
@@ -418,7 +418,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
     @Test
     void cannotChangeScheduleNotificationAlarmSetting() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
         AlarmType alarmType = AlarmType.SCHEDULE_NOTIFICATION;
@@ -859,7 +859,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
     @Test
     void scheduleNotification() throws InterruptedException {
         // given
-        User u = User.create(1L, "유저1", "user1", "img1");
+        User u = User.create("1111", "유저1", "user1", "img1");
         User user = userRepository.save(u);
 
         LocalDateTime now = LocalDateTime.now();
@@ -896,16 +896,16 @@ class AlarmServiceTest extends IntegrationTestSupport {
     }
 
     private List<User> create3users() {
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        User u3 = User.create(4321L, "유저3", "id3", "imageUrl3");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
+        User u3 = User.create("3333", "유저3", "id3", "imageUrl3");
         return userRepository.saveAll(List.of(u1, u2, u3));
     }
 
     private void create3UsersAndSchedule() {
-        User u1 = User.create(1L, "유저1", "user1", "image1");
-        User u2 = User.create(2L, "유저2", "user2", "image2");
-        User u3 = User.create(3L, "유저3", "user3", "image3");
+        User u1 = User.create("1111", "유저1", "user1", "image1");
+        User u2 = User.create("2222", "유저2", "user2", "image2");
+        User u3 = User.create("3333", "유저3", "user3", "image3");
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
         User user1 = users.get(0);
         User user2 = users.get(1);

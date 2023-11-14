@@ -87,8 +87,8 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
     @Test
     void sendFriendRequest() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
         User user1 = users.get(0);
         User user2 = users.get(1);
@@ -114,8 +114,8 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
     @Test
     void sendAlreadyRequestedRequest() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
         User user1 = users.get(0);
         User user2 = users.get(1);
@@ -140,8 +140,8 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
     @Test
     void sendAlreadyFriendRequest() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
         User user1 = users.get(0);
         User user2 = users.get(1);
@@ -169,8 +169,8 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
     @Test
     void declineFriendRequest() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         User user1 = users.get(0);
@@ -206,8 +206,8 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
     @Test
     void declineFriendRequestError() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         FriendRequestRequest request = FriendRequestRequest.builder()
@@ -227,8 +227,8 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
     @DisplayName("친구 요청을 수락하면 ACCEPTED 상태로 바뀌고 친구 관계가 된다. ")
     @Test
     void acceptFriendRequest() {
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         User user1 = users.get(0);
@@ -279,8 +279,8 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
     @Test
     void alreadyFriends() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         User user1 = users.get(0);
@@ -311,8 +311,8 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
     @Test
     void deleteFriendAndRequest() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         FriendRequestRequest request = FriendRequestRequest.builder()
@@ -343,8 +343,8 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
     @Test
     void deleteFriendRequestError() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         // when // then

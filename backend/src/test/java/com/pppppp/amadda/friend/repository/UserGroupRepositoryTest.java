@@ -36,7 +36,7 @@ class UserGroupRepositoryTest extends IntegrationTestSupport {
     @Test
     void createUserGroup() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         List<User> users = userRepository.saveAll(List.of(u1));
         UserGroup ug = UserGroup.create("그룹명1", u1);
 
@@ -53,9 +53,9 @@ class UserGroupRepositoryTest extends IntegrationTestSupport {
     @Test
     void findByGroupSeqAndSearchKey() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
+        User u3 = User.create("3333", "유저3", "id3", "imageUrl3");
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         UserGroup ug = UserGroup.create("그룹명1", u1);
@@ -84,9 +84,9 @@ class UserGroupRepositoryTest extends IntegrationTestSupport {
     @Test
     void findByGroupSeqAndNoSearchKey() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
-        User u3 = User.create(2222L, "유저3", "id3", "imageUrl3");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
+        User u3 = User.create("3333", "유저3", "id3", "imageUrl3");
         List<User> users = userRepository.saveAll(List.of(u1, u2, u3));
 
         UserGroup ug = UserGroup.create("그룹명1", u1);

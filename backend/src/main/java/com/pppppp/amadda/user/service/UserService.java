@@ -47,13 +47,19 @@ public class UserService {
             .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
     }
 
+    public User getUserInfoByKakaoId(String kakaoId) {
+        // TODO 테케도 만들어야 댐.
+        return findUserByKakaoId(kakaoId)
+                .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+    }
+
     public UserReadResponse getUserResponse(Long userSeq) {
         return UserReadResponse.of(getUserInfoBySeq(userSeq));
     }
 
-    public boolean checkIsInited(Long userSeq) {
+    public boolean checkIsInited(String kakaoId) {
         try {
-            getUserInfoBySeq(userSeq);
+            getUserInfoByKakaoId(kakaoId);
             return true;
         } catch (Exception e) {
             return false;
@@ -62,7 +68,8 @@ public class UserService {
 
     @Transactional
     public void saveUser(UserInitRequest request) {
-        String fileName = request.userSeq() + "_"
+        // TODO 파일 이름 나중에 바꿔야댐 시벌탱
+        String fileName = request.kakaoId() + "_"
             + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))
             + ".jpg";
         String s3Url = imageService.saveKakaoImgInS3(request.imageUrl(), fileName);
@@ -70,7 +77,7 @@ public class UserService {
         if(findUserWithExactId(request.userId()).isPresent())
             throw new RestApiException(UserErrorCode.USER_ID_DUPLICATED);
 
-        User u = User.create(Long.parseLong(request.userSeq()), request.userName(),
+        User u = User.create(request.kakaoId(), request.userName(),
             request.userId(), s3Url);
         saveUser(u);
     }
@@ -148,6 +155,10 @@ public class UserService {
         return Optional.ofNullable(userSeq).flatMap(userRepository::findById);
     }
 
+    private Optional<User> findUserByKakaoId(String kakaoId) {
+        return userRepository.findByKakaoId(kakaoId);
+    }
+
     private void saveUser(User user) {
         userRepository.save(user);
     }
@@ -163,9 +174,10 @@ public class UserService {
     // =================== 유저 인증 관련 메소드들 ===================
 
     public UserJwtInitResponse getTokensAndCheckInit(UserJwtRequest request) {
-        Long userSeq = Long.parseLong(request.userSeq());
+        // TODO 토큰 스트링으로 만들지는 나중에 고민하고 고치겠음.
+        Long userSeq = getUserInfoByKakaoId(request.kakaoId()).getUserSeq();
         List<String> tokens = tokenProvider.createTokens(userSeq);
-        boolean isInited = checkIsInited(userSeq);
+        boolean isInited = checkIsInited(request.kakaoId());
 
         return UserJwtInitResponse.of(
             tokens.get(0),

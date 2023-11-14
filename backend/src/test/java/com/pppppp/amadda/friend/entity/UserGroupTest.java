@@ -33,7 +33,7 @@ class UserGroupTest extends IntegrationTestSupport {
     @Transactional
     void updateGroupName() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         List<User> users = userRepository.saveAll(List.of(u1));
 
         UserGroup group = UserGroup.create("group1", u1);

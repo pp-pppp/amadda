@@ -59,8 +59,8 @@ class UserServiceTest extends IntegrationTestSupport {
     @Test
     void getUserByUserSeq() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         // when
@@ -76,8 +76,8 @@ class UserServiceTest extends IntegrationTestSupport {
     @Test
     void getUserResponse() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         // when
@@ -101,11 +101,11 @@ class UserServiceTest extends IntegrationTestSupport {
     @Test
     void getTokensAndCheckInit() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         List<User> users = userRepository.saveAll(List.of(u1));
 
         UserJwtRequest request = UserJwtRequest.builder()
-                .userSeq(users.get(0).getUserSeq().toString())
+                .kakaoId("1111")
                 .imageUrl("url1")
                 .build();
 
@@ -127,11 +127,11 @@ class UserServiceTest extends IntegrationTestSupport {
     @Test
     void getNewTokens() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         List<User> users = userRepository.saveAll(List.of(u1));
 
         UserJwtRequest request = UserJwtRequest.builder()
-                .userSeq(users.get(0).getUserSeq().toString())
+                .kakaoId("1111")
                 .imageUrl("url1")
                 .build();
         UserJwtInitResponse response = userService.getTokensAndCheckInit(request);
@@ -156,10 +156,10 @@ class UserServiceTest extends IntegrationTestSupport {
     @Test
     void checkIsInited() {
         // given
-        Long userSeq = 0L;
+        String kakaoId = "1111";
 
         // when
-        boolean b = userService.checkIsInited(userSeq);
+        boolean b = userService.checkIsInited(kakaoId);
 
         // then
         assertThat(b).isFalse();
@@ -173,7 +173,7 @@ class UserServiceTest extends IntegrationTestSupport {
                 .userId("jammminjung")
                 .userName("잼민정")
                 .imageUrl("https://www.readersnews.com/news/photo/202305/108912_78151_1733.jpg")
-                .userSeq("1111")
+                .kakaoId("1111")
                 .build();
         String fileName = "https://amadda-bucket.s3.ap-northeast-2.amazonaws.com/1111_"
                 + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))
@@ -194,13 +194,13 @@ class UserServiceTest extends IntegrationTestSupport {
     @Test
     void saveUser_duplicatedUserId() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
         List<User> users = userRepository.saveAll(List.of(u1));
         UserInitRequest request = UserInitRequest.builder()
                 .userId("id1")
                 .userName("잼민정")
                 .imageUrl("https://www.readersnews.com/news/photo/202305/108912_78151_1733.jpg")
-                .userSeq("")
+                .kakaoId("")
                 .build();
 
         // when // then
@@ -244,8 +244,8 @@ class UserServiceTest extends IntegrationTestSupport {
     @Test
     void getUserInfoAndIsFriend_withSearchKey() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         Friend f1 = Friend.create(u1, u2);
@@ -265,8 +265,8 @@ class UserServiceTest extends IntegrationTestSupport {
     @Test
     void getUserInfoAndIsNotFriend_withSearchKey() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         // when
@@ -282,8 +282,8 @@ class UserServiceTest extends IntegrationTestSupport {
     @Test
     void getUserInfoAndIsFriend() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         Friend f1 = Friend.create(u1, u2);
@@ -303,8 +303,8 @@ class UserServiceTest extends IntegrationTestSupport {
     @Test
     void getUserInfoAndIsNotFriend() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         // when
@@ -320,8 +320,8 @@ class UserServiceTest extends IntegrationTestSupport {
     @Test
     void getUserInfoAndIsFriend__withSearchKey_notFound() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         // when
@@ -337,8 +337,8 @@ class UserServiceTest extends IntegrationTestSupport {
     @Test
     void isFriend() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         Friend f1 = Friend.create(u1, u2);
@@ -356,8 +356,8 @@ class UserServiceTest extends IntegrationTestSupport {
     @Test
     void isNotFriend() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         // when
@@ -371,8 +371,8 @@ class UserServiceTest extends IntegrationTestSupport {
     @Test
     void isFriend_damaged() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         Friend f1 = Friend.create(u1, u2);
@@ -388,8 +388,8 @@ class UserServiceTest extends IntegrationTestSupport {
     @Test
     void chkId_duplicated() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         UserIdCheckRequest request = UserIdCheckRequest.builder()
@@ -408,8 +408,8 @@ class UserServiceTest extends IntegrationTestSupport {
     @Test
     void chkId_good() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         UserIdCheckRequest request = UserIdCheckRequest.builder()
@@ -428,8 +428,8 @@ class UserServiceTest extends IntegrationTestSupport {
     @Test
     void chkId_notValid() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111L", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234L", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         UserIdCheckRequest request = UserIdCheckRequest.builder()
@@ -479,7 +479,7 @@ class UserServiceTest extends IntegrationTestSupport {
     @Transactional
     void deleteUserInfo() {
         // given
-        User u1 = User.create(0L, "유저1", "id1", "imageUrl1");
+        User u1 = User.create("0L", "유저1", "id1", "imageUrl1");
         User u = userRepository.save(u1);
 
         // when

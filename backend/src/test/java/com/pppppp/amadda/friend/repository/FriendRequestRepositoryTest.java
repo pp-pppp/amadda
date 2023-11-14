@@ -34,8 +34,8 @@ class FriendRequestRepositoryTest extends IntegrationTestSupport {
     void sendFriendRequest() {
         // given
         // 사람 두명 만들고 그 두명으로 친구 신청
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         FriendRequest fr = FriendRequest.create(u1, u2); // u1가 u2에게 신청
@@ -56,8 +56,8 @@ class FriendRequestRepositoryTest extends IntegrationTestSupport {
     void findFriendRequest() {
         // given
         // 사람 두명 만들고 그 두명으로 친구 신청
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         FriendRequest fr = FriendRequest.create(u1, u2); // u1가 u2에게 신청
@@ -76,8 +76,8 @@ class FriendRequestRepositoryTest extends IntegrationTestSupport {
     @Test
     void deleteFriendRequest() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         FriendRequest fr = FriendRequest.create(u1, u2); // u1가 u2에게 신청

@@ -33,8 +33,8 @@ class FriendRequestTest extends IntegrationTestSupport {
     @Transactional
     void updateFriendStatus() {
         // given
-        User u1 = User.create(1111L, "유저1", "id1", "imageUrl1");
-        User u2 = User.create(1234L, "유저2", "id2", "imageUrl2");
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         FriendRequest fr = FriendRequest.create(u1, u2); // u1가 u2에게 신청
