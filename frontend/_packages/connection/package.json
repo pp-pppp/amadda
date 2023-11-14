@@ -1,0 +1,13 @@
+{
+  "name": "connection",
+  "license": "MIT",
+  "version": "0.0.0",
+  "private": true,
+  "types": "index.d.ts",
+  "devDependencies": {
+    "axios": "^1.6.0",
+    "kafkajs": "^2.2.4",
+    "redis": "^4.6.10",
+    "typescript": "5.2.2"
+  }
+}
