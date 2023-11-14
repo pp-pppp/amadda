@@ -1,6 +1,7 @@
 package com.pppppp.amadda.alarm.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -65,13 +66,10 @@ class AlarmControllerTest extends ControllerTestSupport {
     void setGlobalAlarmOn(String type) throws Exception {
         // given
         AlarmType alarmType = AlarmType.of(type);
-        AlarmConfigRequest request = AlarmConfigRequest.builder()
-            .userSeq(1L)
-            .alarmType(alarmType).
-            build();
+        AlarmConfigRequest request = AlarmConfigRequest.builder().alarmType(alarmType).build();
 
         // stubbing
-        when(alarmService.setGlobalAlarm(any(), eq(true)))
+        when(alarmService.setGlobalAlarm(anyLong(), any(), eq(true)))
             .thenReturn(AlarmConfig.builder().alarmType(alarmType).build());
 
         // when + then
@@ -96,11 +94,10 @@ class AlarmControllerTest extends ControllerTestSupport {
     void setGlobalAlarmOff(String type) throws Exception {
         // given
         AlarmType alarmType = AlarmType.of(type);
-        AlarmConfigRequest request = AlarmConfigRequest.builder()
-            .userSeq(1L).alarmType(alarmType).build();
+        AlarmConfigRequest request = AlarmConfigRequest.builder().alarmType(alarmType).build();
 
         // stubbing
-        when(alarmService.setGlobalAlarm(any(), eq(false)))
+        when(alarmService.setGlobalAlarm(anyLong(), any(), eq(false)))
             .thenReturn(AlarmConfig.builder().alarmType(alarmType).build());
 
         // when + then

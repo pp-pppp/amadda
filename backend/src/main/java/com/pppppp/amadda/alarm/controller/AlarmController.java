@@ -42,15 +42,19 @@ public class AlarmController {
     }
 
     @PostMapping("/subscribe")
-    public ApiResponse<String> subscribeAlarm(@Valid @RequestBody AlarmConfigRequest request) {
-        AlarmConfig alarmConfig = alarmService.setGlobalAlarm(request, true);
+    public ApiResponse<String> subscribeAlarm(HttpServletRequest http,
+        @Valid @RequestBody AlarmConfigRequest request) {
+        Long userSeq = tokenProvider.getUserSeq(http);
+        AlarmConfig alarmConfig = alarmService.setGlobalAlarm(userSeq, request.alarmType(), true);
         String alarmName = alarmConfig.getAlarmType().getContent();
         return ApiResponse.ok(String.format("%s 알림을 설정합니다.", alarmName));
     }
 
     @PostMapping("/unsubscribe")
-    public ApiResponse<String> unsubscribeAlarm(@Valid @RequestBody AlarmConfigRequest request) {
-        AlarmConfig alarmConfig = alarmService.setGlobalAlarm(request, false);
+    public ApiResponse<String> unsubscribeAlarm(HttpServletRequest http,
+        @Valid @RequestBody AlarmConfigRequest request) {
+        Long userSeq = tokenProvider.getUserSeq(http);
+        AlarmConfig alarmConfig = alarmService.setGlobalAlarm(userSeq, request.alarmType(), false);
         String alarmName = alarmConfig.getAlarmType().getContent();
         return ApiResponse.ok(String.format("%s 알림이 해제되었습니다.", alarmName));
     }
