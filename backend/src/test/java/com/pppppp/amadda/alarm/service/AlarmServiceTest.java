@@ -330,11 +330,9 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User user = userRepository.save(u1);
 
         AlarmType alarmType = AlarmType.of(type);
-        AlarmConfigRequest request = AlarmConfigRequest.builder()
-            .userSeq(user.getUserSeq()).alarmType(alarmType).build();
 
         // when
-        AlarmConfig alarmConfig = alarmService.setGlobalAlarm(request, true);
+        AlarmConfig alarmConfig = alarmService.setGlobalAlarm(user.getUserSeq(), alarmType, true);
 
         // then
         assertThat(alarmConfig.getUser().getUserSeq()).isEqualTo(user.getUserSeq());
@@ -355,11 +353,9 @@ class AlarmServiceTest extends IntegrationTestSupport {
         AlarmConfig alarmConfig = AlarmConfig.create(user, alarmType, false);
         alarmConfigRepository.save(alarmConfig);
 
-        AlarmConfigRequest request = AlarmConfigRequest.builder()
-            .userSeq(user.getUserSeq()).alarmType(alarmType).build();
-
         // when
-        AlarmConfig savedAlarmConfig = alarmService.setGlobalAlarm(request, true);
+        AlarmConfig savedAlarmConfig = alarmService.setGlobalAlarm(user.getUserSeq(), alarmType,
+            true);
 
         // then
         assertThat(savedAlarmConfig.getUser().getUserSeq()).isEqualTo(user.getUserSeq());
@@ -377,11 +373,8 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User user = userRepository.save(u1);
         AlarmType alarmType = AlarmType.of(type);
 
-        AlarmConfigRequest request = AlarmConfigRequest.builder()
-            .userSeq(user.getUserSeq()).alarmType(alarmType).build();
-
         // when
-        AlarmConfig alarmConfig = alarmService.setGlobalAlarm(request, false);
+        AlarmConfig alarmConfig = alarmService.setGlobalAlarm(user.getUserSeq(), alarmType, false);
 
         // then
         assertThat(alarmConfig.getUser().getUserSeq()).isEqualTo(user.getUserSeq());
@@ -402,11 +395,9 @@ class AlarmServiceTest extends IntegrationTestSupport {
         AlarmConfig alarmConfig = AlarmConfig.create(user, alarmType, true);
         alarmConfigRepository.save(alarmConfig);
 
-        AlarmConfigRequest request = AlarmConfigRequest.builder()
-            .userSeq(user.getUserSeq()).alarmType(alarmType).build();
-
         // when
-        AlarmConfig savedAlarmConfig = alarmService.setGlobalAlarm(request, false);
+        AlarmConfig savedAlarmConfig = alarmService.setGlobalAlarm(user.getUserSeq(), alarmType,
+            false);
 
         // then
         assertThat(savedAlarmConfig.getUser().getUserSeq()).isEqualTo(user.getUserSeq());
@@ -422,11 +413,10 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User user = userRepository.save(u1);
 
         AlarmType alarmType = AlarmType.SCHEDULE_NOTIFICATION;
-        AlarmConfigRequest request = AlarmConfigRequest.builder()
-            .userSeq(user.getUserSeq()).alarmType(alarmType).build();
+        AlarmConfigRequest request = AlarmConfigRequest.builder().alarmType(alarmType).build();
 
         // when + then
-        assertThatThrownBy(() -> alarmService.setGlobalAlarm(request, true))
+        assertThatThrownBy(() -> alarmService.setGlobalAlarm(user.getUserSeq(), alarmType, true))
             .isInstanceOf(RestApiException.class)
             .hasMessage(AlarmErrorCode.CANNOT_SET_GLOBAL_CONFIG.name());
     }

@@ -1,6 +1,5 @@
 package com.pppppp.amadda.alarm.service;
 
-import com.pppppp.amadda.alarm.dto.request.AlarmConfigRequest;
 import com.pppppp.amadda.alarm.dto.response.AlarmReadResponse;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendAccept;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendRequest;
@@ -95,10 +94,10 @@ public class AlarmService {
     /* 알림 전송 */
 
     @Transactional
-    public AlarmConfig setGlobalAlarm(AlarmConfigRequest request, boolean isEnabled) {
-        validateGlobalAlarm(request.alarmType());
-        User user = getUser(request.userSeq());
-        AlarmConfig alarmConfig = updateOrCreateAlarmConfig(request.alarmType(), isEnabled, user);
+    public AlarmConfig setGlobalAlarm(Long userSeq, AlarmType alarmType, boolean isEnabled) {
+        validateGlobalAlarm(alarmType);
+        User user = getUser(userSeq);
+        AlarmConfig alarmConfig = updateOrCreateAlarmConfig(alarmType, isEnabled, user);
         return alarmConfigRepository.save(alarmConfig);
     }
 
