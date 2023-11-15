@@ -15,6 +15,7 @@ export interface UserJwtResponse {
   accessToken: string;
   refreshToken: string;
   refreshAccessKey: string;
+  isInited: boolean;
 }
 export interface UserJwtInitResponse {
   accessToken: string;
