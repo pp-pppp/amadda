@@ -2,7 +2,6 @@ package com.pppppp.amadda.alarm.service;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -14,6 +13,8 @@ import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleNotification;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleUpdate;
 import com.pppppp.amadda.alarm.entity.KafkaTopic;
 import com.pppppp.amadda.alarm.repository.AlarmRepository;
+import com.pppppp.amadda.alarm.repository.FriendRequestAlarmRepository;
+import com.pppppp.amadda.alarm.repository.ScheduleAlarmRepository;
 import com.pppppp.amadda.friend.entity.FriendRequest;
 import com.pppppp.amadda.friend.repository.FriendRequestRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
@@ -33,6 +34,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 
 @EmbeddedKafka(
@@ -59,16 +61,24 @@ class KafkaConsumerTest extends IntegrationTestSupport {
     @Autowired
     private ScheduleRepository scheduleRepository;
 
+    @MockBean
+    private ScheduleAlarmRepository scheduleAlarmRepository;
+
+    @MockBean
+    private FriendRequestAlarmRepository friendRequestAlarmRepository;
+
     private KafkaConsumer kafkaConsumer;
 
     @BeforeEach
     void setUp() {
-        alarmRepository = mock(AlarmRepository.class);
-        kafkaConsumer = new KafkaConsumer(alarmRepository, userRepository);
+        kafkaConsumer = new KafkaConsumer(alarmRepository, userRepository, scheduleAlarmRepository,
+            friendRequestAlarmRepository, scheduleRepository, friendRequestRepository);
     }
 
     @AfterEach
     void tearDown() {
+        friendRequestAlarmRepository.deleteAllInBatch();
+        scheduleAlarmRepository.deleteAllInBatch();
         scheduleRepository.deleteAllInBatch();
         alarmRepository.deleteAllInBatch();
         friendRequestRepository.deleteAllInBatch();
@@ -100,7 +110,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         kafkaConsumer.consumeFriendRequest(consumerRecord);
 
         // then
-        verify(alarmRepository, times(1)).save(any());
+        verify(friendRequestAlarmRepository, times(1)).save(any());
 
     }
 
@@ -128,7 +138,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         kafkaConsumer.consumeFriendAccept(consumerRecord);
 
         // then
-        verify(alarmRepository, times(1)).save(any());
+        verify(friendRequestAlarmRepository, times(1)).save(any());
 
     }
 
@@ -157,7 +167,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         kafkaConsumer.consumeScheduleAssigned(consumerRecord);
 
         // then
-        verify(alarmRepository, times(1)).save(any());
+        verify(scheduleAlarmRepository, times(1)).save(any());
     }
 
     @DisplayName("alarm.schedule-update consume 검증")
@@ -184,7 +194,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         kafkaConsumer.consumeScheduleUpdate(consumerRecord);
 
         // then
-        verify(alarmRepository, times(1)).save(any());
+        verify(scheduleAlarmRepository, times(1)).save(any());
     }
 
     @DisplayName("alarm.schedule-notification consume 검증")
@@ -212,7 +222,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         kafkaConsumer.consumeScheduleNotification(consumerRecord);
 
         // then
-        verify(alarmRepository, times(1)).save(any());
+        verify(scheduleAlarmRepository, times(1)).save(any());
     }
 
     @DisplayName("alarm.schedule-notification consume 'None' 예외 검증")

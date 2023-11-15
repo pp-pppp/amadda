@@ -20,9 +20,13 @@ import com.pppppp.amadda.alarm.entity.Alarm;
 import com.pppppp.amadda.alarm.entity.AlarmConfig;
 import com.pppppp.amadda.alarm.entity.AlarmContent;
 import com.pppppp.amadda.alarm.entity.AlarmType;
+import com.pppppp.amadda.alarm.entity.FriendRequestAlarm;
 import com.pppppp.amadda.alarm.entity.KafkaTopic;
+import com.pppppp.amadda.alarm.entity.ScheduleAlarm;
 import com.pppppp.amadda.alarm.repository.AlarmConfigRepository;
 import com.pppppp.amadda.alarm.repository.AlarmRepository;
+import com.pppppp.amadda.alarm.repository.FriendRequestAlarmRepository;
+import com.pppppp.amadda.alarm.repository.ScheduleAlarmRepository;
 import com.pppppp.amadda.friend.entity.FriendRequest;
 import com.pppppp.amadda.friend.repository.FriendRequestRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
@@ -39,6 +43,7 @@ import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -98,8 +103,16 @@ class AlarmServiceTest extends IntegrationTestSupport {
     @Autowired
     private AlarmRepository alarmRepository;
 
+    @Autowired
+    private FriendRequestAlarmRepository friendRequestAlarmRepository;
+
+    @Autowired
+    private ScheduleAlarmRepository scheduleAlarmRepository;
+
     @AfterEach
     void tearDown() {
+        scheduleAlarmRepository.deleteAllInBatch();
+        friendRequestAlarmRepository.deleteAllInBatch();
         alarmRepository.deleteAllInBatch();
         alarmConfigRepository.deleteAllInBatch();
         participationRepository.deleteAllInBatch();
@@ -171,15 +184,35 @@ class AlarmServiceTest extends IntegrationTestSupport {
     void getAlarms() {
         // given
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
-        User user = userRepository.save(u1);
+        User u2 = User.create("1234", "유저2", "id2", "imageUrl2");
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
+        User user1 = users.get(0);
+        User user2 = users.get(1);
 
-        Alarm a1 = Alarm.create(user, "알람 테스트", AlarmType.FRIEND_REQUEST);
-        Alarm a2 = Alarm.create(user, "알람 테스트", AlarmType.FRIEND_ACCEPT);
-        Alarm a3 = Alarm.create(user, "알람 테스트", AlarmType.SCHEDULE_ASSIGNED);
-        Alarm a4 = Alarm.create(user, "알람 테스트", AlarmType.MENTIONED);
-        Alarm a5 = Alarm.create(user, "알람 테스트", AlarmType.SCHEDULE_UPDATE);
-        Alarm a6 = Alarm.create(user, "알람 테스트", AlarmType.SCHEDULE_NOTIFICATION);
-        List<Alarm> alarms = alarmRepository.saveAll(List.of(a1, a2, a3, a4, a5, a6));
+        FriendRequest fr = FriendRequest.create(user1, user2);
+        FriendRequest friendRequest = friendRequestRepository.save(fr);
+
+        Schedule s = Schedule.create(user1, "일정");
+        Schedule schedule = scheduleRepository.save(s);
+
+        FriendRequestAlarm a1 = FriendRequestAlarm.create(user1, "알람 테스트", AlarmType.FRIEND_REQUEST,
+            fr);
+        FriendRequestAlarm a2 = FriendRequestAlarm.create(user1, "알람 테스트", AlarmType.FRIEND_ACCEPT,
+            fr);
+        ScheduleAlarm a3 = ScheduleAlarm.create(user1, "알람 테스트", AlarmType.SCHEDULE_ASSIGNED,
+            schedule);
+        ScheduleAlarm a4 = ScheduleAlarm.create(user1, "알람 테스트", AlarmType.MENTIONED, schedule);
+        ScheduleAlarm a5 = ScheduleAlarm.create(user1, "알람 테스트", AlarmType.SCHEDULE_UPDATE,
+            schedule);
+        ScheduleAlarm a6 = ScheduleAlarm.create(user1, "알람 테스트", AlarmType.SCHEDULE_NOTIFICATION,
+            schedule);
+        List<FriendRequestAlarm> friendRequestAlarms = friendRequestAlarmRepository.saveAll(
+            List.of(a1, a2));
+        List<ScheduleAlarm> scheduleAlarms = scheduleAlarmRepository.saveAll(
+            List.of(a3, a4, a5, a6));
+        List<Alarm> alarms = new ArrayList<>();
+        alarms.addAll(friendRequestAlarms);
+        alarms.addAll(scheduleAlarms);
 
         alarms.get(0).markAsRead();
         alarms.get(1).markAsRead();
@@ -187,7 +220,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         alarmRepository.saveAll(alarms);
 
         // when
-        List<AlarmReadResponse> result = alarmService.getAlarms(user.getUserSeq());
+        List<AlarmReadResponse> result = alarmService.getAlarms(user1.getUserSeq());
 
         // then
         assertThat(result).hasSize(3)
@@ -201,27 +234,47 @@ class AlarmServiceTest extends IntegrationTestSupport {
     void getAlarmsAndConfig() {
         // given
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
-        User user = userRepository.save(u1);
+        User u2 = User.create("1234", "유저2", "id2", "imageUrl2");
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
+        User user1 = users.get(0);
+        User user2 = users.get(1);
 
-        Alarm a1 = Alarm.create(user, "알람 테스트", AlarmType.FRIEND_REQUEST);
-        Alarm a2 = Alarm.create(user, "알람 테스트", AlarmType.FRIEND_ACCEPT);
-        Alarm a3 = Alarm.create(user, "알람 테스트", AlarmType.SCHEDULE_ASSIGNED);
-        Alarm a4 = Alarm.create(user, "알람 테스트", AlarmType.MENTIONED);
-        Alarm a5 = Alarm.create(user, "알람 테스트", AlarmType.SCHEDULE_UPDATE);
-        Alarm a6 = Alarm.create(user, "알람 테스트", AlarmType.SCHEDULE_NOTIFICATION);
-        List<Alarm> alarms = alarmRepository.saveAll(List.of(a1, a2, a3, a4, a5, a6));
+        FriendRequest fr = FriendRequest.create(user1, user2);
+        FriendRequest friendRequest = friendRequestRepository.save(fr);
+
+        Schedule s = Schedule.create(user1, "일정");
+        Schedule schedule = scheduleRepository.save(s);
+
+        FriendRequestAlarm a1 = FriendRequestAlarm.create(user1, "알람 테스트", AlarmType.FRIEND_REQUEST,
+            fr);
+        FriendRequestAlarm a2 = FriendRequestAlarm.create(user1, "알람 테스트", AlarmType.FRIEND_ACCEPT,
+            fr);
+        ScheduleAlarm a3 = ScheduleAlarm.create(user1, "알람 테스트", AlarmType.SCHEDULE_ASSIGNED,
+            schedule);
+        ScheduleAlarm a4 = ScheduleAlarm.create(user1, "알람 테스트", AlarmType.MENTIONED, schedule);
+        ScheduleAlarm a5 = ScheduleAlarm.create(user1, "알람 테스트", AlarmType.SCHEDULE_UPDATE,
+            schedule);
+        ScheduleAlarm a6 = ScheduleAlarm.create(user1, "알람 테스트", AlarmType.SCHEDULE_NOTIFICATION,
+            schedule);
+        List<FriendRequestAlarm> friendRequestAlarms = friendRequestAlarmRepository.saveAll(
+            List.of(a1, a2));
+        List<ScheduleAlarm> scheduleAlarms = scheduleAlarmRepository.saveAll(
+            List.of(a3, a4, a5, a6));
+        List<Alarm> alarms = new ArrayList<>();
+        alarms.addAll(friendRequestAlarms);
+        alarms.addAll(scheduleAlarms);
 
         alarms.get(0).markAsRead();
         alarms.get(1).markAsRead();
         alarmRepository.saveAll(alarms);
 
 //        AlarmType.SCHEDULE_ASSIGNED config 생성도 하지 않은 상태
-        AlarmConfig ac1 = AlarmConfig.create(user, AlarmType.MENTIONED, true);
-        AlarmConfig ac2 = AlarmConfig.create(user, AlarmType.SCHEDULE_UPDATE, false);
+        AlarmConfig ac1 = AlarmConfig.create(user1, AlarmType.MENTIONED, true);
+        AlarmConfig ac2 = AlarmConfig.create(user1, AlarmType.SCHEDULE_UPDATE, false);
         alarmConfigRepository.saveAll(List.of(ac1, ac2));
 
         // when
-        List<AlarmReadResponse> result = alarmService.getAlarms(user.getUserSeq());
+        List<AlarmReadResponse> result = alarmService.getAlarms(user1.getUserSeq());
 
         // then
         assertThat(result).hasSize(4)
@@ -239,20 +292,46 @@ class AlarmServiceTest extends IntegrationTestSupport {
     void getAlarms_allRead() {
         // given
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
-        User user = userRepository.save(u1);
+        User u2 = User.create("1234", "유저2", "id2", "imageUrl2");
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
+        User user1 = users.get(0);
+        User user2 = users.get(1);
 
-        Alarm a1 = Alarm.create(user, "알람 테스트", AlarmType.FRIEND_REQUEST);
-        Alarm a2 = Alarm.create(user, "알람 테스트", AlarmType.FRIEND_ACCEPT);
-        Alarm a3 = Alarm.create(user, "알람 테스트", AlarmType.SCHEDULE_ASSIGNED);
-        List<Alarm> alarms = alarmRepository.saveAll(List.of(a1, a2, a3));
+        FriendRequest fr = FriendRequest.create(user1, user2);
+        FriendRequest friendRequest = friendRequestRepository.save(fr);
+
+        Schedule s = Schedule.create(user1, "일정");
+        Schedule schedule = scheduleRepository.save(s);
+
+        FriendRequestAlarm a1 = FriendRequestAlarm.create(user1, "알람 테스트", AlarmType.FRIEND_REQUEST,
+            fr);
+        FriendRequestAlarm a2 = FriendRequestAlarm.create(user1, "알람 테스트", AlarmType.FRIEND_ACCEPT,
+            fr);
+        ScheduleAlarm a3 = ScheduleAlarm.create(user1, "알람 테스트", AlarmType.SCHEDULE_ASSIGNED,
+            schedule);
+        ScheduleAlarm a4 = ScheduleAlarm.create(user1, "알람 테스트", AlarmType.MENTIONED, schedule);
+        ScheduleAlarm a5 = ScheduleAlarm.create(user1, "알람 테스트", AlarmType.SCHEDULE_UPDATE,
+            schedule);
+        ScheduleAlarm a6 = ScheduleAlarm.create(user1, "알람 테스트", AlarmType.SCHEDULE_NOTIFICATION,
+            schedule);
+        List<FriendRequestAlarm> friendRequestAlarms = friendRequestAlarmRepository.saveAll(
+            List.of(a1, a2));
+        List<ScheduleAlarm> scheduleAlarms = scheduleAlarmRepository.saveAll(
+            List.of(a3, a4, a5, a6));
+        List<Alarm> alarms = new ArrayList<>();
+        alarms.addAll(friendRequestAlarms);
+        alarms.addAll(scheduleAlarms);
 
         alarms.get(0).markAsRead();
         alarms.get(1).markAsRead();
         alarms.get(2).markAsRead();
+        alarms.get(3).markAsRead();
+        alarms.get(4).markAsRead();
+        alarms.get(5).markAsRead();
         alarmRepository.saveAll(alarms);
 
         // when
-        List<AlarmReadResponse> result = alarmService.getAlarms(user.getUserSeq());
+        List<AlarmReadResponse> result = alarmService.getAlarms(user1.getUserSeq());
 
         // then
         assertThat(result).hasSize(0);
@@ -267,15 +346,144 @@ class AlarmServiceTest extends IntegrationTestSupport {
             .hasMessage("USER_NOT_FOUND");
     }
 
-    @DisplayName("알림 읽음 처리")
+    @DisplayName("알림 읽음 처리 - 친신")
     @Test
-    void readAlarm() {
+    void readAlarmFriendRequest() {
         // given
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
-        User user = userRepository.save(u1);
+        User u2 = User.create("1234", "유저2", "id2", "imageUrl2");
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
+        User user1 = users.get(0);
+        User user2 = users.get(1);
 
-        Alarm a = Alarm.create(user, "알람 테스트", AlarmType.FRIEND_ACCEPT);
-        Alarm alarm = alarmRepository.save(a);
+        FriendRequest fr = FriendRequest.create(user1, user2);
+        FriendRequest friendRequest = friendRequestRepository.save(fr);
+
+        FriendRequestAlarm a = FriendRequestAlarm.create(user1, "알람 테스트", AlarmType.FRIEND_REQUEST,
+            fr);
+        FriendRequestAlarm alarm = friendRequestAlarmRepository.save(a);
+
+        // when
+        alarmService.readAlarm(alarm.getAlarmSeq(), user1.getUserSeq());
+
+        // then
+        Optional<Alarm> result = alarmRepository.findById(alarm.getAlarmSeq());
+
+        assertTrue(result.isPresent());
+        assertTrue(result.get().isRead());
+    }
+
+    @DisplayName("알림 읽음 처리 - 친구")
+    @Test
+    void readAlarmAccept() {
+        // given
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234", "유저2", "id2", "imageUrl2");
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
+        User user1 = users.get(0);
+        User user2 = users.get(1);
+
+        FriendRequest fr = FriendRequest.create(user1, user2);
+        FriendRequest friendRequest = friendRequestRepository.save(fr);
+
+        FriendRequestAlarm a = FriendRequestAlarm.create(user1, "알람 테스트", AlarmType.FRIEND_ACCEPT,
+            fr);
+        FriendRequestAlarm alarm = friendRequestAlarmRepository.save(a);
+
+        // when
+        alarmService.readAlarm(alarm.getAlarmSeq(), user1.getUserSeq());
+
+        // then
+        Optional<Alarm> result = alarmRepository.findById(alarm.getAlarmSeq());
+
+        assertTrue(result.isPresent());
+        assertTrue(result.get().isRead());
+    }
+
+    @DisplayName("알림 읽음 처리 - 할당")
+    @Test
+    void readAlarmScheduleAssgiend() {
+        // given
+        User u = User.create("1111", "유저1", "id1", "imageUrl1");
+        User user = userRepository.save(u);
+
+        Schedule s = Schedule.create(user, "일정");
+        Schedule schedule = scheduleRepository.save(s);
+
+        ScheduleAlarm a = ScheduleAlarm.create(user, "알람 테스트", AlarmType.SCHEDULE_ASSIGNED,
+            schedule);
+        ScheduleAlarm alarm = scheduleAlarmRepository.save(a);
+
+        // when
+        alarmService.readAlarm(alarm.getAlarmSeq(), user.getUserSeq());
+
+        // then
+        Optional<Alarm> result = alarmRepository.findById(alarm.getAlarmSeq());
+
+        assertTrue(result.isPresent());
+        assertTrue(result.get().isRead());
+    }
+
+    @DisplayName("알림 읽음 처리 - 업뎃")
+    @Test
+    void readAlarmScheduleUpdate() {
+        // given
+        User u = User.create("1111", "유저1", "id1", "imageUrl1");
+        User user = userRepository.save(u);
+
+        Schedule s = Schedule.create(user, "일정");
+        Schedule schedule = scheduleRepository.save(s);
+
+        ScheduleAlarm a = ScheduleAlarm.create(user, "알람 테스트", AlarmType.SCHEDULE_UPDATE,
+            schedule);
+        ScheduleAlarm alarm = scheduleAlarmRepository.save(a);
+
+        // when
+        alarmService.readAlarm(alarm.getAlarmSeq(), user.getUserSeq());
+
+        // then
+        Optional<Alarm> result = alarmRepository.findById(alarm.getAlarmSeq());
+
+        assertTrue(result.isPresent());
+        assertTrue(result.get().isRead());
+    }
+
+    @DisplayName("알림 읽음 처리 - 멘션")
+    @Test
+    void readAlarmMentioned() {
+        // given
+        User u = User.create("1111", "유저1", "id1", "imageUrl1");
+        User user = userRepository.save(u);
+
+        Schedule s = Schedule.create(user, "일정");
+        Schedule schedule = scheduleRepository.save(s);
+
+        ScheduleAlarm a = ScheduleAlarm.create(user, "알람 테스트", AlarmType.MENTIONED, schedule);
+        ScheduleAlarm alarm = scheduleAlarmRepository.save(a);
+
+        // when
+        alarmService.readAlarm(alarm.getAlarmSeq(), user.getUserSeq());
+
+        // then
+        Optional<Alarm> result = alarmRepository.findById(alarm.getAlarmSeq());
+
+        assertTrue(result.isPresent());
+        assertTrue(result.get().isRead());
+    }
+
+    @DisplayName("알림 읽음 처리 - 예정")
+    @Test
+    void readAlarmScheduleNotification() {
+        // given
+        User u = User.create("1111", "유저1", "id1", "imageUrl1");
+        User user = userRepository.save(u);
+
+        Schedule s = Schedule.create(user, "일정");
+        Schedule schedule = scheduleRepository.save(s);
+
+        ScheduleAlarm a = ScheduleAlarm.create(user, "알람 테스트", AlarmType.SCHEDULE_NOTIFICATION,
+            schedule);
+        ScheduleAlarm alarm = scheduleAlarmRepository.save(a);
 
         // when
         alarmService.readAlarm(alarm.getAlarmSeq(), user.getUserSeq());
@@ -291,11 +499,15 @@ class AlarmServiceTest extends IntegrationTestSupport {
     @Test
     void readAlarm_unauthorized() {
         // given
-        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
-        User user = userRepository.save(u1);
+        User u = User.create("1111", "유저1", "id1", "imageUrl1");
+        User user = userRepository.save(u);
 
-        Alarm a = Alarm.create(user, "알람 테스트", AlarmType.SCHEDULE_ASSIGNED);
-        Alarm alarm = alarmRepository.save(a);
+        Schedule s = Schedule.create(user, "일정");
+        Schedule schedule = scheduleRepository.save(s);
+
+        ScheduleAlarm a = ScheduleAlarm.create(user, "알람 테스트", AlarmType.SCHEDULE_ASSIGNED,
+            schedule);
+        ScheduleAlarm alarm = scheduleAlarmRepository.save(a);
 
         // when + then
         assertThatThrownBy(() -> alarmService.readAlarm(alarm.getAlarmSeq(), 2L))
@@ -307,12 +519,18 @@ class AlarmServiceTest extends IntegrationTestSupport {
     @Test
     void readAlarm_forbidden() {
         // given
-        List<User> users = create3users();
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234", "유저2", "id2", "imageUrl2");
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
         User user1 = users.get(0);
         User user2 = users.get(1);
 
-        Alarm a = Alarm.create(user1, "알람 테스트", AlarmType.FRIEND_REQUEST);
-        Alarm alarm = alarmRepository.save(a);
+        FriendRequest fr = FriendRequest.create(user1, user2);
+        FriendRequest friendRequest = friendRequestRepository.save(fr);
+
+        FriendRequestAlarm a = FriendRequestAlarm.create(user1, "알람 테스트", AlarmType.FRIEND_REQUEST,
+            fr);
+        FriendRequestAlarm alarm = friendRequestAlarmRepository.save(a);
 
         // when + then
         assertThatThrownBy(() -> alarmService.readAlarm(alarm.getAlarmSeq(), user2.getUserSeq()))
@@ -821,9 +1039,9 @@ class AlarmServiceTest extends IntegrationTestSupport {
         FriendRequest friendRequest = friendRequestRepository.save(fr);
 
         String content = AlarmContent.FRIEND_REQUEST.getMessage(owner.getUserName());
-        Alarm a = Alarm.create(friend, content,
-            AlarmType.FRIEND_REQUEST);
-        Alarm alarm = alarmRepository.save(a);
+        FriendRequestAlarm a = FriendRequestAlarm.create(friend, content,
+            AlarmType.FRIEND_REQUEST, friendRequest);
+        FriendRequestAlarm alarm = friendRequestAlarmRepository.save(a);
 
         // when
         alarmService.readFriendRequestAlarm(friendRequest.getRequestSeq());
