@@ -68,8 +68,25 @@ class UserServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(u).isNotNull();
-        assertThat(u).extracting("userName", "userId", "imageUrl")
-                .containsExactlyInAnyOrder("유저1", "id1", "imageUrl1");
+        assertThat(u).extracting("kakaoId", "userName", "userId", "imageUrl")
+                .containsExactlyInAnyOrder("1111L", "유저1", "id1", "imageUrl1");
+    }
+
+    @DisplayName("kakaoId로 유저를 조회할 수 있다.")
+    @Test
+    void getUserInfoByKakaoId() {
+        // given
+        User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
+        User u2 = User.create("1234", "유저2", "id2", "imageUrl2");
+        List<User> users = userRepository.saveAll(List.of(u1, u2));
+
+        // when
+        User u = userService.getUserInfoByKakaoId("1111");
+
+        // then
+        assertThat(u).isNotNull();
+        assertThat(u).extracting("kakaoId", "userName", "userId", "imageUrl")
+                .containsExactlyInAnyOrder("1111", "유저1", "id1", "imageUrl1");
     }
 
     @DisplayName("userSeq로 유저 리스폰스를 가져온다. ")
@@ -479,7 +496,7 @@ class UserServiceTest extends IntegrationTestSupport {
     @Transactional
     void deleteUserInfo() {
         // given
-        User u1 = User.create("0L", "유저1", "id1", "imageUrl1");
+        User u1 = User.create("0L", "유저1", "id1", "///imageUrl1");
         User u = userRepository.save(u1);
 
         // when
@@ -487,9 +504,9 @@ class UserServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(userRepository.findAll())
-                .extracting("userSeq", "userName", "userId", "imageUrl")
+                .extracting("userSeq", "kakaoId", "userName", "userId", "imageUrl")
                 .containsExactlyInAnyOrder(
-                        tuple(u.getUserSeq(), "", "", "")
+                        tuple(u.getUserSeq(), "", "", "", "")
                 );
     }
 

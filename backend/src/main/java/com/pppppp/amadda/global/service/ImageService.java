@@ -28,6 +28,15 @@ public class ImageService {
         return uploadImgInS3(data, fileName);
     }
 
+    public void deleteImgInS3(String imgUrl) {
+        String fileName = imgUrl.split("/")[3];
+        try {
+            s3.deleteObject(bucket, fileName);
+        } catch (Exception e) {
+            throw new RestApiException(ImageErrorCode.IMAGE_DELETE_FAILED);
+        }
+    }
+
     private byte[] downloadUrlImg(String imgUrl) {
         try (InputStream in = new URL(imgUrl).openStream()) {
             return in.readAllBytes();
