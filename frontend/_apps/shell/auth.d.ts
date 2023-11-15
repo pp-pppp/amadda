@@ -8,8 +8,6 @@ declare module 'next-auth' {
       userId: string;
       imageUrl: string;
       accessToken: string;
-      refreshToken: string;
-      refreshAccessKey: string;
       isInited: boolean;
     };
   }

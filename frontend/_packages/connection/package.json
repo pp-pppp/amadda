@@ -3,11 +3,14 @@
   "license": "MIT",
   "version": "0.0.0",
   "private": true,
-  "types": "index.d.ts",
+  "main": "index.ts",
+  "types": "index.ts",
   "devDependencies": {
     "axios": "^1.6.0",
+    "amadda-global-types":"workspace:*",
     "kafkajs": "^2.2.4",
     "redis": "^4.6.10",
+    "next": "13.4.12",
     "typescript": "5.2.2"
   }
 }
