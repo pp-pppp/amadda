@@ -190,7 +190,6 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         FriendRequestResponse response = friendRequestService.createFriendRequest(
             user1.getUserSeq(), request);
         Long requestSeq = response.requestSeq();
-        FriendRequest friendRequest = friendRequestRepository.findById(requestSeq).get();
 
         // when
         friendRequestService.declineFriendRequest(user2.getUserSeq(), requestSeq);

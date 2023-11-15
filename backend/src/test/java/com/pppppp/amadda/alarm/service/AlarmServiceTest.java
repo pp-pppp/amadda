@@ -13,7 +13,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.pppppp.amadda.IntegrationTestSupport;
-import com.pppppp.amadda.alarm.dto.request.AlarmConfigRequest;
 import com.pppppp.amadda.alarm.dto.response.AlarmReadResponse;
 import com.pppppp.amadda.alarm.dto.topic.BaseTopicValue;
 import com.pppppp.amadda.alarm.entity.Alarm;
@@ -631,7 +630,6 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User user = userRepository.save(u1);
 
         AlarmType alarmType = AlarmType.SCHEDULE_NOTIFICATION;
-        AlarmConfigRequest request = AlarmConfigRequest.builder().alarmType(alarmType).build();
 
         // when + then
         assertThatThrownBy(() -> alarmService.setGlobalAlarm(user.getUserSeq(), alarmType, true))
@@ -1065,7 +1063,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
 
     @DisplayName("일정 예정 알림 테스트")
     @Test
-    void scheduleNotification() throws InterruptedException {
+    void scheduleNotification() {
         // given
         User u = User.create("1111", "유저1", "user1", "img1");
         User user = userRepository.save(u);
@@ -1096,11 +1094,9 @@ class AlarmServiceTest extends IntegrationTestSupport {
         Awaitility.await()
             .atMost(1500, TimeUnit.MILLISECONDS)
             .pollInterval(100, TimeUnit.MILLISECONDS)
-            .untilAsserted(() -> {
-                verify(kafkaTemplate, atLeastOnce())
-                    .send(eq(kafkaTopic.ALARM_SCHEDULE_NOTIFICATION),
-                        eq(user.getUserSeq()), any());
-            });
+            .untilAsserted(() -> verify(kafkaTemplate, atLeastOnce())
+                .send(eq(kafkaTopic.ALARM_SCHEDULE_NOTIFICATION),
+                    eq(user.getUserSeq()), any()));
     }
 
     private List<User> create3users() {

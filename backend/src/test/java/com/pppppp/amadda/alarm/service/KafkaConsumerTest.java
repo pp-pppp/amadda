@@ -22,7 +22,6 @@ import com.pppppp.amadda.schedule.entity.Schedule;
 import com.pppppp.amadda.schedule.repository.ScheduleRepository;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -82,7 +81,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
 
     @DisplayName("alarm.friend-request consume 검증")
     @Test
-    public void alarm_friend_request() throws IOException {
+    public void alarm_friend_request() {
         // given
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
@@ -111,7 +110,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
 
     @DisplayName("alarm.friend-accept consume 검증")
     @Test
-    public void alarm_friend_accept() throws IOException {
+    public void alarm_friend_accept() {
         // given
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
@@ -139,7 +138,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
 
     @DisplayName("alarm.schedule-assigned consume 검증")
     @Test
-    public void alarm_schedule_assigned() throws IOException {
+    public void alarm_schedule_assigned() {
         // given
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
@@ -167,7 +166,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
 
     @DisplayName("alarm.schedule-update consume 검증")
     @Test
-    public void alarm_schedule_update() throws IOException {
+    public void alarm_schedule_update() {
         // given
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
@@ -196,7 +195,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
     @ParameterizedTest
     @ValueSource(strings = {"ONE_DAY_BEFORE", "ONE_HOUR_BEFORE", "THIRTY_MINUTES_BEFORE",
         "FIFTEEN_MINUTES_BEFORE", "ON_TIME"})
-    public void alarm_schedule_notification(String type) throws IOException {
+    public void alarm_schedule_notification(String type) {
         // given
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
