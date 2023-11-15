@@ -26,7 +26,7 @@ export function MobileDailyPlate({ MobileDailyPlateProps }: PropsObj) {
         <Span>{MobileDailyPlateProps.scheduleName}</Span>
       </Flex>
       {MobileDailyPlateProps.person > 1 && (
-        <Flex flexDirection="row" justifyContents="end" alignItems="center">
+        <Flex flexDirection="row" justifyContents="flexEnd" alignItems="center">
           <Flex
             flexDirection="row"
             justifyContents="center"
