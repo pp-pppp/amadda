@@ -32,7 +32,9 @@ module.exports = withVanillaExtract({
         new NextFederationPlugin({
           name: 'user',
           filename: 'static/chunks/entry.js',
-          exposes: {},
+          exposes: {
+            './Friend': './pages/friend/index',
+          },
           shared: {},
         })
       );
