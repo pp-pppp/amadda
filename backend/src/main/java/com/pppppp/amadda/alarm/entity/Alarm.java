@@ -35,7 +35,7 @@ public abstract class Alarm extends BaseEntity {
     @JoinColumn(name = "user_seq")
     private User user;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false, length = 200)
     private String content;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")

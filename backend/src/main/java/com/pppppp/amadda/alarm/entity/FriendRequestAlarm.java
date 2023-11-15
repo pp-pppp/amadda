@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class FriendRequestAlarm extends Alarm {
 
     @ManyToOne
-    @JoinColumn(name = "requestSeq")
+    @JoinColumn(name = "request_seq")
     private FriendRequest friendRequest;
 
     @Builder

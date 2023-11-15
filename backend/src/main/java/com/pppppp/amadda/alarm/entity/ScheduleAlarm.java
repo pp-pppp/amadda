@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class ScheduleAlarm extends Alarm {
 
     @ManyToOne
-    @JoinColumn(name = "scheduleSeq")
+    @JoinColumn(name = "schedule_seq")
     private Schedule schedule;
 
     @Builder
