@@ -157,7 +157,7 @@ class UserControllerTest extends ControllerTestSupport {
     @Test
     void getUserInfoForHover() throws Exception {
         // given
-        Long targetSeq = 0L;
+        long targetSeq = 0L;
 
         // when // then
         mockMvc.perform(

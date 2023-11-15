@@ -9,7 +9,7 @@ public record UserNameCheckResponse(
 
     public static UserNameCheckResponse of(boolean isValid) {
         return UserNameCheckResponse.builder()
-                .isValid(isValid)
-                .build();
+            .isValid(isValid)
+            .build();
     }
 }

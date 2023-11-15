@@ -3,7 +3,7 @@ package com.pppppp.amadda.schedule.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -59,8 +59,8 @@ class ScheduleControllerTest extends ControllerTestSupport {
             .build();
 
         // stubbing
-        when(scheduleService.createSchedule(anyLong(), eq(request)))
-            .thenReturn(ScheduleCreateResponse.builder().scheduleSeq(1L).build());
+        given(scheduleService.createSchedule(anyLong(), eq(request)))
+            .willReturn(ScheduleCreateResponse.builder().scheduleSeq(1L).build());
 
         // when  // then
         mockMvc.perform(
@@ -78,8 +78,8 @@ class ScheduleControllerTest extends ControllerTestSupport {
     void getServerTime() throws Exception {
         // stubbing
         String currentTime = String.valueOf(LocalDate.now());
-        when(scheduleService.getServerDate())
-            .thenReturn(currentTime);
+        given(scheduleService.getServerDate())
+            .willReturn(currentTime);
 
         // then
         mockMvc.perform(
@@ -96,8 +96,8 @@ class ScheduleControllerTest extends ControllerTestSupport {
     void getSchedule() throws Exception {
         // stubbing
         String currentTime = String.valueOf(LocalDate.now());
-        when(scheduleService.getServerDate())
-            .thenReturn(currentTime);
+        given(scheduleService.getServerDate())
+            .willReturn(currentTime);
 
         mockMvc.perform(
                 get("/api/schedule/{scheduleSeq}", 1L)
@@ -112,8 +112,8 @@ class ScheduleControllerTest extends ControllerTestSupport {
     void getAllScheduleList() throws Exception {
         // stubbing
         String currentTime = String.valueOf(LocalDate.now());
-        when(scheduleService.getServerDate())
-            .thenReturn(currentTime);
+        given(scheduleService.getServerDate())
+            .willReturn(currentTime);
 
         mockMvc.perform(
                 get("/api/schedule")
@@ -129,8 +129,8 @@ class ScheduleControllerTest extends ControllerTestSupport {
     void getScheduleListByConditions() throws Exception {
         // stubbing
         String currentTime = String.valueOf(LocalDate.now());
-        when(scheduleService.getServerDate())
-            .thenReturn(currentTime);
+        given(scheduleService.getServerDate())
+            .willReturn(currentTime);
 
         // given
         String categorySeqList = "1,2";
@@ -159,8 +159,8 @@ class ScheduleControllerTest extends ControllerTestSupport {
 
         // stubbing
         String currentTime = String.valueOf(LocalDate.now());
-        when(scheduleService.getServerDate())
-            .thenReturn(currentTime);
+        given(scheduleService.getServerDate())
+            .willReturn(currentTime);
 
         // when // then
         mockMvc.perform(
@@ -180,8 +180,8 @@ class ScheduleControllerTest extends ControllerTestSupport {
 
         // stubbing
         String currentTime = String.valueOf(LocalDate.now());
-        when(scheduleService.getServerDate())
-            .thenReturn(currentTime);
+        given(scheduleService.getServerDate())
+            .willReturn(currentTime);
 
         // when // then
         mockMvc.perform(
@@ -201,8 +201,8 @@ class ScheduleControllerTest extends ControllerTestSupport {
 
         // stubbing
         String currentTime = String.valueOf(LocalDate.now());
-        when(scheduleService.getServerDate())
-            .thenReturn(currentTime);
+        given(scheduleService.getServerDate())
+            .willReturn(currentTime);
 
         // when // then
         mockMvc.perform(
@@ -224,8 +224,8 @@ class ScheduleControllerTest extends ControllerTestSupport {
 
         // stubbing
         String currentTime = String.valueOf(LocalDate.now());
-        when(scheduleService.getServerDate())
-            .thenReturn(currentTime);
+        given(scheduleService.getServerDate())
+            .willReturn(currentTime);
 
         // when // then
         mockMvc.perform(
@@ -268,9 +268,9 @@ class ScheduleControllerTest extends ControllerTestSupport {
             .build();
 
         // stubbing
-        when(scheduleService.updateSchedule(anyLong(), anyLong(),
+        given(scheduleService.updateSchedule(anyLong(), anyLong(),
             any(ScheduleUpdateRequest.class)))
-            .thenReturn(ScheduleUpdateResponse.builder().scheduleSeq(scheduleSeq).build());
+            .willReturn(ScheduleUpdateResponse.builder().scheduleSeq(scheduleSeq).build());
 
         mockMvc.perform(put("/api/schedule/{scheduleSeq}", scheduleSeq)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -294,9 +294,9 @@ class ScheduleControllerTest extends ControllerTestSupport {
             .build();
 
         // stubbing
-        when(scheduleService.updateParticipation(anyLong(), anyLong(),
+        given(scheduleService.updateParticipation(anyLong(), anyLong(),
             any(ParticipationUpdateRequest.class)))
-            .thenReturn(ParticipationUpdateResponse.builder().scheduleSeq(scheduleSeq).build());
+            .willReturn(ParticipationUpdateResponse.builder().scheduleSeq(scheduleSeq).build());
 
         mockMvc.perform(
                 put("/api/schedule/{scheduleSeq}/participation", scheduleSeq, categorySeq)
@@ -390,9 +390,9 @@ class ScheduleControllerTest extends ControllerTestSupport {
             .categoryColor(categoryColor)
             .build();
 
-        when(scheduleService.updateCategory(anyLong(), eq(categorySeq),
+        given(scheduleService.updateCategory(anyLong(), eq(categorySeq),
             any(CategoryUpdateRequest.class)))
-            .thenReturn(CategoryUpdateResponse.builder().categorySeq(categorySeq).build());
+            .willReturn(CategoryUpdateResponse.builder().categorySeq(categorySeq).build());
 
         mockMvc.perform(
                 put("/api/schedule/user/category/{categorySeq}", categorySeq)
@@ -621,9 +621,9 @@ class ScheduleControllerTest extends ControllerTestSupport {
             .build();
 
         // stubbing
-        when(scheduleService.updateSchedule(anyLong(), anyLong(),
+        given(scheduleService.updateSchedule(anyLong(), anyLong(),
             any(ScheduleUpdateRequest.class)))
-            .thenReturn(ScheduleUpdateResponse.builder().scheduleSeq(1L).build());
+            .willReturn(ScheduleUpdateResponse.builder().scheduleSeq(1L).build());
 
         // when  // then
         mockMvc.perform(
@@ -651,9 +651,9 @@ class ScheduleControllerTest extends ControllerTestSupport {
             .build();
 
         // stubbing
-        when(scheduleService.updateSchedule(anyLong(), anyLong(),
+        given(scheduleService.updateSchedule(anyLong(), anyLong(),
             any(ScheduleUpdateRequest.class)))
-            .thenReturn(ScheduleUpdateResponse.builder().scheduleSeq(1L).build());
+            .willReturn(ScheduleUpdateResponse.builder().scheduleSeq(1L).build());
 
         // when  // then
         mockMvc.perform(
@@ -682,9 +682,9 @@ class ScheduleControllerTest extends ControllerTestSupport {
             .build();
 
         // stubbing
-        when(scheduleService.updateSchedule(anyLong(), anyLong(),
+        given(scheduleService.updateSchedule(anyLong(), anyLong(),
             any(ScheduleUpdateRequest.class)))
-            .thenReturn(ScheduleUpdateResponse.builder().scheduleSeq(1L).build());
+            .willReturn(ScheduleUpdateResponse.builder().scheduleSeq(1L).build());
 
         // when  // then
         mockMvc.perform(
@@ -705,9 +705,9 @@ class ScheduleControllerTest extends ControllerTestSupport {
             .build();
 
         // stubbing
-        when(scheduleService.updateSchedule(anyLong(), anyLong(),
+        given(scheduleService.updateSchedule(anyLong(), anyLong(),
             any(ScheduleUpdateRequest.class)))
-            .thenReturn(ScheduleUpdateResponse.builder().scheduleSeq(1L).build());
+            .willReturn(ScheduleUpdateResponse.builder().scheduleSeq(1L).build());
 
         mockMvc.perform(
                 put("/api/schedule/{scheduleSeq}/participation", 1L)
@@ -728,9 +728,9 @@ class ScheduleControllerTest extends ControllerTestSupport {
             .build();
 
         // stubbing
-        when(scheduleService.updateSchedule(anyLong(), anyLong(),
+        given(scheduleService.updateSchedule(anyLong(), anyLong(),
             any(ScheduleUpdateRequest.class)))
-            .thenReturn(ScheduleUpdateResponse.builder().scheduleSeq(1L).build());
+            .willReturn(ScheduleUpdateResponse.builder().scheduleSeq(1L).build());
 
         mockMvc.perform(
                 put("/api/schedule/{scheduleSeq}/participation", 1L)

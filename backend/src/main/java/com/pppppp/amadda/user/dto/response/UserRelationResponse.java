@@ -14,21 +14,21 @@ public record UserRelationResponse(
 
     public static UserRelationResponse of(User user, boolean isFriend) {
         return UserRelationResponse.builder()
-                .userSeq(user.getUserSeq())
-                .userName(user.getUserName())
-                .userId(user.getUserId())
-                .imageUrl(user.getImageUrl())
-                .isFriend(isFriend)
-                .build();
+            .userSeq(user.getUserSeq())
+            .userName(user.getUserName())
+            .userId(user.getUserId())
+            .imageUrl(user.getImageUrl())
+            .isFriend(isFriend)
+            .build();
     }
 
     public static UserRelationResponse notFound() {
         return UserRelationResponse.builder()
-                .userSeq(null)
-                .userName("")
-                .userId("")
-                .imageUrl("")
-                .isFriend(false)
-                .build();
+            .userSeq(null)
+            .userName("")
+            .userId("")
+            .imageUrl("")
+            .isFriend(false)
+            .build();
     }
 }

@@ -23,8 +23,6 @@ class TokenProviderTest extends IntegrationTestSupport {
         // given
         List<String> l = tokenProvider.createTokens(1111L);
 
-//        Thread.sleep(1000L);
-
         // when
         boolean at = tokenProvider.verifyToken(l.get(0));
         boolean rt = tokenProvider.verifyToken(l.get(1));
@@ -51,7 +49,7 @@ class TokenProviderTest extends IntegrationTestSupport {
     @Test
     void chkRefreshAccessKey() {
         // given
-        Long userSeq = 1111l;
+        Long userSeq = 1111L;
 
         // when
         String t1 = tokenProvider.generateRefreshAccessKey(userSeq);

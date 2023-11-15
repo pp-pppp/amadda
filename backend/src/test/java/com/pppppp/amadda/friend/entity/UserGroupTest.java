@@ -1,7 +1,6 @@
 package com.pppppp.amadda.friend.entity;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.friend.repository.UserGroupRepository;

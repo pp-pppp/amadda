@@ -1,17 +1,13 @@
 package com.pppppp.amadda.global.service;
 
-import com.pppppp.amadda.IntegrationTestSupport;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
+import static org.mockito.BDDMockito.given;
 
+import com.pppppp.amadda.IntegrationTestSupport;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 class ImageServiceTest extends IntegrationTestSupport {
 
@@ -24,12 +20,12 @@ class ImageServiceTest extends IntegrationTestSupport {
         // given
         String url = "https://img5.yna.co.kr/etc/inner/KR/2023/10/13/AKR20231013148700005_07_i_P2.jpg";
         String fileName = "1111_"
-                + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))
-                + ".jpg";;
+            + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))
+            + ".jpg";
 
         // when // then
-        Mockito.when(imageService.saveKakaoImgInS3(url, fileName))
-                .thenReturn("https://amadda-bucket.s3.ap-northeast-2.amazonaws.com/"+fileName);
+        given(imageService.saveKakaoImgInS3(url, fileName))
+            .willReturn("https://amadda-bucket.s3.ap-northeast-2.amazonaws.com/" + fileName);
     }
 
 }

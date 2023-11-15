@@ -23,7 +23,7 @@ public enum AlarmType {
         Stream.of(values())
             .collect(Collectors.toMap(AlarmType::getCode, Function.identity()))
     );
-    
+
     private final String code;
     private final String content;
 

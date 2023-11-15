@@ -5,15 +5,15 @@ import lombok.Builder;
 
 @Builder
 public record FriendResponse(
-        Long relationSeq,
-        Long ownerSeq,
-        Long friendSeq) {
+    Long relationSeq,
+    Long ownerSeq,
+    Long friendSeq) {
 
     public static FriendResponse of(Friend friend) {
         return FriendResponse.builder()
-                .relationSeq(friend.getRelationSeq())
-                .ownerSeq(friend.getOwner().getUserSeq())
-                .friendSeq(friend.getFriend().getUserSeq())
-                .build();
+            .relationSeq(friend.getRelationSeq())
+            .ownerSeq(friend.getOwner().getUserSeq())
+            .friendSeq(friend.getFriend().getUserSeq())
+            .build();
     }
 }

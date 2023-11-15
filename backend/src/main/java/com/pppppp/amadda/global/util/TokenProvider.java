@@ -94,7 +94,7 @@ public class TokenProvider {
         if (cookies == null) {
             throw new RestApiException(HttpErrorCode.HTTP_COOKIE_NULL);
         }
-        
+
         for (Cookie c : cookies) {
             if (c.getName().equals("Auth")) {
                 return c.getValue();
@@ -111,7 +111,6 @@ public class TokenProvider {
             .getBody();
 
         // userSeq 값을 추출
-        Long userSeq = claims.get("userSeq", Long.class);
-        return userSeq;
+        return claims.get("userSeq", Long.class);
     }
 }

@@ -61,8 +61,7 @@ public class GroupMemberService {
         List<GroupMember> toAdd = new ArrayList<>();
         members.stream().forEach(u -> hs.add(u.getMember().getUserSeq()));
 
-        for (int i = 0; i < newMems.size(); i++) {
-            Long mem = newMems.get(i);
+        for (Long mem : newMems) {
             if (hs.contains(mem)) {
                 hs.remove(mem);
             } else {
@@ -73,8 +72,8 @@ public class GroupMemberService {
         }
 
         List<Long> toDel = new ArrayList<>(hs);
-        for (int i = 0; i < toDel.size(); i++) {
-            deleteMember(request.groupSeq(), toDel.get(i));
+        for (Long aLong : toDel) {
+            deleteMember(request.groupSeq(), aLong);
         }
 
         saveGroupMembers(toAdd);
