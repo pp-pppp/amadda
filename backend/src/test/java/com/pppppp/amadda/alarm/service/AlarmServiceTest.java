@@ -190,7 +190,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User user2 = users.get(1);
 
         FriendRequest fr = FriendRequest.create(user1, user2);
-        FriendRequest friendRequest = friendRequestRepository.save(fr);
+        friendRequestRepository.save(fr);
 
         Schedule s = Schedule.create(user1, "일정");
         Schedule schedule = scheduleRepository.save(s);
@@ -240,7 +240,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User user2 = users.get(1);
 
         FriendRequest fr = FriendRequest.create(user1, user2);
-        FriendRequest friendRequest = friendRequestRepository.save(fr);
+        friendRequestRepository.save(fr);
 
         Schedule s = Schedule.create(user1, "일정");
         Schedule schedule = scheduleRepository.save(s);
@@ -298,7 +298,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User user2 = users.get(1);
 
         FriendRequest fr = FriendRequest.create(user1, user2);
-        FriendRequest friendRequest = friendRequestRepository.save(fr);
+        friendRequestRepository.save(fr);
 
         Schedule s = Schedule.create(user1, "일정");
         Schedule schedule = scheduleRepository.save(s);
@@ -357,7 +357,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User user2 = users.get(1);
 
         FriendRequest fr = FriendRequest.create(user1, user2);
-        FriendRequest friendRequest = friendRequestRepository.save(fr);
+        friendRequestRepository.save(fr);
 
         FriendRequestAlarm a = FriendRequestAlarm.create(user1, "알람 테스트", AlarmType.FRIEND_REQUEST,
             fr);
@@ -384,7 +384,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User user2 = users.get(1);
 
         FriendRequest fr = FriendRequest.create(user1, user2);
-        FriendRequest friendRequest = friendRequestRepository.save(fr);
+        friendRequestRepository.save(fr);
 
         FriendRequestAlarm a = FriendRequestAlarm.create(user1, "알람 테스트", AlarmType.FRIEND_ACCEPT,
             fr);
@@ -526,7 +526,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User user2 = users.get(1);
 
         FriendRequest fr = FriendRequest.create(user1, user2);
-        FriendRequest friendRequest = friendRequestRepository.save(fr);
+        friendRequestRepository.save(fr);
 
         FriendRequestAlarm a = FriendRequestAlarm.create(user1, "알람 테스트", AlarmType.FRIEND_REQUEST,
             fr);

@@ -126,7 +126,7 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         User user2 = users.get(1);
 
         FriendRequest fr = FriendRequest.create(u1, u2); // u1가 u2에게 신청
-        List<FriendRequest> friendRequests = friendRequestRepository.saveAll(List.of(fr));
+        friendRequestRepository.saveAll(List.of(fr));
 
         FriendRequestRequest request = FriendRequestRequest.builder()
             .targetSeq(user2.getUserSeq())
@@ -153,7 +153,7 @@ class FriendRequestServiceTest extends IntegrationTestSupport {
         User user2 = users.get(1);
 
         FriendRequest fr = FriendRequest.create(u1, u2); // u1가 u2에게 신청
-        List<FriendRequest> friendRequests = friendRequestRepository.saveAll(List.of(fr));
+        friendRequestRepository.saveAll(List.of(fr));
 
         List<FriendRequest> savedFr = friendRequestRepository.findAll();
         savedFr.get(0).updateStatus(FriendRequestStatus.ACCEPTED); // 수정

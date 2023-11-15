@@ -3,7 +3,6 @@ package com.pppppp.amadda.alarm.service;
 import com.pppppp.amadda.alarm.dto.topic.TestValue;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendAccept;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendRequest;
-import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmMentioned;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleAssigned;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleNotification;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleUpdate;
@@ -11,7 +10,6 @@ import com.pppppp.amadda.alarm.entity.AlarmContent;
 import com.pppppp.amadda.alarm.entity.AlarmType;
 import com.pppppp.amadda.alarm.entity.FriendRequestAlarm;
 import com.pppppp.amadda.alarm.entity.ScheduleAlarm;
-import com.pppppp.amadda.alarm.repository.AlarmRepository;
 import com.pppppp.amadda.alarm.repository.FriendRequestAlarmRepository;
 import com.pppppp.amadda.alarm.repository.ScheduleAlarmRepository;
 import com.pppppp.amadda.friend.entity.FriendRequest;
@@ -25,7 +23,6 @@ import com.pppppp.amadda.schedule.entity.Schedule;
 import com.pppppp.amadda.schedule.repository.ScheduleRepository;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
-import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -37,7 +34,6 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class KafkaConsumer {
 
-    private final AlarmRepository alarmRepository;
     private final UserRepository userRepository;
     private final ScheduleAlarmRepository scheduleAlarmRepository;
     private final FriendRequestAlarmRepository friendRequestAlarmRepository;
@@ -45,8 +41,7 @@ public class KafkaConsumer {
     private final FriendRequestRepository friendRequestRepository;
 
     @KafkaListener(topics = "${spring.kafka.topic.alarm.friend-request}", groupId = "${spring.kafka.consumer.group-id}")
-    public void consumeFriendRequest(ConsumerRecord<String, AlarmFriendRequest> record)
-        throws IOException {
+    public void consumeFriendRequest(ConsumerRecord<String, AlarmFriendRequest> record) {
         Long userSeq = Long.valueOf(String.valueOf(record.key()));
         String requestedUserName = record.value().getRequestedUserName();
         Long friendRequestSeq = record.value().getFriendRequestSeq();
@@ -55,8 +50,7 @@ public class KafkaConsumer {
     }
 
     @KafkaListener(topics = "${spring.kafka.topic.alarm.friend-accept}", groupId = "${spring.kafka.consumer.group-id}")
-    public void consumeFriendAccept(ConsumerRecord<String, AlarmFriendAccept> record)
-        throws IOException {
+    public void consumeFriendAccept(ConsumerRecord<String, AlarmFriendAccept> record) {
         Long userSeq = Long.valueOf(String.valueOf(record.key()));
         String friendUserName = record.value().getFriendUserName();
         Long friendUserSeq = record.value().getFriendUserSeq();
@@ -74,21 +68,15 @@ public class KafkaConsumer {
     }
 
     @KafkaListener(topics = "${spring.kafka.topic.alarm.schedule-assigned}", groupId = "${spring.kafka.consumer.group-id}")
-    public void consumeScheduleAssigned(ConsumerRecord<String, AlarmScheduleAssigned> record)
-        throws IOException {
+    public void consumeScheduleAssigned(ConsumerRecord<String, AlarmScheduleAssigned> record) {
         Long userSeq = Long.valueOf(String.valueOf(record.key()));
         String message = getScheduleAssignedMessage(record.value());
         Long scheduleSeq = record.value().getScheduleSeq();
         saveScheduleAlarm(userSeq, message, AlarmType.SCHEDULE_ASSIGNED, scheduleSeq);
     }
 
-    @KafkaListener(topics = "${spring.kafka.topic.alarm.mentioned}", groupId = "${spring.kafka.consumer.group-id}")
-    public void consumeMentioned(ConsumerRecord<String, AlarmMentioned> record) throws IOException {
-    }
-
     @KafkaListener(topics = "${spring.kafka.topic.alarm.schedule-update}", groupId = "${spring.kafka.consumer.group-id}")
-    public void consumeScheduleUpdate(ConsumerRecord<String, AlarmScheduleUpdate> record)
-        throws IOException {
+    public void consumeScheduleUpdate(ConsumerRecord<String, AlarmScheduleUpdate> record) {
         Long userSeq = Long.valueOf(String.valueOf(record.key()));
         String scheduleName = record.value().getScheduleName();
         Long scheduleSeq = record.value().getScheduleSeq();
@@ -98,7 +86,7 @@ public class KafkaConsumer {
 
     @KafkaListener(topics = "${spring.kafka.topic.alarm.schedule-notification}", groupId = "${spring.kafka.consumer.group-id}")
     public void consumeScheduleNotification(
-        ConsumerRecord<String, AlarmScheduleNotification> record) throws IOException {
+        ConsumerRecord<String, AlarmScheduleNotification> record) {
         Long userSeq = Long.valueOf(String.valueOf(record.key()));
         String message = getScheduleNotificationMessage(record.value());
         Long scheduleSeq = record.value().getScheduleSeq();
@@ -106,9 +94,7 @@ public class KafkaConsumer {
     }
 
     @KafkaListener(topics = "test", groupId = "${spring.kafka.consumer.group-id}")
-    public void consumeTest(
-        ConsumerRecord<String, TestValue> record)
-        throws IOException {
+    public void consumeTest(ConsumerRecord<String, TestValue> record) {
         log.info("================================================");
         log.info("Kafka Consume Topic <<test>>");
         log.info("key : {}", record.key());

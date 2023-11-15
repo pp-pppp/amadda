@@ -12,7 +12,6 @@ import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleAssigned;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleNotification;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleUpdate;
 import com.pppppp.amadda.alarm.entity.KafkaTopic;
-import com.pppppp.amadda.alarm.repository.AlarmRepository;
 import com.pppppp.amadda.alarm.repository.FriendRequestAlarmRepository;
 import com.pppppp.amadda.alarm.repository.ScheduleAlarmRepository;
 import com.pppppp.amadda.friend.entity.FriendRequest;
@@ -56,9 +55,6 @@ class KafkaConsumerTest extends IntegrationTestSupport {
     private FriendRequestRepository friendRequestRepository;
 
     @Autowired
-    private AlarmRepository alarmRepository;
-
-    @Autowired
     private ScheduleRepository scheduleRepository;
 
     @MockBean
@@ -71,7 +67,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
 
     @BeforeEach
     void setUp() {
-        kafkaConsumer = new KafkaConsumer(alarmRepository, userRepository, scheduleAlarmRepository,
+        kafkaConsumer = new KafkaConsumer(userRepository, scheduleAlarmRepository,
             friendRequestAlarmRepository, scheduleRepository, friendRequestRepository);
     }
 
@@ -80,7 +76,6 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         friendRequestAlarmRepository.deleteAllInBatch();
         scheduleAlarmRepository.deleteAllInBatch();
         scheduleRepository.deleteAllInBatch();
-        alarmRepository.deleteAllInBatch();
         friendRequestRepository.deleteAllInBatch();
         userRepository.deleteAllInBatch();
     }
@@ -227,7 +222,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
 
     @DisplayName("alarm.schedule-notification consume 'None' 예외 검증")
     @Test
-    public void alarm_schedule_notification() throws IOException {
+    public void alarm_schedule_notification() {
         // given
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);

@@ -65,7 +65,7 @@ class AlarmRepositoryTest extends IntegrationTestSupport {
         User user2 = users.get(1);
 
         FriendRequest fr = FriendRequest.create(user1, user2);
-        FriendRequest friendRequest = friendRequestRepository.save(fr);
+        friendRequestRepository.save(fr);
 
         Schedule s = Schedule.create(user1, "일정");
         Schedule schedule = scheduleRepository.save(s);
