@@ -12,7 +12,7 @@ const targetPath = [
   '/api/auth/init',
 ];
 
-const middleware = async (req: NextRequest) => {
+export const gateway = async (req: NextRequest) => {
   const { pathname } = req.nextUrl; //포트 이후의 api 요청입니다.
 
   //정적 자원 요청은 통과시킵니다.
@@ -71,4 +71,4 @@ const middleware = async (req: NextRequest) => {
   const response = NextResponse.next();
   return response;
 };
-export default middleware;
+export default gateway;
