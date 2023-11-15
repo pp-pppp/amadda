@@ -1,19 +1,10 @@
+import { http } from 'connection';
 import axios from 'axios';
+import { REDIS } from 'connection';
 import NextAuth, { Session } from 'next-auth';
 import 'next-auth';
 import KakaoProvider from 'next-auth/providers/kakao';
-
-export interface AuthRequest {
-  userSeq: string;
-  imageUrl: string;
-}
-
-export interface AuthResponse {
-  accessToken: String;
-  refreshToken: String;
-  refreshAccessKey: String;
-  isInited: boolean;
-}
+import { UserJwtRequest, UserJwtResponse } from 'amadda-global-types';
 
 export const authOptions = {
   providers: [
@@ -29,8 +20,6 @@ export const authOptions = {
       session.user.userId = token.userId;
       session.user.imageUrl = token.imageUrl;
       session.user.accessToken = token.accessToken;
-      session.user.refreshToken = token.refreshToken;
-      session.user.refreshAccessKey = token.refreshAccessKey;
       session.user.isInited = token.isInited;
 
       return session;
@@ -38,32 +27,28 @@ export const authOptions = {
 
     async jwt({ token, trigger, user, account, session }) {
       if (account) {
-        const UserJwtRequest: AuthRequest = {
+        const UserJwtRequest: UserJwtRequest = {
           userSeq: token.id,
           imageUrl: token.image,
         };
 
-        // const data = await http.post<AuthRequest, AuthResponse>(
-        //   `${process.env.SPRING_API_ROOT}/user/login`,
-        //   UserJwtRequest
-        // );
+        const INIT = await http
+          .post<UserJwtRequest, UserJwtResponse>(
+            `${process.env.SPRING_API_ROOT}/user/login`,
+            UserJwtRequest
+          )
+          .then(res => res.data)
+          .catch(err => err);
 
-        // mock
-        const data: AuthResponse = {
-          accessToken: 'at',
-          refreshAccessKey: 'rak',
-          refreshToken: 'rt',
-          isInited: false,
-        };
-        console.log(data);
+        await REDIS.setRefreshToken(INIT.refreshAccessKey, INIT.refreshToken);
 
-        token.accessToken = data.accessToken;
-        token.refreshToken = data.refreshToken;
-        token.refreshAccessKey = data.refreshAccessKey;
+        console.log(INIT);
+
+        token.accessToken = INIT.accessToken;
         token.userSeq = user.id;
         token.userName = user.name;
         token.imageUrl = user.image;
-        token.isInited = data.isInited;
+        token.isInited = INIT.isInited;
       }
 
       if (trigger == 'update') {
