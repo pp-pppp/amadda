@@ -22,7 +22,6 @@ class ImageServiceTest extends IntegrationTestSupport {
         String fileName = "1111_"
             + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))
             + ".jpg";
-        ;
 
         // when // then
         given(imageService.saveKakaoImgInS3(url, fileName))

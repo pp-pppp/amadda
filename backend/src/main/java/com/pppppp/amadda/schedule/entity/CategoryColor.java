@@ -8,5 +8,4 @@ public enum CategoryColor {
     HOTPINK,
     GREEN,
     GRAY,
-    ;
 }

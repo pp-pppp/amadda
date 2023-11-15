@@ -64,7 +64,7 @@ class FriendControllerTest extends ControllerTestSupport {
     @Test
     void declineFriendRequest() throws Exception {
         // given
-        Long requestSeq = 1L;
+        long requestSeq = 1L;
 
         // when // then
         mockMvc.perform(
@@ -82,7 +82,7 @@ class FriendControllerTest extends ControllerTestSupport {
     @Test
     void acceptFriendRequest() throws Exception {
         // given
-        Long requestSeq = 1L;
+        long requestSeq = 1L;
 
         // stubbing
         given(friendRequestService.acceptFriendRequest(anyLong(), anyLong()))
@@ -103,7 +103,7 @@ class FriendControllerTest extends ControllerTestSupport {
     @Test
     void deleteFriend() throws Exception {
         // given
-        Long friendUserSeq = 1L;
+        long friendUserSeq = 1L;
 
         // when // then
         mockMvc.perform(
@@ -258,7 +258,7 @@ class FriendControllerTest extends ControllerTestSupport {
     @Test
     void deleteGroup() throws Exception {
         // given
-        Long groupSeq = 1L;
+        long groupSeq = 1L;
 
         // when // then
         mockMvc.perform(

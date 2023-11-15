@@ -56,7 +56,7 @@ class FriendRepositoryTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         Friend f = Friend.create(u1, u2);
-        f = friendRepository.save(f);
+        friendRepository.save(f);
 
         // when
         Friend friend = friendRepository.findByOwnerAndFriend(u1, u2).get();

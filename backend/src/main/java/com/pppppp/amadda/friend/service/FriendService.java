@@ -16,6 +16,7 @@ import com.pppppp.amadda.global.entity.exception.errorcode.FriendErrorCode;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.service.UserService;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -98,7 +99,8 @@ public class FriendService {
             .filter(group -> newHS.contains(group.getGroupSeq())) // 검색에서 걸러진 그룹들 여기서도 걸러주기
             .map(group -> {
                 List<MemberResponse> mems = searchedGroupMembers.stream()
-                    .filter(mem -> mem.getGroup().getGroupSeq() == group.getGroupSeq())
+                    .filter(mem -> Objects.equals(mem.getGroup().getGroupSeq(),
+                        group.getGroupSeq()))
                     .map(MemberResponse::of)
                     .toList();
                 return GroupResponse.of(group, mems);

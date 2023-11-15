@@ -49,7 +49,7 @@ class TokenProviderTest extends IntegrationTestSupport {
     @Test
     void chkRefreshAccessKey() {
         // given
-        Long userSeq = 1111l;
+        Long userSeq = 1111L;
 
         // when
         String t1 = tokenProvider.generateRefreshAccessKey(userSeq);
