@@ -6,7 +6,7 @@ import { FriendFrame } from '../FriendFrame/FriendFrame';
 import { useSearchFriend, useSearchUser } from '@U/hooks/useFriend';
 import { FriendGroups } from '../FriendGroups/FriendGroups';
 import FRIENDS from '../../../constants/FRIENDS';
-import { Friend } from '../FriendList/FriendList';
+import { Friend } from '../Friend/Friend';
 import { http } from '@U/utils/http';
 
 export interface FriendSearchProps {}
@@ -25,7 +25,6 @@ export function FriendSearch({}: FriendSearchProps) {
         onChange={e => setSearchKey(e.target.value)}
         placeholder={FriendsConstants.INPUT.SEARCH}
       />
-      {/* 친구 리스트 여기 다 들어오삼 검색결과로 ㅇㅇ 그룹 안ㄴ에 들어오면됨 */}
       <Spacing dir="v" size="0.5" />
       {newFriendData.data && !newFriendData.data.isFriend && (
         <Friend

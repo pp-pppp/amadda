@@ -1,6 +1,6 @@
 import { FriendFrame } from '@U/components/Friend/FriendFrame/FriendFrame';
 import { FriendGroups } from '@U/components/Friend/FriendGroups/FriendGroups';
-import { Friend } from '@U/components/Friend/FriendList/FriendList';
+import { Friend } from '@U/components/Friend/Friend/Friend';
 import FRIENDS from '@U/constants/FRIENDS';
 import { useFriend } from '@U/hooks/useFriend';
 import { http } from '@U/utils/http';

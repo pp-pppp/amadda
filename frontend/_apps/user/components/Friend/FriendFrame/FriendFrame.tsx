@@ -4,7 +4,7 @@ import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import { createContext, useState } from 'react';
 import { FRAME } from './FriendFrame.css';
 import FriendsConstants from '../../../constants/FRIENDS';
-import { FriendGroupEdit } from '../FriendGroupEdit/FriendGroupEdit';
+import { FriendGroupData } from '../FriendGroupData/FriendGroupData';
 import { FriendSearch } from '../FriendSearch/FriendSearch';
 
 export interface FriendsProps {
@@ -72,7 +72,7 @@ export function FriendFrame({ children }: FriendsProps) {
           ) : MODE === 'SEARCH' ? (
             <FriendSearch />
           ) : (
-            <FriendGroupEdit />
+            <FriendGroupData />
           )}
         </>
       </div>
