@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "build": "turbo run build --concurrency 15",
+    "build": "dotenv -- turbo run build --concurrency 15",
     "dev": "dotenv -- turbo run dev --concurrency 15",
     "lint": "turbo run lint --concurrency 15",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
