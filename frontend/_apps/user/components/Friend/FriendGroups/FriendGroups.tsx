@@ -193,7 +193,39 @@ FriendGroups.Edit = function ({
     >(MODE_CONTEXT);
 
   if (groupSeq === null) return <></>;
-
+  if (MODE === 'ADD_GROUP')
+    return (
+      <button
+        type="button"
+        className={GROUP_EDIT.SAVE}
+        disabled={false}
+        onClick={handleSubmit}
+      >
+        {FriendsConstants.BTN.ADD_GROUP}
+      </button>
+    );
+  else
+    return (
+      <Flex justifyContents="flexEnd">
+        <button
+          type="button"
+          className={GROUP_EDIT.EDIT}
+          disabled={false}
+          onClick={() => SET_MODE('NOT_EDITING')}
+        >
+          {FriendsConstants.BTN.CANCEL}
+        </button>
+        <Spacing dir="h" size="0.25" />
+        <button
+          type="button"
+          className={GROUP_EDIT.SAVE}
+          disabled={false}
+          onClick={handleSubmit}
+        >
+          {FriendsConstants.BTN.GROUP_SAVE}
+        </button>
+      </Flex>
+    );
   if (MODE === 'NOT_EDITING')
     return (
       <button
