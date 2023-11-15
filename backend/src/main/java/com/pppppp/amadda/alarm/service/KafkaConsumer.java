@@ -43,28 +43,17 @@ public class KafkaConsumer {
     @KafkaListener(topics = "${spring.kafka.topic.alarm.friend-request}", groupId = "${spring.kafka.consumer.group-id}")
     public void consumeFriendRequest(ConsumerRecord<String, AlarmFriendRequest> record) {
         Long userSeq = Long.valueOf(String.valueOf(record.key()));
-        String requestedUserName = record.value().getRequestedUserName();
+        String message = getFriendRequestMessage(record.value());
         Long friendRequestSeq = record.value().getFriendRequestSeq();
-        saveFriendRequestAlarm(userSeq, AlarmContent.FRIEND_REQUEST.getMessage(requestedUserName),
-            AlarmType.FRIEND_REQUEST, friendRequestSeq);
+        saveFriendRequestAlarm(userSeq, message, AlarmType.FRIEND_REQUEST, friendRequestSeq);
     }
 
     @KafkaListener(topics = "${spring.kafka.topic.alarm.friend-accept}", groupId = "${spring.kafka.consumer.group-id}")
     public void consumeFriendAccept(ConsumerRecord<String, AlarmFriendAccept> record) {
         Long userSeq = Long.valueOf(String.valueOf(record.key()));
-        String friendUserName = record.value().getFriendUserName();
-        Long friendUserSeq = record.value().getFriendUserSeq();
-        User owner = getUser(userSeq);
-        User friend = getUser(friendUserSeq);
-        FriendRequest friendRequest = getFriendRequest(owner, friend);
-        saveFriendRequestAlarm(userSeq, AlarmContent.FRIEND_ACCEPT.getMessage(friendUserName),
-            AlarmType.FRIEND_ACCEPT, friendRequest.getRequestSeq());
-    }
-
-    private FriendRequest getFriendRequest(User owner, User friend) {
-        return friendRequestRepository.findByOwnerAndFriend(owner, friend)
-            .orElseThrow(
-                () -> new RestApiException(FriendRequestErrorCode.FRIEND_REQUEST_NOT_FOUND));
+        String message = getFriendAcceptMessage(record.value());
+        Long friendRequestSeq = getFriendRequestSeq(record);
+        saveFriendRequestAlarm(userSeq, message, AlarmType.FRIEND_ACCEPT, friendRequestSeq);
     }
 
     @KafkaListener(topics = "${spring.kafka.topic.alarm.schedule-assigned}", groupId = "${spring.kafka.consumer.group-id}")
@@ -78,10 +67,9 @@ public class KafkaConsumer {
     @KafkaListener(topics = "${spring.kafka.topic.alarm.schedule-update}", groupId = "${spring.kafka.consumer.group-id}")
     public void consumeScheduleUpdate(ConsumerRecord<String, AlarmScheduleUpdate> record) {
         Long userSeq = Long.valueOf(String.valueOf(record.key()));
-        String scheduleName = record.value().getScheduleName();
+        String message = getScheduleUpdateMessage(record.value());
         Long scheduleSeq = record.value().getScheduleSeq();
-        saveScheduleAlarm(userSeq, AlarmContent.SCHEDULE_UPDATE.getMessage(scheduleName),
-            AlarmType.SCHEDULE_UPDATE, scheduleSeq);
+        saveScheduleAlarm(userSeq, message, AlarmType.SCHEDULE_UPDATE, scheduleSeq);
     }
 
     @KafkaListener(topics = "${spring.kafka.topic.alarm.schedule-notification}", groupId = "${spring.kafka.consumer.group-id}")
@@ -110,30 +98,65 @@ public class KafkaConsumer {
         scheduleAlarmRepository.save(alarm);
     }
 
-    private Schedule getSchedule(Long scheduleSeq) {
-        return scheduleRepository.findById(scheduleSeq)
-            .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
-    }
-
     public void saveFriendRequestAlarm(Long userSeq, String message, AlarmType alarmType,
         Long friendRequestSeq) {
         User user = getUser(userSeq);
-        FriendRequest friendRequest = getFriendRequest(friendRequestSeq);
+        FriendRequest friendRequest = getFriendRequestBySeq(friendRequestSeq);
         FriendRequestAlarm alarm = FriendRequestAlarm.create(user, message, alarmType,
             friendRequest);
         friendRequestAlarmRepository.save(alarm);
     }
 
-    private FriendRequest getFriendRequest(Long friendRequestSeq) {
+    private User getUser(Long userSeq) {
+        return userRepository.findById(userSeq)
+            .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+    }
+
+    private Long getFriendRequestSeq(ConsumerRecord<String, AlarmFriendAccept> record) {
+        Long userSeq = Long.valueOf(String.valueOf(record.key()));
+        Long friendUserSeq = record.value().getFriendUserSeq();
+        User owner = getUser(userSeq);
+        User friend = getUser(friendUserSeq);
+        FriendRequest friendRequest = getFriendRequestByUsers(owner, friend);
+        return friendRequest.getRequestSeq();
+    }
+
+    private FriendRequest getFriendRequestBySeq(Long friendRequestSeq) {
         return friendRequestRepository.findById(friendRequestSeq)
             .orElseThrow(
                 () -> new RestApiException(FriendRequestErrorCode.FRIEND_REQUEST_NOT_FOUND));
+    }
+
+    private FriendRequest getFriendRequestByUsers(User owner, User friend) {
+        return friendRequestRepository.findByOwnerAndFriend(owner, friend)
+            .orElseThrow(
+                () -> new RestApiException(FriendRequestErrorCode.FRIEND_REQUEST_NOT_FOUND));
+    }
+
+    private Schedule getSchedule(Long scheduleSeq) {
+        return scheduleRepository.findById(scheduleSeq)
+            .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
+    }
+
+    private String getFriendRequestMessage(AlarmFriendRequest value) {
+        String requestedUserName = value.getRequestedUserName();
+        return AlarmContent.FRIEND_REQUEST.getMessage(requestedUserName);
+    }
+
+    private String getFriendAcceptMessage(AlarmFriendAccept value) {
+        String friendUserName = value.getFriendUserName();
+        return AlarmContent.FRIEND_ACCEPT.getMessage(friendUserName);
     }
 
     private String getScheduleAssignedMessage(AlarmScheduleAssigned value) {
         String scheduleOwnerUserName = value.getScheduleOwnerUserName();
         String scheduleName = value.getScheduleName();
         return AlarmContent.SCHEDULE_ASSIGNED.getMessage(scheduleOwnerUserName, scheduleName);
+    }
+
+    private String getScheduleUpdateMessage(AlarmScheduleUpdate value) {
+        String scheduleName = value.getScheduleName();
+        return AlarmContent.SCHEDULE_UPDATE.getMessage(scheduleName);
     }
 
     private String getScheduleNotificationMessage(AlarmScheduleNotification value) {
@@ -157,11 +180,6 @@ public class KafkaConsumer {
             return "곧";
         }
         throw new RestApiException(AlarmErrorCode.ALARM_NOT_EXIST);
-    }
-
-    private User getUser(Long userSeq) {
-        return userRepository.findById(userSeq)
-            .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
     }
 
 }
