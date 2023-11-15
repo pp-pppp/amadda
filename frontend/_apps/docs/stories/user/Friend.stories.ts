@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Friend } from '../../../user/components/Friend/FriendList/FriendList';
+import { Friend } from '../../../user/components/Friend/Friend/Friend';
 
 const meta = {
   title: 'User/Friend/Friend',

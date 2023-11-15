@@ -3,14 +3,14 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { FriendFrame } from '../../../user/components/Friend/FriendFrame/FriendFrame';
 import { FriendGroups } from '../../../user/components/Friend/FriendGroups/FriendGroups';
-import { Friend } from '../../../user/components/Friend/FriendList/FriendList';
+import { Friend } from '../../../user/components/Friend/Friend/Friend';
 
 const meta = {
   title: 'User/Friend/FriendFrame',
   component: FriendFrame,
   parameters: {
     layout: 'centered',
-    componentSubtitle: '친구 리스트의 친구 한 명에 해당하는 컴포넌트입니다.',
+    componentSubtitle: '친구 리스트의 전체 프레임입니다.',
   },
   tags: ['autodocs'],
   argTypes: {
