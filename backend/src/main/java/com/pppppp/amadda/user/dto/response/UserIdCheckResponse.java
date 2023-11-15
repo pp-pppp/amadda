@@ -10,8 +10,8 @@ public record UserIdCheckResponse(
 
     public static UserIdCheckResponse of(boolean isDup, boolean isValid) {
         return UserIdCheckResponse.builder()
-                .isDuplicated(isDup)
-                .isValid(isValid)
-                .build();
+            .isDuplicated(isDup)
+            .isValid(isValid)
+            .build();
     }
 }

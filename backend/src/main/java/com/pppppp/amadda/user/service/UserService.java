@@ -49,7 +49,7 @@ public class UserService {
 
     public User getUserInfoByKakaoId(String kakaoId) {
         return findUserByKakaoId(kakaoId)
-                .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+            .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
     }
 
     public UserReadResponse getUserResponse(Long userSeq) {
@@ -72,8 +72,9 @@ public class UserService {
             + ".jpg";
         String s3Url = imageService.saveKakaoImgInS3(request.imageUrl(), fileName);
 
-        if(findUserWithExactId(request.userId()).isPresent())
+        if (findUserWithExactId(request.userId()).isPresent()) {
             throw new RestApiException(UserErrorCode.USER_ID_DUPLICATED);
+        }
 
         User u = User.create(request.kakaoId(), request.userName(),
             request.userId(), s3Url);

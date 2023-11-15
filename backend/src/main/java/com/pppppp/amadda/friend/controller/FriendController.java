@@ -47,7 +47,7 @@ public class FriendController {
 
     @PostMapping("/request")
     public ApiResponse<String> sendFriendRequest(
-            HttpServletRequest http, @Valid @RequestBody FriendRequestRequest request) {
+        HttpServletRequest http, @Valid @RequestBody FriendRequestRequest request) {
         Long userSeq = tokenProvider.getUserSeq(http);
         friendRequestService.createFriendRequest(userSeq, request);
         return ApiResponse.ok("친구를 신청했습니다.");
@@ -83,7 +83,7 @@ public class FriendController {
 
     @PostMapping("/group")
     public ApiResponse<String> makeGroup(
-            HttpServletRequest http, @Valid @RequestBody GroupCreateRequest request) {
+        HttpServletRequest http, @Valid @RequestBody GroupCreateRequest request) {
         Long userSeq = tokenProvider.getUserSeq(http);
         groupMemberService.isUserValid(request.userSeqs()); // 전부 존재하는 유저들인지 검증
         Long groupSeq = userGroupService.createUserGroup(userSeq, request); // 유저 그룹 만들기
