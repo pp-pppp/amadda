@@ -2,7 +2,6 @@ package com.pppppp.amadda.alarm.service;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -13,7 +12,8 @@ import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleAssigned;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleNotification;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleUpdate;
 import com.pppppp.amadda.alarm.entity.KafkaTopic;
-import com.pppppp.amadda.alarm.repository.AlarmRepository;
+import com.pppppp.amadda.alarm.repository.FriendRequestAlarmRepository;
+import com.pppppp.amadda.alarm.repository.ScheduleAlarmRepository;
 import com.pppppp.amadda.friend.entity.FriendRequest;
 import com.pppppp.amadda.friend.repository.FriendRequestRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
@@ -22,7 +22,6 @@ import com.pppppp.amadda.schedule.entity.Schedule;
 import com.pppppp.amadda.schedule.repository.ScheduleRepository;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -33,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 
 @EmbeddedKafka(
@@ -54,30 +54,34 @@ class KafkaConsumerTest extends IntegrationTestSupport {
     private FriendRequestRepository friendRequestRepository;
 
     @Autowired
-    private AlarmRepository alarmRepository;
-
-    @Autowired
     private ScheduleRepository scheduleRepository;
+
+    @MockBean
+    private ScheduleAlarmRepository scheduleAlarmRepository;
+
+    @MockBean
+    private FriendRequestAlarmRepository friendRequestAlarmRepository;
 
     private KafkaConsumer kafkaConsumer;
 
     @BeforeEach
     void setUp() {
-        alarmRepository = mock(AlarmRepository.class);
-        kafkaConsumer = new KafkaConsumer(alarmRepository, userRepository);
+        kafkaConsumer = new KafkaConsumer(userRepository, scheduleAlarmRepository,
+            friendRequestAlarmRepository, scheduleRepository, friendRequestRepository);
     }
 
     @AfterEach
     void tearDown() {
+        friendRequestAlarmRepository.deleteAllInBatch();
+        scheduleAlarmRepository.deleteAllInBatch();
         scheduleRepository.deleteAllInBatch();
-        alarmRepository.deleteAllInBatch();
         friendRequestRepository.deleteAllInBatch();
         userRepository.deleteAllInBatch();
     }
 
     @DisplayName("alarm.friend-request consume 검증")
     @Test
-    public void alarm_friend_request() throws IOException {
+    public void alarm_friend_request() {
         // given
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
@@ -100,13 +104,13 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         kafkaConsumer.consumeFriendRequest(consumerRecord);
 
         // then
-        verify(alarmRepository, times(1)).save(any());
+        verify(friendRequestAlarmRepository, times(1)).save(any());
 
     }
 
     @DisplayName("alarm.friend-accept consume 검증")
     @Test
-    public void alarm_friend_accept() throws IOException {
+    public void alarm_friend_accept() {
         // given
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
@@ -128,13 +132,13 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         kafkaConsumer.consumeFriendAccept(consumerRecord);
 
         // then
-        verify(alarmRepository, times(1)).save(any());
+        verify(friendRequestAlarmRepository, times(1)).save(any());
 
     }
 
     @DisplayName("alarm.schedule-assigned consume 검증")
     @Test
-    public void alarm_schedule_assigned() throws IOException {
+    public void alarm_schedule_assigned() {
         // given
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
@@ -157,12 +161,12 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         kafkaConsumer.consumeScheduleAssigned(consumerRecord);
 
         // then
-        verify(alarmRepository, times(1)).save(any());
+        verify(scheduleAlarmRepository, times(1)).save(any());
     }
 
     @DisplayName("alarm.schedule-update consume 검증")
     @Test
-    public void alarm_schedule_update() throws IOException {
+    public void alarm_schedule_update() {
         // given
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
@@ -184,14 +188,14 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         kafkaConsumer.consumeScheduleUpdate(consumerRecord);
 
         // then
-        verify(alarmRepository, times(1)).save(any());
+        verify(scheduleAlarmRepository, times(1)).save(any());
     }
 
     @DisplayName("alarm.schedule-notification consume 검증")
     @ParameterizedTest
     @ValueSource(strings = {"ONE_DAY_BEFORE", "ONE_HOUR_BEFORE", "THIRTY_MINUTES_BEFORE",
         "FIFTEEN_MINUTES_BEFORE", "ON_TIME"})
-    public void alarm_schedule_notification(String type) throws IOException {
+    public void alarm_schedule_notification(String type) {
         // given
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
@@ -212,12 +216,12 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         kafkaConsumer.consumeScheduleNotification(consumerRecord);
 
         // then
-        verify(alarmRepository, times(1)).save(any());
+        verify(scheduleAlarmRepository, times(1)).save(any());
     }
 
     @DisplayName("alarm.schedule-notification consume 'None' 예외 검증")
     @Test
-    public void alarm_schedule_notification() throws IOException {
+    public void alarm_schedule_notification() {
         // given
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
