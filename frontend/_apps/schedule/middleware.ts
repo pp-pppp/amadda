@@ -1,4 +1,4 @@
-import gateway from 'connection/middleware';
+import { gateway } from 'connection';
 import { NextRequest } from 'next/server';
 
 export default function middleware(req: NextRequest) {

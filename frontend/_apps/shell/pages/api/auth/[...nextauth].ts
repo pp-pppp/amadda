@@ -1,10 +1,8 @@
-import { http } from 'connection';
-import axios from 'axios';
-import { REDIS } from 'connection';
 import NextAuth, { Session } from 'next-auth';
 import 'next-auth';
 import KakaoProvider from 'next-auth/providers/kakao';
 import { UserJwtRequest, UserJwtResponse } from 'amadda-global-types';
+import { http, REDIS } from 'connection';
 
 export const authOptions = {
   providers: [
