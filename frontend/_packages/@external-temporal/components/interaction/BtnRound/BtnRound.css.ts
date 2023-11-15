@@ -6,6 +6,7 @@ export const BASE = style({
   borderRadius: '1.25rem',
   paddingLeft: '0.75rem',
   paddingRight: '0.75rem',
+  cursor: 'pointer',
 });
 
 export const VARIANTS = styleVariants({
@@ -55,6 +56,25 @@ export const VARIANTS = styleVariants({
       },
     },
   ],
+  transparent: [
+    {
+      border: '1px solid transparent',
+      borderRadius: '1.25rem',
+      paddingLeft: '0.35rem',
+      paddingRight: '0.35rem',
+      cursor: 'pointer',
+      backgroundColor: colors.white,
+      color: colors.black,
+      '&:hover': {
+        backgroundColor: colors.whiteHover,
+      },
+      ':disabled': {
+        backgroundColor: colors.disabled,
+        color: colors.disalbedText,
+        cursor: 'not-allowed',
+      },
+    },
+  ],
 });
 
 export const SIZE = styleVariants({
@@ -63,5 +83,8 @@ export const SIZE = styleVariants({
   },
   S: {
     height: '2rem',
+  },
+  XS: {
+    height: '1.25rem',
   },
 });

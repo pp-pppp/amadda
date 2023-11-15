@@ -14,8 +14,7 @@ const preview: Preview = {
   },
   decorators: [
     Story => (
-      <div>
-        {/* 👇 Decorators in Storybook also accept a function. Replace <Story/> with Story() to enable it  */}
+      <div style={{ minWidth: '430px' }}>
         <Story />
       </div>
     ),
