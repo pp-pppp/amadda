@@ -1,8 +1,7 @@
 package com.pppppp.amadda.friend.controller;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -86,8 +85,8 @@ class FriendControllerTest extends ControllerTestSupport {
         Long requestSeq = 1L;
 
         // stubbing
-        when(friendRequestService.acceptFriendRequest(anyLong(), anyLong()))
-            .thenReturn(FriendRequestResponse.builder().ownerSeq(1L).friendSeq(2L).build());
+        given(friendRequestService.acceptFriendRequest(anyLong(), anyLong()))
+            .willReturn(FriendRequestResponse.builder().ownerSeq(1L).friendSeq(2L).build());
 
         // when // then
         mockMvc.perform(
