@@ -23,7 +23,6 @@ export interface FriendProps {
   onRequest?: (f: number) => void;
   onQuit?: (f: number) => void;
 }
-//TODO: 친구 추가 모드, 선택 모드, 손절 모드
 export function Friend({
   userSeq,
   userName,

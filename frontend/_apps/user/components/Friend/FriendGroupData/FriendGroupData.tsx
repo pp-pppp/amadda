@@ -4,44 +4,21 @@ import { FriendFrame, MODE_CONTEXT } from '../FriendFrame/FriendFrame';
 import { useFriend } from '@U/hooks/useFriend';
 import { FriendGroups } from '../FriendGroups/FriendGroups';
 import FRIENDS from '@U/constants/FRIENDS';
-import { Friend } from '../FriendList/FriendList';
-export interface FriendGroupCreateProps {
+import { Friend } from '../Friend/Friend';
+export interface FriendGroupDataProps {
   groupSeq?: number;
   groupName?: string;
   groupMember?: Array<number>;
 }
-export function FriendGroupEdit({
+export function FriendGroupData({
   groupName,
   groupSeq,
   groupMember,
-}: FriendGroupCreateProps) {
+}: FriendGroupDataProps) {
   const [newGroupName, setNewGroupName] = useState<string>('');
   const [newFriends, setNewFriends] = useState<Array<number>>([]);
   const { data, isLoading, error } = useFriend();
-  // const data = [
-  //   {
-  //     groupSeq: 3,
-  //     groupName: 'wow',
-  //     groupMember: [
-  //       { userSeq: 1, userName: '김민정', userId: 'zz', imageUrl: '' },
-  //       { userSeq: 2, userName: '정민영', userId: 'zzz', imageUrl: '' },
-  //       { userSeq: 3, userName: '박동건', userId: 'zzzz', imageUrl: '' },
-  //       { userSeq: 4, userName: '권소희', userId: 'zzzzz', imageUrl: '' },
-  //     ],
-  //   },
-  //   {
-  //     groupSeq: null,
-  //     groupName: 'wow',
-  //     groupMember: [
-  //       { userSeq: 1, userName: '김민정', userId: 'zz', imageUrl: '' },
-  //       { userSeq: 2, userName: '정민영', userId: 'zzz', imageUrl: '' },
-  //       { userSeq: 3, userName: '박동건', userId: 'zzzz', imageUrl: '' },
-  //       { userSeq: 4, userName: '권소희', userId: 'zzzzz', imageUrl: '' },
-  //     ],
-  //   },
-  // ];
-  //context로 편집중인 그룹이랑 그거 받아오고
-  //전역에서 전체 가져와서 context랑 비교해야 함
+
   const [MODE, SET_MODE] = useContext(MODE_CONTEXT);
   const handleNewFriends = f => {
     if (newFriends.includes(f.userSeq)) {
