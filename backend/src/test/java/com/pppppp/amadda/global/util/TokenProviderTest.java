@@ -23,8 +23,6 @@ class TokenProviderTest extends IntegrationTestSupport {
         // given
         List<String> l = tokenProvider.createTokens(1111L);
 
-//        Thread.sleep(1000L);
-
         // when
         boolean at = tokenProvider.verifyToken(l.get(0));
         boolean rt = tokenProvider.verifyToken(l.get(1));

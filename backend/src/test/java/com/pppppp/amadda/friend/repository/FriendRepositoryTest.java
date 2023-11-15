@@ -1,7 +1,6 @@
 package com.pppppp.amadda.friend.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.friend.entity.Friend;
@@ -103,7 +102,8 @@ class FriendRepositoryTest extends IntegrationTestSupport {
         friendRepository.saveAll(List.of(f1, f2));
 
         // when
-        List<Friend> friends = friendRepository.findByOwnerSeqAndSearchKey(user1.getUserSeq(), "유저2");
+        List<Friend> friends = friendRepository.findByOwnerSeqAndSearchKey(user1.getUserSeq(),
+            "유저2");
 
         // then
         assertThat(friends)
