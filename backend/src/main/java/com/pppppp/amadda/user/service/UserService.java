@@ -48,7 +48,6 @@ public class UserService {
     }
 
     public User getUserInfoByKakaoId(String kakaoId) {
-        // TODO 테케도 만들어야 댐.
         return findUserByKakaoId(kakaoId)
                 .orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
     }
@@ -68,7 +67,6 @@ public class UserService {
 
     @Transactional
     public void saveUser(UserInitRequest request) {
-        // TODO 파일 이름 나중에 바꿔야댐 시벌탱
         String fileName = request.kakaoId() + "_"
             + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))
             + ".jpg";
@@ -146,7 +144,9 @@ public class UserService {
 
     @Transactional
     public void deleteUserInfo(Long userSeq) {
-        getUserInfoBySeq(userSeq).delete();
+        User u = getUserInfoBySeq(userSeq);
+        imageService.deleteImgInS3(u.getImageUrl());
+        u.delete();
     }
 
     // =============== 레포지토리에 직접 접근하는 메소드들 ===============
@@ -174,7 +174,6 @@ public class UserService {
     // =================== 유저 인증 관련 메소드들 ===================
 
     public UserJwtInitResponse getTokensAndCheckInit(UserJwtRequest request) {
-        // TODO 토큰 스트링으로 만들지는 나중에 고민하고 고치겠음.
         Long userSeq = getUserInfoByKakaoId(request.kakaoId()).getUserSeq();
         List<String> tokens = tokenProvider.createTokens(userSeq);
         boolean isInited = checkIsInited(request.kakaoId());
