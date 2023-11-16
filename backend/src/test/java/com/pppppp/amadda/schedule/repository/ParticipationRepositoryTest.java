@@ -130,9 +130,9 @@ class ParticipationRepositoryTest extends IntegrationTestSupport {
         participationRepository.saveAll(List.of(p1, p2));
 
         // when
-        Optional<Participation> participation1 = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+        Optional<Participation> participation1 = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeq(
             schedule1.getScheduleSeq(), user1.getUserSeq());
-        Optional<Participation> participation2 = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+        Optional<Participation> participation2 = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeq(
             schedule2.getScheduleSeq(), user2.getUserSeq());
 
         // then
@@ -177,9 +177,9 @@ class ParticipationRepositoryTest extends IntegrationTestSupport {
         participationRepository.saveAll(List.of(p1, p2, p3));
 
         // when
-        List<Participation> result1 = participationRepository.findByUser_UserSeqAndScheduleNameContainingAndIsDeletedFalse(
+        List<Participation> result1 = participationRepository.findByUser_UserSeqAndScheduleNameContaining(
             user.getUserSeq(), "학교");
-        List<Participation> result2 = participationRepository.findByUser_UserSeqAndScheduleNameContainingAndIsDeletedFalse(
+        List<Participation> result2 = participationRepository.findByUser_UserSeqAndScheduleNameContaining(
             user.getUserSeq(), "학교는");
 
         // then
@@ -233,7 +233,7 @@ class ParticipationRepositoryTest extends IntegrationTestSupport {
         participationRepository.saveAll(List.of(p1, p2));
 
         // when
-        List<Participation> participations = participationRepository.findByUser_UserSeqAndCategory_CategorySeqAndIsDeletedFalse(
+        List<Participation> participations = participationRepository.findByUser_UserSeqAndCategory_CategorySeq(
             user.getUserSeq(), category.getCategorySeq());
 
         // then

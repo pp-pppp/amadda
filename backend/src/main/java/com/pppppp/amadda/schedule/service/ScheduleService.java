@@ -206,7 +206,7 @@ public class ScheduleService {
     }
 
     public List<UserReadResponse> getParticipatingUserList(Long scheduleSeq) {
-        return participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(scheduleSeq)
+        return participationRepository.findBySchedule_ScheduleSeq(scheduleSeq)
             .stream()
             .map(participation -> UserReadResponse.of(participation.getUser()))
             .toList();
@@ -474,7 +474,7 @@ public class ScheduleService {
     }
 
     private Participation findParticipationInfoBySchedule(Long scheduleSeq, Long userSeq) {
-        return participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+        return participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeq(
                 scheduleSeq, userSeq)
             .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
     }
@@ -552,7 +552,7 @@ public class ScheduleService {
 
         // 2. 참가자 명단
         List<UserReadResponse> participants = participationRepository
-            .findBySchedule_ScheduleSeqAndIsDeletedFalse(scheduleSeq)
+            .findBySchedule_ScheduleSeq(scheduleSeq)
             .stream()
             .map(p -> UserReadResponse.of(p.getUser()))
             .toList();
@@ -572,7 +572,7 @@ public class ScheduleService {
     }
 
     private List<Participation> findParticipationListBySchedule(Long scheduleSeq) {
-        return participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(scheduleSeq);
+        return participationRepository.findBySchedule_ScheduleSeq(scheduleSeq);
     }
 
     private List<UserReadResponse> findParticipatorListByUserName(Long scheduleSeq,
@@ -581,7 +581,7 @@ public class ScheduleService {
         findScheduleInfo(scheduleSeq);
 
         // 2. 참가자 명단 가져오기
-        return participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(scheduleSeq)
+        return participationRepository.findBySchedule_ScheduleSeq(scheduleSeq)
             .stream()
             .map(participation -> UserReadResponse.of(participation.getUser()))
             .filter(user -> user.userName().contains(searchKey))
@@ -594,7 +594,7 @@ public class ScheduleService {
         User requestUser = findUserInfo(requestUserSeq);
 
         // 1. 이전 사용자 목록
-        List<User> previousParticipationList = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
+        List<User> previousParticipationList = participationRepository.findBySchedule_ScheduleSeq(
                 schedule.getScheduleSeq())
             .stream()
             .map(Participation::getUser)
@@ -698,21 +698,21 @@ public class ScheduleService {
     }
 
     private List<CommentReadResponse> findCommentListBySchedule(Long scheduleSeq) {
-        return commentRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(scheduleSeq)
+        return commentRepository.findBySchedule_ScheduleSeq(scheduleSeq)
             .stream()
             .map(comment -> CommentReadResponse.of(comment, UserReadResponse.of(comment.getUser())))
             .toList();
     }
 
     private List<CategoryReadResponse> findCategoryListByUser(Long userSeq) {
-        return categoryRepository.findByUser_UserSeqAndIsDeletedFalse(userSeq)
+        return categoryRepository.findByUser_UserSeq(userSeq)
             .stream()
             .map(CategoryReadResponse::of)
             .toList();
     }
 
     private void checkCategoryNameAlreadyExists(Long userSeq, String categoryName) {
-        if (categoryRepository.existsByUser_UserSeqAndCategoryNameAndIsDeletedFalse(userSeq,
+        if (categoryRepository.existsByUser_UserSeqAndCategoryName(userSeq,
             categoryName)) {
             throw new RestApiException(CategoryErrorCode.CATEGORY_ALREADY_EXISTS);
         }
@@ -746,7 +746,7 @@ public class ScheduleService {
         // 날짜 조건 입력이 잘 됐는지 확인
         checkDateConditionValid(year, month, day);
 
-        return participationRepository.findByUser_UserSeqAndIsDeletedFalse(userSeq)
+        return participationRepository.findByUser_UserSeq(userSeq)
             .stream()
             // filter 1. 카테고리
             .filter(participation -> {
@@ -903,7 +903,7 @@ public class ScheduleService {
     }
 
     private void deleteCategoryInfoInParticipation(Long categorySeq) {
-        participationRepository.findByCategory_CategorySeqAndIsDeletedFalse(categorySeq)
+        participationRepository.findByCategory_CategorySeq(categorySeq)
             .forEach(participation -> participation.updateCategory(null));
     }
 }

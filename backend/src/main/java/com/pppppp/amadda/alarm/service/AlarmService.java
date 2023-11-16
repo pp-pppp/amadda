@@ -63,7 +63,7 @@ public class AlarmService {
     public List<AlarmReadResponse> getAlarms(Long userSeq) {
         User user = getUser(userSeq);
         Map<AlarmType, AlarmConfig> config = createAlarmConfigMap(userSeq);
-        List<Alarm> alarms = alarmRepository.findAllByUserAndIsReadFalseAndIsDeletedFalse(user);
+        List<Alarm> alarms = alarmRepository.findAllByUserAndIsReadFalse(user);
         return alarms.stream()
             .map(alarm -> createAlarmReadResponse(config, alarm))
             .toList();
@@ -193,7 +193,7 @@ public class AlarmService {
 
     private Map<AlarmType, AlarmConfig> createAlarmConfigMap(Long userSeq) {
         List<AlarmConfig> alarmConfigs = alarmConfigRepository
-            .findAllByUser_UserSeqAndIsDeletedFalse(userSeq);
+            .findAllByUser_UserSeq(userSeq);
         return alarmConfigs.stream()
             .collect(Collectors.toMap(AlarmConfig::getAlarmType, ac -> ac));
     }
@@ -224,14 +224,14 @@ public class AlarmService {
     private AlarmConfig updateOrCreateAlarmConfig(AlarmType alarmType, boolean isEnabled,
         User user) {
         Optional<AlarmConfig> config = alarmConfigRepository
-            .findByUser_UserSeqAndAlarmTypeAndIsDeletedFalse(user.getUserSeq(), alarmType);
+            .findByUser_UserSeqAndAlarmType(user.getUserSeq(), alarmType);
         config.ifPresent(alarmConfig -> alarmConfig.updateIsEnabled(isEnabled));
         return config.orElseGet(() -> AlarmConfig.create(user, alarmType, isEnabled));
     }
 
     public boolean checkGlobalAlarmSetting(Long userSeq, AlarmType alarmType) {
         return alarmConfigRepository
-            .findByUser_UserSeqAndAlarmTypeAndIsEnabledFalseAndIsDeletedFalse(userSeq, alarmType)
+            .findByUser_UserSeqAndAlarmTypeAndIsEnabledFalse(userSeq, alarmType)
             .map(AlarmConfig::isEnabled)
             .orElse(true);
     }
@@ -243,7 +243,7 @@ public class AlarmService {
 
     private boolean checkLocalUpdateAlarmSetting(Long scheduleSeq, Long userSeq) {
         return participationRepository
-            .findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(scheduleSeq, userSeq)
+            .findBySchedule_ScheduleSeqAndUser_UserSeq(scheduleSeq, userSeq)
             .map(Participation::isUpdateAlarmOn)
             .orElse(true);
     }
@@ -271,7 +271,7 @@ public class AlarmService {
     }
 
     private Participation getParticipation(Long scheduleSeq, Long userSeq) {
-        return participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+        return participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeq(
                 scheduleSeq, userSeq)
             .orElseThrow(() -> new RestApiException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
     }

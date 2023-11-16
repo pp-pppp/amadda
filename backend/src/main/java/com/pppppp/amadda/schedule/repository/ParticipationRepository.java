@@ -11,25 +11,24 @@ import org.springframework.data.repository.query.Param;
 
 public interface ParticipationRepository extends JpaRepository<Participation, Long> {
 
-    Optional<Participation> findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse
+    Optional<Participation> findBySchedule_ScheduleSeqAndUser_UserSeq
         (Long scheduleSeq, Long userSeq);
 
-    List<Participation> findByUser_UserSeqAndIsDeletedFalse(Long userSeq);
+    List<Participation> findByUser_UserSeq(Long userSeq);
 
-    List<Participation> findBySchedule_ScheduleSeqAndIsDeletedFalse(Long scheduleSeq);
+    List<Participation> findBySchedule_ScheduleSeq(Long scheduleSeq);
 
     @Query("""
         select p from Participation p
         where p.user.userSeq = :userSeq
         and p.scheduleName like %:scheduleName%
-        and p.isDeleted = false
         """)
-    List<Participation> findByUser_UserSeqAndScheduleNameContainingAndIsDeletedFalse(
+    List<Participation> findByUser_UserSeqAndScheduleNameContaining(
         @Param("userSeq") Long userSeq, @Param("scheduleName") String scheduleName);
 
-    List<Participation> findByCategory_CategorySeqAndIsDeletedFalse(Long categorySeq);
+    List<Participation> findByCategory_CategorySeq(Long categorySeq);
 
-    List<Participation> findByUser_UserSeqAndCategory_CategorySeqAndIsDeletedFalse
+    List<Participation> findByUser_UserSeqAndCategory_CategorySeq
         (Long userSeq, Long categorySeq);
 
     List<Participation> findAllByIsAlarmedFalseAndAlarmTimeNotAndAlarmAtBetween

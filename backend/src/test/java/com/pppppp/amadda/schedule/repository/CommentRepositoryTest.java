@@ -109,7 +109,7 @@ class CommentRepositoryTest extends IntegrationTestSupport {
         commentRepository.saveAll(List.of(c1, c2, c3));
 
         // when
-        List<Comment> comments = commentRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
+        List<Comment> comments = commentRepository.findBySchedule_ScheduleSeq(
             schedule.getScheduleSeq());
 
         // then
@@ -149,7 +149,7 @@ class CommentRepositoryTest extends IntegrationTestSupport {
         commentRepository.saveAll(List.of(c1, c2, c3));
 
         // when
-        List<Comment> comments = commentRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
+        List<Comment> comments = commentRepository.findBySchedule_ScheduleSeq(
             s1.getScheduleSeq());
 
         // then

@@ -94,7 +94,7 @@ class AlarmRepositoryTest extends IntegrationTestSupport {
         alarmRepository.saveAll(alarms);
 
         // when
-        List<Alarm> result = alarmRepository.findAllByUserAndIsReadFalseAndIsDeletedFalse(user1);
+        List<Alarm> result = alarmRepository.findAllByUserAndIsReadFalse(user1);
 
         // then
         assertThat(result).hasSize(4)

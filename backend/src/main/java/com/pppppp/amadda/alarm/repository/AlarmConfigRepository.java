@@ -10,12 +10,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AlarmConfigRepository extends JpaRepository<AlarmConfig, Long> {
 
-    Optional<AlarmConfig> findByUser_UserSeqAndAlarmTypeAndIsDeletedFalse(Long userSeq,
-        AlarmType alarmType);
+    Optional<AlarmConfig> findByUser_UserSeqAndAlarmType(Long userSeq, AlarmType alarmType);
 
-    Optional<AlarmConfig> findByUser_UserSeqAndAlarmTypeAndIsEnabledFalseAndIsDeletedFalse(
+    Optional<AlarmConfig> findByUser_UserSeqAndAlarmTypeAndIsEnabledFalse(
         Long userSeq, AlarmType alarmType);
 
-    List<AlarmConfig> findAllByUser_UserSeqAndIsDeletedFalse(Long userSeq);
+    List<AlarmConfig> findAllByUser_UserSeq(Long userSeq);
 
 }

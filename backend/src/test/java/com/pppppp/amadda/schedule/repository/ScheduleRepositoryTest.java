@@ -163,7 +163,7 @@ class ScheduleRepositoryTest extends IntegrationTestSupport {
         scheduleRepository.saveAll(List.of(schedule1, schedule2, schedule3));
 
         // when
-        List<Schedule> schedules = scheduleRepository.findAllByAuthorizedUser_UserSeqAndIsDeletedFalse(
+        List<Schedule> schedules = scheduleRepository.findAllByAuthorizedUser_UserSeq(
             user.getUserSeq());
 
         // then
@@ -207,7 +207,7 @@ class ScheduleRepositoryTest extends IntegrationTestSupport {
         int pivotHour = pivot.getHour();
         int pivotMinute = pivot.getMinute();
 
-        List<Schedule> schedules = scheduleRepository.findAllByAuthorizedUser_UserSeqAndScheduleStartAtBeforeAndIsDeletedFalse(
+        List<Schedule> schedules = scheduleRepository.findAllByAuthorizedUser_UserSeqAndScheduleStartAtBefore(
             user.getUserSeq(), pivot);
 
         // then
@@ -260,7 +260,7 @@ class ScheduleRepositoryTest extends IntegrationTestSupport {
         int pivotHour = pivot.getHour();
         int pivotMinute = pivot.getMinute();
 
-        List<Schedule> schedules = scheduleRepository.findAllByAuthorizedUser_UserSeqAndScheduleStartAtAfterAndIsDeletedFalse(
+        List<Schedule> schedules = scheduleRepository.findAllByAuthorizedUser_UserSeqAndScheduleStartAtAfter(
             user.getUserSeq(), pivot);
 
         // then

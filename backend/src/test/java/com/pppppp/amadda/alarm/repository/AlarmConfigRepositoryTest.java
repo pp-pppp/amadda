@@ -38,7 +38,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
     @ParameterizedTest
     @ValueSource(strings = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
         "SCHEDULE_UPDATE"})
-    void findByUser_UserSeqAndAlarmTypeAndIsDeletedFalse_True(String type) {
+    void findByUser_UserSeqAndAlarmTypeAnd_True(String type) {
         // given
         AlarmType alarmType = AlarmType.of(type);
 
@@ -49,7 +49,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         alarmConfigRepository.save(ac);
 
         // when
-        Optional<AlarmConfig> config = alarmConfigRepository.findByUser_UserSeqAndAlarmTypeAndIsDeletedFalse(
+        Optional<AlarmConfig> config = alarmConfigRepository.findByUser_UserSeqAndAlarmType(
             user.getUserSeq(), alarmType);
 
         // then
@@ -61,7 +61,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
     @ParameterizedTest
     @ValueSource(strings = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
         "SCHEDULE_UPDATE"})
-    void findByUser_UserSeqAndAlarmTypeAndIsDeletedFalse_False(String type) {
+    void findByUser_UserSeqAndAlarmType_False(String type) {
         // given
         AlarmType alarmType = AlarmType.of(type);
 
@@ -72,7 +72,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         alarmConfigRepository.save(ac);
 
         // when
-        Optional<AlarmConfig> config = alarmConfigRepository.findByUser_UserSeqAndAlarmTypeAndIsDeletedFalse(
+        Optional<AlarmConfig> config = alarmConfigRepository.findByUser_UserSeqAndAlarmType(
             user.getUserSeq(), alarmType);
 
         // then
@@ -84,7 +84,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
     @ParameterizedTest
     @ValueSource(strings = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
         "SCHEDULE_UPDATE"})
-    void findByUser_UserSeqAndAlarmTypeAndIsDeletedFalse_Null(String type) {
+    void findByUser_UserSeqAndAlarmType_Null(String type) {
         // given
         AlarmType alarmType = AlarmType.of(type);
 
@@ -92,7 +92,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         User user = userRepository.save(u1);
 
         // when
-        Optional<AlarmConfig> config = alarmConfigRepository.findByUser_UserSeqAndAlarmTypeAndIsDeletedFalse(
+        Optional<AlarmConfig> config = alarmConfigRepository.findByUser_UserSeqAndAlarmType(
             user.getUserSeq(), alarmType);
 
         // then
@@ -113,7 +113,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         alarmConfigRepository.save(ac);
 
         // when
-        Optional<AlarmConfig> config = alarmConfigRepository.findByUser_UserSeqAndAlarmTypeAndIsEnabledFalseAndIsDeletedFalse(
+        Optional<AlarmConfig> config = alarmConfigRepository.findByUser_UserSeqAndAlarmTypeAndIsEnabledFalse(
             user.getUserSeq(), alarmType);
 
         // then
@@ -137,7 +137,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         alarmConfigRepository.save(ac);
 
         // when
-        Optional<AlarmConfig> config = alarmConfigRepository.findByUser_UserSeqAndAlarmTypeAndIsEnabledFalseAndIsDeletedFalse(
+        Optional<AlarmConfig> config = alarmConfigRepository.findByUser_UserSeqAndAlarmTypeAndIsEnabledFalse(
             user.getUserSeq(), alarmType);
 
         // then
@@ -156,7 +156,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         AlarmType alarmType = AlarmType.of(type);
 
         // when
-        Optional<AlarmConfig> config = alarmConfigRepository.findByUser_UserSeqAndAlarmTypeAndIsEnabledFalseAndIsDeletedFalse(
+        Optional<AlarmConfig> config = alarmConfigRepository.findByUser_UserSeqAndAlarmTypeAndIsEnabledFalse(
             user.getUserSeq(), alarmType);
 
         // then
@@ -165,7 +165,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
 
     @DisplayName("유저의 전체 설정값 가져오기")
     @Test
-    void findAllByUser_UserSeqAndIsDeletedFalse() {
+    void findAllByUser_UserSeq() {
         // given
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User u2 = User.create("2222", "유저2", "id2", "imageUrl2");
@@ -182,7 +182,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         alarmConfigRepository.saveAll(List.of(ac1, ac2, ac3, ac4, ac5, ac6));
 
         // when
-        List<AlarmConfig> configs = alarmConfigRepository.findAllByUser_UserSeqAndIsDeletedFalse(
+        List<AlarmConfig> configs = alarmConfigRepository.findAllByUser_UserSeq(
             user1.getUserSeq());
 
         // then
