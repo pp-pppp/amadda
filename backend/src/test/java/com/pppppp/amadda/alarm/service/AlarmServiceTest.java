@@ -868,7 +868,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User user3 = users.get(2); // 일정에 할당되지 않은 사람
         Schedule schedule = scheduleRepository.findAll().get(0);
 
-        Participation participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+        Participation participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeq(
             schedule.getScheduleSeq(), user2.getUserSeq()).get();
         participation.updateIsUpdateAlarmOn(true);
         participationRepository.save(participation);
@@ -894,7 +894,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User user3 = users.get(2); // 일정에 할당되지 않은 사람
         Schedule schedule = scheduleRepository.findAll().get(0);
 
-        Participation participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+        Participation participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeq(
             schedule.getScheduleSeq(), user2.getUserSeq()).get();
         participation.updateIsUpdateAlarmOn(false);
         participationRepository.save(participation);
@@ -923,7 +923,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         AlarmConfig config = AlarmConfig.create(user2, AlarmType.SCHEDULE_UPDATE, true);
         alarmConfigRepository.save(config);
 
-        Participation participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+        Participation participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeq(
             schedule.getScheduleSeq(), user2.getUserSeq()).get();
         participation.updateIsUpdateAlarmOn(true);
         participationRepository.save(participation);
@@ -952,7 +952,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         AlarmConfig config = AlarmConfig.create(user2, AlarmType.SCHEDULE_UPDATE, true);
         alarmConfigRepository.save(config);
 
-        Participation participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+        Participation participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeq(
             schedule.getScheduleSeq(), user2.getUserSeq()).get();
         participation.updateIsUpdateAlarmOn(false);
         participationRepository.save(participation);
@@ -981,7 +981,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         AlarmConfig config = AlarmConfig.create(user2, AlarmType.SCHEDULE_UPDATE, false);
         alarmConfigRepository.save(config);
 
-        Participation participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+        Participation participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeq(
             schedule.getScheduleSeq(), user2.getUserSeq()).get();
         participation.updateIsUpdateAlarmOn(true);
         participationRepository.save(participation);
@@ -1010,7 +1010,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         AlarmConfig config = AlarmConfig.create(user2, AlarmType.SCHEDULE_UPDATE, false);
         alarmConfigRepository.save(config);
 
-        Participation participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+        Participation participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeq(
             schedule.getScheduleSeq(), user2.getUserSeq()).get();
         participation.updateIsUpdateAlarmOn(false);
         participationRepository.save(participation);

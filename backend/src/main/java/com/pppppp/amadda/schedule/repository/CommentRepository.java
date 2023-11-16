@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    List<Comment> findBySchedule_ScheduleSeqAndIsDeletedFalse(Long scheduleSeq);
+    List<Comment> findBySchedule_ScheduleSeq(Long scheduleSeq);
 
 }

@@ -102,7 +102,7 @@ class CategoryRepositoryTest extends IntegrationTestSupport {
         categoryRepository.saveAll(List.of(category1, category2));
 
         // when
-        List<Category> categories = categoryRepository.findByUser_UserSeqAndIsDeletedFalse(
+        List<Category> categories = categoryRepository.findByUser_UserSeq(
             user.getUserSeq());
 
         // then

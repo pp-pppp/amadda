@@ -23,8 +23,4 @@ public abstract class BaseEntity {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column(nullable = false, columnDefinition = "TINYINT(1)")
-    @ColumnDefault("0")
-    private boolean isDeleted;
-
 }
