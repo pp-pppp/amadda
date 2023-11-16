@@ -18,8 +18,12 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
 
     List<Participation> findBySchedule_ScheduleSeqAndIsDeletedFalse(Long scheduleSeq);
 
-    @Query("select p from Participation p "
-        + "where p.user.userSeq = :userSeq and p.scheduleName like %:scheduleName% and p.isDeleted = false")
+    @Query("""
+        select p from Participation p
+        where p.user.userSeq = :userSeq
+        and p.scheduleName like %:scheduleName%
+        and p.isDeleted = false
+        """)
     List<Participation> findByUser_UserSeqAndScheduleNameContainingAndIsDeletedFalse(
         @Param("userSeq") Long userSeq, @Param("scheduleName") String scheduleName);
 

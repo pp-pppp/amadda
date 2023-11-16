@@ -12,8 +12,11 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
 
     Optional<Friend> findByOwnerAndFriend(User u1, User u2);
 
-    @Query("Select f, u From Friend f Left Join f.friend u " +
-        "Where f.owner.userSeq = :ownerSeq And f.friend.userName like concat('%', :searchKey, '%')")
+    @Query("""
+        select f, u from Friend f left join f.friend u
+        where f.owner.userSeq = :ownerSeq
+        and f.friend.userName like concat('%', :searchKey, '%')
+        """)
     List<Friend> findByOwnerSeqAndSearchKey(@Param("ownerSeq") Long userSeq,
         @Param("searchKey") String searchKey);
 
