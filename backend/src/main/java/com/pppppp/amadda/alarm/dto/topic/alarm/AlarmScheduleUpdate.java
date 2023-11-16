@@ -18,16 +18,19 @@ public class AlarmScheduleUpdate extends BaseTopicValue {
 
     @JsonIgnore
     @Builder
-    private AlarmScheduleUpdate(Long scheduleSeq, String scheduleName) {
+    private AlarmScheduleUpdate(Long scheduleSeq, String scheduleName, Long relatedSeq) {
+        super(relatedSeq);
         this.scheduleSeq = scheduleSeq;
         this.scheduleName = scheduleName;
     }
 
     @JsonIgnore
-    public static AlarmScheduleUpdate create(Long scheduleSeq, String scheduleName) {
+    public static AlarmScheduleUpdate create(Long scheduleSeq, String scheduleName,
+        Long relatedSeq) {
         return AlarmScheduleUpdate.builder()
             .scheduleSeq(scheduleSeq)
             .scheduleName(scheduleName)
+            .relatedSeq(relatedSeq)
             .build();
     }
 }

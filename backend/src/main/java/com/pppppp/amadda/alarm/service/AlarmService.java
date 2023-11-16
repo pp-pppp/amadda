@@ -109,7 +109,7 @@ public class AlarmService {
             FriendRequest friendRequest = getFriendRequest(owner, target);
 
             AlarmFriendRequest value = AlarmFriendRequest.create(friendRequest.getRequestSeq(),
-                ownerSeq, owner.getUserName());
+                ownerSeq, owner.getUserName(), friendRequest.getRequestSeq());
             kafkaProducer.sendAlarm(kafkaTopic.ALARM_FRIEND_REQUEST, targetSeq, value);
         }
     }
@@ -120,7 +120,8 @@ public class AlarmService {
         if (checkGlobalAlarmSetting(owner.getUserSeq(), AlarmType.FRIEND_ACCEPT)) {
             User target = getUser(targetSeq);
 
-            AlarmFriendAccept value = AlarmFriendAccept.create(targetSeq, target.getUserName());
+            AlarmFriendAccept value = AlarmFriendAccept.create(targetSeq, target.getUserName(),
+                null);
             kafkaProducer.sendAlarm(kafkaTopic.ALARM_FRIEND_ACCEPT, ownerSeq, value);
         }
 
@@ -136,7 +137,7 @@ public class AlarmService {
 
             AlarmScheduleAssigned value = AlarmScheduleAssigned.create(
                 scheduleSeq, participation.getScheduleName(),
-                creatorSeq, creator.getUserName());
+                creatorSeq, creator.getUserName(), scheduleSeq);
             kafkaProducer.sendAlarm(kafkaTopic.ALARM_SCHEDULE_ASSIGNED, userSeq, value);
         }
     }
@@ -149,7 +150,7 @@ public class AlarmService {
             Participation participation = getParticipation(scheduleSeq, userSeq);
 
             AlarmScheduleUpdate value = AlarmScheduleUpdate.create(scheduleSeq,
-                participation.getScheduleName());
+                participation.getScheduleName(), scheduleSeq);
             kafkaProducer.sendAlarm(kafkaTopic.ALARM_SCHEDULE_UPDATE, userSeq, value);
         }
     }
@@ -186,7 +187,7 @@ public class AlarmService {
         AlarmTime alarmTime = participation.getAlarmTime();
         LocalDateTime alarmDateTime = participation.getAlarmAt();
         return AlarmScheduleNotification.create(scheduleSeq, scheduleName, alarmTime,
-            alarmDateTime);
+            alarmDateTime, scheduleSeq);
     }
 
     /* 클래스 내부에서 사용하는 메소드 */

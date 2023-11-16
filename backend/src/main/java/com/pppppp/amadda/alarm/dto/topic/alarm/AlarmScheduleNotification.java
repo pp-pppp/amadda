@@ -23,7 +23,8 @@ public class AlarmScheduleNotification extends BaseTopicValue {
     @JsonIgnore
     @Builder
     private AlarmScheduleNotification(Long scheduleSeq, String scheduleName, AlarmTime alarmTime,
-        LocalDateTime alarmDateTime) {
+        LocalDateTime alarmDateTime, Long relatedSeq) {
+        super(relatedSeq);
         this.scheduleSeq = scheduleSeq;
         this.scheduleName = scheduleName;
         this.alarmTime = alarmTime;
@@ -32,12 +33,13 @@ public class AlarmScheduleNotification extends BaseTopicValue {
 
     @JsonIgnore
     public static AlarmScheduleNotification create(Long scheduleSeq, String scheduleName,
-        AlarmTime alarmTime, LocalDateTime alarmDateTime) {
+        AlarmTime alarmTime, LocalDateTime alarmDateTime, Long relatedSeq) {
         return AlarmScheduleNotification.builder()
             .scheduleSeq(scheduleSeq)
             .scheduleName(scheduleName)
             .alarmTime(alarmTime)
             .alarmDateTime(alarmDateTime)
+            .relatedSeq(relatedSeq)
             .build();
     }
 }
