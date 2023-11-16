@@ -3,11 +3,15 @@ package com.pppppp.amadda.user.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
 
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.friend.entity.Friend;
 import com.pppppp.amadda.friend.repository.FriendRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
+import com.pppppp.amadda.global.service.ImageService;
 import com.pppppp.amadda.global.util.TokenProvider;
 import com.pppppp.amadda.user.dto.request.UserIdCheckRequest;
 import com.pppppp.amadda.user.dto.request.UserInitRequest;
@@ -31,6 +35,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
 
 class UserServiceTest extends IntegrationTestSupport {
@@ -46,6 +51,9 @@ class UserServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private TokenProvider tokenProvider;
+
+    @MockBean
+    private ImageService imageService;
 
     @AfterEach
     void tearDown() {
@@ -190,9 +198,12 @@ class UserServiceTest extends IntegrationTestSupport {
             .imageUrl("https://www.readersnews.com/news/photo/202305/108912_78151_1733.jpg")
             .kakaoId("1111")
             .build();
-        String fileName = "https://amadda-bucket.s3.ap-northeast-2.amazonaws.com/1111_"
+        String fileName = "1111_"
             + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))
             + ".jpg";
+        String url = "https://amadda-bucket.s3.ap-northeast-2.amazonaws.com/" + fileName;
+        given(imageService.saveKakaoImgInS3(request.imageUrl(), fileName))
+                .willReturn(url);
 
         // when
         userService.saveUser(request);
@@ -201,7 +212,7 @@ class UserServiceTest extends IntegrationTestSupport {
         assertThat(userRepository.findAll()).hasSize(1)
             .extracting("userId", "userName", "imageUrl")
             .containsExactly(
-                tuple("jammminjung", "잼민정", fileName)
+                tuple("jammminjung", "잼민정", url)
             );
     }
 
