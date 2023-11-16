@@ -5,15 +5,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { REDIS } from '../../_packages/connection';
 
 export const middlewareConfig = {
-  matcher: [
-    '/api/auth/signin',
-    '/api/auth/init',
-    '/api/auth/signout',
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
-  ],
+  matcher: ['/((?!api/auth|api/user|_next/static|_next/image|favicon.ico).*)'],
 };
 
 export const gateway = async (req: NextRequest) => {
+  const { pathname } = req.nextUrl;
+  if (pathname === '/') return NextResponse.next();
+  if (pathname === '/main') return NextResponse.next();
+
   if (!req.cookies.has('Auth'))
     return NextResponse.rewrite('/api/auth/signout'); //만약 쿠키의 액세스 토큰이 아예 없다면 로그아웃시킵니다.
 
