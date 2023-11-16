@@ -13,9 +13,11 @@ public interface GroupMemberRepository extends JpaRepository<GroupMember, Long> 
 
     void deleteByGroup_GroupSeqAndMember_UserSeq(Long groupSeq, Long userSeq);
 
-    @Query("Select m, u, g From GroupMember m Left Join m.member u Left Join m.group g " +
-        "Where m.group.groupSeq IN :groupSeqs " +
-        "And m.member.userName like concat('%', :searchKey, '%')")
+    @Query("""
+        select m, u, g from GroupMember m left join m.member u left join m.group g
+        where m.group.groupSeq in :groupSeqs
+        and m.member.userName like concat('%', :searchKey, '%')
+        """)
     List<GroupMember> findByGroupSeqsAndSearchKey(
         @Param("groupSeqs") List<Long> groupSeqs, @Param("searchKey") String searchKey);
 

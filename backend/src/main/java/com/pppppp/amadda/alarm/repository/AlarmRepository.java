@@ -13,11 +13,13 @@ public interface AlarmRepository extends JpaRepository<Alarm, Long> {
 
     List<Alarm> findAllByUserAndIsReadFalse(User user);
 
-    @Query("select a from Alarm a "
-        + "where a.user = :user "
-        + "and a.alarmType = :alarmType "
-        + "and a.isRead = false "
-        + "and a.content like concat(:name, '%') ")
+    @Query("""
+        select a from Alarm a
+        where a.user =:user
+        and a.alarmType =:alarmType
+        and a.isRead = false
+        and a.content like concat(:name, '%')
+        """)
     Optional<Alarm> findFriendRequestAlarm(@Param("user") User user,
         @Param("alarmType") AlarmType alarmType, @Param("name") String name);
 }

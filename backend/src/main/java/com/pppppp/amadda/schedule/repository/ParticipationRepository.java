@@ -18,8 +18,11 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
 
     List<Participation> findBySchedule_ScheduleSeq(Long scheduleSeq);
 
-    @Query("select p from Participation p "
-        + "where p.user.userSeq = :userSeq and p.scheduleName like %:scheduleName%")
+    @Query("""
+        select p from Participation p
+        where p.user.userSeq = :userSeq
+        and p.scheduleName like %:scheduleName%
+        """)
     List<Participation> findByUser_UserSeqAndScheduleNameContaining(
         @Param("userSeq") Long userSeq, @Param("scheduleName") String scheduleName);
 

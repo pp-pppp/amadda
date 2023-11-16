@@ -67,9 +67,7 @@ public class UserService {
 
     @Transactional
     public void saveUser(UserInitRequest request) {
-        String fileName = request.kakaoId() + "_"
-            + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))
-            + ".jpg";
+        String fileName = getFileName(request.kakaoId());
         String s3Url = imageService.saveKakaoImgInS3(request.imageUrl(), fileName);
 
         if (findUserWithExactId(request.userId()).isPresent()) {
@@ -79,6 +77,12 @@ public class UserService {
         User u = User.create(request.kakaoId(), request.userName(),
             request.userId(), s3Url);
         saveUser(u);
+    }
+
+    private String getFileName(String kakaoId) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
+        String formattedDate = LocalDateTime.now().format(formatter);
+        return String.format("%s_%s.jpg", kakaoId, formattedDate);
     }
 
     public UserAccessResponse validateUser(String token) {

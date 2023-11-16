@@ -68,7 +68,7 @@ class FriendControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                put("/api/friend/request/" + requestSeq)
+                put(String.format("/api/friend/request/%d", requestSeq))
                     .contentType(MediaType.APPLICATION_JSON)
             )
             .andDo(print())
@@ -90,7 +90,7 @@ class FriendControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                post("/api/friend/request/" + requestSeq)
+                post(String.format("/api/friend/request/%d", requestSeq))
                     .contentType(MediaType.APPLICATION_JSON)
             )
             .andExpect(status().isOk())
@@ -107,7 +107,7 @@ class FriendControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                delete("/api/friend/" + friendUserSeq)
+                delete(String.format("/api/friend/%d", friendUserSeq))
                     .contentType(MediaType.APPLICATION_JSON)
             )
             .andExpect(status().isOk())
@@ -262,7 +262,7 @@ class FriendControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                delete("/api/friend/group/" + groupSeq)
+                delete(String.format("/api/friend/group/%d", groupSeq))
                     .contentType(MediaType.APPLICATION_JSON)
             )
             .andExpect(status().isOk())
@@ -279,7 +279,7 @@ class FriendControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                get("/api/friend?searchKey=" + key)
+                get(String.format("/api/friend?searchKey=%s", key))
                     .contentType(MediaType.APPLICATION_JSON)
             )
             .andExpect(status().isOk())

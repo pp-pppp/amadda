@@ -39,7 +39,7 @@ public class FriendController {
     @GetMapping
     public ApiResponse<FriendReadResponse> getFriendList(
         HttpServletRequest http, @RequestParam String searchKey) {
-        log.info("searchKey=" + searchKey);
+        log.info("searchKey = {}", searchKey);
         Long userSeq = tokenProvider.getUserSeq(http);
         FriendReadResponse response = friendService.searchFriends(userSeq, searchKey);
         return ApiResponse.ok(response);
