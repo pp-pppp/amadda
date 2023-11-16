@@ -7,11 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
-    List<Schedule> findAllByAuthorizedUser_UserSeqAndIsDeletedFalse(Long userSeq);
+    List<Schedule> findAllByAuthorizedUser_UserSeq(Long userSeq);
 
-    List<Schedule> findAllByAuthorizedUser_UserSeqAndScheduleStartAtBeforeAndIsDeletedFalse(
+    List<Schedule> findAllByAuthorizedUser_UserSeqAndScheduleStartAtBefore(
         Long userSeq, LocalDateTime time);
 
-    List<Schedule> findAllByAuthorizedUser_UserSeqAndScheduleStartAtAfterAndIsDeletedFalse(
+    List<Schedule> findAllByAuthorizedUser_UserSeqAndScheduleStartAtAfter(
         Long userSeq, LocalDateTime time);
 }

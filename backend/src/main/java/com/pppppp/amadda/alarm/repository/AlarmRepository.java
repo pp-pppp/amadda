@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface AlarmRepository extends JpaRepository<Alarm, Long> {
 
-    List<Alarm> findAllByUserAndIsReadFalseAndIsDeletedFalse(User user);
+    List<Alarm> findAllByUserAndIsReadFalse(User user);
 
     @Query("select a from Alarm a "
         + "where a.user = :user "

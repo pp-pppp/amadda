@@ -1163,7 +1163,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             u1.getUserSeq(), scheduleCreateRequest);
 
         Schedule schedule = scheduleRepository.findAll().get(0);
-        Participation u1Participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+        Participation u1Participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeq(
             schedule.getScheduleSeq(), u1.getUserSeq()).get();
 
         // when
@@ -1181,9 +1181,9 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             u2ParticipationUpdateRequest);
         scheduleService.updateParticipation(u3.getUserSeq(), scheduleCreateResponse.scheduleSeq(),
             u3ParticipationUpdateRequest);
-        Participation u2Participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+        Participation u2Participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeq(
             schedule.getScheduleSeq(), u2.getUserSeq()).get();
-        Participation u3Participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+        Participation u3Participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeq(
             schedule.getScheduleSeq(), u3.getUserSeq()).get();
 
         // then
@@ -1308,9 +1308,9 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         // when
         ScheduleUpdateResponse updateResponse = scheduleService.updateSchedule(u1.getUserSeq(),
             schedule.scheduleSeq(), request);
-        List<Participation> result1 = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
+        List<Participation> result1 = participationRepository.findBySchedule_ScheduleSeq(
             updateResponse.scheduleSeq());
-        Optional<Participation> result2 = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+        Optional<Participation> result2 = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeq(
             updateResponse.scheduleSeq(), u2.getUserSeq());
 
         // then
@@ -1376,7 +1376,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             updateRequest);
 
         LocalDate testServerDate = LocalDate.of(2021, 10, 31);
-        Optional<Participation> result1 = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+        Optional<Participation> result1 = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeq(
             updateResponse.scheduleSeq(), u1.getUserSeq());
         List<ScheduleListReadResponse> result2 = scheduleService.getScheduleListBySearchCondition(
             u1.getUserSeq(), Map.of("categories", String.valueOf(category.getCategorySeq()),
@@ -1485,9 +1485,9 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
         // when
         scheduleService.deleteParticipation(u2.getUserSeq(), schedule);
-        List<Participation> result1 = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
+        List<Participation> result1 = participationRepository.findBySchedule_ScheduleSeq(
             s.scheduleSeq());
-        Optional<Participation> result2 = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+        Optional<Participation> result2 = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeq(
             s.scheduleSeq(), u2.getUserSeq());
 
         // then
@@ -1523,7 +1523,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
         // when
         scheduleService.deleteSchedule(u1.getUserSeq(), s.scheduleSeq());
-        List<Participation> result = participationRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
+        List<Participation> result = participationRepository.findBySchedule_ScheduleSeq(
             s.scheduleSeq());
 
         // then
@@ -1607,7 +1607,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
         // when
         scheduleService.deleteComment(r2.commentSeq(), user.getUserSeq());
-        List<Comment> result = commentRepository.findBySchedule_ScheduleSeqAndIsDeletedFalse(
+        List<Comment> result = commentRepository.findBySchedule_ScheduleSeq(
             schedule.scheduleSeq());
 
         // then
@@ -1716,7 +1716,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         // when
         scheduleService.deleteCategory(u1.getUserSeq(), category.getCategorySeq());
         Schedule schedule = scheduleRepository.findAll().get(0);
-        Optional<Participation> participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+        Optional<Participation> participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeq(
             schedule.getScheduleSeq(), u1.getUserSeq());
 
         // then
@@ -2438,7 +2438,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         scheduleService.setMentionAlarm(user.getUserSeq(), schedule.getScheduleSeq(), true);
 
         // then
-        Optional<Participation> participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+        Optional<Participation> participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeq(
             schedule.getScheduleSeq(), user.getUserSeq());
         assertTrue(participation.isPresent());
         assertTrue(participation.get().isMentionAlarmOn());
@@ -2470,7 +2470,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         scheduleService.setMentionAlarm(user.getUserSeq(), schedule.getScheduleSeq(), false);
 
         // then
-        Optional<Participation> participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+        Optional<Participation> participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeq(
             schedule.getScheduleSeq(), user.getUserSeq());
         assertTrue(participation.isPresent());
         assertFalse(participation.get().isMentionAlarmOn());
@@ -2514,7 +2514,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         scheduleService.setUpdateAlarm(user.getUserSeq(), schedule.getScheduleSeq(), true);
 
         // then
-        Optional<Participation> participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+        Optional<Participation> participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeq(
             schedule.getScheduleSeq(), user.getUserSeq());
         assertTrue(participation.isPresent());
         assertTrue(participation.get().isUpdateAlarmOn());
@@ -2546,7 +2546,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         scheduleService.setUpdateAlarm(user.getUserSeq(), schedule.getScheduleSeq(), false);
 
         // then
-        Optional<Participation> participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeqAndIsDeletedFalse(
+        Optional<Participation> participation = participationRepository.findBySchedule_ScheduleSeqAndUser_UserSeq(
             schedule.getScheduleSeq(), user.getUserSeq());
         assertTrue(participation.isPresent());
         assertFalse(participation.get().isUpdateAlarmOn());

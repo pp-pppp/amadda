@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
-    List<Category> findByUser_UserSeqAndIsDeletedFalse(Long userSeq);
+    List<Category> findByUser_UserSeq(Long userSeq);
 
-    boolean existsByUser_UserSeqAndCategoryNameAndIsDeletedFalse(Long userSeq, String categoryName);
+    boolean existsByUser_UserSeqAndCategoryName(Long userSeq, String categoryName);
 }
