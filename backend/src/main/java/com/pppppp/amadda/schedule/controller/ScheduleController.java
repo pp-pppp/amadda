@@ -68,7 +68,7 @@ public class ScheduleController {
     @GetMapping("/{scheduleSeq}")
     public ApiResponse<ScheduleDetailReadResponse> getSchedule(HttpServletRequest http,
         @PathVariable Long scheduleSeq) {
-        log.info("GET /api/schedule/" + scheduleSeq);
+        log.info("GET /api/schedule/{}", scheduleSeq);
         Long userSeq = tokenProvider.getUserSeq(http);
 
         LocalDate currentServerDate = LocalDate.parse(scheduleService.getServerDate());

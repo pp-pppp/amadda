@@ -88,7 +88,7 @@ class UserControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                get("/api/user?search-key=" + key)
+                get(String.format("/api/user?search-key=%s", key))
                     .contentType(MediaType.APPLICATION_JSON)
             )
             .andExpect(status().isOk())
@@ -161,7 +161,7 @@ class UserControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                get("/api/user/" + targetSeq)
+                get(String.format("/api/user/%d", targetSeq))
                     .contentType(MediaType.APPLICATION_JSON)
             )
             .andExpect(status().isOk())
