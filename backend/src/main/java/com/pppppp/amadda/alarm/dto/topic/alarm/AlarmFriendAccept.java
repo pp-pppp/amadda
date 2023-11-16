@@ -18,16 +18,19 @@ public class AlarmFriendAccept extends BaseTopicValue {
 
     @JsonIgnore
     @Builder
-    private AlarmFriendAccept(Long friendUserSeq, String friendUserName) {
+    private AlarmFriendAccept(Long friendUserSeq, String friendUserName, Long relatedSeq) {
+        super(relatedSeq);
         this.friendUserSeq = friendUserSeq;
         this.friendUserName = friendUserName;
     }
 
     @JsonIgnore
-    public static AlarmFriendAccept create(Long friendUserSeq, String friendUserName) {
+    public static AlarmFriendAccept create(Long friendUserSeq, String friendUserName,
+        Long relatedSeq) {
         return AlarmFriendAccept.builder()
             .friendUserSeq(friendUserSeq)
             .friendUserName(friendUserName)
+            .relatedSeq(relatedSeq)
             .build();
     }
 }

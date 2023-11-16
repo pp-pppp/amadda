@@ -20,7 +20,8 @@ public class AlarmFriendRequest extends BaseTopicValue {
     @JsonIgnore
     @Builder
     private AlarmFriendRequest(Long friendRequestSeq, Long requestedUserSeq,
-        String requestedUserName) {
+        String requestedUserName, Long relatedSeq) {
+        super(relatedSeq);
         this.friendRequestSeq = friendRequestSeq;
         this.requestedUserSeq = requestedUserSeq;
         this.requestedUserName = requestedUserName;
@@ -28,11 +29,12 @@ public class AlarmFriendRequest extends BaseTopicValue {
 
     @JsonIgnore
     public static AlarmFriendRequest create(Long friendRequestSeq, Long requestedUserSeq,
-        String requestedUserName) {
+        String requestedUserName, Long relatedSeq) {
         return AlarmFriendRequest.builder()
             .friendRequestSeq(friendRequestSeq)
             .requestedUserSeq(requestedUserSeq)
             .requestedUserName(requestedUserName)
+            .relatedSeq(relatedSeq)
             .build();
     }
 }

@@ -21,7 +21,8 @@ public class AlarmMentioned extends BaseTopicValue {
     @JsonIgnore
     @Builder
     private AlarmMentioned(Long scheduleSeq, String scheduleName, Long writerUserSeq,
-        String writerUserName) {
+        String writerUserName, Long relatedSeq) {
+        super(relatedSeq);
         this.scheduleSeq = scheduleSeq;
         this.scheduleName = scheduleName;
         this.writerUserSeq = writerUserSeq;
@@ -30,12 +31,13 @@ public class AlarmMentioned extends BaseTopicValue {
 
     @JsonIgnore
     public static AlarmMentioned create(Long scheduleSeq, String scheduleName, Long writerUserSeq,
-        String writerUserName) {
+        String writerUserName, Long relatedSeq) {
         return AlarmMentioned.builder()
             .scheduleSeq(scheduleSeq)
             .scheduleName(scheduleName)
             .writerUserSeq(writerUserSeq)
             .writerUserName(writerUserName)
+            .relatedSeq(relatedSeq)
             .build();
     }
 }

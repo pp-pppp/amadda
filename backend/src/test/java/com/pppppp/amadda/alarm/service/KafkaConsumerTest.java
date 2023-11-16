@@ -96,7 +96,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         String key = String.valueOf(friend.getUserSeq());
         AlarmFriendRequest value = AlarmFriendRequest.create(
             savedFriendRequest.getRequestSeq(), friend.getUserSeq(),
-            friend.getUserName());
+            friend.getUserName(), savedFriendRequest.getRequestSeq());
         ConsumerRecord<String, AlarmFriendRequest> consumerRecord = new ConsumerRecord<>(topic, 0,
             0, key, value);
 
@@ -119,12 +119,12 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         User friend = users.get(1);
 
         FriendRequest friendRequest = FriendRequest.create(owner, friend);
-        friendRequestRepository.save(friendRequest);
+        FriendRequest saved = friendRequestRepository.save(friendRequest);
 
         String topic = kafkaTopic.ALARM_FRIEND_ACCEPT;
         String key = String.valueOf(owner.getUserSeq());
         AlarmFriendAccept value = AlarmFriendAccept.create(friend.getUserSeq(),
-            friend.getUserName());
+            friend.getUserName(), saved.getRequestSeq());
         ConsumerRecord<String, AlarmFriendAccept> consumerRecord = new ConsumerRecord<>(topic, 0,
             0, key, value);
 
@@ -152,7 +152,8 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         String topic = kafkaTopic.ALARM_SCHEDULE_ASSIGNED;
         String key = String.valueOf(user2.getUserSeq());
         AlarmScheduleAssigned value = AlarmScheduleAssigned.create(schedule.getScheduleSeq(),
-            schedule.getScheduleContent(), user1.getUserSeq(), user2.getUserName());
+            schedule.getScheduleContent(), user1.getUserSeq(), user2.getUserName(),
+            schedule.getScheduleSeq());
         ConsumerRecord<String, AlarmScheduleAssigned> consumerRecord = new ConsumerRecord<>(topic,
             0,
             0, key, value);
@@ -180,7 +181,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         String topic = kafkaTopic.ALARM_SCHEDULE_UPDATE;
         String key = String.valueOf(user2.getUserSeq());
         AlarmScheduleUpdate value = AlarmScheduleUpdate.create(schedule.getScheduleSeq(),
-            schedule.getScheduleContent());
+            schedule.getScheduleContent(), schedule.getScheduleSeq());
         ConsumerRecord<String, AlarmScheduleUpdate> consumerRecord = new ConsumerRecord<>(topic, 0,
             0, key, value);
 
@@ -208,7 +209,8 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         String topic = kafkaTopic.ALARM_SCHEDULE_UPDATE;
         String key = String.valueOf(user.getUserSeq());
         AlarmScheduleNotification value = AlarmScheduleNotification.create(
-            schedule.getScheduleSeq(), "집가야돼", alarmTime, LocalDateTime.now());
+            schedule.getScheduleSeq(), "집가야돼", alarmTime, LocalDateTime.now(),
+            schedule.getScheduleSeq());
         ConsumerRecord<String, AlarmScheduleNotification> consumerRecord
             = new ConsumerRecord<>(topic, 0, 0, key, value);
 
@@ -234,7 +236,8 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         String topic = kafkaTopic.ALARM_SCHEDULE_UPDATE;
         String key = String.valueOf(user.getUserSeq());
         AlarmScheduleNotification value = AlarmScheduleNotification.create(
-            schedule.getScheduleSeq(), "집가야돼", alarmTime, LocalDateTime.now());
+            schedule.getScheduleSeq(), "집가야돼", alarmTime, LocalDateTime.now(),
+            schedule.getScheduleSeq());
         ConsumerRecord<String, AlarmScheduleNotification> consumerRecord
             = new ConsumerRecord<>(topic, 0, 0, key, value);
 
