@@ -59,7 +59,7 @@ public class GroupMemberService {
         // 그룹 포함 인원 수정
         HashSet<Long> hs = new HashSet<>();
         List<GroupMember> toAdd = new ArrayList<>();
-        members.stream().forEach(u -> hs.add(u.getMember().getUserSeq()));
+        members.forEach(u -> hs.add(u.getMember().getUserSeq()));
 
         for (Long mem : newMems) {
             if (hs.contains(mem)) {

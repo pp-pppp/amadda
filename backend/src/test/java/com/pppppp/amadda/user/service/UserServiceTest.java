@@ -3,8 +3,6 @@ package com.pppppp.amadda.user.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
 import com.pppppp.amadda.IntegrationTestSupport;
@@ -198,12 +196,13 @@ class UserServiceTest extends IntegrationTestSupport {
             .imageUrl("https://www.readersnews.com/news/photo/202305/108912_78151_1733.jpg")
             .kakaoId("1111")
             .build();
-        String fileName = "1111_"
-            + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))
-            + ".jpg";
-        String url = "https://amadda-bucket.s3.ap-northeast-2.amazonaws.com/" + fileName;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
+        String fileName = String.format("1111_%s.jpg", LocalDateTime.now().format(formatter));
+        String url = String.format("https://amadda-bucket.s3.ap-northeast-2.amazonaws.com/%s",
+            fileName);
+        
         given(imageService.saveKakaoImgInS3(request.imageUrl(), fileName))
-                .willReturn(url);
+            .willReturn(url);
 
         // when
         userService.saveUser(request);
