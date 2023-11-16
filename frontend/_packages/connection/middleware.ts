@@ -1,26 +1,19 @@
-import { UserAccessResponse, UserJwtResponse } from 'amadda-global-types';
+import type { UserAccessResponse, UserJwtResponse } from 'amadda-global-types';
 import axios from 'axios';
 import type { AxiosResponse } from 'axios';
 import { NextRequest, NextResponse } from 'next/server';
 import { REDIS } from '../../_packages/connection';
 
-const targetPath = [
-  '/',
-  '/main',
-  '/api/auth/signin',
-  '/api/auth/signout',
-  '/api/auth/init',
-];
+export const middlewareConfig = {
+  matcher: [
+    '/api/auth/signin',
+    '/api/auth/init',
+    '/api/auth/signout',
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+  ],
+};
 
 export const gateway = async (req: NextRequest) => {
-  const { pathname } = req.nextUrl; //포트 이후의 api 요청입니다.
-
-  //정적 자원 요청은 통과시킵니다.
-  if (pathname.startsWith('/_next/static/')) return NextResponse.next();
-
-  //targetPath와 일치하는 pathname요청이 들어온 경우 통과시킵니다.
-  if (targetPath.includes(pathname)) return NextResponse.next();
-
   if (!req.cookies.has('Auth'))
     return NextResponse.rewrite('/api/auth/signout'); //만약 쿠키의 액세스 토큰이 아예 없다면 로그아웃시킵니다.
 
