@@ -1,6 +1,6 @@
 import { Flex, Profile, Spacing, Span } from 'external-temporal';
 import React from 'react';
-import { CATEGORY, LAYOUT, PROFILE } from './MobileDailyPlate.css';
+import { CATEGORY, LAYOUT, NAME, PROFILE } from './MobileDailyPlate.css';
 import DAILYPLATE_TEXT from '@SCH/constants/DAILYPLATE_TEXT';
 
 export interface MobileDailyPlateProps {
@@ -8,64 +8,74 @@ export interface MobileDailyPlateProps {
   scheduleName: string;
   person: number;
   participants?: string[];
-  unscheduled?: boolean;
-  allday?: boolean;
-  startTime?: string;
-  endTime?: string;
+  isTimeSelected?: boolean;
+  isDateSelected?: boolean;
+  isAllday?: boolean;
+  scheduleStartAt?: string; //"yyyy-MM-dd hh:mm:ss",
+  scheduleEndAt?: string; //"yyyy-MM-dd hh:mm:ss",
 }
 
 export interface PropsObj {
   MobileDailyPlateProps: MobileDailyPlateProps;
 }
-export function MobileDailyPlate({ MobileDailyPlateProps }: PropsObj) {
+
+export function MobileDailyPlate({
+  color,
+  scheduleName,
+  person,
+  participants = [],
+  isTimeSelected = false,
+  isDateSelected = false,
+  isAllday = false,
+  scheduleStartAt = '',
+  scheduleEndAt = '',
+}: MobileDailyPlateProps) {
+  console.log(scheduleName);
   return (
     <div className={LAYOUT.plate}>
-      <Flex flexDirection="row" justifyContents="start">
-        <div className={CATEGORY[MobileDailyPlateProps.color]} />
+      <div className={LAYOUT.title}>
+        <div className={CATEGORY[color]} />
         <Spacing size="0.5" dir="h" />
-        <Span>{MobileDailyPlateProps.scheduleName}</Span>
-      </Flex>
-      {MobileDailyPlateProps.person > 1 && (
+        <span className={NAME}>{scheduleName}</span>
+      </div>
+      {person > 1 && (
         <Flex flexDirection="row" justifyContents="flexEnd" alignItems="center">
           <Flex
             flexDirection="row"
             justifyContents="center"
             alignItems="center"
           >
-            {MobileDailyPlateProps.participants?.map((participant, idx) => (
+            {participants?.map((participant, idx) => (
               <div className={PROFILE[idx]}>
                 <Profile src={participant} alt="part" size="small" />
               </div>
             ))}
           </Flex>
           <Spacing size="0.25" dir="h" />
-          {MobileDailyPlateProps.person > 3 && (
-            <Span>
-              {DAILYPLATE_TEXT.PARTICIPANTS(MobileDailyPlateProps.person - 3)}
-            </Span>
+          {person > 3 && (
+            <Span>{DAILYPLATE_TEXT.PARTICIPANTS(person - 3)}</Span>
           )}
         </Flex>
       )}
-      <Flex flexDirection="row" justifyContents="start">
-        <Spacing size="2" dir="h" />
-        {MobileDailyPlateProps.unscheduled && (
-          <div className={LAYOUT.width}>
-            <Span color="lightgrey">{DAILYPLATE_TEXT.UNSCHEDULED}</Span>
-          </div>
-        )}
-        {MobileDailyPlateProps.allday && (
-          <div className={LAYOUT.width}>
-            <Span>{DAILYPLATE_TEXT.ALLDAY}</Span>
-          </div>
-        )}
-        {!MobileDailyPlateProps.unscheduled &&
-          !MobileDailyPlateProps.allday && (
+      {isDateSelected && (
+        <Flex flexDirection="row" justifyContents="flexEnd">
+          <Spacing size="2" dir="h" />
+          {isAllday ? (
+            <div className={LAYOUT.width}>
+              <Span>{DAILYPLATE_TEXT.ALLDAY}</Span>
+            </div>
+          ) : isTimeSelected ? (
+            <div className={LAYOUT.width}>
+              <Span color="lightgrey">{DAILYPLATE_TEXT.UNSCHEDULED}</Span>
+            </div>
+          ) : (
             <div className={LAYOUT.time}>
-              <Span>{MobileDailyPlateProps.startTime}</Span>
-              <Span>{MobileDailyPlateProps.endTime}</Span>
+              <Span>{scheduleStartAt}</Span>
+              <Span>{scheduleEndAt}</Span>
             </div>
           )}
-      </Flex>
+        </Flex>
+      )}
     </div>
   );
 }

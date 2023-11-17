@@ -1,17 +1,24 @@
 import colors from '#/constants/colors';
-import { styleVariants } from '@vanilla-extract/css';
+import { style, styleVariants } from '@vanilla-extract/css';
 
 export const LAYOUT = styleVariants({
   plate: {
-    width: '100%',
-    height: '2rem',
+    width: '100vw',
+    maxWidth: '430px',
+    height: '3rem',
     display: 'flex',
     justifyContent: 'space-between',
     flexGrow: '1',
   },
+  title: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'start',
+    alignItems: 'center',
+  },
   category: {
     width: '0.25rem',
-    height: '2rem',
+    height: '3rem',
   },
   profiles: {
     width: '2rem',
@@ -21,6 +28,7 @@ export const LAYOUT = styleVariants({
   },
   width: {
     width: '4rem',
+    textAlign: 'end',
   },
   time: {
     width: '4rem',
@@ -29,6 +37,16 @@ export const LAYOUT = styleVariants({
     alignItems: 'end',
     justifyContent: 'end',
   },
+});
+
+export const NAME = style({
+  textOverflow: 'ellipsis',
+  overflow: 'hidden',
+  display: '-webkit-box',
+  WebkitBoxOrient: 'vertical',
+  WebkitLineClamp: 2,
+  width: '15rem',
+  lineHeight: '1.5rem',
 });
 
 export const CATEGORY = styleVariants({
