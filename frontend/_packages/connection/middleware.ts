@@ -5,13 +5,33 @@ import { NextRequest, NextResponse } from 'next/server';
 import { KV } from '../../_packages/connection';
 
 export const middlewareConfig = {
-  matcher: ['/((?!api/auth|api/user|_next/static|_next/image|favicon.ico).*)'],
+  matcher: [
+    '/((?!api/auth|api/user|_next/static|_next/image|favicon.ico|image).*)',
+  ],
 };
 
 export const gateway = async (req: NextRequest) => {
   const { pathname } = req.nextUrl;
   if (pathname === '/') return NextResponse.next();
   if (pathname === '/main') return NextResponse.next();
+
+  if (req.headers.has('init')) {
+    //init 헤더가 있으면 초기 로그인 상황입니다.
+    const INITIAL_AT = req.headers.get('init') || '';
+    req.headers.delete('init');
+    if (INITIAL_AT.length > 0) {
+      const response = NextResponse.next();
+      //토큰을 쿠키에 주입합니다.
+      response.cookies.set('Auth', INITIAL_AT, {
+        httpOnly: true,
+        sameSite: 'lax',
+      });
+      return response;
+    } else
+      return NextResponse.rewrite(
+        `${process.env.NEXT_PUBLIC_SHELL}/api/auth/signout`
+      ); //초기 요청에서 토큰 로드에 실패한 것이므로 로그아웃 처리합니다.
+  }
 
   if (!req.cookies.has('Auth'))
     return NextResponse.rewrite(
