@@ -18,6 +18,7 @@ public record ScheduleDetailReadResponse(
     Boolean isAuthorizedAll,
     String scheduleStartAt,
     String scheduleEndAt,
+    UserReadResponse authorizedUser,
     List<UserReadResponse> participants,
     Boolean isFinished,
 
@@ -48,6 +49,9 @@ public record ScheduleDetailReadResponse(
                 (schedule.isDateSelected()) ? schedule.getScheduleStartAt().format(formatter) : "")
             .scheduleEndAt(
                 (schedule.isTimeSelected()) ? schedule.getScheduleEndAt().format(formatter) : "")
+            .authorizedUser(
+                !(schedule.isAuthorizedAll()) ? UserReadResponse.of(schedule.getAuthorizedUser())
+                    : null)
             .participants(participants)
             .isFinished(isFinished)
             .alarmTime(participation.getAlarmTime().getContent())
