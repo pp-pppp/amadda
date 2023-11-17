@@ -2,7 +2,7 @@ import type { UserAccessResponse, UserJwtResponse } from 'amadda-global-types';
 import axios from 'axios';
 import type { AxiosResponse } from 'axios';
 import { NextRequest, NextResponse } from 'next/server';
-import { REDIS } from '../../_packages/connection';
+import { KV } from '../../_packages/connection';
 
 export const middlewareConfig = {
   matcher: ['/((?!api/auth|api/user|_next/static|_next/image|favicon.ico).*)'],
@@ -14,7 +14,9 @@ export const gateway = async (req: NextRequest) => {
   if (pathname === '/main') return NextResponse.next();
 
   if (!req.cookies.has('Auth'))
-    return NextResponse.rewrite('/api/auth/signout'); //만약 쿠키의 액세스 토큰이 아예 없다면 로그아웃시킵니다.
+    return NextResponse.rewrite(
+      `${process.env.NEXT_PUBLIC_SHELL}/api/auth/signout`
+    ); //만약 쿠키의 액세스 토큰이 아예 없다면 로그아웃시킵니다.
 
   const AT = req.cookies.get('Auth')?.value || ''; //쿠키의 access token입니다.
 
@@ -28,11 +30,13 @@ export const gateway = async (req: NextRequest) => {
 
   if (preflight.data.isBroken || !preflight)
     //토큰이 만료된 것이 아니라 손상되었다면 로그아웃시킵니다.
-    return NextResponse.rewrite('/api/auth/signout');
+    return NextResponse.rewrite(
+      `${process.env.NEXT_PUBLIC_SHELL}/api/auth/signout`
+    );
   if (preflight.data.isExpired) {
     //토큰이 만료된 것이라면 리프레시 토큰을 확인할 수 있는 key가 제공됩니다.
     const RT =
-      (await REDIS.getRefreshToken(preflight.data.refreshAccessKey)) || ''; //리프레시 토큰은 레디스에 있습니다. 레디스에서 key를 통해 토큰을 꺼냅니다.
+      (await KV.getRefreshToken(preflight.data.refreshAccessKey)) || ''; //리프레시 토큰은 레디스에 있습니다. 레디스에서 key를 통해 토큰을 꺼냅니다.
 
     const re_preflight: AxiosResponse<UserJwtResponse> = await axios
       .get(`${process.env.SPRING_ROOT as string}/user/refresh`, {
@@ -43,10 +47,12 @@ export const gateway = async (req: NextRequest) => {
     if (re_preflight.status > 300)
       //400번대 이상의 응답이 온다면 리프레시 토큰에 문제가 있는 것이고,
       //300번대 응답이 온다면 문제가 있는 상황이므로 로그아웃시킵니다
-      return NextResponse.rewrite('/api/auth/signout');
+      return NextResponse.rewrite(
+        `${process.env.NEXT_PUBLIC_SHELL}/api/auth/signout`
+      );
     if (re_preflight.status < 300) {
       //그렇지 않다면 (truthy한 값이 왔다면) 토큰 두 개와, 리프레시 토큰을 저장할 key가 함께 제공됩니다.
-      REDIS.setRefreshToken(
+      KV.setRefreshToken(
         re_preflight.data.refreshAccessKey,
         re_preflight.data.refreshToken
       ); //리프레시 토큰을 레디스에 저장하고,
@@ -56,7 +62,9 @@ export const gateway = async (req: NextRequest) => {
       return response; //원래 요청을 재시도합니다.
     } else {
       //다른 모든 경우의 경우 로그아웃시킵니다.
-      return NextResponse.rewrite('/api/auth/signout');
+      return NextResponse.rewrite(
+        `${process.env.NEXT_PUBLIC_SHELL}/api/auth/signout`
+      );
     }
   }
   //만약 처음에 받았던 액세스 토큰에 문제가 없었다면 요청을 그대로 통과시킵니다.
