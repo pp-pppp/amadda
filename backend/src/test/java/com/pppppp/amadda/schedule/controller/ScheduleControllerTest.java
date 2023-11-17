@@ -23,7 +23,6 @@ import com.pppppp.amadda.schedule.dto.response.CategoryUpdateResponse;
 import com.pppppp.amadda.schedule.dto.response.ParticipationUpdateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleCreateResponse;
 import com.pppppp.amadda.schedule.dto.response.ScheduleUpdateResponse;
-import com.pppppp.amadda.schedule.entity.AlarmTime;
 import com.pppppp.amadda.user.dto.response.UserReadResponse;
 import com.pppppp.amadda.user.entity.User;
 import java.time.LocalDate;
@@ -55,7 +54,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
             // participation
             .scheduleName("합창단 공연")
             .scheduleMemo("수원역에서 걸어서 10분")
-            .alarmTime(AlarmTime.ONE_DAY_BEFORE)
+            .alarmTime("ONE_DAY_BEFORE")
             .build();
 
         // stubbing
@@ -290,7 +289,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
         ParticipationUpdateRequest request = ParticipationUpdateRequest.builder()
             .scheduleName("합창단 공연")
             .scheduleMemo("수원역에서 걸어서 10분")
-            .alarmTime(AlarmTime.valueOf(alarmTime))
+            .alarmTime(alarmTime)
             .build();
 
         // stubbing
@@ -436,7 +435,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
             .participants(List.of(UserReadResponse.of(user)))
             // participation
             .scheduleMemo("수원역에서 걸어서 10분")
-            .alarmTime(AlarmTime.ONE_DAY_BEFORE)
+            .alarmTime("ONE_DAY_BEFORE")
             .build();
 
         mockMvc.perform(
@@ -467,7 +466,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
             // participation
             .scheduleName("합창단 공연")
             .scheduleMemo("수원역에서 걸어서 10분")
-            .alarmTime(AlarmTime.ONE_DAY_BEFORE)
+            .alarmTime("ONE_DAY_BEFORE")
             .build();
 
         // when  // then
@@ -498,7 +497,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
             // participation
             .scheduleName("합창단 공연")
             .scheduleMemo("수원역에서 걸어서 10분")
-            .alarmTime(AlarmTime.ONE_DAY_BEFORE)
+            .alarmTime("ONE_DAY_BEFORE")
             .build();
 
         // when  // then
@@ -529,7 +528,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
             // participation
             .scheduleName("합창단 공연")
             .scheduleMemo("수원역에서 걸어서 10분")
-            .alarmTime(AlarmTime.ONE_DAY_BEFORE)
+            .alarmTime("ONE_DAY_BEFORE")
             .build();
 
         // when  // then
@@ -560,7 +559,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
             // participation
             .scheduleName("합창단 공연")
             .scheduleMemo("수원역에서 걸어서 10분")
-            .alarmTime(AlarmTime.ONE_DAY_BEFORE)
+            .alarmTime("ONE_DAY_BEFORE")
             .build();
 
         // when  // then
@@ -701,7 +700,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
     void noScheduleNameToUpdate() throws Exception {
         ParticipationUpdateRequest request = ParticipationUpdateRequest.builder()
             .scheduleMemo("수원역에서 걸어서 10분")
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .build();
 
         // stubbing

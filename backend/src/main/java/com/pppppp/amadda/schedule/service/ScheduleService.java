@@ -638,7 +638,7 @@ public class ScheduleService {
             .scheduleEndAt(request.scheduleEndAt())
             .participants(request.participants())
             .scheduleName(scheduleName)
-            .alarmTime(alarmTime)
+            .alarmTime(String.valueOf(alarmTime))
             .build();
 
         updateParticipationList

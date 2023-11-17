@@ -89,14 +89,16 @@ public class Participation extends BaseEntity {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+        AlarmTime alarmTime = AlarmTime.valueOf(request.alarmTime());
+
         LocalDateTime alarmAt =
             (request.isTimeSelected()) ? LocalDateTime.parse(request.scheduleStartAt(), formatter)
-                .minusMinutes(request.alarmTime().getMinute()) : null;
+                .minusMinutes(alarmTime.getMinute()) : null;
 
         return Participation.builder()
             .scheduleName(request.scheduleName())
             .scheduleMemo(request.scheduleMemo())
-            .alarmTime(request.alarmTime())
+            .alarmTime(alarmTime)
             .alarmAt(alarmAt)
             .user(participant)
             .schedule(schedule)
@@ -110,7 +112,7 @@ public class Participation extends BaseEntity {
     public void updateParticipationInfo(ParticipationUpdateRequest request) {
         this.scheduleName = request.scheduleName();
         this.scheduleMemo = request.scheduleMemo();
-        this.alarmTime = request.alarmTime();
+        this.alarmTime = AlarmTime.valueOf(request.alarmTime());
     }
 
     public void updateAlarmAt(LocalDateTime startAt) {
