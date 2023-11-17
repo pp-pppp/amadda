@@ -81,13 +81,13 @@ public class ScheduleController {
     public ApiResponse<Map<String, List<ScheduleListReadResponse>>> getScheduleList(
         HttpServletRequest http,
         @RequestParam(value = "category", required = false) Optional<String> categorySeqList,
-        @RequestParam(value = "search-key", required = false) Optional<String> searchKey,
+        @RequestParam(value = "searchKey", required = false) Optional<String> searchKey,
         @RequestParam(value = "unscheduled", required = false) Optional<String> unscheduled,
         @RequestParam(value = "year", required = false) Optional<String> year,
         @RequestParam(value = "month", required = false) Optional<String> month,
         @RequestParam(value = "day", required = false) Optional<String> day) {
         log.info(
-            "GET /api/schedule?category={}&search-key={}&unscheduled={}&year={}&month={}&day={}",
+            "GET /api/schedule?category={}&searchKey={}&unscheduled={}&year={}&month={}&day={}",
             categorySeqList, searchKey, unscheduled, year, month, day);
 
         LocalDate currentServerTime = LocalDate.parse(scheduleService.getServerDate());
