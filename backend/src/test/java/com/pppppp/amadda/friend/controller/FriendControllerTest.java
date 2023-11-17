@@ -279,7 +279,7 @@ class FriendControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                get(String.format("/api/friend?searchKey=%s", key))
+                get(String.format("/api/friend?search-key=%s", key))
                     .contentType(MediaType.APPLICATION_JSON)
             )
             .andExpect(status().isOk())
