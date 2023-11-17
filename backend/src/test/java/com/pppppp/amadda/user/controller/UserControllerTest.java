@@ -88,7 +88,7 @@ class UserControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                get(String.format("/api/user?search-key=%s", key))
+                get(String.format("/api/user?searchKey=%s", key))
                     .contentType(MediaType.APPLICATION_JSON)
             )
             .andExpect(status().isOk())
