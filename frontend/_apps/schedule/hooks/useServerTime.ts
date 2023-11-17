@@ -6,7 +6,7 @@ import { http } from '@SCH/utils/http';
 
 const fetcher = url =>
   axios
-    .get(`${process.env.NEXT_PUBLIC_SCHEDULE}/api/schedule/serverTime`)
+    .get(`${process.env.NEXT_PUBLIC_SCHEDULE}/api/schedule/server-time`)
     .then(res => res.data)
     .then(data => data.data);
 
