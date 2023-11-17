@@ -5,7 +5,7 @@ import { BACKGROUND } from './Notice.css';
 import ALARMUI from '../../constants/ALARMUI';
 
 export interface NoticeProps {
-  alarmSeq: number;
+  alarmSeq?: number;
   content: string;
   isRead: boolean;
   alarmType: keyof typeof ALARMTYPE;

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { NoticeToggle } from '../../../notice/components/Notice/NoticeToggle';
+import { NoticeToggle } from '../../../notice/components/NoticeConfig/NoticeToggle';
 
 const meta = {
   title: 'Notice/NoticeToggle',

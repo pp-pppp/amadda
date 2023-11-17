@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Flex, H6, P, Spacing, Switch } from 'external-temporal';
 import ALARMTYPE from '../../constants/ALARMTYPE';
-import { BACKGROUND } from './Notice.css';
+import { BACKGROUND } from '../Notice/Notice.css';
+import { http } from '@N/utils/http';
 
 export interface NoticeProps {
-  alarmSeq: number;
+  alarmSeq?: number | null;
   content: string;
   isRead: boolean;
   isEnabled: boolean;
@@ -12,12 +13,32 @@ export interface NoticeProps {
 }
 
 export function NoticeToggle({
-  alarmSeq,
+  alarmSeq = null,
   content,
   isRead,
   isEnabled,
   alarmType,
 }: NoticeProps) {
+  const [sub, setSub] = useState<boolean>(isEnabled);
+  const handleSubscribe = () => {
+    isEnabled
+      ? http
+          .post(`${process.env.NEXT_PUBLIC_NOTICE}/api/alarm/unsubscribe`, {
+            alarmType,
+          })
+          .then(res => {
+            res.status < 300 && setSub(!sub);
+          })
+          .catch(err => {})
+      : http
+          .post(`${process.env.NEXT_PUBLIC_NOTICE}/api/alarm/subscribe`, {
+            alarmType,
+          })
+          .then(res => {
+            res.status < 300 && setSub(!sub);
+          })
+          .catch(err => {});
+  };
   return (
     <div className={BACKGROUND.normal}>
       <Flex justifyContents="spaceBetween">
@@ -35,9 +56,9 @@ export function NoticeToggle({
         <Spacing dir="h" />
         {alarmType !== 'SCHEDULE_NOTI' && (
           <Switch
-            id={String(alarmSeq)}
-            selected={isEnabled}
-            onToggle={() => isEnabled}
+            id={String(alarmSeq) + content}
+            selected={sub}
+            onToggle={() => handleSubscribe()}
           />
         )}
       </Flex>
