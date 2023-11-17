@@ -1,5 +1,5 @@
 export interface AlarmReadResponse {
-  alarmSeq: number;
+  alarmSeq?: number;
   content: string;
   isRead: boolean;
   alarmType:
@@ -8,6 +8,6 @@ export interface AlarmReadResponse {
     | 'SCHEDULE_ASSIGNED'
     | 'MENTIONED'
     | 'SCHEDULE_UPDATE'
-    | 'SCHEDULE_NOTIFICATION';
+    | 'SCHEDULE_NOTI';
   isEnabled: boolean;
 }

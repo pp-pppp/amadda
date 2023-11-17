@@ -29,7 +29,7 @@ class UserControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                get("/api/user/login")
+                post("/api/user/login")
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
             )
@@ -53,7 +53,7 @@ class UserControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                post("/api/user/login")
+                post("/api/user/signup")
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON)
             )
@@ -88,7 +88,7 @@ class UserControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                get(String.format("/api/user?search-key=%s", key))
+                get(String.format("/api/user?searchKey=%s", key))
                     .contentType(MediaType.APPLICATION_JSON)
             )
             .andExpect(status().isOk())

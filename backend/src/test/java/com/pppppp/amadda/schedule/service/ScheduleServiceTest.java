@@ -1122,10 +1122,10 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         assertThat(response1)
             .extracting("scheduleName", "scheduleMemo", "scheduleContent",
                 "isDateSelected", "isTimeSelected", "isAllDay", "scheduleStartAt", "scheduleEndAt",
-                "alarmTime", "isAuthorizedAll")
+                "alarmTime", "isAuthorizedAll", "authorizedUser")
             .containsExactly(
                 "안녕 내가 일정 이름이야", "이거는 안되는 메모고", "여기는 동기화 되는 메모야", false, false, false,
-                "", "", "알림 없음", false);
+                "", "", "알림 없음", false, UserReadResponse.of(u1));
         assertThat(response2)
             .extracting("scheduleName")
             .isEqualTo("안녕 내가 일정 이름이야");
@@ -1251,10 +1251,10 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         assertThat(response1)
             .extracting("scheduleName", "scheduleMemo", "scheduleContent",
                 "isDateSelected", "isTimeSelected", "isAllDay", "scheduleStartAt", "scheduleEndAt",
-                "alarmTime", "isAuthorizedAll")
+                "alarmTime", "isAuthorizedAll", "authorizedUser")
             .containsExactly(
                 "안녕 내가 일정 이름이야", "이거는 안되는 메모고", "여기는 동기화 되는 메모야", false, false, false,
-                "", "", "알림 없음", true);
+                "", "", "알림 없음", true, null);
         assertThat(response2)
             .extracting("scheduleName", "alarmTime")
             .containsExactly("안녕 내가 일정 이름이야", "알림 없음");

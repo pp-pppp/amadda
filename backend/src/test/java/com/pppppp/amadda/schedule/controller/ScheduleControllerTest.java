@@ -141,7 +141,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
         String day = "18";
 
         mockMvc.perform(
-                get("/api/schedule?category={}&search-key={}&unscheduled={}&year={}&month={}&day={}",
+                get("/api/schedule?category={}&searchKey={}&unscheduled={}&year={}&month={}&day={}",
                     categorySeqList, searchKey, unscheduled, year, month, day)
                     .contentType(MediaType.APPLICATION_JSON)
             ).andDo(print())
@@ -185,7 +185,7 @@ class ScheduleControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                get("/api/schedule?search-key={}", searchKey)
+                get("/api/schedule?searchKey={}", searchKey)
                     .contentType(MediaType.APPLICATION_JSON)
             ).andDo(print())
             .andExpect(status().isOk())

@@ -38,14 +38,14 @@ public class UserController {
     private final UserService userService;
     private final TokenProvider tokenProvider;
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ApiResponse<UserJwtInitResponse> getTokenAfterLogin(
         @Valid @RequestBody UserJwtRequest request) {
         UserJwtInitResponse response = userService.getTokensAndCheckInit(request);
         return ApiResponse.ok(response);
     }
 
-    @PostMapping("/login")
+    @PostMapping("/signup")
     public ApiResponse<String> signupUser(@Valid @RequestBody UserInitRequest request) {
         userService.saveUser(request);
         return ApiResponse.ok("회원가입에 성공했습니다.");
@@ -79,7 +79,7 @@ public class UserController {
 
     @GetMapping
     public ApiResponse<UserRelationResponse> searchUserInfoAndRelation(
-        HttpServletRequest http, @RequestParam(value = "search-key") String searchKey) {
+        HttpServletRequest http, @RequestParam String searchKey) {
         Long userSeq = tokenProvider.getUserSeq(http);
         UserRelationResponse response = userService.getUserInfoAndIsFriend(userSeq, searchKey);
         return ApiResponse.ok(response);
