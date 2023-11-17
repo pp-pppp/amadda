@@ -16,6 +16,7 @@ import { MODE_CONTEXT } from '../FriendFrame/FriendFrame';
 import FriendsConstants from '../../../constants/FRIENDS';
 import { useRouter } from 'next/router';
 import { http } from '@U/utils/http';
+import { GroupCreateRequest, GroupUpdateRequest } from 'amadda-global-types';
 
 export interface FriendGroupProps {
   groupSeq: number | null;
@@ -164,20 +165,26 @@ FriendGroups.Edit = function ({
       SET_MODE(groupSeq);
     } else if (MODE === 'ADD_GROUP') {
       const res = await http
-        .post(`${process.env.NEXT_PUBLIC_USER}/friend/group`, {
-          groupName: newGroupName,
-          userSeqs: newFriends,
-        })
+        .post<GroupCreateRequest>(
+          `${process.env.NEXT_PUBLIC_USER}/friend/group`,
+          {
+            groupName: newGroupName,
+            userSeqs: newFriends,
+          }
+        )
         .then(res => res.data)
         .catch(err => '');
       router.push(`/schedule/${res}`);
       SET_MODE('NOT_EDITING');
     } else if (typeof MODE === 'number') {
       const res = await http
-        .put(`${process.env.NEXT_PUBLIC_USER}/friend/group`, {
-          groupName: newGroupName.length === 0 ? groupName : newGroupName,
-          userSeqs: newFriends,
-        })
+        .put<GroupUpdateRequest>(
+          `${process.env.NEXT_PUBLIC_USER}/friend/group`,
+          {
+            groupName: newGroupName.length === 0 ? groupName : newGroupName,
+            userSeqs: newFriends,
+          }
+        )
         .catch(err => '');
       router.push(`/schedule/${res}`);
     }
@@ -193,6 +200,7 @@ FriendGroups.Edit = function ({
     >(MODE_CONTEXT);
 
   if (groupSeq === null) return <></>;
+
   if (MODE === 'ADD_GROUP')
     return (
       <button
@@ -204,7 +212,7 @@ FriendGroups.Edit = function ({
         {FriendsConstants.BTN.ADD_GROUP}
       </button>
     );
-  else
+  if (typeof MODE === 'number')
     return (
       <Flex justifyContents="flexEnd">
         <button
@@ -237,26 +245,27 @@ FriendGroups.Edit = function ({
         {FriendsConstants.BTN.GROUP_EDIT}
       </button>
     );
-  else
-    return (
-      <Flex justifyContents="flexEnd">
-        <button
-          type="button"
-          className={GROUP_EDIT.DELETE}
-          disabled={false}
-          onClick={handleDelete}
-        >
-          {FriendsConstants.BTN.GROUP_DELETE}
-        </button>
-        <Spacing dir="h" size="0.25" />
-        <button
-          type="button"
-          className={GROUP_EDIT.SAVE}
-          disabled={false}
-          onClick={handleSubmit}
-        >
-          {FriendsConstants.BTN.GROUP_SAVE}
-        </button>
-      </Flex>
-    );
+
+  return (
+    //아무 상태도 아닐 때에는 삭제 버튼이 나와야 합니다
+    <Flex justifyContents="flexEnd">
+      <button
+        type="button"
+        className={GROUP_EDIT.DELETE}
+        disabled={false}
+        onClick={handleDelete}
+      >
+        {FriendsConstants.BTN.GROUP_DELETE}
+      </button>
+      <Spacing dir="h" size="0.25" />
+      <button
+        type="button"
+        className={GROUP_EDIT.SAVE}
+        disabled={false}
+        onClick={handleSubmit}
+      >
+        {FriendsConstants.BTN.GROUP_SAVE}
+      </button>
+    </Flex>
+  );
 };
