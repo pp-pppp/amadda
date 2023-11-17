@@ -2,7 +2,7 @@ import NextAuth, { Session } from 'next-auth';
 import 'next-auth';
 import KakaoProvider from 'next-auth/providers/kakao';
 import { UserJwtRequest, UserJwtResponse } from 'amadda-global-types';
-import { http, REDIS } from 'connection';
+import { http, KV } from 'connection';
 
 export const authOptions = {
   providers: [
@@ -24,37 +24,41 @@ export const authOptions = {
     },
 
     async jwt({ token, trigger, user, account, session }) {
-      if (account) {
-        const UserJwtRequest: UserJwtRequest = {
-          userSeq: token.id,
-          imageUrl: token.image,
-        };
+      try {
+        if (account) {
+          const UserJwtRequest: UserJwtRequest = {
+            kakaoId: user.id,
+            imageUrl: user.image,
+          };
+          console.log();
+          console.log(UserJwtRequest);
+          const INIT = await http
+            .post<UserJwtRequest, UserJwtResponse>(
+              `${process.env.SPRING_API_ROOT}/user/login`,
+              UserJwtRequest
+            )
+            .then(res => res.data)
+            .catch(err => err);
 
-        const INIT = await http
-          .post<UserJwtRequest, UserJwtResponse>(
-            `${process.env.SPRING_API_ROOT}/user/login`,
-            UserJwtRequest
-          )
-          .then(res => res.data)
-          .catch(err => err);
+          await KV.setRefreshToken(INIT.refreshAccessKey, INIT.refreshToken);
 
-        await REDIS.setRefreshToken(INIT.refreshAccessKey, INIT.refreshToken);
+          token.accessToken = INIT.accessToken;
+          token.userSeq = INIT.userSeq;
+          token.userName = user.name;
+          token.imageUrl = user.image;
+          token.isInited = INIT.isInited;
+        }
 
-        console.log(INIT);
-
-        token.accessToken = INIT.accessToken;
-        token.userSeq = user.id;
-        token.userName = user.name;
-        token.imageUrl = user.image;
-        token.isInited = INIT.isInited;
-      }
-
-      if (trigger == 'update') {
-        token.userName = session?.userName ? session?.userName : token.userName;
-        token.userId = session?.userId ? session?.userId : token.userId;
-        token.isInited = session?.isInited ? session?.isInited : token.isInited;
-      }
-
+        if (trigger == 'update') {
+          token.userName = session?.userName
+            ? session?.userName
+            : token.userName;
+          token.userId = session?.userId ? session?.userId : token.userId;
+          token.isInited = session?.isInited
+            ? session?.isInited
+            : token.isInited;
+        }
+      } catch (err) {}
       return token;
     },
   },

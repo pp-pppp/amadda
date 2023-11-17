@@ -6,11 +6,14 @@
   "main": "index.ts",
   "types": "index.ts",
   "devDependencies": {
+    "amadda-global-types": "workspace:*",
     "axios": "^1.6.0",
-    "amadda-global-types":"workspace:*",
     "kafkajs": "^2.2.4",
-    "redis": "^4.6.10",
     "next": "13.4.12",
+    "redis": "4.6.1",
     "typescript": "5.2.2"
+  },
+  "dependencies": {
+    "@vercel/kv": "^1.0.0"
   }
 }

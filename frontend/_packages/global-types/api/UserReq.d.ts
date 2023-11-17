@@ -1,5 +1,5 @@
 export interface UserJwtRequest {
-  userSeq: string;
+  kakaoId: string;
   imageUrl: string;
 }
 export interface UserInitRequest {
