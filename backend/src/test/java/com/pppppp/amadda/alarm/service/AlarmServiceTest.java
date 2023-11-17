@@ -128,7 +128,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
-        AlarmType alarmType = AlarmType.of(type);
+        AlarmType alarmType = AlarmType.valueOf(type);
         AlarmConfig ac = AlarmConfig.create(user, alarmType, true);
         alarmConfigRepository.save(ac);
 
@@ -148,7 +148,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
-        AlarmType alarmType = AlarmType.of(type);
+        AlarmType alarmType = AlarmType.valueOf(type);
         AlarmConfig ac = AlarmConfig.create(user, alarmType, false);
         alarmConfigRepository.save(ac);
 
@@ -168,7 +168,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
-        AlarmType alarmType = AlarmType.of(type);
+        AlarmType alarmType = AlarmType.valueOf(type);
 
         // when
         boolean actual = alarmService.checkGlobalAlarmSetting(user.getUserSeq(), alarmType);
@@ -545,10 +545,10 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
-        AlarmType alarmType = AlarmType.of(type);
+        AlarmType alarmType = AlarmType.valueOf(type);
 
         // when
-        AlarmConfig alarmConfig = alarmService.setGlobalAlarm(user.getUserSeq(), alarmType, true);
+        AlarmConfig alarmConfig = alarmService.setGlobalAlarm(user.getUserSeq(), type, true);
 
         // then
         assertThat(alarmConfig.getUser().getUserSeq()).isEqualTo(user.getUserSeq());
@@ -565,13 +565,12 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
-        AlarmType alarmType = AlarmType.of(type);
+        AlarmType alarmType = AlarmType.valueOf(type);
         AlarmConfig alarmConfig = AlarmConfig.create(user, alarmType, false);
         alarmConfigRepository.save(alarmConfig);
 
         // when
-        AlarmConfig savedAlarmConfig = alarmService.setGlobalAlarm(user.getUserSeq(), alarmType,
-            true);
+        AlarmConfig savedAlarmConfig = alarmService.setGlobalAlarm(user.getUserSeq(), type, true);
 
         // then
         assertThat(savedAlarmConfig.getUser().getUserSeq()).isEqualTo(user.getUserSeq());
@@ -587,10 +586,10 @@ class AlarmServiceTest extends IntegrationTestSupport {
         // given
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
-        AlarmType alarmType = AlarmType.of(type);
+        AlarmType alarmType = AlarmType.valueOf(type);
 
         // when
-        AlarmConfig alarmConfig = alarmService.setGlobalAlarm(user.getUserSeq(), alarmType, false);
+        AlarmConfig alarmConfig = alarmService.setGlobalAlarm(user.getUserSeq(), type, false);
 
         // then
         assertThat(alarmConfig.getUser().getUserSeq()).isEqualTo(user.getUserSeq());
@@ -607,13 +606,12 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
-        AlarmType alarmType = AlarmType.of(type);
+        AlarmType alarmType = AlarmType.valueOf(type);
         AlarmConfig alarmConfig = AlarmConfig.create(user, alarmType, true);
         alarmConfigRepository.save(alarmConfig);
 
         // when
-        AlarmConfig savedAlarmConfig = alarmService.setGlobalAlarm(user.getUserSeq(), alarmType,
-            false);
+        AlarmConfig savedAlarmConfig = alarmService.setGlobalAlarm(user.getUserSeq(), type, false);
 
         // then
         assertThat(savedAlarmConfig.getUser().getUserSeq()).isEqualTo(user.getUserSeq());
@@ -628,7 +626,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
-        AlarmType alarmType = AlarmType.SCHEDULE_NOTIFICATION;
+        String alarmType = AlarmType.SCHEDULE_NOTIFICATION.getCode();
 
         // when + then
         assertThatThrownBy(() -> alarmService.setGlobalAlarm(user.getUserSeq(), alarmType, true))

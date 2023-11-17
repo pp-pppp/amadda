@@ -1,11 +1,10 @@
 package com.pppppp.amadda.alarm.dto.request;
 
-import com.pppppp.amadda.alarm.entity.AlarmType;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder
 public record AlarmConfigRequest(
-    @NotNull(message = "알림 타입을 입력해 주세요.") AlarmType alarmType) {
+    @NotNull(message = "알림 타입을 입력해 주세요.") String alarmType) {
 
 }
