@@ -53,3 +53,9 @@ export interface ScheduleListUpdateResponse {
   category: CategoryListReadResponse;
   scheduleMemo: string;
 }
+export interface ServerTimeResponse {
+  code: number;
+  status: string;
+  message: string;
+  data: string;
+}
