@@ -94,7 +94,8 @@ public class AlarmService {
     /* 알림 전송 */
 
     @Transactional
-    public AlarmConfig setGlobalAlarm(Long userSeq, AlarmType alarmType, boolean isEnabled) {
+    public AlarmConfig setGlobalAlarm(Long userSeq, String type, boolean isEnabled) {
+        AlarmType alarmType = AlarmType.valueOf(type);
         validateGlobalAlarm(alarmType);
         User user = getUser(userSeq);
         AlarmConfig alarmConfig = updateOrCreateAlarmConfig(alarmType, isEnabled, user);

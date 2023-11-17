@@ -1,11 +1,6 @@
 package com.pppppp.amadda.alarm.entity;
 
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.Getter;
 
 @Getter
@@ -19,20 +14,11 @@ public enum AlarmType {
     SCHEDULE_NOTIFICATION("SCHEDULE_NOTIFICATION", "일정 예정"),
     ;
 
-    private static final Map<String, AlarmType> CODE_CONTENT = Collections.unmodifiableMap(
-        Stream.of(values())
-            .collect(Collectors.toMap(AlarmType::getCode, Function.identity()))
-    );
-
     private final String code;
     private final String content;
 
     AlarmType(String code, String content) {
         this.code = code;
         this.content = content;
-    }
-
-    public static AlarmType of(String code) {
-        return CODE_CONTENT.get(code);
     }
 }

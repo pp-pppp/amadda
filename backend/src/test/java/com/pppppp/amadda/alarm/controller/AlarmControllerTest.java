@@ -65,8 +65,8 @@ class AlarmControllerTest extends ControllerTestSupport {
         "SCHEDULE_UPDATE"})
     void setGlobalAlarmOn(String type) throws Exception {
         // given
-        AlarmType alarmType = AlarmType.of(type);
-        AlarmConfigRequest request = AlarmConfigRequest.builder().alarmType(alarmType).build();
+        AlarmType alarmType = AlarmType.valueOf(type);
+        AlarmConfigRequest request = AlarmConfigRequest.builder().alarmType(type).build();
 
         // stubbing
         given(alarmService.setGlobalAlarm(anyLong(), any(), eq(true)))
@@ -93,8 +93,8 @@ class AlarmControllerTest extends ControllerTestSupport {
         "SCHEDULE_UPDATE"})
     void setGlobalAlarmOff(String type) throws Exception {
         // given
-        AlarmType alarmType = AlarmType.of(type);
-        AlarmConfigRequest request = AlarmConfigRequest.builder().alarmType(alarmType).build();
+        AlarmType alarmType = AlarmType.valueOf(type);
+        AlarmConfigRequest request = AlarmConfigRequest.builder().alarmType(type).build();
 
         // stubbing
         given(alarmService.setGlobalAlarm(anyLong(), any(), eq(false)))

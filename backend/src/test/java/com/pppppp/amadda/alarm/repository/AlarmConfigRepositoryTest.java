@@ -40,7 +40,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         "SCHEDULE_UPDATE"})
     void findByUser_UserSeqAndAlarmTypeAnd_True(String type) {
         // given
-        AlarmType alarmType = AlarmType.of(type);
+        AlarmType alarmType = AlarmType.valueOf(type);
 
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
@@ -63,7 +63,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         "SCHEDULE_UPDATE"})
     void findByUser_UserSeqAndAlarmType_False(String type) {
         // given
-        AlarmType alarmType = AlarmType.of(type);
+        AlarmType alarmType = AlarmType.valueOf(type);
 
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
@@ -86,7 +86,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         "SCHEDULE_UPDATE"})
     void findByUser_UserSeqAndAlarmType_Null(String type) {
         // given
-        AlarmType alarmType = AlarmType.of(type);
+        AlarmType alarmType = AlarmType.valueOf(type);
 
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
@@ -108,7 +108,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
-        AlarmType alarmType = AlarmType.of(type);
+        AlarmType alarmType = AlarmType.valueOf(type);
         AlarmConfig ac = AlarmConfig.create(user, alarmType, false);
         alarmConfigRepository.save(ac);
 
@@ -132,7 +132,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
-        AlarmType alarmType = AlarmType.of(type);
+        AlarmType alarmType = AlarmType.valueOf(type);
         AlarmConfig ac = AlarmConfig.create(user, alarmType, true);
         alarmConfigRepository.save(ac);
 
@@ -153,7 +153,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         User u1 = User.create("1111", "유저1", "id1", "imageUrl1");
         User user = userRepository.save(u1);
 
-        AlarmType alarmType = AlarmType.of(type);
+        AlarmType alarmType = AlarmType.valueOf(type);
 
         // when
         Optional<AlarmConfig> config = alarmConfigRepository.findByUser_UserSeqAndAlarmTypeAndIsEnabledFalse(
