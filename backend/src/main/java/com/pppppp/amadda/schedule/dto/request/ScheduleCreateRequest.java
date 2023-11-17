@@ -1,6 +1,5 @@
 package com.pppppp.amadda.schedule.dto.request;
 
-import com.pppppp.amadda.schedule.entity.AlarmTime;
 import com.pppppp.amadda.schedule.entity.Participation;
 import com.pppppp.amadda.schedule.entity.Schedule;
 import com.pppppp.amadda.user.dto.response.UserReadResponse;
@@ -26,7 +25,7 @@ public record ScheduleCreateRequest(
 
     // ================ Participation =================
 
-    @NotNull(message = "알림 시간 설정이 필요해요!") AlarmTime alarmTime,
+    @NotNull(message = "알림 시간 설정이 필요해요!") String alarmTime,
     @NotBlank(message = "일정 이름을 입력해 주세요!") String scheduleName,
     @NotNull(message = "유효하지 않은 요청입니다.") String scheduleMemo,
 
@@ -45,7 +44,7 @@ public record ScheduleCreateRequest(
             .scheduleStartAt(String.valueOf(schedule.getScheduleStartAt()))
             .scheduleEndAt(String.valueOf(schedule.getScheduleEndAt()))
             .participants(participants)
-            .alarmTime(participation.getAlarmTime())
+            .alarmTime(String.valueOf(participation.getAlarmTime()))
             .scheduleName(participation.getScheduleName())
             .scheduleMemo(participation.getScheduleMemo())
             .categorySeq(participation.getCategory().getCategorySeq())

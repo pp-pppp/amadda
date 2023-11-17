@@ -31,7 +31,6 @@ import com.pppppp.amadda.friend.repository.FriendRequestRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.global.entity.exception.errorcode.AlarmErrorCode;
 import com.pppppp.amadda.schedule.dto.request.ScheduleCreateRequest;
-import com.pppppp.amadda.schedule.entity.AlarmTime;
 import com.pppppp.amadda.schedule.entity.Participation;
 import com.pppppp.amadda.schedule.entity.Schedule;
 import com.pppppp.amadda.schedule.repository.ParticipationRepository;
@@ -1084,7 +1083,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
             .scheduleEndAt(endTime)
             .participants(List.of(UserReadResponse.of(user)))
             // participation
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .scheduleName("합창단 공연")
             .scheduleMemo("수원역에서 걸어서 10분")
             .build();

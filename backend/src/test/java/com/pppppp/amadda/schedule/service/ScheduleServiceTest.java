@@ -139,7 +139,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isTimeSelected(false)
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .isAuthorizedAll(false)
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2)))
@@ -190,7 +190,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isAllDay(false)
             .scheduleStartAt("2023-11-02 00:00:00")
             .scheduleEndAt("")
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .isAuthorizedAll(false)
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2)))
@@ -241,7 +241,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isAllDay(false)
             .scheduleStartAt("2023-11-01 09:00:00")
             .scheduleEndAt("2023-11-01 18:00:00")
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .isAuthorizedAll(false)
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2)))
@@ -292,7 +292,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isAllDay(true)
             .scheduleStartAt("2023-11-01 00:00:00")
             .scheduleEndAt("2023-11-01 23:59:59")
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .isAuthorizedAll(false)
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2)))
@@ -367,7 +367,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isAllDay(false)
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
@@ -379,7 +379,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-11-01 08:59:30")
             .scheduleEndAt("2023-11-02 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u2)))
             .build();
         scheduleService.createSchedule(u1.getUserSeq(), r1);
@@ -439,7 +439,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isAllDay(false)
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
@@ -484,7 +484,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isTimeSelected(false)
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .isAuthorizedAll(false)
             .participants(List.of(
                 UserReadResponse.of(u1)))
@@ -497,7 +497,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isTimeSelected(false)
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .isAuthorizedAll(false)
             .participants(List.of(
                 UserReadResponse.of(u1)))
@@ -570,7 +570,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isAllDay(false)
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .participants(List.of(
                 UserReadResponse.of(u1)))
             .build();
@@ -582,7 +582,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-11-01 08:59:30")
             .scheduleEndAt("2023-11-01 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u1)))
             .build();
         scheduleService.createSchedule(u1.getUserSeq(), r1);
@@ -629,7 +629,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isAllDay(false)
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .participants(List.of(
                 UserReadResponse.of(u1)))
             .build();
@@ -641,7 +641,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-11-01 08:59:30")
             .scheduleEndAt("2023-11-01 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u1)))
             .build();
         scheduleService.createSchedule(u1.getUserSeq(), r1);
@@ -688,7 +688,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-10-01 08:59:30")
             .scheduleEndAt("2023-11-01 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .participants(List.of(
                 UserReadResponse.of(u1)))
             .build();
@@ -700,7 +700,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-11-01 08:59:30")
             .scheduleEndAt("2023-11-01 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
         ScheduleCreateRequest r3 = ScheduleCreateRequest.builder()
@@ -711,7 +711,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-10-30 08:59:30")
             .scheduleEndAt("2023-10-30 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
         ScheduleCreateRequest r4 = ScheduleCreateRequest.builder()
@@ -722,7 +722,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-11-30 08:59:30")
             .scheduleEndAt("2023-12-01 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u1)))
             .build();
         ScheduleCreateRequest r5 = ScheduleCreateRequest.builder()
@@ -733,7 +733,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2022-11-30 08:59:30")
             .scheduleEndAt("2022-12-01 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u2)))
             .build();
         ScheduleCreateRequest r6 = ScheduleCreateRequest.builder()
@@ -744,7 +744,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-10-30 08:59:30")
             .scheduleEndAt("2023-12-01 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u1)))
             .build();
         scheduleService.createSchedule(u1.getUserSeq(), r1);
@@ -816,7 +816,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-10-01 08:59:30")
             .scheduleEndAt("2023-11-01 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .participants(List.of(
                 UserReadResponse.of(u1)))
             .build();
@@ -828,7 +828,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-11-01 08:59:30")
             .scheduleEndAt("2023-11-01 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
         ScheduleCreateRequest r3 = ScheduleCreateRequest.builder()
@@ -839,7 +839,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-10-30 08:59:30")
             .scheduleEndAt("2023-10-30 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
         ScheduleCreateRequest r4 = ScheduleCreateRequest.builder()
@@ -850,7 +850,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-11-30 08:59:30")
             .scheduleEndAt("2023-12-01 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u1)))
             .build();
         ScheduleCreateRequest r5 = ScheduleCreateRequest.builder()
@@ -860,7 +860,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isAllDay(false)
             .scheduleStartAt("2023-11-30 00:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u2)))
             .build();
         ScheduleCreateRequest r6 = ScheduleCreateRequest.builder()
@@ -871,7 +871,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-10-30 08:59:30")
             .scheduleEndAt("2023-12-01 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u1)))
             .build();
         scheduleService.createSchedule(u1.getUserSeq(), r1);
@@ -944,7 +944,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-10-01 08:59:30")
             .scheduleEndAt("2023-11-01 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .participants(List.of(
                 UserReadResponse.of(u1)))
             .build();
@@ -956,7 +956,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-11-01 08:59:30")
             .scheduleEndAt("2023-11-01 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
         ScheduleCreateRequest r3 = ScheduleCreateRequest.builder()
@@ -967,7 +967,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-10-30 08:59:30")
             .scheduleEndAt("2023-10-30 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
         ScheduleCreateRequest r4 = ScheduleCreateRequest.builder()
@@ -978,7 +978,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-11-30 08:59:30")
             .scheduleEndAt("2023-12-01 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u1)))
             .build();
         ScheduleCreateRequest r5 = ScheduleCreateRequest.builder()
@@ -989,7 +989,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2022-11-01 08:59:30")
             .scheduleEndAt("2022-12-01 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u2)))
             .build();
         scheduleService.createSchedule(u1.getUserSeq(), r1);
@@ -1052,7 +1052,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isTimeSelected(false)
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .isAuthorizedAll(false)
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2), UserReadResponse.of(u3)))
@@ -1088,7 +1088,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isTimeSelected(false)
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .isAuthorizedAll(false)
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2)))
@@ -1154,7 +1154,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isAllDay(false)
             .scheduleStartAt("2023-11-01 09:00:00")
             .scheduleEndAt("2023-11-01 10:00:00")
-            .alarmTime(AlarmTime.THIRTY_MINUTES_BEFORE)
+            .alarmTime("THIRTY_MINUTES_BEFORE")
             .isAuthorizedAll(false)
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2), UserReadResponse.of(u3)))
@@ -1170,12 +1170,12 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         ParticipationUpdateRequest u2ParticipationUpdateRequest = ParticipationUpdateRequest.builder()
             .scheduleName("안녕 내가 일정 이름이야")
             .scheduleMemo("이거는 동기화 안되는 메모고")
-            .alarmTime(AlarmTime.ONE_HOUR_BEFORE)
+            .alarmTime("ONE_HOUR_BEFORE")
             .build();
         ParticipationUpdateRequest u3ParticipationUpdateRequest = ParticipationUpdateRequest.builder()
             .scheduleName("안녕 내가 일정 이름이야")
             .scheduleMemo("이거는 동기화 안되는 메모고")
-            .alarmTime(AlarmTime.FIFTEEN_MINUTES_BEFORE)
+            .alarmTime("FIFTEEN_MINUTES_BEFORE")
             .build();
         scheduleService.updateParticipation(u2.getUserSeq(), scheduleCreateResponse.scheduleSeq(),
             u2ParticipationUpdateRequest);
@@ -1216,7 +1216,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isTimeSelected(false)
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .isAuthorizedAll(true)
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2)))
@@ -1288,7 +1288,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isTimeSelected(false)
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .isAuthorizedAll(false)
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2), UserReadResponse.of(u3)))
@@ -1352,7 +1352,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isAllDay(false)
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .participants(List.of(
                 UserReadResponse.of(u1)))
             .build();
@@ -1366,7 +1366,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         ParticipationUpdateRequest updateRequest = ParticipationUpdateRequest.builder()
             .scheduleName("안녕 나는 바뀐 일정 이름이야")
             .scheduleMemo("이거는 동기화 안되는 메모야")
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .categorySeq(category.getCategorySeq())
             .build();
 
@@ -1408,7 +1408,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isAllDay(false)
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .participants(List.of(
                 UserReadResponse.of(u1)))
             .categorySeq(category.getCategorySeq())
@@ -1421,7 +1421,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-11-01 08:59:30")
             .scheduleEndAt("2023-11-01 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u1)))
             .categorySeq(category.getCategorySeq())
             .build();
@@ -1432,7 +1432,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
         ParticipationUpdateRequest updateRequest = ParticipationUpdateRequest.builder()
             .scheduleName("안녕 나는 바뀐 일정 이름이야")
             .scheduleMemo("이거는 동기화 안되는 메모야")
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .categorySeq(null)
             .build();
 
@@ -1475,7 +1475,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isTimeSelected(false)
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .isAuthorizedAll(false)
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2)))
@@ -1514,7 +1514,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isTimeSelected(false)
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .isAuthorizedAll(false)
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2)))
@@ -1552,7 +1552,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isTimeSelected(false)
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .isAuthorizedAll(false)
             .participants(List.of(
                 UserReadResponse.of(user)))
@@ -1587,7 +1587,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isTimeSelected(false)
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .isAuthorizedAll(false)
             .participants(List.of(
                 UserReadResponse.of(user)))
@@ -1706,7 +1706,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isAllDay(false)
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .participants(List.of(
                 UserReadResponse.of(u1)))
             .categorySeq(category.getCategorySeq())
@@ -1739,7 +1739,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(true)
             .isTimeSelected(false)
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .isAuthorizedAll(true)
             .participants(List.of(
                 UserReadResponse.of(user1), UserReadResponse.of(user2)))
@@ -1768,7 +1768,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isTimeSelected(true)
             .scheduleStartAt("2023-11-01 08:59:30")
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .isAuthorizedAll(true)
             .participants(List.of(
                 UserReadResponse.of(user1), UserReadResponse.of(user2)))
@@ -1810,7 +1810,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isAllDay(false)
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .participants(List.of(
                 UserReadResponse.of(user1), UserReadResponse.of(user2)))
             .build();
@@ -1846,7 +1846,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isAllDay(false)
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .participants(List.of(
                 UserReadResponse.of(u1)))
             .build();
@@ -1890,7 +1890,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isAllDay(false)
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .participants(List.of(
                 UserReadResponse.of(u1)))
             .build();
@@ -1931,7 +1931,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isAllDay(false)
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
@@ -1966,7 +1966,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isAllDay(false)
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
@@ -1999,7 +1999,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isAllDay(false)
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .participants(List.of(
                 UserReadResponse.of(user)))
             .build();
@@ -2029,7 +2029,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isAllDay(false)
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .participants(List.of(
                 UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
@@ -2059,7 +2059,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isTimeSelected(false)
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .isAuthorizedAll(false)
             .participants(List.of(
                 UserReadResponse.of(user)))
@@ -2089,7 +2089,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isTimeSelected(false)
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .isAuthorizedAll(false)
             .participants(List.of(
                 UserReadResponse.of(user)))
@@ -2125,7 +2125,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isTimeSelected(false)
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .isAuthorizedAll(false)
             .participants(List.of(
                 UserReadResponse.of(u1)))
@@ -2178,7 +2178,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-10-01 08:59:30")
             .scheduleEndAt("2023-11-01 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .participants(List.of(
                 UserReadResponse.of(u1)))
             .build();
@@ -2190,7 +2190,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-11-01 08:59:30")
             .scheduleEndAt("2023-11-01 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
         ScheduleCreateRequest r3 = ScheduleCreateRequest.builder()
@@ -2201,7 +2201,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-10-30 08:59:30")
             .scheduleEndAt("2023-10-30 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
         ScheduleCreateRequest r4 = ScheduleCreateRequest.builder()
@@ -2212,7 +2212,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-11-30 08:59:30")
             .scheduleEndAt("2023-12-01 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u1)))
             .build();
         ScheduleCreateRequest r5 = ScheduleCreateRequest.builder()
@@ -2223,7 +2223,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-11-30 08:59:30")
             .scheduleEndAt("2023-12-01 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u2)))
             .build();
         scheduleService.createSchedule(u1.getUserSeq(), r1);
@@ -2260,7 +2260,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-10-01 08:59:30")
             .scheduleEndAt("2023-11-01 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .participants(List.of(
                 UserReadResponse.of(u1)))
             .build();
@@ -2272,7 +2272,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-11-01 08:59:30")
             .scheduleEndAt("2023-11-01 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
         ScheduleCreateRequest r3 = ScheduleCreateRequest.builder()
@@ -2283,7 +2283,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-10-30 08:59:30")
             .scheduleEndAt("2023-10-30 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u1), UserReadResponse.of(u2)))
             .build();
         ScheduleCreateRequest r4 = ScheduleCreateRequest.builder()
@@ -2294,7 +2294,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-11-30 08:59:30")
             .scheduleEndAt("2023-12-01 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u1)))
             .build();
         ScheduleCreateRequest r5 = ScheduleCreateRequest.builder()
@@ -2305,7 +2305,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .scheduleStartAt("2023-11-30 08:59:30")
             .scheduleEndAt("2023-12-01 09:00:00")
             .isAuthorizedAll(false)
-            .alarmTime(AlarmTime.ON_TIME)
+            .alarmTime("ON_TIME")
             .participants(List.of(UserReadResponse.of(u2)))
             .build();
         scheduleService.createSchedule(u1.getUserSeq(), r1);
@@ -2425,7 +2425,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isTimeSelected(false)
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .isAuthorizedAll(false)
             .participants(List.of(
                 UserReadResponse.of(user)))
@@ -2457,7 +2457,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isTimeSelected(false)
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .isAuthorizedAll(false)
             .participants(List.of(
                 UserReadResponse.of(user)))
@@ -2501,7 +2501,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isTimeSelected(false)
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .isAuthorizedAll(false)
             .participants(List.of(
                 UserReadResponse.of(user)))
@@ -2533,7 +2533,7 @@ class ScheduleServiceTest extends IntegrationTestSupport {
             .isDateSelected(false)
             .isTimeSelected(false)
             .isAllDay(false)
-            .alarmTime(AlarmTime.NONE)
+            .alarmTime("NONE")
             .isAuthorizedAll(false)
             .participants(List.of(
                 UserReadResponse.of(user)))
