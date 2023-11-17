@@ -3,7 +3,7 @@ import { style, styleVariants } from '@vanilla-extract/css';
 
 // 기본 CSS
 const BASE = style({
-  width: '15rem',
+  width: '10rem',
 });
 
 // 배치 관련 CSS
@@ -27,8 +27,7 @@ export const STATUS = styleVariants({
     {
       position: 'absolute',
       right: '1rem',
-      // left: '45%',
-      top: '9.5rem',
+      top: '7.88rem',
       height: 'fit-content',
       borderRadius: '0.75rem',
       outline: `0.1rem solid ${colors.key}`,
@@ -42,7 +41,7 @@ export const STATUS = styleVariants({
     {
       position: 'absolute',
       right: '1rem',
-      top: '9.5rem',
+      top: '7.88rem',
       height: 'fit-content',
       border: 'none',
     },
