@@ -1,50 +1,55 @@
 import { MobileDailyPlate } from '@SCH/components/MobileDailyPlate/MobileDailyPlate';
 import { MobileDailyPlateList } from '@SCH/components/MobileDailyPlateList/MobileDailyPlateList';
 import { useDateStore } from '@SCH/store/dateStore';
-import { useScheduleListStore } from '@SCH/store/scheduleListStore';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Spacing, Span } from '../../../../../../_packages/@external-temporal';
 import { BASE } from './DailyList.css';
+import CALENDAR from '@SCH/constants/CALENDAR';
+import { useDailySchedule } from '@SCH/hooks/useScheduleList';
+import { toLower } from '@SCH/utils/convertColors';
 
 export function DailyList() {
-  const { year, month, date } = useDateStore();
-  const { schedules } = useScheduleListStore();
-  // dummy
-  const scheduleList = {
-    '2023-11-01': ['일정', '일정', '일정', '일정', '일정'],
-    '2023-11-02': ['일정', '일정'],
-    '2023-11-04': ['일정', '일정'],
-    '2023-11-09': ['일정', '일정'],
-    '2023-11-15': ['일정', '일정'],
-    '2023-11-16': ['일정', '일정'],
-    '2023-11-17': ['일정', '일정'],
-    '2023-11-21': ['일정', '일정'],
-    '2023-11-30': ['일정', '일정'],
-  };
+  const { selectedYear, selectedMonth, selectedDate } = useDateStore();
+  const {
+    dailyScheduleList,
+    setDailyScheduleList,
+    SWRerror: error,
+  } = useDailySchedule();
+  const [profileImages, setProfileImages] = useState<string[]>([]);
 
   useEffect(() => {
-    useScheduleListStore.setState(state => ({
-      schedules: scheduleList,
-    }));
-  }, []);
+    dailyScheduleList.forEach((schedule, idx) => {
+      schedule.participants.forEach(participant => {
+        setProfileImages(profileImages => [
+          ...profileImages,
+          participant.imageUrl,
+        ]);
+      });
+    });
+  }, [dailyScheduleList]);
 
   return (
     <div className={BASE}>
       <MobileDailyPlateList>
-        {`${year}-${month}-${date}` in schedules ? (
-          scheduleList[`${year}-${month}-${date}`].map((content, idx) => (
+        {dailyScheduleList.length === 0 ? (
+          <Span color="grey">{CALENDAR.NO_PLAN}</Span>
+        ) : (
+          dailyScheduleList.map((schedule, idx) => (
             <div key={idx}>
               <MobileDailyPlate
-                color="grey"
-                scheduleName={content}
-                person={7}
-                isDateSelected={true}
+                color={toLower[schedule.category.categoryColor]}
+                scheduleName={schedule.scheduleName}
+                participants={profileImages}
+                person={schedule.participants.length}
+                isTimeSelected={schedule.isTimeSelected}
+                isDateSelected={schedule.isDateSelected}
+                isAllday={schedule.isTimeSelected}
+                scheduleStartAt={schedule.scheduleStartAt}
+                scheduleEndAt={schedule.scheduleEndAt}
               />
               <Spacing dir="v" size="0.5" />
             </div>
           ))
-        ) : (
-          <Span color="grey">일정이 없어요.</Span>
         )}
       </MobileDailyPlateList>
     </div>

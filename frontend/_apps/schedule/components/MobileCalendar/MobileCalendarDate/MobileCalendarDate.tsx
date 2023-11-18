@@ -3,7 +3,11 @@ import { GRID } from './MobileCalendarDate.css';
 import { MobileMonthlyPlate } from '@SCH/components/MobileMonthlyPlate/MobileMonthlyPlate';
 import { useCalendarDates } from '@SCH/hooks/useCalendarInfo';
 import { useDateStore } from '@SCH/store/dateStore';
-import { useScheduleListStore } from '@SCH/store/scheduleListStore';
+import { useMonthlySchedule } from '@SCH/hooks/useScheduleList';
+import {
+  ScheduleListReadResponse,
+  ScheduleSearchResponse,
+} from 'amadda-global-types';
 
 export interface DateInfo {
   year: string;
@@ -13,18 +17,35 @@ export interface DateInfo {
 
 export function MobileCalendarDate() {
   // 전역 store에서 연월 정보 가져오기
-  const { year, month, date } = useDateStore();
-  const { schedules } = useScheduleListStore();
-  const [selectedDate, setSelectedDate] = useState('');
-  const calendarDates = useCalendarDates(year, month, date);
+  const { selectedYear, selectedMonth, selectedDate } = useDateStore();
+  const {
+    monthlyScheduleList,
+    setMonthlyScheduleList,
+    SWRerror: error,
+  } = useMonthlySchedule();
+  const [chosen, setChosen] = useState('');
+  const calendarDates = useCalendarDates(
+    selectedYear,
+    selectedMonth,
+    selectedDate
+  );
 
-  useEffect(() => setSelectedDate(date), [date]);
+  useEffect(() => setChosen(selectedDate), [selectedDate]);
 
   // 일정 유무 확인
   const isScheduled = (date: number): boolean => {
+    if (typeof monthlyScheduleList === 'undefined') {
+      return false;
+    }
+
     const dateString =
-      year + '-' + month + '-' + date.toString().padStart(2, '0');
-    return dateString in schedules ? true : false;
+      selectedYear +
+      '-' +
+      selectedMonth +
+      '-' +
+      date.toString().padStart(2, '0');
+
+    return dateString in monthlyScheduleList ? true : false;
   };
 
   const isSelected = (
@@ -45,29 +66,31 @@ export function MobileCalendarDate() {
   };
 
   const goPrev = (currDate: number) => {
-    const newMonth = parseInt(month) - 1 > 0 ? parseInt(month) - 1 : 12;
-    const newYear = newMonth === 12 ? parseInt(year) - 1 : year;
+    const newMonth =
+      parseInt(selectedMonth) - 1 > 0 ? parseInt(selectedMonth) - 1 : 12;
+    const newYear = newMonth === 12 ? parseInt(selectedYear) - 1 : selectedYear;
     const newDate = currDate.toString().padStart(2, '0');
 
     useDateStore.setState(() => ({
-      year: newYear.toString(),
-      month: newMonth.toString(),
-      date: newDate,
+      selectedYear: newYear.toString(),
+      selectedMonth: newMonth.toString(),
+      selectedDate: newDate,
     }));
-    setSelectedDate(newDate);
+    setChosen(newDate);
   };
 
   const goNext = (currDate: number) => {
-    const newMonth = parseInt(month) + 1 < 13 ? parseInt(month) + 1 : 1;
-    const newYear = newMonth === 1 ? parseInt(year) + 1 : year;
+    const newMonth =
+      parseInt(selectedMonth) + 1 < 13 ? parseInt(selectedMonth) + 1 : 1;
+    const newYear = newMonth === 1 ? parseInt(selectedYear) + 1 : selectedYear;
     const newDate = currDate.toString().padStart(2, '0');
 
     useDateStore.setState(() => ({
-      year: newYear.toString(),
-      month: newMonth.toString(),
-      date: newDate,
+      selectedYear: newYear.toString(),
+      selectedMonth: newMonth.toString(),
+      selectedDate: newDate,
     }));
-    setSelectedDate(newDate);
+    setChosen(newDate);
   };
 
   return (
@@ -84,7 +107,7 @@ export function MobileCalendarDate() {
                 if (monthType === 'curr') {
                   useDateStore.setState(state => ({
                     ...state,
-                    date: date.toString().padStart(2, '0'),
+                    selectedDate: date.toString().padStart(2, '0'),
                   }));
                 } else if (monthType === 'prev') {
                   goPrev(date);
