@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { Flex } from 'external-temporal';
+import { Flex, Spacing } from 'external-temporal';
 import { BASE } from './Header.css';
 import { Menu } from './Menu';
 import type { AlarmReadResponse } from 'amadda-global-types';
@@ -57,12 +57,14 @@ export function Header() {
                   router.push(`${process.env.NEXT_PUBLIC_SHELL}/notice`);
                 }}
               />
+              <Spacing size="0.25" />
               <Menu
                 iconType="friends"
                 onClick={() => {
                   router.push(`${process.env.NEXT_PUBLIC_SHELL}/friends`);
                 }}
               />
+              <Spacing size="0.25" />
               <Menu
                 iconType="config"
                 onClick={() => {
