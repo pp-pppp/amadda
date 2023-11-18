@@ -1,13 +1,13 @@
 import { create } from 'zustand';
 
 export interface DateState {
-  year: string;
-  month: string;
-  date: string;
+  selectedYear: string;
+  selectedMonth: string;
+  selectedDate: string;
 }
 
 export const useDateStore = create<DateState>()(set => ({
-  year: '',
-  month: '',
-  date: '',
+  selectedYear: '',
+  selectedMonth: '',
+  selectedDate: '',
 }));

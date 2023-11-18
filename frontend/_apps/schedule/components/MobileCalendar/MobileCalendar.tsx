@@ -7,7 +7,7 @@ import { useDateStore } from '@SCH/store/dateStore';
 
 export function MobileCalendar() {
   useServerTime();
-  const { year, month, date } = useDateStore();
+  const { selectedYear, selectedMonth, selectedDate } = useDateStore();
 
   return (
     <>

@@ -11,15 +11,16 @@ const fetcher = url =>
     .then(data => data.data);
 
 export default function useServerTime() {
-  const { year, month, date } = useDateStore();
-  const { data } = useSWR('/api/schedule/serverTime', fetcher);
+  const { selectedYear, selectedMonth, selectedDate } = useDateStore();
+  const { data } = useSWR('/api/schedule/server-time', fetcher);
+
   useEffect(() => {
     if (data) {
       useDateStore.setState(state => ({
         ...state,
-        year: data.split('-')[0],
-        month: data.split('-')[1],
-        date: data.split('-')[2],
+        selectedYear: data.split('-')[0],
+        selectedMonth: data.split('-')[1],
+        selectedDate: data.split('-')[2],
       }));
     }
   }, [data]);
