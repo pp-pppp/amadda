@@ -1,6 +1,6 @@
 import { Header } from './Header/Header';
 
-export default function Layout({ children }) {
+export default function HeaderLayout({ children }) {
   return (
     <>
       <Header />
