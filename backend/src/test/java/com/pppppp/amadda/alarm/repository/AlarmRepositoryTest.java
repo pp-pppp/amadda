@@ -54,7 +54,7 @@ class AlarmRepositoryTest extends IntegrationTestSupport {
         userRepository.deleteAllInBatch();
     }
 
-    @DisplayName("사용자의 읽지 않은 알람을 조회한다.")
+    @DisplayName("유저의 읽지 않은 알람을 조회한다.")
     @Test
     void getAlarms() {
         // given
@@ -107,7 +107,7 @@ class AlarmRepositoryTest extends IntegrationTestSupport {
             );
     }
 
-    @DisplayName("안읽 친신 알림 조회")
+    @DisplayName("유저가 읽지 않은 알림 중 친구 신청 알림을 조회한다.")
     @Test
     void findFriendRequestAlarm() {
         // given

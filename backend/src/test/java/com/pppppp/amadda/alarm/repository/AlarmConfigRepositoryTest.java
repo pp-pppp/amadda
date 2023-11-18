@@ -34,7 +34,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         userRepository.deleteAllInBatch();
     }
 
-    @DisplayName("유저의 알림 글로벌 설정값 확인 - true")
+    @DisplayName("글로벌 알림 설정이 가능한 항목에 대해 유저의 글로벌 설정이 true로 되어있음을 확인한다.")
     @ParameterizedTest
     @ValueSource(strings = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
         "SCHEDULE_UPDATE"})
@@ -57,7 +57,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         assertTrue(config.get().isEnabled());
     }
 
-    @DisplayName("유저의 알림 글로벌 설정값 확인 - false")
+    @DisplayName("글로벌 알림 설정이 가능한 항목에 대해 유저의 글로벌 설정이 false로 되어있음을 확인한다.")
     @ParameterizedTest
     @ValueSource(strings = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
         "SCHEDULE_UPDATE"})
@@ -80,7 +80,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         assertFalse(config.get().isEnabled());
     }
 
-    @DisplayName("유저의 알림 글로벌 설정값 확인 - null")
+    @DisplayName("글로벌 알림 설정이 가능한 항목에 대해 최초 설정을 하지 않는 경우 알림 설정값은 존재하지 않는다.")
     @ParameterizedTest
     @ValueSource(strings = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
         "SCHEDULE_UPDATE"})
@@ -99,7 +99,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         assertTrue(config.isEmpty());
     }
 
-    @DisplayName("설정이 off인지 확인하기")
+    @DisplayName("글로벌 알림 설정이 가능한 항목에 대해 off로 설정된 항목을 찾아온다.")
     @ParameterizedTest
     @CsvSource(value = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
         "SCHEDULE_UPDATE"})
@@ -123,7 +123,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
             .containsExactly(user.getUserSeq(), alarmType, false);
     }
 
-    @DisplayName("설정이 on인지 확인하기")
+    @DisplayName("글로벌 알림 설정이 가능한 항목에 대해 off로 설정된 항목을 찾아올 때 on인 항목은 제외된다.")
     @ParameterizedTest
     @CsvSource(value = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
         "SCHEDULE_UPDATE"})
@@ -144,7 +144,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         assertThat(config).isEmpty();
     }
 
-    @DisplayName("설정값이 없는지 확인하기")
+    @DisplayName("글로벌 알림 설정이 가능한 항목에 대해 off로 설정된 항목을 찾아올 때 설정값이 없는 항목은 제외된다.")
     @ParameterizedTest
     @CsvSource(value = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
         "SCHEDULE_UPDATE"})
@@ -163,7 +163,7 @@ class AlarmConfigRepositoryTest extends IntegrationTestSupport {
         assertThat(config).isEmpty();
     }
 
-    @DisplayName("유저의 전체 설정값 가져오기")
+    @DisplayName("유저의 글로벌 알림 설정 값을 가져온다.")
     @Test
     void findAllByUser_UserSeq() {
         // given
