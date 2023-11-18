@@ -39,7 +39,6 @@ import com.pppppp.amadda.schedule.repository.ScheduleRepository;
 import com.pppppp.amadda.schedule.service.ScheduleService;
 import com.pppppp.amadda.user.dto.response.UserReadResponse;
 import com.pppppp.amadda.user.entity.User;
-import com.pppppp.amadda.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -65,10 +64,7 @@ import org.springframework.test.annotation.DirtiesContext;
 class AlarmServiceTest extends IntegrationTestSupport {
 
     @MockBean
-    KafkaTemplate<Long, BaseTopicValue> kafkaTemplate;
-
-    @MockBean
-    Participation participation;
+    private KafkaTemplate<Long, BaseTopicValue> kafkaTemplate;
 
     @Autowired
     private KafkaTopic kafkaTopic;
@@ -78,9 +74,6 @@ class AlarmServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private ScheduleService scheduleService;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private FriendRequestRepository friendRequestRepository;

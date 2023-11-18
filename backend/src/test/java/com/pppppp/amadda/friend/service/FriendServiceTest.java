@@ -25,7 +25,6 @@ import com.pppppp.amadda.friend.repository.GroupMemberRepository;
 import com.pppppp.amadda.friend.repository.UserGroupRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.user.entity.User;
-import com.pppppp.amadda.user.repository.UserRepository;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,9 +44,6 @@ class FriendServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private FriendRepository friendRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private FriendRequestRepository friendRequestRepository;
@@ -94,7 +90,8 @@ class FriendServiceTest extends IntegrationTestSupport {
         FriendRequestRequest request = FriendRequestRequest.builder()
             .targetSeq(user2.getUserSeq())
             .build();
-        FriendRequestResponse response = friendRequestService.createFriendRequest(user1.getUserSeq(), request);
+        FriendRequestResponse response = friendRequestService.createFriendRequest(
+            user1.getUserSeq(), request);
         FriendRequest fr = friendRequestService.findFriendRequestBySeq(response.requestSeq()).get();
         response = fr.updateStatus(FriendRequestStatus.ACCEPTED);
 
@@ -126,7 +123,8 @@ class FriendServiceTest extends IntegrationTestSupport {
         FriendRequestRequest request = FriendRequestRequest.builder()
             .targetSeq(user2.getUserSeq())
             .build();
-        FriendRequestResponse response = friendRequestService.createFriendRequest(user1.getUserSeq(), request);
+        FriendRequestResponse response = friendRequestService.createFriendRequest(
+            user1.getUserSeq(), request);
 
         // when // then
         assertThatThrownBy(() -> friendService.createFriend(response))

@@ -9,7 +9,6 @@ import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.alarm.entity.AlarmConfig;
 import com.pppppp.amadda.alarm.entity.AlarmType;
 import com.pppppp.amadda.user.entity.User;
-import com.pppppp.amadda.user.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
@@ -21,9 +20,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class AlarmConfigRepositoryTest extends IntegrationTestSupport {
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private AlarmConfigRepository alarmConfigRepository;

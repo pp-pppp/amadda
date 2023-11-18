@@ -43,7 +43,6 @@ import com.pppppp.amadda.schedule.repository.ParticipationRepository;
 import com.pppppp.amadda.schedule.repository.ScheduleRepository;
 import com.pppppp.amadda.user.dto.response.UserReadResponse;
 import com.pppppp.amadda.user.entity.User;
-import com.pppppp.amadda.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -86,9 +85,6 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private ScheduleRepository scheduleRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private FriendRepository friendRepository;

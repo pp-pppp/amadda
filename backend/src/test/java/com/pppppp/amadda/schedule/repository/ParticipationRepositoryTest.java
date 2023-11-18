@@ -9,7 +9,6 @@ import com.pppppp.amadda.schedule.entity.CategoryColor;
 import com.pppppp.amadda.schedule.entity.Participation;
 import com.pppppp.amadda.schedule.entity.Schedule;
 import com.pppppp.amadda.user.entity.User;
-import com.pppppp.amadda.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
@@ -29,9 +28,6 @@ class ParticipationRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
     private ScheduleRepository scheduleRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @BeforeEach
     void setUp() {
