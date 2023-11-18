@@ -47,6 +47,7 @@ spring:
     streams:
       replication-factor: 2
     topic:
+      sse: "${kafka.prefix}.reload.schedule"
       alarm:
         friend-request: "${kafka.prefix}.alarm.friend-request"
         friend-accept: "${kafka.prefix}.alarm.friend-accept"

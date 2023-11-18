@@ -13,7 +13,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.pppppp.amadda.IntegrationTestSupport;
-import com.pppppp.amadda.alarm.entity.KafkaTopic;
 import com.pppppp.amadda.alarm.repository.AlarmRepository;
 import com.pppppp.amadda.alarm.service.AlarmService;
 import com.pppppp.amadda.friend.entity.Friend;
@@ -72,9 +71,6 @@ class ScheduleServiceTest extends IntegrationTestSupport {
 
     @MockBean
     private AlarmService alarmService;
-
-    @Autowired
-    private KafkaTopic kafkaTopic;
 
     @Autowired
     private ScheduleService scheduleService;

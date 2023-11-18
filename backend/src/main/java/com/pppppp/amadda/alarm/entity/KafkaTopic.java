@@ -13,7 +13,8 @@ public class KafkaTopic {
     public String ALARM_MENTIONED;
     public String ALARM_SCHEDULE_UPDATE;
     public String ALARM_SCHEDULE_NOTIFICATION;
-    
+    public String RELOAD_SCHEDULE;
+
     private Environment environment;
 
     @Autowired
@@ -31,5 +32,6 @@ public class KafkaTopic {
         ALARM_SCHEDULE_UPDATE = environment.getProperty("spring.kafka.topic.alarm.schedule-update");
         ALARM_SCHEDULE_NOTIFICATION = environment.getProperty(
             "spring.kafka.topic.alarm.schedule-notification");
+        RELOAD_SCHEDULE = environment.getProperty("spring.kafka.topic.sse");
     }
 }

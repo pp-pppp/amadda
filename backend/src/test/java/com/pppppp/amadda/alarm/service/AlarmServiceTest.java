@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
@@ -59,13 +60,8 @@ import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
 
 @DirtiesContext
-@EmbeddedKafka(
-    partitions = 1,
-    brokerProperties = {
-        "listeners=PLAINTEXT://localhost:9091",
-        "port=9091"
-    }
-)
+@EmbeddedKafka(partitions = 1, brokerProperties = {"listeners=PLAINTEXT://localhost:9091",
+    "port=9091"})
 class AlarmServiceTest extends IntegrationTestSupport {
 
     @MockBean
@@ -221,8 +217,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         List<AlarmReadResponse> result = alarmService.getAlarms(user1.getUserSeq());
 
         // then
-        assertThat(result).hasSize(3)
-            .extracting("alarmType")
+        assertThat(result).hasSize(3).extracting("alarmType")
             .containsExactlyInAnyOrder(AlarmType.MENTIONED, AlarmType.SCHEDULE_UPDATE,
                 AlarmType.SCHEDULE_NOTIFICATION);
     }
@@ -275,14 +270,10 @@ class AlarmServiceTest extends IntegrationTestSupport {
         List<AlarmReadResponse> result = alarmService.getAlarms(user1.getUserSeq());
 
         // then
-        assertThat(result).hasSize(4)
-            .extracting("alarmType", "isEnabled")
-            .containsExactlyInAnyOrder(
-                tuple(AlarmType.SCHEDULE_ASSIGNED, true),
-                tuple(AlarmType.MENTIONED, true),
-                tuple(AlarmType.SCHEDULE_UPDATE, false),
-                tuple(AlarmType.SCHEDULE_NOTIFICATION, true)
-            );
+        assertThat(result).hasSize(4).extracting("alarmType", "isEnabled")
+            .containsExactlyInAnyOrder(tuple(AlarmType.SCHEDULE_ASSIGNED, true),
+                tuple(AlarmType.MENTIONED, true), tuple(AlarmType.SCHEDULE_UPDATE, false),
+                tuple(AlarmType.SCHEDULE_NOTIFICATION, true));
     }
 
     @DisplayName("모든 알림을 읽은 경우 길이가 0인 리스트를 반환한다.")
@@ -339,8 +330,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
     @Test
     void getAlarms_wrongUser() {
         // when + then
-        assertThatThrownBy(() -> alarmService.getAlarms(2L))
-            .isInstanceOf(RestApiException.class)
+        assertThatThrownBy(() -> alarmService.getAlarms(2L)).isInstanceOf(RestApiException.class)
             .hasMessage("USER_NOT_FOUND");
     }
 
@@ -432,8 +422,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         Schedule s = Schedule.create(user, "일정");
         Schedule schedule = scheduleRepository.save(s);
 
-        ScheduleAlarm a = ScheduleAlarm.create(user, "알람 테스트", AlarmType.SCHEDULE_UPDATE,
-            schedule);
+        ScheduleAlarm a = ScheduleAlarm.create(user, "알람 테스트", AlarmType.SCHEDULE_UPDATE, schedule);
         ScheduleAlarm alarm = scheduleAlarmRepository.save(a);
 
         // when
@@ -508,9 +497,8 @@ class AlarmServiceTest extends IntegrationTestSupport {
         ScheduleAlarm alarm = scheduleAlarmRepository.save(a);
 
         // when + then
-        assertThatThrownBy(() -> alarmService.readAlarm(alarm.getAlarmSeq(), 2L))
-            .isInstanceOf(RestApiException.class)
-            .hasMessage("USER_NOT_FOUND");
+        assertThatThrownBy(() -> alarmService.readAlarm(alarm.getAlarmSeq(), 2L)).isInstanceOf(
+            RestApiException.class).hasMessage("USER_NOT_FOUND");
     }
 
     @DisplayName("알림 읽음 처리 - 본인 알림이 아닌 경우")
@@ -531,9 +519,9 @@ class AlarmServiceTest extends IntegrationTestSupport {
         FriendRequestAlarm alarm = friendRequestAlarmRepository.save(a);
 
         // when + then
-        assertThatThrownBy(() -> alarmService.readAlarm(alarm.getAlarmSeq(), user2.getUserSeq()))
-            .isInstanceOf(RestApiException.class)
-            .hasMessage("ALARM_FORBIDDEN");
+        assertThatThrownBy(
+            () -> alarmService.readAlarm(alarm.getAlarmSeq(), user2.getUserSeq())).isInstanceOf(
+            RestApiException.class).hasMessage("ALARM_FORBIDDEN");
     }
 
     @DisplayName("글로벌 설정이 가능한 알림에 대해 AlarmConfig 생성 후 On")
@@ -629,9 +617,9 @@ class AlarmServiceTest extends IntegrationTestSupport {
         String alarmType = AlarmType.SCHEDULE_NOTIFICATION.getCode();
 
         // when + then
-        assertThatThrownBy(() -> alarmService.setGlobalAlarm(user.getUserSeq(), alarmType, true))
-            .isInstanceOf(RestApiException.class)
-            .hasMessage(AlarmErrorCode.CANNOT_SET_GLOBAL_CONFIG.name());
+        assertThatThrownBy(
+            () -> alarmService.setGlobalAlarm(user.getUserSeq(), alarmType, true)).isInstanceOf(
+            RestApiException.class).hasMessage(AlarmErrorCode.CANNOT_SET_GLOBAL_CONFIG.name());
     }
 
     @DisplayName("친구 신청 알람 - 설정 값이 없는 경우")
@@ -799,6 +787,13 @@ class AlarmServiceTest extends IntegrationTestSupport {
         verify(kafkaTemplate, never()).send(eq(topic), eq(user1.getUserSeq()), any());
         verify(kafkaTemplate, times(1)).send(eq(topic), eq(user2.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
+
+        verify(kafkaTemplate, never()).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user1.getUserSeq()),
+            any());
+        verify(kafkaTemplate, times(1)).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user2.getUserSeq()),
+            any());
+        verify(kafkaTemplate, never()).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user3.getUserSeq()),
+            any());
     }
 
     @DisplayName("일정 할당 알람 - 설정 값이 On인 경우")
@@ -825,6 +820,13 @@ class AlarmServiceTest extends IntegrationTestSupport {
         verify(kafkaTemplate, never()).send(eq(topic), eq(user1.getUserSeq()), any());
         verify(kafkaTemplate, times(1)).send(eq(topic), eq(user2.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
+
+        verify(kafkaTemplate, never()).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user1.getUserSeq()),
+            any());
+        verify(kafkaTemplate, times(1)).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user2.getUserSeq()),
+            any());
+        verify(kafkaTemplate, never()).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user3.getUserSeq()),
+            any());
     }
 
     @DisplayName("일정 할당 알람 - 설정 값이 Off인 경우")
@@ -848,9 +850,14 @@ class AlarmServiceTest extends IntegrationTestSupport {
 
         // then
         String topic = kafkaTopic.ALARM_SCHEDULE_ASSIGNED;
-        verify(kafkaTemplate, never()).send(eq(topic), eq(user1.getUserSeq()), any());
-        verify(kafkaTemplate, never()).send(eq(topic), eq(user2.getUserSeq()), any());
-        verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
+        verify(kafkaTemplate, never()).send(eq(topic), anyLong(), any());
+
+        verify(kafkaTemplate, never()).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user1.getUserSeq()),
+            any());
+        verify(kafkaTemplate, times(1)).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user2.getUserSeq()),
+            any());
+        verify(kafkaTemplate, never()).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user3.getUserSeq()),
+            any());
     }
 
     @DisplayName("일정 수정 알림 - Global은 없고, Local은 On인 경우")
@@ -875,8 +882,16 @@ class AlarmServiceTest extends IntegrationTestSupport {
 
         // then
         String topic = kafkaTopic.ALARM_SCHEDULE_UPDATE;
+        verify(kafkaTemplate, never()).send(eq(topic), eq(user1.getUserSeq()), any());
         verify(kafkaTemplate, times(1)).send(eq(topic), eq(user2.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
+
+        verify(kafkaTemplate, never()).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user1.getUserSeq()),
+            any());
+        verify(kafkaTemplate, times(1)).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user2.getUserSeq()),
+            any());
+        verify(kafkaTemplate, never()).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user3.getUserSeq()),
+            any());
     }
 
     @DisplayName("일정 수정 알림 - Global은 없고, Local은 Off인 경우")
@@ -901,8 +916,14 @@ class AlarmServiceTest extends IntegrationTestSupport {
 
         // then
         String topic = kafkaTopic.ALARM_SCHEDULE_UPDATE;
-        verify(kafkaTemplate, never()).send(eq(topic), eq(user2.getUserSeq()), any());
-        verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
+        verify(kafkaTemplate, never()).send(eq(topic), anyLong(), any());
+
+        verify(kafkaTemplate, never()).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user1.getUserSeq()),
+            any());
+        verify(kafkaTemplate, times(1)).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user2.getUserSeq()),
+            any());
+        verify(kafkaTemplate, never()).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user3.getUserSeq()),
+            any());
     }
 
     @DisplayName("일정 수정 알림 - Global은 On, Local은 On인 경우")
@@ -930,8 +951,16 @@ class AlarmServiceTest extends IntegrationTestSupport {
 
         // then
         String topic = kafkaTopic.ALARM_SCHEDULE_UPDATE;
+        verify(kafkaTemplate, never()).send(eq(topic), eq(user1.getUserSeq()), any());
         verify(kafkaTemplate, times(1)).send(eq(topic), eq(user2.getUserSeq()), any());
         verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
+
+        verify(kafkaTemplate, never()).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user1.getUserSeq()),
+            any());
+        verify(kafkaTemplate, times(1)).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user2.getUserSeq()),
+            any());
+        verify(kafkaTemplate, never()).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user3.getUserSeq()),
+            any());
     }
 
     @DisplayName("일정 수정 알림 - Global은 On, Local은 Off인 경우")
@@ -959,8 +988,14 @@ class AlarmServiceTest extends IntegrationTestSupport {
 
         // then
         String topic = kafkaTopic.ALARM_SCHEDULE_UPDATE;
-        verify(kafkaTemplate, never()).send(eq(topic), eq(user2.getUserSeq()), any());
-        verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
+        verify(kafkaTemplate, never()).send(eq(topic), anyLong(), any());
+
+        verify(kafkaTemplate, never()).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user1.getUserSeq()),
+            any());
+        verify(kafkaTemplate, times(1)).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user2.getUserSeq()),
+            any());
+        verify(kafkaTemplate, never()).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user3.getUserSeq()),
+            any());
     }
 
     @DisplayName("일정 수정 알림 - Global은 Off, Local은 On인 경우")
@@ -988,8 +1023,14 @@ class AlarmServiceTest extends IntegrationTestSupport {
 
         // then
         String topic = kafkaTopic.ALARM_SCHEDULE_UPDATE;
-        verify(kafkaTemplate, never()).send(eq(topic), eq(user2.getUserSeq()), any());
-        verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
+        verify(kafkaTemplate, never()).send(eq(topic), anyLong(), any());
+
+        verify(kafkaTemplate, never()).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user1.getUserSeq()),
+            any());
+        verify(kafkaTemplate, times(1)).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user2.getUserSeq()),
+            any());
+        verify(kafkaTemplate, never()).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user3.getUserSeq()),
+            any());
     }
 
     @DisplayName("일정 수정 알림 - Global은 Off, Local은 Off인 경우")
@@ -1017,8 +1058,14 @@ class AlarmServiceTest extends IntegrationTestSupport {
 
         // then
         String topic = kafkaTopic.ALARM_SCHEDULE_UPDATE;
-        verify(kafkaTemplate, never()).send(eq(topic), eq(user2.getUserSeq()), any());
-        verify(kafkaTemplate, never()).send(eq(topic), eq(user3.getUserSeq()), any());
+        verify(kafkaTemplate, never()).send(eq(topic), anyLong(), any());
+
+        verify(kafkaTemplate, never()).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user1.getUserSeq()),
+            any());
+        verify(kafkaTemplate, times(1)).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user2.getUserSeq()),
+            any());
+        verify(kafkaTemplate, never()).send(eq(kafkaTopic.RELOAD_SCHEDULE), eq(user3.getUserSeq()),
+            any());
     }
 
     @DisplayName("친신 읽음 처리")
@@ -1034,8 +1081,8 @@ class AlarmServiceTest extends IntegrationTestSupport {
         FriendRequest friendRequest = friendRequestRepository.save(fr);
 
         String content = AlarmContent.FRIEND_REQUEST.getMessage(owner.getUserName());
-        FriendRequestAlarm a = FriendRequestAlarm.create(friend, content,
-            AlarmType.FRIEND_REQUEST, friendRequest);
+        FriendRequestAlarm a = FriendRequestAlarm.create(friend, content, AlarmType.FRIEND_REQUEST,
+            friendRequest);
         FriendRequestAlarm alarm = friendRequestAlarmRepository.save(a);
 
         // when
@@ -1044,8 +1091,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         // then
         Optional<Alarm> result = alarmRepository.findById(alarm.getAlarmSeq());
         assertTrue(result.isPresent());
-        assertThat(result.get())
-            .extracting("user.userSeq", "content", "isRead", "alarmType")
+        assertThat(result.get()).extracting("user.userSeq", "content", "isRead", "alarmType")
             .containsExactly(friend.getUserSeq(), content, true, AlarmType.FRIEND_REQUEST);
     }
 
@@ -1053,9 +1099,8 @@ class AlarmServiceTest extends IntegrationTestSupport {
     @Test
     void readFriendRequestAlarm_fail() {
         // when
-        assertThatThrownBy(() -> alarmService.readFriendRequestAlarm(1L))
-            .isInstanceOf(RestApiException.class)
-            .hasMessage("FRIEND_REQUEST_NOT_FOUND");
+        assertThatThrownBy(() -> alarmService.readFriendRequestAlarm(1L)).isInstanceOf(
+            RestApiException.class).hasMessage("FRIEND_REQUEST_NOT_FOUND");
     }
 
     @DisplayName("일정 예정 알림 테스트")
@@ -1072,28 +1117,18 @@ class AlarmServiceTest extends IntegrationTestSupport {
 
         ScheduleCreateRequest request = ScheduleCreateRequest.builder()
             // schedule
-            .scheduleContent("수원 시민 회관")
-            .isDateSelected(true)
-            .isTimeSelected(true)
-            .isAllDay(false)
-            .isAuthorizedAll(true)
-            .scheduleStartAt(startTime)
-            .scheduleEndAt(endTime)
+            .scheduleContent("수원 시민 회관").isDateSelected(true).isTimeSelected(true).isAllDay(false)
+            .isAuthorizedAll(true).scheduleStartAt(startTime).scheduleEndAt(endTime)
             .participants(List.of(UserReadResponse.of(user)))
             // participation
-            .alarmTime("ON_TIME")
-            .scheduleName("합창단 공연")
-            .scheduleMemo("수원역에서 걸어서 10분")
-            .build();
+            .alarmTime("ON_TIME").scheduleName("합창단 공연").scheduleMemo("수원역에서 걸어서 10분").build();
         scheduleService.createSchedule(user.getUserSeq(), request);
 
         // when + then
-        Awaitility.await()
-            .atMost(1500, TimeUnit.MILLISECONDS)
-            .pollInterval(100, TimeUnit.MILLISECONDS)
-            .untilAsserted(() -> verify(kafkaTemplate, atLeastOnce())
-                .send(eq(kafkaTopic.ALARM_SCHEDULE_NOTIFICATION),
-                    eq(user.getUserSeq()), any()));
+        Awaitility.await().atMost(1500, TimeUnit.MILLISECONDS)
+            .pollInterval(100, TimeUnit.MILLISECONDS).untilAsserted(
+                () -> verify(kafkaTemplate, atLeastOnce()).send(
+                    eq(kafkaTopic.ALARM_SCHEDULE_NOTIFICATION), eq(user.getUserSeq()), any()));
     }
 
     private List<User> create3users() {
@@ -1114,20 +1149,10 @@ class AlarmServiceTest extends IntegrationTestSupport {
         Schedule schedule = Schedule.builder().authorizedUser(user1).build();
         Schedule savedSchedule = scheduleRepository.save(schedule);
 
-        Participation participation1 = Participation.builder()
-            .user(user1)
-            .schedule(savedSchedule)
-            .scheduleName("민들레")
-            .isUpdateAlarmOn(true)
-            .isMentionAlarmOn(true)
-            .build();
-        Participation participation2 = Participation.builder()
-            .user(user2)
-            .schedule(savedSchedule)
-            .scheduleName("떡볶이")
-            .isUpdateAlarmOn(true)
-            .isMentionAlarmOn(true)
-            .build();
+        Participation participation1 = Participation.builder().user(user1).schedule(savedSchedule)
+            .scheduleName("민들레").isUpdateAlarmOn(true).isMentionAlarmOn(true).build();
+        Participation participation2 = Participation.builder().user(user2).schedule(savedSchedule)
+            .scheduleName("떡볶이").isUpdateAlarmOn(true).isMentionAlarmOn(true).build();
         participationRepository.saveAll(List.of(participation1, participation2));
     }
 }

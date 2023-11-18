@@ -1,6 +1,7 @@
 package com.pppppp.amadda.alarm.service;
 
 import com.pppppp.amadda.alarm.dto.response.AlarmReadResponse;
+import com.pppppp.amadda.alarm.dto.topic.BaseTopicValue;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendAccept;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmFriendRequest;
 import com.pppppp.amadda.alarm.dto.topic.alarm.AlarmScheduleAssigned;
@@ -102,7 +103,6 @@ public class AlarmService {
         return alarmConfigRepository.save(alarmConfig);
     }
 
-    @Transactional
     public void sendFriendRequest(Long ownerSeq, Long targetSeq) {
         User target = getUser(targetSeq);
         if (checkGlobalAlarmSetting(target.getUserSeq(), AlarmType.FRIEND_REQUEST)) {
@@ -115,7 +115,6 @@ public class AlarmService {
         }
     }
 
-    @Transactional
     public void sendFriendAccept(Long ownerSeq, Long targetSeq) {
         User owner = getUser(ownerSeq);
         if (checkGlobalAlarmSetting(owner.getUserSeq(), AlarmType.FRIEND_ACCEPT)) {
@@ -128,11 +127,12 @@ public class AlarmService {
 
     }
 
-    @Transactional
     public void sendScheduleAssigned(Long scheduleSeq, Long creatorSeq, Long userSeq) {
         User user = getUser(userSeq);
+        Schedule schedule = getSchedule(scheduleSeq);
+
+        sendReloadSchedule(scheduleSeq, userSeq);
         if (checkGlobalAlarmSetting(userSeq, AlarmType.SCHEDULE_ASSIGNED)) {
-            Schedule schedule = getSchedule(scheduleSeq);
             User creator = getUser(creatorSeq);
             Participation participation = getParticipation(scheduleSeq, userSeq);
 
@@ -143,17 +143,23 @@ public class AlarmService {
         }
     }
 
-    @Transactional
     public void sendScheduleUpdate(Long scheduleSeq, Long userSeq) {
         User user = getUser(userSeq);
+        Schedule schedule = getSchedule(scheduleSeq);
+
+        sendReloadSchedule(scheduleSeq, userSeq);
         if (checkUpdateAlarmSetting(scheduleSeq, userSeq)) {
-            Schedule schedule = getSchedule(scheduleSeq);
             Participation participation = getParticipation(scheduleSeq, userSeq);
 
             AlarmScheduleUpdate value = AlarmScheduleUpdate.create(scheduleSeq,
                 participation.getScheduleName(), scheduleSeq);
             kafkaProducer.sendAlarm(kafkaTopic.ALARM_SCHEDULE_UPDATE, userSeq, value);
         }
+    }
+
+    private void sendReloadSchedule(Long scheduleSeq, Long userSeq) {
+        BaseTopicValue baseTopicValue = new BaseTopicValue(scheduleSeq);
+        kafkaProducer.sendAlarm(kafkaTopic.RELOAD_SCHEDULE, userSeq, baseTopicValue);
     }
 
     @Scheduled(cron = "${schedules.cron.schedule-notification}", zone = "Asia/Seoul")
