@@ -23,20 +23,22 @@ export interface ScheduleDetailReadResponse {
 }
 export interface ScheduleListReadResponse {
   scheduleSeq: number;
-  isTimeSelected: boolean;
   isDateSelected: boolean;
+  isTimeSelected: boolean;
   isAllday: boolean;
-  isAuthorizedAll: boolean;
   scheduleStartAt: string;
   scheduleEndAt: string;
-  loginUser: UserReadResponse;
+  isAuthorizedAll: boolean;
+  authorizedUser: UserReadResponse;
   participants: Array<UserReadResponse>;
+  isFinised: boolean;
   alarmTime: string;
   scheduleName: string;
-  category: {
-    // 카테고리 response dto
-  };
-  scheduleMemo: string;
+  category: CategoryReadResponse;
+}
+export interface ScheduleSearchResponse {
+  [date?: string]: Array<ScheduleListReadResponse>;
+  unscheduled?: Array<ScheduleListReadResponse>;
 }
 export interface ScheduleListUpdateResponse {
   scheduleSeq: number;
