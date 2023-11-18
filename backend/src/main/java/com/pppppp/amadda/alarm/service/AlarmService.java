@@ -103,7 +103,6 @@ public class AlarmService {
         return alarmConfigRepository.save(alarmConfig);
     }
 
-    @Transactional
     public void sendFriendRequest(Long ownerSeq, Long targetSeq) {
         User target = getUser(targetSeq);
         if (checkGlobalAlarmSetting(target.getUserSeq(), AlarmType.FRIEND_REQUEST)) {
@@ -116,7 +115,6 @@ public class AlarmService {
         }
     }
 
-    @Transactional
     public void sendFriendAccept(Long ownerSeq, Long targetSeq) {
         User owner = getUser(ownerSeq);
         if (checkGlobalAlarmSetting(owner.getUserSeq(), AlarmType.FRIEND_ACCEPT)) {
@@ -129,7 +127,6 @@ public class AlarmService {
 
     }
 
-    @Transactional
     public void sendScheduleAssigned(Long scheduleSeq, Long creatorSeq, Long userSeq) {
         User user = getUser(userSeq);
         Schedule schedule = getSchedule(scheduleSeq);
@@ -146,7 +143,6 @@ public class AlarmService {
         }
     }
 
-    @Transactional
     public void sendScheduleUpdate(Long scheduleSeq, Long userSeq) {
         User user = getUser(userSeq);
         Schedule schedule = getSchedule(scheduleSeq);
