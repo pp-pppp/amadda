@@ -12,3 +12,7 @@ export const CURSOR = styleVariants({
   default: { cursor: 'default' },
   pointer: { cursor: 'pointer' },
 });
+export const SIZE = styleVariants({
+  M: { width: '1.5rem', height: '1.5rem' },
+  L: { width: '3rem', height: '3rem' },
+});

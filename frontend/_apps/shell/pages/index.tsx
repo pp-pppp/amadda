@@ -1,13 +1,17 @@
-import { H1, Flex, Spacing } from 'external-temporal';
+import { Flex, Spacing, H2 } from 'external-temporal';
 import { signIn } from 'next-auth/react';
-import { IndexLayout } from '@SH/layout/IndexLayout';
 import { BASE } from '@SH/components/KakaoBtn/KakaoBtn.css';
+import Head from 'next/head';
 
 export default function Page() {
   return (
-    <IndexLayout>
+    <div>
+      <Head>
+        <title>AMADDA</title>
+        <meta property="og:title" content="AMADDA" key="title" />
+      </Head>
       <Flex justifyContents="center" alignItems="center" flexDirection="column">
-        <H1>Amadda</H1>
+        <H2>Amadda</H2>
         <Spacing size="5" />
         <img
           src="image/kakao_login.png"
@@ -16,6 +20,6 @@ export default function Page() {
           className={BASE}
         />
       </Flex>
-    </IndexLayout>
+    </div>
   );
 }
