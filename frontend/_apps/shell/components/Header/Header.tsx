@@ -34,34 +34,45 @@ export function Header() {
       <Flex justifyContents="spaceBetween">
         <Flex justifyContents="start">
           <Menu
-            iconType="friends"
+            iconType="back"
             onClick={() => {
-              router.push(`${process.env.NEXT_PUBLIC_SHELL}/friends`);
+              router.back();
             }}
           />
         </Flex>
-        <Flex justifyContents="flexEnd">
-          <Menu
+        {router.basePath.includes('notice') ||
+          router.basePath.includes('friends') || (
+            <Flex justifyContents="flexEnd">
+              {/* <Menu
             iconType="search"
             onClick={() => {
-              // router.push(`${process.env.NEXT_PUBLIC_SHELL}/search`);
-              // 일정 검색 페이지는 추후 구현 예정
+              router.push(`${process.env.NEXT_PUBLIC_SHELL}/search`);
+              일정 검색 페이지는 추후 구현 예정
             }}
-          />
-          <Menu
-            iconType={notice ? 'noti' : 'noti_red'}
-            onClick={() => {
-              setNotice(false);
-              router.push(`${process.env.NEXT_PUBLIC_SHELL}/notice`);
-            }}
-          />
-          <Menu
-            iconType="config"
-            onClick={() => {
-              router.push(`${process.env.NEXT_PUBLIC_SHELL}/notice/setting`);
-            }}
-          />
-        </Flex>
+          /> */}
+              <Menu
+                iconType={notice ? 'noti' : 'noti_red'}
+                onClick={() => {
+                  setNotice(false);
+                  router.push(`${process.env.NEXT_PUBLIC_SHELL}/notice`);
+                }}
+              />
+              <Menu
+                iconType="friends"
+                onClick={() => {
+                  router.push(`${process.env.NEXT_PUBLIC_SHELL}/friends`);
+                }}
+              />
+              <Menu
+                iconType="config"
+                onClick={() => {
+                  router.push(
+                    `${process.env.NEXT_PUBLIC_SHELL}/notice/setting`
+                  );
+                }}
+              />
+            </Flex>
+          )}
       </Flex>
     </div>
   );
