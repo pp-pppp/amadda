@@ -1,4 +1,6 @@
+import HeaderLayout from '@SH/components/HeaderLayout';
 import Head from 'next/head';
+import type { ReactNode } from 'react';
 
 export default function Page({ children }) {
   return (
@@ -11,3 +13,7 @@ export default function Page({ children }) {
     </div>
   );
 }
+
+Page.getLayout = function getLayout(page: ReactNode) {
+  return <HeaderLayout>{page}</HeaderLayout>;
+};
