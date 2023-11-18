@@ -1,4 +1,4 @@
-import { KAFKA } from 'connection';
+import { KAFKA_NOTICE } from 'connection';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function event(req: NextApiRequest, res: NextApiResponse) {
@@ -7,7 +7,7 @@ export default async function event(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader('Connection', 'keep-alive');
 
   try {
-    const consumer = await KAFKA();
+    const consumer = await KAFKA_NOTICE();
 
     await consumer.run({
       eachMessage: async ({ topic, partition, message }) => {
