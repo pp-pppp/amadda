@@ -12,7 +12,7 @@ export interface ScheduleCreateRequest {
   alarmTime: string;
   scheduleName: string;
   scheduleMemo: string;
-  categorySeq: number;
+  categorySeq?: number;
 }
 
 export interface ScheduleUpdateRequest {

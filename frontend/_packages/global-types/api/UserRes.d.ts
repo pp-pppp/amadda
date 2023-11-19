@@ -6,7 +6,7 @@ export interface UserScheduleResponse {
   isFriend: boolean;
 }
 export interface UserReadResponse {
-  userSeq: string;
+  userSeq: number;
   userName: string;
   userId: string;
   imageUrl: string;
