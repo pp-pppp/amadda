@@ -8,6 +8,7 @@ import {
   ScheduleListReadResponse,
   ScheduleSearchResponse,
 } from 'amadda-global-types';
+import { useCategoryStore } from '@SCH/store/categoryStore';
 
 export interface DateInfo {
   year: string;
@@ -18,6 +19,7 @@ export interface DateInfo {
 export function MobileCalendarDate() {
   // 전역 store에서 연월 정보 가져오기
   const { selectedYear, selectedMonth, selectedDate } = useDateStore();
+  const { selectedCategorySeq, selectedAll, selectedNone } = useCategoryStore();
   const {
     monthlyScheduleList,
     setMonthlyScheduleList,
@@ -32,6 +34,14 @@ export function MobileCalendarDate() {
 
   useEffect(() => setChosen(selectedDate), [selectedDate]);
 
+  const categoryCheck = (dateString: string) => {
+    const isContain = monthlyScheduleList.dateString.some(schedule =>
+      selectedCategorySeq.includes(schedule.category.categorySeq)
+    );
+
+    return isContain;
+  };
+
   // 일정 유무 확인
   const isScheduled = (date: number): boolean => {
     if (typeof monthlyScheduleList === 'undefined') {
@@ -45,7 +55,9 @@ export function MobileCalendarDate() {
       '-' +
       date.toString().padStart(2, '0');
 
-    return dateString in monthlyScheduleList ? true : false;
+    return dateString in monthlyScheduleList && categoryCheck(dateString)
+      ? true
+      : false;
   };
 
   const isSelected = (
@@ -95,32 +107,30 @@ export function MobileCalendarDate() {
 
   return (
     <div className={GRID}>
-      {calendarDates.map((week, rowIndex) => (
-        <React.Fragment key={rowIndex}>
-          {week.map(({ date, monthType }, colIndex) => (
-            <MobileMonthlyPlate
-              key={`${rowIndex}-${colIndex}`}
-              dateType={dateTypeMapper(monthType, colIndex)}
-              isScheduled={monthType === 'curr' && isScheduled(date)}
-              isSelected={isSelected(monthType, date)}
-              onClick={() => {
-                if (monthType === 'curr') {
-                  useDateStore.setState(state => ({
-                    ...state,
-                    selectedDate: date.toString().padStart(2, '0'),
-                  }));
-                } else if (monthType === 'prev') {
-                  goPrev(date);
-                } else if (monthType === 'next') {
-                  goNext(date);
-                }
-              }}
-            >
-              {date}
-            </MobileMonthlyPlate>
-          ))}
-        </React.Fragment>
-      ))}
+      {calendarDates.map((week, rowIndex) => {
+        return week.map(({ date, monthType }, colIndex) => (
+          <MobileMonthlyPlate
+            key={`${rowIndex}-${colIndex}`}
+            dateType={dateTypeMapper(monthType, colIndex)}
+            isScheduled={monthType === 'curr' && isScheduled(date)}
+            isSelected={isSelected(monthType, date)}
+            onClick={() => {
+              if (monthType === 'curr') {
+                useDateStore.setState(state => ({
+                  ...state,
+                  selectedDate: date.toString().padStart(2, '0'),
+                }));
+              } else if (monthType === 'prev') {
+                goPrev(date);
+              } else if (monthType === 'next') {
+                goNext(date);
+              }
+            }}
+          >
+            {date}
+          </MobileMonthlyPlate>
+        ));
+      })}
     </div>
   );
 }
