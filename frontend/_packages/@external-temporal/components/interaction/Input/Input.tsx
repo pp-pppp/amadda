@@ -5,8 +5,8 @@ import { ChangeEvent } from 'react';
 import { TYPE } from './Input.css';
 
 export interface InputProps extends HTMLAttributes<HTMLInputElement> {
-  type: 'text' | 'checkbox';
-  validator?: (target: string) => boolean;
+  type: 'text' | 'checkbox' | 'number';
+  validator?: (target: string | number) => boolean;
   id: string;
   name: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -14,7 +14,7 @@ export interface InputProps extends HTMLAttributes<HTMLInputElement> {
   onFocus?: (e: FocusEvent) => void;
   disabled?: boolean;
   placeholder?: string;
-  value: string;
+  value?: string | number;
   checked?: boolean;
   autoComplete?: undefined | 'off';
 }

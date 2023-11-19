@@ -17,7 +17,14 @@ const BASE_TEXT = style({
   padding: '0rem 1rem',
   width: '100%',
 });
-
+const BASE_NUMBER = style({
+  border: 'none',
+  borderRadius: '0.5rem',
+  color: colors.BLACK,
+  height: '2.5rem',
+  padding: '0rem 1rem',
+  width: '5.25rem',
+});
 const BASE_CHECKBOX = style({
   appearance: 'none',
   borderRadius: '0.3rem',
@@ -31,6 +38,21 @@ export const TYPE = styleVariants({
   text: [
     BASE,
     BASE_TEXT,
+    {
+      ':focus': {
+        outline: `0.1rem solid ${colors.key}`,
+      },
+      '::placeholder': {
+        color: colors.GREY_500,
+      },
+      ':disabled': {
+        color: colors.disalbedText,
+      },
+    },
+  ],
+  number: [
+    BASE,
+    BASE_NUMBER,
     {
       ':focus': {
         outline: `0.1rem solid ${colors.key}`,
