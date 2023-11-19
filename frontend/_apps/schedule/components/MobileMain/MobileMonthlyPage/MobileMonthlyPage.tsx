@@ -3,7 +3,7 @@ import { MobileCalendar } from '@SCH/components/MobileCalendar/MobileCalendar';
 import { ReactNode, useEffect, useRef } from 'react';
 import { CalendarHeader } from './CalendarHeader/CalendarHeader';
 import { DailyList } from './DailyList/DailyList';
-import { Spacing } from '../../../../../_packages/@external-temporal';
+import { Spacing } from 'external-temporal';
 import { useFilterStore } from '@SCH/store/filterStore';
 
 export function MobileMonthlyPage(): ReactNode {
