@@ -1,0 +1,13 @@
+{
+  "name": "amadda-kafka",
+  "license": "MIT",
+  "version": "0.0.0",
+  "private": true,
+  "main": "index.ts",
+  "types": "index.ts",
+  "devDependencies": {
+    "amadda-global-types": "workspace:*",
+    "axios": "^1.6.0",
+    "kafkajs": "^2.2.4"
+  }
+}

@@ -1,4 +1,4 @@
-import { KAFKA_NOTICE } from 'connection';
+import { KAFKA_NOTICE } from 'amadda-kafka';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function event(req: NextApiRequest, res: NextApiResponse) {

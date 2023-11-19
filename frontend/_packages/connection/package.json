@@ -10,10 +10,7 @@
     "axios": "^1.6.0",
     "kafkajs": "^2.2.4",
     "next": "13.4.12",
-    "redis": "4.6.1",
+    "@vercel/kv": "^1.0.0",
     "typescript": "5.2.2"
-  },
-  "dependencies": {
-    "@vercel/kv": "^1.0.0"
   }
 }

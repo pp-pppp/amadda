@@ -1,7 +1,7 @@
 import { http } from '@U/utils/http';
 import {
   CategoryCreateResponse,
-  CategoryListReadResponse,
+  CategoryReadResponse,
 } from 'amadda-global-types';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -9,7 +9,7 @@ const user = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
     //해당 사용자의 카테고리 목록 띄워주기
     try {
-      const SPRING_RES = await http.get<CategoryListReadResponse>(
+      const SPRING_RES = await http.get<Array<CategoryReadResponse>>(
         `${process.env.SPRING_API_ROOT}/user/category`
       );
       res.status(SPRING_RES.status).json(SPRING_RES.data);

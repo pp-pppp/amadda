@@ -133,12 +133,52 @@ class UserControllerTest extends ControllerTestSupport {
             .andExpect(jsonPath("$.message").value("OK"));
     }
 
+    @DisplayName("아이디 중복/유효 여부를 반환한다. 빈 값도 가능")
+    @Test
+    void checkId_blank() throws Exception {
+        // given
+        UserIdCheckRequest request = UserIdCheckRequest.builder()
+            .userId("")
+            .build();
+
+        // when // then
+        mockMvc.perform(
+                post("/api/user/check/id")
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"));
+    }
+
     @DisplayName("닉네임 유효 여부를 반환한다. ")
     @Test
     void checkName() throws Exception {
         // given
         UserNameCheckRequest request = UserNameCheckRequest.builder()
             .userName("nameee")
+            .build();
+
+        // when // then
+        mockMvc.perform(
+                post("/api/user/check/name")
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"));
+    }
+
+    @DisplayName("닉네임 유효 여부를 반환한다. 빈 값도 가능. ")
+    @Test
+    void checkName_blank() throws Exception {
+        // given
+        UserNameCheckRequest request = UserNameCheckRequest.builder()
+            .userName("")
             .build();
 
         // when // then

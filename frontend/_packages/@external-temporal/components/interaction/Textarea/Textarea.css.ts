@@ -4,7 +4,7 @@ import { style, styleVariants } from '@vanilla-extract/css';
 const BASE = style({
   backgroundColor: colors.GREY_200,
   border: 'none',
-  borderRadius: '0.25rem',
+  borderRadius: '0.5rem',
   color: colors.black,
   padding: '0.75rem',
   width: '100%',

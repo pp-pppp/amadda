@@ -1,4 +1,4 @@
-import { KAFKA_SCHEDULE } from 'connection';
+import { KAFKA_SCHEDULE } from 'amadda-kafka';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function event(req: NextApiRequest, res: NextApiResponse) {

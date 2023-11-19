@@ -3,8 +3,7 @@ import { style, styleVariants } from '@vanilla-extract/css';
 
 // 기본 CSS
 const BASE = style({
-  width: '100%',
-  // padding: '0.2rem 0.4rem',
+  width: '10rem',
 });
 
 // 배치 관련 CSS
@@ -26,6 +25,10 @@ export const STATUS = styleVariants({
     BASE,
     BGCOLOR,
     {
+      position: 'absolute',
+      right: '1rem',
+      top: '7.88rem',
+      height: 'fit-content',
       borderRadius: '0.75rem',
       outline: `0.1rem solid ${colors.key}`,
       paddingBottom: '0.25rem',
@@ -36,6 +39,10 @@ export const STATUS = styleVariants({
   close: [
     BASE,
     {
+      position: 'absolute',
+      right: '1rem',
+      top: '7.88rem',
+      height: 'fit-content',
       border: 'none',
     },
   ],
@@ -46,6 +53,7 @@ export const STATUS = styleVariants({
     FRAME,
     BGCOLOR,
     {
+      position: 'relative',
       borderRadius: '0.75rem',
       padding: '0.5rem',
     },
@@ -73,6 +81,8 @@ export const STATUS = styleVariants({
     {
       borderRadius: '0.75rem',
       flexDirection: 'column',
+      zIndex: '999',
+      position: 'relative',
     },
   ],
 
@@ -81,7 +91,7 @@ export const STATUS = styleVariants({
     BASE,
     FRAME,
     {
-      visibility: 'hidden',
+      display: 'none',
     },
   ],
 
@@ -91,6 +101,7 @@ export const STATUS = styleVariants({
     FRAME,
     {
       padding: '0.5rem',
+      position: 'relative',
     },
   ],
 });

@@ -27,7 +27,7 @@ const meta = {
     label: {
       description: '바인딩 될 input 태그의 id입니다.',
     },
-    onFlitered: {
+    onFiltered: {
       description: '필터 칩이 선택되었을 때 해당 값을 함수로 전달합니다.',
     },
     onDelete: {

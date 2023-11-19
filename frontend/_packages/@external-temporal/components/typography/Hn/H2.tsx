@@ -1,9 +1,9 @@
 import React from 'react';
-import type { HTMLAttributes } from 'react';
+import type { HTMLAttributes, ReactNode } from 'react';
 import { VARIANTS } from './H.css';
 
 export interface Props extends HTMLAttributes<HTMLHeadingElement> {
-  children: string;
+  children: ReactNode;
 }
 
 export function H2({ children }: Props) {

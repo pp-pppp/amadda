@@ -1,6 +1,7 @@
 // component exports
 export * from './components/interaction/Btn/Btn';
 export * from './components/interaction/BtnRound/BtnRound';
+export * from './components/interaction/Chip/Chip';
 export * from './components/interaction/FAB/FAB';
 export * from './components/interaction/Form/Form';
 export * from './components/interaction/Input/Input';
