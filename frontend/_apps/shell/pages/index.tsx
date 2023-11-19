@@ -1,7 +1,8 @@
-import { Flex, Spacing, H2 } from 'external-temporal';
+import { Flex, Spacing, H3 } from 'external-temporal';
 import { signIn } from 'next-auth/react';
 import { BASE } from '@SH/components/KakaoBtn/KakaoBtn.css';
 import Head from 'next/head';
+import Image from 'next/image';
 
 export default function Page() {
   return (
@@ -11,7 +12,7 @@ export default function Page() {
         <meta property="og:title" content="AMADDA" key="title" />
       </Head>
       <Flex justifyContents="center" alignItems="center" flexDirection="column">
-        <H2>Amadda</H2>
+        <H3>AMADDA</H3>
         <Spacing size="5" />
         <img
           src="image/kakao_login.png"
