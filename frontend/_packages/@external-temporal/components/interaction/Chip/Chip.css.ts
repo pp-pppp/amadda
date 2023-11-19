@@ -27,7 +27,12 @@ export const TYPE_VARIANT = styleVariants({
   ],
   filterselected: [
     BASE,
-    { backgroundColor: colors.key, color: colors.WHITE, cursor: 'pointer' },
+    {
+      border: `1px solid transparent`,
+      backgroundColor: colors.key,
+      color: colors.WHITE,
+      cursor: 'pointer',
+    },
   ],
   keyword: [
     BASE,
