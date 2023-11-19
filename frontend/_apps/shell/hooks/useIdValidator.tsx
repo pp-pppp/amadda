@@ -1,12 +1,6 @@
+import { http } from '@SH/utils/http';
+import { UserIdCheckRequest, UserIdCheckResponse } from 'amadda-global-types';
 import { useState, useEffect } from 'react';
-export interface IdCheckRequest {
-  userId: string;
-}
-
-export interface IdCheckResponse {
-  isDuplicated: boolean;
-  isValid: boolean;
-}
 
 export default function useIdValidator(id: string) {
   const [userId, setUserId] = useState(id);
@@ -18,21 +12,22 @@ export default function useIdValidator(id: string) {
 
   useEffect(() => {
     const IdCheck = async () => {
-      const UserIdCheckRequestBody: IdCheckRequest = {
+      const UserIdCheckRequestBody: UserIdCheckRequest = {
         userId: idValue,
       };
 
-      // const {isDuplicated, isValid} = await http.post<IdCheckRequest, IdCheckResponse>(
-      //   `${process.env.SPRING_API_ROOT}/user/check/id`,
-      //   UserIdCheckRequestBody
-      // );
-      // isDuplicated ? setIsIdDuplicated(true) : setIsIdDuplicated(false);
-      // !isValid && setIdValue(idValue.slice(0, -1));
-
-      const resp = { isDuplicated: false, isValid: true };
-
-      resp.isDuplicated ? setIsIdDuplicated(true) : setIsIdDuplicated(false);
-      // !resp.isValid && setIdValue(idValue.slice(0, -1));
+      await http
+        .post<UserIdCheckRequest, UserIdCheckResponse>(
+          `${process.env.NEXT_PUBLIC_SHELL}/api/user/check/id`,
+          UserIdCheckRequestBody
+        )
+        .then(res => res.data)
+        .then(data => {
+          data.isDuplicated
+            ? setIsIdDuplicated(true)
+            : setIsIdDuplicated(false);
+          !data.isValid && setIdValue(idValue.slice(0, -1));
+        });
     };
 
     IdCheck();
