@@ -12,7 +12,7 @@ export function MobileCalendar() {
   return (
     <>
       {/* <MobileCalendarIndex /> */}
-      <Spacing dir="v" size="1"></Spacing>
+      <Spacing dir="v" size="1" />
       <MobileCalendarDate />
     </>
   );

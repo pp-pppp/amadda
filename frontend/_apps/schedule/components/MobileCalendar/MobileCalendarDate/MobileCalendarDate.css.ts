@@ -5,6 +5,4 @@ export const GRID = style({
   gridTemplateRows: 'repeat(6, 1fr)',
   gridTemplateColumns: 'repeat(7, 1fr)',
   placeItems: 'center',
-  // width: '100vw',
-  // maxWidth: '430px',
 });

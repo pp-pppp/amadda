@@ -30,7 +30,6 @@ export function MobileDailyPlate({
   scheduleStartAt = '',
   scheduleEndAt = '',
 }: MobileDailyPlateProps) {
-  console.log(scheduleName);
   return (
     <div className={LAYOUT.plate}>
       <div className={LAYOUT.title}>
