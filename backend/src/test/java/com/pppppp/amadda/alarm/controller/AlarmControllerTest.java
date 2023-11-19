@@ -30,7 +30,7 @@ import org.springframework.kafka.test.context.EmbeddedKafka;
 )
 class AlarmControllerTest extends ControllerTestSupport {
 
-    @DisplayName("알림 목록 가져오기")
+    @DisplayName("사용자의 알림 목록을 가져온다.")
     @Test
     void readAlarms() throws Exception {
         mockMvc.perform(
@@ -44,7 +44,7 @@ class AlarmControllerTest extends ControllerTestSupport {
             .andExpect(jsonPath("$.message").value("OK"));
     }
 
-    @DisplayName("알림 읽기")
+    @DisplayName("알림을 읽음 처리한다.")
     @Test
     void readAlarm() throws Exception {
         mockMvc.perform(
@@ -59,7 +59,7 @@ class AlarmControllerTest extends ControllerTestSupport {
             .andExpect(jsonPath("$.data").value("해당 알림을 읽음 처리하였습니다."));
     }
 
-    @DisplayName("글로벌 설정이 가능한 알림에 대해 On")
+    @DisplayName("글로벌 설정이 가능한 알림에 대해 '알림 받기'로 설정한다.")
     @ParameterizedTest
     @ValueSource(strings = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
         "SCHEDULE_UPDATE"})
@@ -87,7 +87,7 @@ class AlarmControllerTest extends ControllerTestSupport {
                 jsonPath("$.data").value(String.format("%s 알림을 설정합니다.", alarmType.getContent())));
     }
 
-    @DisplayName("글로벌 설정이 가능한 알림에 대해 Off")
+    @DisplayName("글로벌 설정이 가능한 알림에 대해 '알림 받지 않기'로 설정한다.")
     @ParameterizedTest
     @ValueSource(strings = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
         "SCHEDULE_UPDATE"})

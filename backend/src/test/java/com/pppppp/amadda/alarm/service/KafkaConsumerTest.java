@@ -76,7 +76,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         userRepository.deleteAllInBatch();
     }
 
-    @DisplayName("alarm.friend-request consume 검증")
+    @DisplayName("alarm.friend-request 토픽의 consume을 검증한다.")
     @Test
     public void alarm_friend_request() {
         // given
@@ -105,7 +105,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
 
     }
 
-    @DisplayName("alarm.friend-accept consume 검증")
+    @DisplayName("alarm.friend-accept 토픽의 consume을 검증한다.")
     @Test
     public void alarm_friend_accept() {
         // given
@@ -133,7 +133,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
 
     }
 
-    @DisplayName("alarm.schedule-assigned consume 검증")
+    @DisplayName("alarm.schedule-assigned 토픽의 consume을 검증한다.")
     @Test
     public void alarm_schedule_assigned() {
         // given
@@ -162,7 +162,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         verify(scheduleAlarmRepository, times(1)).save(any());
     }
 
-    @DisplayName("alarm.schedule-update consume 검증")
+    @DisplayName("alarm.schedule-update 토픽의 consume을 검증한다.")
     @Test
     public void alarm_schedule_update() {
         // given
@@ -189,7 +189,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         verify(scheduleAlarmRepository, times(1)).save(any());
     }
 
-    @DisplayName("alarm.schedule-notification consume 검증")
+    @DisplayName("alarm.schedule-notification 토픽의 consume을 검증한다.")
     @ParameterizedTest
     @ValueSource(strings = {"ONE_DAY_BEFORE", "ONE_HOUR_BEFORE", "THIRTY_MINUTES_BEFORE",
         "FIFTEEN_MINUTES_BEFORE", "ON_TIME"})
@@ -218,7 +218,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
         verify(scheduleAlarmRepository, times(1)).save(any());
     }
 
-    @DisplayName("alarm.schedule-notification consume 'None' 예외 검증")
+    @DisplayName("alarm.schedule-notification consume 시 AlarmTime이 None인 항목은 예외가 발생한다.")
     @Test
     public void alarm_schedule_notification() {
         // given

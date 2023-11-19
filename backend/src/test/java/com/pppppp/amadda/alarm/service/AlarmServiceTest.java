@@ -108,7 +108,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         userRepository.deleteAllInBatch();
     }
 
-    @DisplayName("글로벌 알람 설정 테스트 - table에 값이 있고 on으로 설정된 경우")
+    @DisplayName("글로벌 알람 설정 테스트 - table에 값이 있고 on으로 설정된 경우 true를 반환한다.")
     @ParameterizedTest
     @CsvSource(value = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
         "SCHEDULE_UPDATE"})
@@ -128,7 +128,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         assertTrue(actual);
     }
 
-    @DisplayName("글로벌 알람 설정 테스트 - table에 값이 있고 off으로 설정된 경우")
+    @DisplayName("글로벌 알람 설정 테스트 - table에 값이 있고 off으로 설정된 경우 false를 반환한다.")
     @ParameterizedTest
     @CsvSource(value = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
         "SCHEDULE_UPDATE"})
@@ -148,7 +148,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         assertFalse(actual);
     }
 
-    @DisplayName("글로벌 알람 설정 테스트 - table에 값이 없는 경우")
+    @DisplayName("글로벌 알람 설정 테스트 - table에 값이 없는 경우 true를 반환한다.")
     @ParameterizedTest
     @CsvSource(value = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
         "SCHEDULE_UPDATE"})
@@ -166,7 +166,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         assertTrue(actual);
     }
 
-    @DisplayName("알림 목록 가져오기")
+    @DisplayName("유저의 알림 목록을 조회한다.")
     @Test
     void getAlarms() {
         // given
@@ -215,7 +215,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
                 AlarmType.SCHEDULE_NOTIFICATION);
     }
 
-    @DisplayName("알림 목록과 설정값가져오기")
+    @DisplayName("유저의 알림 목록과 함께 해당 알림 타입을 설정값을 조회한다.")
     @Test
     void getAlarmsAndConfig() {
         // given
@@ -327,7 +327,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
             .hasMessage("USER_NOT_FOUND");
     }
 
-    @DisplayName("알림 읽음 처리 - 친신")
+    @DisplayName("친구 신청 알림에 대해 알림을 읽음 처리한다.")
     @Test
     void readAlarmFriendRequest() {
         // given
@@ -354,7 +354,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         assertTrue(result.get().isRead());
     }
 
-    @DisplayName("알림 읽음 처리 - 친구")
+    @DisplayName("친구 수락 알림에 대해 알림을 읽음 처리한다.")
     @Test
     void readAlarmAccept() {
         // given
@@ -381,7 +381,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         assertTrue(result.get().isRead());
     }
 
-    @DisplayName("알림 읽음 처리 - 할당")
+    @DisplayName("일정 할당 알림에 대해 알림을 읽음 처리한다.")
     @Test
     void readAlarmScheduleAssgiend() {
         // given
@@ -405,7 +405,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         assertTrue(result.get().isRead());
     }
 
-    @DisplayName("알림 읽음 처리 - 업뎃")
+    @DisplayName("일정 수정 알림에 대해 알림을 읽음 처리한다.")
     @Test
     void readAlarmScheduleUpdate() {
         // given
@@ -428,7 +428,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         assertTrue(result.get().isRead());
     }
 
-    @DisplayName("알림 읽음 처리 - 멘션")
+    @DisplayName("댓글 멘션 알림에 대해 알림을 읽음 처리한다.")
     @Test
     void readAlarmMentioned() {
         // given
@@ -451,7 +451,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         assertTrue(result.get().isRead());
     }
 
-    @DisplayName("알림 읽음 처리 - 예정")
+    @DisplayName("일정 예정 알림에 대해 알림을 읽음 처리한다.")
     @Test
     void readAlarmScheduleNotification() {
         // given
@@ -475,7 +475,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         assertTrue(result.get().isRead());
     }
 
-    @DisplayName("알림 읽음 처리 - 존재하지 않는 유저로 요청")
+    @DisplayName("존재하지 않는 유저로 알림 읽음 요청을 보내는 경우 예외가 발생한다.")
     @Test
     void readAlarm_unauthorized() {
         // given
@@ -494,7 +494,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
             RestApiException.class).hasMessage("USER_NOT_FOUND");
     }
 
-    @DisplayName("알림 읽음 처리 - 본인 알림이 아닌 경우")
+    @DisplayName("다른 사람의 알림을 읽음 요청하려는 경우 예외가 발생한다.")
     @Test
     void readAlarm_forbidden() {
         // given
@@ -517,7 +517,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
             RestApiException.class).hasMessage("ALARM_FORBIDDEN");
     }
 
-    @DisplayName("글로벌 설정이 가능한 알림에 대해 AlarmConfig 생성 후 On")
+    @DisplayName("글로벌 설정이 가능한 알림에 대해 AlarmConfig 값이 존재하지 않는 경우 생성 후 on으로 설정한다.")
     @ParameterizedTest
     @ValueSource(strings = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
         "SCHEDULE_UPDATE"})
@@ -537,7 +537,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         assertThat(alarmConfig.getAlarmType()).isEqualTo(alarmType);
     }
 
-    @DisplayName("글로벌 설정이 가능한 알림에 대해 AlarmConfig 확인 후 On")
+    @DisplayName("글로벌 설정이 가능한 알림에 대해 AlarmConfig 값이 존재하는 경우 확인 후 on으로 설정한다.")
     @ParameterizedTest
     @ValueSource(strings = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
         "SCHEDULE_UPDATE"})
@@ -559,7 +559,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         assertThat(savedAlarmConfig.getAlarmType()).isEqualTo(alarmType);
     }
 
-    @DisplayName("글로벌 설정이 가능한 알림에 대해 AlarmConfig 생성 후 Off")
+    @DisplayName("글로벌 설정이 가능한 알림에 대해 AlarmConfig 값이 존재하지 않는 경우 생성 후 off으로 설정한다.")
     @ParameterizedTest
     @ValueSource(strings = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
         "SCHEDULE_UPDATE"})
@@ -578,7 +578,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         assertThat(alarmConfig.getAlarmType()).isEqualTo(alarmType);
     }
 
-    @DisplayName("글로벌 설정이 가능한 알림에 대해 AlarmConfig 확인 후 Off")
+    @DisplayName("글로벌 설정이 가능한 알림에 대해 AlarmConfig 값이 존재하는 경우 생성 후 off으로 설정한다.")
     @ParameterizedTest
     @ValueSource(strings = {"FRIEND_REQUEST", "FRIEND_ACCEPT", "SCHEDULE_ASSIGNED", "MENTIONED",
         "SCHEDULE_UPDATE"})
@@ -600,7 +600,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         assertThat(savedAlarmConfig.getAlarmType()).isEqualTo(alarmType);
     }
 
-    @DisplayName("일정 예정 알림은 설정을 변경할 수 없음")
+    @DisplayName("일정 예정 알림의 글로벌 설정을 수정하려는 경우 예외가 발생한다.")
     @Test
     void cannotChangeScheduleNotificationAlarmSetting() {
         // given
@@ -615,7 +615,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
             RestApiException.class).hasMessage(AlarmErrorCode.CANNOT_SET_GLOBAL_CONFIG.name());
     }
 
-    @DisplayName("친구 신청 알람 - 설정 값이 없는 경우")
+    @DisplayName("친구 신청 알람의 설정 값이 없는 경우 알림을 전송한다.")
     @Test
     void friend_request() {
         // given
@@ -637,7 +637,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         verify(kafkaTemplate, never()).send(eq(topic), eq(other.getUserSeq()), any());
     }
 
-    @DisplayName("친구 신청 알람 - 설정 값이 On인 경우")
+    @DisplayName("친구 신청 알람의 설정 값이 On인 경우 알림을 전송한다.")
     @Test
     void friend_request_on() {
         // given
@@ -662,7 +662,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         verify(kafkaTemplate, never()).send(eq(topic), eq(other.getUserSeq()), any());
     }
 
-    @DisplayName("친구 신청 알람 - 설정 값이 Off인 경우")
+    @DisplayName("친구 신청 알람의 설정 값이 Off인 경우 알림을 전송하지 않는다.")
     @Test
     void friend_request_off() {
         // given
@@ -687,7 +687,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         verify(kafkaTemplate, never()).send(eq(topic), eq(other.getUserSeq()), any());
     }
 
-    @DisplayName("친구 수락 알람 - 설정 값이 없는 경우")
+    @DisplayName("친구 수락 알람의 설정 값이 없는 경우 알림을 전송한다.")
     @Test
     void friend_accept() {
         // given
@@ -709,7 +709,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         verify(kafkaTemplate, never()).send(eq(topic), eq(other.getUserSeq()), any());
     }
 
-    @DisplayName("친구 수락 알람 - 설정 값이 On인 경우")
+    @DisplayName("친구 수락 알람의 설정 값이 On인 경우 알림을 전송한다.")
     @Test
     void friend_accept_on() {
         // given
@@ -734,7 +734,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         verify(kafkaTemplate, never()).send(eq(topic), eq(other.getUserSeq()), any());
     }
 
-    @DisplayName("친구 수락 알람 - 설정 값이 Off인 경우")
+    @DisplayName("친구 수락 알람의 설정 값이 Off인 경우 알림을 전송하지 않는다.")
     @Test
     void friend_accept_off() {
         // given
@@ -759,7 +759,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
         verify(kafkaTemplate, never()).send(eq(topic), eq(other.getUserSeq()), any());
     }
 
-    @DisplayName("일정 할당 알람 - 설정 값이 없는 경우")
+    @DisplayName("일정 할당 알람의 설정 값이 없는 경우 알림을 전송한다.")
     @Test
     void schedule_assigned() {
         // given
@@ -789,7 +789,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
             any());
     }
 
-    @DisplayName("일정 할당 알람 - 설정 값이 On인 경우")
+    @DisplayName("일정 할당 알람의 설정 값이 On인 경우 알림을 전송한다.")
     @Test
     void schedule_assigned_on() {
         // given
@@ -822,7 +822,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
             any());
     }
 
-    @DisplayName("일정 할당 알람 - 설정 값이 Off인 경우")
+    @DisplayName("일정 할당 알람의 설정 값이 Off인 경우 알림을 전송하지 않는다.")
     @Test
     void schedule_assigned_off() {
         // given
@@ -853,7 +853,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
             any());
     }
 
-    @DisplayName("일정 수정 알림 - Global은 없고, Local은 On인 경우")
+    @DisplayName("일정 수정 알림의 글로벌 설정값은 없고 로컬 설정이 On인 경우 알림을 전송한다.")
     @Test
     void schedule_update_null_on() {
         // given
@@ -887,7 +887,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
             any());
     }
 
-    @DisplayName("일정 수정 알림 - Global은 없고, Local은 Off인 경우")
+    @DisplayName("일정 수정 알림의 글로벌 설정값은 없고 로컬 설정이 Off인 경우 알림을 전송하지 않는다.")
     @Test
     void schedule_update_null_off() {
         // given
@@ -919,7 +919,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
             any());
     }
 
-    @DisplayName("일정 수정 알림 - Global은 On, Local은 On인 경우")
+    @DisplayName("일정 수정 알림의 글로벌 설정값이 on이고 로컬 설정이 on인 경우 알림을 전송한다.")
     @Test
     void schedule_update_on_on() {
         // given
@@ -956,7 +956,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
             any());
     }
 
-    @DisplayName("일정 수정 알림 - Global은 On, Local은 Off인 경우")
+    @DisplayName("일정 수정 알림의 글로벌 설정값이 on이고 로컬 설정이 off인 경우 알림을 전송하지 않는다.")
     @Test
     void schedule_update_on_off() {
         // given
@@ -991,7 +991,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
             any());
     }
 
-    @DisplayName("일정 수정 알림 - Global은 Off, Local은 On인 경우")
+    @DisplayName("일정 수정 알림의 글로벌 설정값이 off이고 로컬 설정이 on인 경우 알림을 전송한다.")
     @Test
     void schedule_update_off_on() {
         // given
@@ -1026,7 +1026,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
             any());
     }
 
-    @DisplayName("일정 수정 알림 - Global은 Off, Local은 Off인 경우")
+    @DisplayName("일정 수정 알림의 글로벌 설정값이 off이고 로컬 설정이 off인 경우 알림을 전송하지 않는다.")
     @Test
     void schedule_update_off_off() {
         // given
@@ -1061,7 +1061,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
             any());
     }
 
-    @DisplayName("친신 읽음 처리")
+    @DisplayName("친구 신청 알림을 읽음 처리한다.")
     @Test
     void readFriendRequestAlarm() {
         // given
@@ -1088,7 +1088,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
             .containsExactly(friend.getUserSeq(), content, true, AlarmType.FRIEND_REQUEST);
     }
 
-    @DisplayName("친신 읽음 처리 실패")
+    @DisplayName("존재하지 않는 친구 신청 알림에 대해 읽음 요청을 보내는 경우 예외가 발생한다.")
     @Test
     void readFriendRequestAlarm_fail() {
         // when
@@ -1096,7 +1096,7 @@ class AlarmServiceTest extends IntegrationTestSupport {
             RestApiException.class).hasMessage("FRIEND_REQUEST_NOT_FOUND");
     }
 
-    @DisplayName("일정 예정 알림 테스트")
+    @DisplayName("일정 예정 알림을 전송한다.")
     @Test
     void scheduleNotification() {
         // given
