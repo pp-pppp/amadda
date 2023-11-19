@@ -18,7 +18,6 @@ export const authOptions = {
       session.user.imageUrl = token.imageUrl;
       session.user.accessToken = token.accessToken;
       session.user.isInited = token.isInited;
-
       return session;
     },
 
@@ -29,15 +28,19 @@ export const authOptions = {
             kakaoId: user.id,
             imageUrl: user.image,
           };
-          console.log(user);
-          console.log(UserJwtRequest);
-          const INIT = await http
-            .post<UserJwtRequest, UserJwtResponse>(
-              `${process.env.SPRING_API_ROOT}/user/login`,
-              UserJwtRequest
-            )
-            .then(res => res.data)
-            .catch(err => err);
+
+          const INIT: UserJwtResponse = await fetch(
+            `${process.env.SPRING_API_ROOT}/user/login`,
+            {
+              method: 'POST',
+              body: JSON.stringify(UserJwtRequest),
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }
+          )
+            .then(res => res.json())
+            .then(json => json.data);
 
           await KV.setRefreshToken(INIT.refreshAccessKey, INIT.refreshToken);
 
@@ -46,11 +49,10 @@ export const authOptions = {
           token.userName = user.name;
           token.imageUrl = user.image;
           token.isInited = INIT.isInited;
-
-          console.log(INIT);
         }
 
         if (trigger == 'update') {
+          console.log('trigger');
           token.userName = session?.userName
             ? session?.userName
             : token.userName;
