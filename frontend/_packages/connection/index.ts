@@ -1,5 +1,5 @@
 export * from './http';
-export * from './kafka_notice';
-export * from './kafka_schedule';
+export * from '../amadda-kafka/kafka_notice';
+export * from '../amadda-kafka/kafka_schedule';
 export * from './kv';
 export * from './middleware';
