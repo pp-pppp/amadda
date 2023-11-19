@@ -10,6 +10,7 @@ export const BASE = style({
   paddingLeft: '1rem',
   paddingRight: '1rem',
   cursor: 'pointer',
+  fontSize: '1rem',
 });
 
 export const VARIANTS = styleVariants({
