@@ -1,40 +1,44 @@
 import { MobileDailyPlate } from '@SCH/components/MobileDailyPlate/MobileDailyPlate';
 import { MobileDailyPlateList } from '@SCH/components/MobileDailyPlateList/MobileDailyPlateList';
-import { Spacing } from 'external-temporal';
-import { ReactNode } from 'react';
+import CALENDAR from '@SCH/constants/CALENDAR';
+import { useUnscheduled } from '@SCH/hooks/useScheduleList';
+import { toLower } from '@SCH/utils/convertColors';
+import { Spacing, Span } from 'external-temporal';
+import { ReactNode, useEffect, useState } from 'react';
 
 export function MobileUnscheduledPage(): ReactNode {
+  const { unscheduledList, setUnscheduledList } = useUnscheduled();
+  const [profileImages, setProfileImages] = useState<string[]>([]);
+
+  useEffect(() => {
+    unscheduledList.forEach((schedule, idx) => {
+      schedule.participants.forEach(participant => {
+        setProfileImages(profileImages => [
+          ...profileImages,
+          participant.imageUrl,
+        ]);
+      });
+    });
+  }, [unscheduledList]);
+
   return (
     <>
       <MobileDailyPlateList>
-        <MobileDailyPlate
-          color="grey"
-          scheduleName="민병기와 식사하기 이 오빠 정신없어보여서 밥 사달라고도 못하겠고 밥먹자고도"
-          participants={[
-            'https://amadda-bucket.s3.ap-northeast-2.amazonaws.com/1111_2023-11-16-13-14-18.jpg',
-            'https://amadda-bucket.s3.ap-northeast-2.amazonaws.com/1111_2023-11-16-13-14-18.jpg',
-            'https://amadda-bucket.s3.ap-northeast-2.amazonaws.com/1111_2023-11-16-13-14-18.jpg',
-          ]}
-          person={7}
-        />
-        <Spacing dir="v" size="0.5" />
-        <MobileDailyPlate
-          color="salmon"
-          scheduleName="정민영이 삼성에 붙어서 취업턱을 낸다면 이 날짜가 정해지겠지?"
-          person={4}
-          participants={[
-            'https://amadda-bucket.s3.ap-northeast-2.amazonaws.com/1111_2023-11-16-13-14-18.jpg',
-            'https://amadda-bucket.s3.ap-northeast-2.amazonaws.com/1111_2023-11-16-13-14-18.jpg',
-            'https://amadda-bucket.s3.ap-northeast-2.amazonaws.com/1111_2023-11-16-13-14-18.jpg',
-          ]}
-        />
-        <Spacing dir="v" size="0.5" />
-        <MobileDailyPlate
-          color="hotpink"
-          scheduleName="내 인생 종료"
-          person={2}
-        />
-        <Spacing dir="v" size="0.5" />
+        {unscheduledList.length === 0 ? (
+          <Span color="grey">{CALENDAR.NO_PLAN}</Span>
+        ) : (
+          unscheduledList.map((schedule, idx) => (
+            <div key={idx}>
+              <MobileDailyPlate
+                color={toLower[schedule.category.categoryColor]}
+                scheduleName={schedule.scheduleName}
+                participants={profileImages}
+                person={schedule.participants.length}
+              />
+              <Spacing dir="v" size="0.5" />
+            </div>
+          ))
+        )}
       </MobileDailyPlateList>
     </>
   );
