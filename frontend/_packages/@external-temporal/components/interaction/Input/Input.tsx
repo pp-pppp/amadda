@@ -1,5 +1,5 @@
 import React from 'react';
-import type { HTMLAttributes } from 'react';
+import type { FocusEvent, HTMLAttributes, KeyboardEvent } from 'react';
 
 import { ChangeEvent } from 'react';
 import { TYPE } from './Input.css';
@@ -10,7 +10,9 @@ export interface InputProps extends HTMLAttributes<HTMLInputElement> {
   id: string;
   name: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  disabled: boolean;
+  onKeyDown?: (e: KeyboardEvent) => void;
+  onFocus?: (e: FocusEvent) => void;
+  disabled?: boolean;
   placeholder?: string;
   value: string;
   checked?: boolean;
@@ -23,6 +25,8 @@ export function Input({
   id,
   name,
   onChange,
+  onKeyDown = e => {},
+  onFocus = e => {},
   disabled,
   placeholder = '',
   value,
@@ -38,6 +42,8 @@ export function Input({
       id={id}
       name={name}
       onChange={e => validator(e.target.value) && onChange(e)}
+      onKeyDown={e => onKeyDown(e)}
+      onFocus={e => onFocus(e)}
       placeholder={placeholder}
       type={type}
       value={value}
