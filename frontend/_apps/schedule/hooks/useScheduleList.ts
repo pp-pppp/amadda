@@ -11,7 +11,7 @@ import {
 export interface ScheduleListType {
   categorySeq?: string | undefined;
   searchKey?: string | undefined;
-  unscheduled?: string | undefined;
+  unscheduled?: boolean | undefined;
   year?: string | undefined;
   month?: string | undefined;
   day?: string | undefined;
@@ -29,7 +29,7 @@ const scheduleList = ({
 
   categorySeq && params.append('category', categorySeq);
   searchKey && params.append('searchKey', searchKey);
-  unscheduled && params.append('unscheduled', unscheduled);
+  unscheduled && params.append('unscheduled', unscheduled.toString());
   year && params.append('year', year);
   month && params.append('month', month);
   day && params.append('day', day);
@@ -78,4 +78,20 @@ export function useDailySchedule() {
   );
 
   return { dailyScheduleList, setDailyScheduleList, SWRerror: error };
+}
+
+export function useUnscheduled() {
+  const [unscheduledList, setUnscheduledList] = useState<
+    Array<ScheduleListReadResponse>
+  >([]);
+  const { data, error, isLoading } = useSWR('/api/schedule?', () =>
+    scheduleList({ unscheduled: true })
+  );
+
+  useEffect(
+    () => data?.unscheduled && setUnscheduledList(data.unscheduled),
+    [data]
+  );
+
+  return { unscheduledList, setUnscheduledList, SWRerror: error };
 }
