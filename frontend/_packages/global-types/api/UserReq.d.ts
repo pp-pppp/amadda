@@ -3,9 +3,9 @@ export interface UserJwtRequest {
   imageUrl: string;
 }
 export interface UserInitRequest {
-  userSeq: string;
+  kakaoId: string;
   imageUrl: string;
-  nickName: string;
+  userName: string;
   userId: string;
 }
 export interface UserIdCheckRequest {
