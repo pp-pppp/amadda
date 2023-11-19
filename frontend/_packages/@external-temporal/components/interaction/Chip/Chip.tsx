@@ -6,7 +6,7 @@ interface Props {
   type: keyof typeof TYPE_VARIANT;
   label: string;
   shape?: keyof typeof SHAPE_VARIANT;
-  onFlitered?: (label: string) => void;
+  onFiltered?: (label: string) => void;
   onDelete?: (label: string) => void;
 }
 
@@ -14,7 +14,7 @@ export function Chip({
   type,
   label,
   shape = 'round',
-  onFlitered,
+  onFiltered,
   onDelete,
 }: Props) {
   const classname = `${TYPE_VARIANT[type]} ${SHAPE_VARIANT[shape]}`;
@@ -23,7 +23,7 @@ export function Chip({
       return (
         <span
           className={classname}
-          onClick={() => onFlitered && onFlitered(label)}
+          onClick={() => onFiltered && onFiltered(label)}
         >
           {label}
         </span>
@@ -32,7 +32,7 @@ export function Chip({
       return (
         <span
           className={classname}
-          onClick={() => onFlitered && onFlitered(label)}
+          onClick={() => onFiltered && onFiltered(label)}
         >
           {label}
         </span>
