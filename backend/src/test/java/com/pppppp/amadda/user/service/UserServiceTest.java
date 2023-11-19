@@ -24,7 +24,6 @@ import com.pppppp.amadda.user.dto.response.UserNameCheckResponse;
 import com.pppppp.amadda.user.dto.response.UserReadResponse;
 import com.pppppp.amadda.user.dto.response.UserRelationResponse;
 import com.pppppp.amadda.user.entity.User;
-import com.pppppp.amadda.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -37,9 +36,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
 
 class UserServiceTest extends IntegrationTestSupport {
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private FriendRepository friendRepository;
@@ -200,7 +196,7 @@ class UserServiceTest extends IntegrationTestSupport {
         String fileName = String.format("1111_%s.jpg", LocalDateTime.now().format(formatter));
         String url = String.format("https://amadda-bucket.s3.ap-northeast-2.amazonaws.com/%s",
             fileName);
-        
+
         given(imageService.saveKakaoImgInS3(request.imageUrl(), fileName))
             .willReturn(url);
 

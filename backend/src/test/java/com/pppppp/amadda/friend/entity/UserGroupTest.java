@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.friend.repository.UserGroupRepository;
 import com.pppppp.amadda.user.entity.User;
-import com.pppppp.amadda.user.repository.UserRepository;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,9 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 class UserGroupTest extends IntegrationTestSupport {
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private UserGroupRepository userGroupRepository;

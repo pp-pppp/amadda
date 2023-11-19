@@ -21,7 +21,6 @@ import com.pppppp.amadda.schedule.entity.AlarmTime;
 import com.pppppp.amadda.schedule.entity.Schedule;
 import com.pppppp.amadda.schedule.repository.ScheduleRepository;
 import com.pppppp.amadda.user.entity.User;
-import com.pppppp.amadda.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -48,9 +47,6 @@ class KafkaConsumerTest extends IntegrationTestSupport {
     private KafkaTopic kafkaTopic;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private FriendRequestRepository friendRequestRepository;
 
     @Autowired
@@ -62,6 +58,7 @@ class KafkaConsumerTest extends IntegrationTestSupport {
     @MockBean
     private FriendRequestAlarmRepository friendRequestAlarmRepository;
 
+    @Autowired
     private KafkaConsumer kafkaConsumer;
 
     @BeforeEach

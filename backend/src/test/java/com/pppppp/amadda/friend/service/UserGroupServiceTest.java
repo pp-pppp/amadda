@@ -10,7 +10,6 @@ import com.pppppp.amadda.friend.repository.GroupMemberRepository;
 import com.pppppp.amadda.friend.repository.UserGroupRepository;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
 import com.pppppp.amadda.user.entity.User;
-import com.pppppp.amadda.user.repository.UserRepository;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,9 +21,6 @@ class UserGroupServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private UserGroupService userGroupService;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private UserGroupRepository userGroupRepository;

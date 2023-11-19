@@ -8,7 +8,6 @@ import com.pppppp.amadda.schedule.entity.Category;
 import com.pppppp.amadda.schedule.entity.CategoryColor;
 import com.pppppp.amadda.schedule.entity.Schedule;
 import com.pppppp.amadda.user.entity.User;
-import com.pppppp.amadda.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -24,9 +23,6 @@ class CategoryRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
     private ScheduleRepository scheduleRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @BeforeEach
     void setUp() {

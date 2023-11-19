@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.schedule.entity.Schedule;
 import com.pppppp.amadda.user.entity.User;
-import com.pppppp.amadda.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,9 +20,6 @@ class ScheduleRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
     private ScheduleRepository scheduleRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @BeforeEach
     void setUp() {

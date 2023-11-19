@@ -15,7 +15,6 @@ import com.pppppp.amadda.friend.repository.FriendRequestRepository;
 import com.pppppp.amadda.schedule.entity.Schedule;
 import com.pppppp.amadda.schedule.repository.ScheduleRepository;
 import com.pppppp.amadda.user.entity.User;
-import com.pppppp.amadda.user.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,9 +24,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class AlarmRepositoryTest extends IntegrationTestSupport {
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private AlarmRepository alarmRepository;

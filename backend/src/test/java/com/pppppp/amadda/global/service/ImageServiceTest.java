@@ -24,6 +24,7 @@ class ImageServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private ImageService imageService;
+
     @MockBean
     private AmazonS3 s3;
 

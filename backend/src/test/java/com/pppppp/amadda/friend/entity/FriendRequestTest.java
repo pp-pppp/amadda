@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.tuple;
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.friend.repository.FriendRequestRepository;
 import com.pppppp.amadda.user.entity.User;
-import com.pppppp.amadda.user.repository.UserRepository;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,9 +17,6 @@ class FriendRequestTest extends IntegrationTestSupport {
 
     @Autowired
     private FriendRequestRepository friendRequestRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @AfterEach
     void tearDown() {
