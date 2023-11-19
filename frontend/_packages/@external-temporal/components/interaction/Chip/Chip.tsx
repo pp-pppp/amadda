@@ -1,5 +1,4 @@
 import React from 'react';
-import type { HTMLAttributes } from 'react';
 import { Icon } from '#/components/view/Icon/Icon';
 import { TYPE_VARIANT, SHAPE_VARIANT, KEYWORD_DELETE } from './Chip.css';
 
