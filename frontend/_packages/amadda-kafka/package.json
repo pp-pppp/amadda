@@ -1,5 +1,5 @@
 {
-  "name": "connection",
+  "name": "amadda-kafka",
   "license": "MIT",
   "version": "0.0.0",
   "private": true,
@@ -8,9 +8,6 @@
   "devDependencies": {
     "amadda-global-types": "workspace:*",
     "axios": "^1.6.0",
-    "kafkajs": "^2.2.4",
-    "next": "13.4.12",
-    "@vercel/kv": "^1.0.0",
-    "typescript": "5.2.2"
+    "kafkajs": "^2.2.4"
   }
 }
