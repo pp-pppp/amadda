@@ -1,9 +1,5 @@
-import { P } from 'external-temporal';
+import { MobileMain } from '@SCH/components/MobileMain/MobileMain';
 
 export default function Page() {
-  return (
-    <div>
-      <P>Schedule Module(port: 3002)</P>
-    </div>
-  );
+  return <MobileMain />;
 }

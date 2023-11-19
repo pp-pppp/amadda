@@ -1,13 +1,18 @@
 // import dynamic from 'next/dynamic';
 import { lazy } from 'react';
 import { style } from 'external-temporal';
+import useSWR from 'swr';
+import { SWRConfig } from 'swr';
+import { APPLAYOUT_MOBILE } from '@SCH/layout/Layout.css';
 
 function App({ Component, pageProps }) {
   return (
-    <>
-      {/* <Nav /> */}
-      <Component {...pageProps} />
-    </>
+    <SWRConfig>
+      <div className={APPLAYOUT_MOBILE}>
+        {/* <Nav /> */}
+        <Component {...pageProps} />
+      </div>
+    </SWRConfig>
   );
 }
 

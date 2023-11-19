@@ -6,7 +6,7 @@ const serverTime = async (req: NextApiRequest, res: NextApiResponse) => {
     //현재 서버 시간 반환
     try {
       const SPRING_RES = await http.get<string>(
-        `${process.env.SPRING_API_ROOT}/schedule/serverTime`
+        `${process.env.SPRING_API_ROOT}/schedule/server-time`
       );
       res.status(SPRING_RES.status).json(SPRING_RES.data);
     } catch (err) {

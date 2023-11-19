@@ -1,8 +1,8 @@
 import { style } from '@vanilla-extract/css';
-import colors from '#/constants/colors';
 
-export const BASE = style({
+export const GRID = style({
   display: 'grid',
+  gridTemplateRows: 'repeat(6, 1fr)',
   gridTemplateColumns: 'repeat(7, 1fr)',
   placeItems: 'center',
 });

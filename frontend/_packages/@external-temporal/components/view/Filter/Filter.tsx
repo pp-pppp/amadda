@@ -19,6 +19,7 @@ export interface OptionProps {
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   value: string;
   children: string;
+  checked: boolean;
 }
 
 export function Filter({ isOpen, onClick, main, children }: FilterProps) {
@@ -43,6 +44,7 @@ Filter.FilterOption = function FilterOption({
   onChange,
   value,
   children,
+  checked,
 }: OptionProps) {
   return (
     <li className={STATUS['option']}>
@@ -54,6 +56,7 @@ Filter.FilterOption = function FilterOption({
         onChange={onChange}
         disabled={false}
         value={value}
+        checked={checked}
       />
     </li>
   );
