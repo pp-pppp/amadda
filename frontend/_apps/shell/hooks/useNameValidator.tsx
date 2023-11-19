@@ -27,7 +27,7 @@ export default function useNameValidator(name: string) {
 
       await http
         .post<UserNameCheckRequest, UserNameCheckResponse>(
-          `${process.env.NEXT_PUBLIC_SHELL}/api/user/check/id`,
+          `${process.env.NEXT_PUBLIC_SHELL}/api/user/check/name`,
           UserNameCheckRequestBody
         )
         .then(res => res.data)
