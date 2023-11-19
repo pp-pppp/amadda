@@ -1,14 +1,14 @@
 import React from 'react';
-import type { HTMLAttributes, MouseEvent } from 'react';
+import type { HTMLAttributes, MouseEvent, ReactNode } from 'react';
 import { SIZE, VARIANTS } from './BtnRound.css';
 
 export interface BtnRoundProps extends HTMLAttributes<HTMLButtonElement> {
   type: 'button' | 'submit';
   variant: keyof typeof VARIANTS;
   size?: keyof typeof SIZE;
-  disabled: boolean;
+  disabled?: boolean;
   onClick?: (e: MouseEvent) => void;
-  children: string;
+  children: ReactNode;
 }
 export function BtnRound({
   type,

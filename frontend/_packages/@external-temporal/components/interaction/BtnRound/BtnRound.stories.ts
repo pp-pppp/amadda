@@ -26,7 +26,7 @@ const meta = {
         '버튼의 작동 여부를 정합니다. 클릭을 막고 싶다면 true를 선택해주세요.',
     },
     children: {
-      description: '자식 노드를 받습니다. 텍스트 노드 사용을 권고합니다.',
+      description: '자식 노드를 받습니다.',
     },
     onClick: {
       description: '클릭 시 실행될 함수입니다.',
