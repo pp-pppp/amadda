@@ -7,59 +7,55 @@ import {
   Input,
   Label,
   P,
+  Profile,
   Spacing,
 } from 'external-temporal';
 import { IndexLayout } from '@SH/layout/IndexLayout';
 import { useSession } from 'next-auth/react';
-// import { Profile } from '../../../user/components/Profile/Profile';
-import useNameValidator from '@SH/hooks/useNameValidator';
 import useIdValidator from '@SH/hooks/useIdValidator';
 import SIGNUP_TEXT from '@SH/constants/SIGNUP_TEXT';
 import SignUpCaption from '../SignUpCaption/SignUpCaption';
-
-export interface UserInitRequest {
-  userSeq: string;
-  imageUrl: string;
-  nickName: string;
-  userId: string;
-}
+import { UserInitRequest } from 'amadda-global-types';
+import { http } from '@SH/utils/http';
 
 export default function SignUp() {
   const { data: session, update } = useSession();
-  const userSeq = session?.user.userId || '';
-  const imageUrl = session?.user.imageUrl || '';
-  const userName = session?.user.userName || '';
+  const [kakaoId, setKakaoId] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [userName, setUserName] = useState('');
+  // const userSeq = session?.user.userId || '';
+  // const imageUrl = session?.user.imageUrl || '';
+  // const userName = session?.user.userName || '';
 
-  const {
-    nickname,
-    setNickname,
-    isNameEmpty,
-    isNameValid,
-    nameValue,
-    setNameValue,
-  } = useNameValidator(userName);
-  const { userId, isIdEmpty, isIdDuplicated, isIdValid, setIdValue } =
+  const [nameValue, setNameValue] = useState<string>('');
+  const [isIdEmpty, setIsIdEmpty] = useState(false);
+
+  const { userId, idValue, isIdDuplicated, isIdValid, setIdValue } =
     useIdValidator('');
 
   const [btnDisable, setBtnDisable] = useState(true);
 
   useEffect(() => {
-    // setNickname(userName);
-    setNameValue(userName);
+    if (session) {
+      setKakaoId(session.user.kakaoId);
+      setImageUrl(session.user.imageUrl);
+      setUserName(session.user.userName);
+    }
   }, [session]);
 
+  useEffect(() => {
+    userName && setNameValue(userName);
+  }, [userName]);
+
   const checkAllValid = () => {
-    if (
-      !isIdDuplicated &&
-      !isNameEmpty &&
-      !isIdEmpty &&
-      isIdValid &&
-      isNameValid &&
-      userId.length !== 0
-    )
+    if (!isIdDuplicated && !isIdEmpty && isIdValid && idValue.length !== 0)
       return true;
     return false;
   };
+  useEffect(() => {
+    if (checkAllValid()) setBtnDisable(false);
+    else setBtnDisable(true);
+  }, [isIdDuplicated, isIdEmpty, isIdValid]);
 
   const btnControl = () => {
     if (checkAllValid()) setBtnDisable(false);
@@ -68,32 +64,54 @@ export default function SignUp() {
 
   // userName onChange
   const userNameOnChange = (value: string) => {
+    const reg = /^[^A-Z!@#$%^&*`\-()_+={}|\[\]\\:";'<>?,./\s]{0,20}$/;
+    if (!reg.test(value)) {
+      value = value.slice(0, -1);
+    }
     setNameValue(value);
     btnControl();
   };
 
   // userId onChagnge
   const userIdOnChange = (value: string) => {
+    const reg =
+      /^[^A-Z!@#$%^&*`\-()_+={}|\[\]\\:";'<>?,.\s\u3131-\uD79D]{0,20}$/;
+    if (!reg.test(value)) {
+      value = value.slice(0, -1);
+    }
+    value.length === 0 ? setIsIdEmpty(true) : setIsIdEmpty(false);
     setIdValue(value);
+
     btnControl();
+    console.log(isIdDuplicated);
   };
 
   // siginup
   const amaddaSignUp = async () => {
     if (checkAllValid()) {
-      await update({ userName: nickname, userId: userId, isInited: true });
+      await update({ userName: nameValue, userId: userId, isInited: true });
 
+      console.log(userName);
       const UserInitRequest: UserInitRequest = {
-        userSeq: userSeq,
+        kakaoId: kakaoId,
         imageUrl: imageUrl,
-        nickName: nickname,
+        userName: userName,
         userId: userId,
       };
 
-      // await http.post<UserInitRequest>(
-      //   `${process.env.SPRING_API_ROOT}/user/signup`,
-      //   UserInitRequest
-      // );
+      console.log(UserInitRequest);
+
+      http
+        .post<UserInitRequest>(
+          `${process.env.NEXT_PUBLIC_SHELL}/api/user/signup`,
+          UserInitRequest
+        )
+        .then(res => {
+          res.data;
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
     }
   };
 
@@ -102,7 +120,7 @@ export default function SignUp() {
       <Flex justifyContents="center" alignItems="center" flexDirection="column">
         <H1>A M A D D A</H1>
         <Spacing size="2" />
-        {/* <Profile src={imageUrl} alt="profile image" size="large" /> */}
+        <Profile src={imageUrl} alt="profile image" size="large" />
       </Flex>
       <Spacing size="2" />
       <Form formName="singup" onSubmit={e => amaddaSignUp()}>
@@ -112,7 +130,7 @@ export default function SignUp() {
         <Input
           type="text"
           id="getNickname"
-          validator={target => isNameValid}
+          // validator={target => }
           name="nickname"
           disabled={false}
           value={nameValue}
@@ -121,7 +139,7 @@ export default function SignUp() {
           autoComplete="off"
         />
         <Spacing size="0.25" />
-        {isNameEmpty ? (
+        {nameValue.length === 0 ? (
           <SignUpCaption color="warn">
             {SIGNUP_TEXT.NICKNAME_EMPTY}
           </SignUpCaption>

@@ -13,13 +13,11 @@ export const authOptions = {
   ],
   callbacks: {
     async session({ session, token }) {
-      session.user.userSeq = token.userSeq;
+      session.user.kakaoId = token.kakaoId;
       session.user.userName = token.userName;
-      session.user.userId = token.userId;
       session.user.imageUrl = token.imageUrl;
       session.user.accessToken = token.accessToken;
       session.user.isInited = token.isInited;
-
       return session;
     },
 
@@ -30,26 +28,31 @@ export const authOptions = {
             kakaoId: user.id,
             imageUrl: user.image,
           };
-          console.log();
-          console.log(UserJwtRequest);
-          const INIT = await http
-            .post<UserJwtRequest, UserJwtResponse>(
-              `${process.env.SPRING_API_ROOT}/user/login`,
-              UserJwtRequest
-            )
-            .then(res => res.data)
-            .catch(err => err);
+
+          const INIT: UserJwtResponse = await fetch(
+            `${process.env.SPRING_API_ROOT}/user/login`,
+            {
+              method: 'POST',
+              body: JSON.stringify(UserJwtRequest),
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }
+          )
+            .then(res => res.json())
+            .then(json => json.data);
 
           await KV.setRefreshToken(INIT.refreshAccessKey, INIT.refreshToken);
 
           token.accessToken = INIT.accessToken;
-          token.userSeq = INIT.userSeq;
+          token.kakaoId = user.id;
           token.userName = user.name;
           token.imageUrl = user.image;
           token.isInited = INIT.isInited;
         }
 
         if (trigger == 'update') {
+          console.log('trigger');
           token.userName = session?.userName
             ? session?.userName
             : token.userName;
@@ -59,6 +62,7 @@ export const authOptions = {
             : token.isInited;
         }
       } catch (err) {}
+
       return token;
     },
   },
