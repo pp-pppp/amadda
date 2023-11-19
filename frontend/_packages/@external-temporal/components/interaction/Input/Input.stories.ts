@@ -7,7 +7,7 @@ const meta = {
   title: 'External-temporal/Interaction/Form/Input',
   component: Input,
   parameters: {
-    componentSubtitle: 'text와 checkbox 타입을 지원하는 input 태그입니다.',
+    componentSubtitle: 'text와 checkbox 타입을 지원하는 input 컴포넌트입니다.',
   },
   tags: ['autodocs'],
   argTypes: {
