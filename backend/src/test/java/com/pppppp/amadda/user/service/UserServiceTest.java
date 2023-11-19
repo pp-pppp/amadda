@@ -140,6 +140,25 @@ class UserServiceTest extends IntegrationTestSupport {
         assertThat(isInited).isTrue();
     }
 
+    @DisplayName("로그인 후 토큰이랑 isInited 값을 잘 받아온다. ")
+    @Test
+    void getTokensAndCheckInit_notSignedUp() {
+        // given
+        UserJwtRequest request = UserJwtRequest.builder()
+                .kakaoId("1111")
+                .imageUrl("url1")
+                .build();
+
+        // when
+        UserJwtInitResponse response = userService.getTokensAndCheckInit(request);
+
+        // then
+        assertThat(response.accessToken()).isEqualTo("");
+        assertThat(response.refreshToken()).isEqualTo("");
+        assertThat(response.refreshAccessKey()).isEqualTo("");
+        assertThat(response.isInited()).isFalse();
+    }
+
     @DisplayName("새로운 토큰들을 발급받는다. ")
     @Test
     void getNewTokens() {
