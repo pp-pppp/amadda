@@ -34,10 +34,10 @@ const meta = {
       description: '입력값이 없을 때 보여질 문구입니다',
     },
     value: {
-      description: '입력값을 저장합니다.',
+      description: '입력값입니다.',
     },
     checked: {
-      description: 'type이 checkbox일 때, 선택여부를 지정합니다.',
+      description: 'type이 checkbox일 때 선택여부를 지정합니다.',
     },
   },
 } satisfies Meta<typeof Input>;

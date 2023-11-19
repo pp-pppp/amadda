@@ -5,6 +5,9 @@ import { UserReadResponse, UserScheduleResponse } from './UserRes';
 export interface ScheduleCreateResponse {
   scheduleSeq: number;
 }
+export interface ScheduleUpdateResponse {
+  scheduleSeq: number;
+}
 export interface ScheduleDetailReadResponse {
   scheduleSeq: number;
   scheduleContent: string;

@@ -6,7 +6,7 @@ const BASE = style({
   border: 'none',
   borderRadius: '0.5rem',
   color: colors.black,
-  padding: '0.75rem',
+  padding: '1rem',
   width: '100%',
   lineHeight: '1.35',
 
