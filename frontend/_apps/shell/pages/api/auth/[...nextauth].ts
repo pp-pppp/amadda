@@ -13,9 +13,8 @@ export const authOptions = {
   ],
   callbacks: {
     async session({ session, token }) {
-      session.user.userSeq = token.userSeq;
+      session.user.kakaoId = token.kakaoId;
       session.user.userName = token.userName;
-      session.user.userId = token.userId;
       session.user.imageUrl = token.imageUrl;
       session.user.accessToken = token.accessToken;
       session.user.isInited = token.isInited;
@@ -30,7 +29,7 @@ export const authOptions = {
             kakaoId: user.id,
             imageUrl: user.image,
           };
-          console.log();
+          console.log(user);
           console.log(UserJwtRequest);
           const INIT = await http
             .post<UserJwtRequest, UserJwtResponse>(
@@ -43,10 +42,12 @@ export const authOptions = {
           await KV.setRefreshToken(INIT.refreshAccessKey, INIT.refreshToken);
 
           token.accessToken = INIT.accessToken;
-          token.userSeq = INIT.userSeq;
+          token.kakaoId = user.id;
           token.userName = user.name;
           token.imageUrl = user.image;
           token.isInited = INIT.isInited;
+
+          console.log(INIT);
         }
 
         if (trigger == 'update') {
@@ -59,6 +60,7 @@ export const authOptions = {
             : token.isInited;
         }
       } catch (err) {}
+
       return token;
     },
   },
