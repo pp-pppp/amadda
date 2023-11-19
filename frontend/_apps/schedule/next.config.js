@@ -34,7 +34,9 @@ module.exports = withVanillaExtract({
         new NextFederationPlugin({
           name: 'schedule',
           filename: 'static/chunks/entry.js',
-          exposes: {},
+          exposes: {
+            './': './pages/index',
+          },
           shared: {},
         })
       );
