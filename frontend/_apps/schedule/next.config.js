@@ -35,7 +35,7 @@ module.exports = withVanillaExtract({
           name: 'schedule',
           filename: 'static/chunks/entry.js',
           exposes: {
-            './': './pages/index',
+            './Calendar': './pages/index',
           },
           shared: {},
         })
