@@ -179,10 +179,13 @@ public class UserService {
     // =================== 유저 인증 관련 메소드들 ===================
 
     public UserJwtInitResponse getTokensAndCheckInit(UserJwtRequest request) {
+        boolean isInited = checkIsInited(request.kakaoId());
+        if(!isInited) {
+            return UserJwtInitResponse.of("", "", "", isInited);
+        }
+
         Long userSeq = getUserInfoByKakaoId(request.kakaoId()).getUserSeq();
         List<String> tokens = tokenProvider.createTokens(userSeq);
-        boolean isInited = checkIsInited(request.kakaoId());
-
         return UserJwtInitResponse.of(
             tokens.get(0),
             tokens.get(1),
