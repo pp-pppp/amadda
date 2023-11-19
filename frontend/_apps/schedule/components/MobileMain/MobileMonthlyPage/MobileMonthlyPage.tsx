@@ -24,7 +24,7 @@ export function MobileMonthlyPage(): ReactNode {
     return () => {
       document.removeEventListener('mousedown', filterClose);
     };
-  }, [ref]);
+  }, []);
 
   return (
     <div ref={ref}>
