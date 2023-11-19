@@ -1,3 +1,8 @@
+import { http } from '@SH/utils/http';
+import {
+  UserNameCheckRequest,
+  UserNameCheckResponse,
+} from 'amadda-global-types';
 import { useState, useEffect } from 'react';
 
 export interface NameCheckRequest {
@@ -16,19 +21,21 @@ export default function useNameValidator(name: string) {
 
   useEffect(() => {
     const NameCheck = async () => {
-      const UserNameCheckRequestBody: NameCheckRequest = {
+      const UserNameCheckRequestBody: UserNameCheckRequest = {
         userName: nameValue,
       };
 
-      // const {isValid} = await http.post<NameCheckRequest, NameCheckResponse>(
-      //   `${process.env.SPRING_API_ROOT}/user/check/name`,
-      //   UserNameCheckRequestBody
-      // );
-      // !isValid && setNameValue(nickname.slice(0, -1));
-
-      const resp = { isValid: true };
-      !resp.isValid && setNameValue(nickname.slice(0, -1));
+      await http
+        .post<UserNameCheckRequest, UserNameCheckResponse>(
+          `${process.env.NEXT_PUBLIC_SHELL}/api/user/check/id`,
+          UserNameCheckRequestBody
+        )
+        .then(res => res.data)
+        .then(data => {
+          !data.isValid && setNameValue(nickname.slice(0, -1));
+        });
     };
+
     NameCheck();
     nameValue.length === 0 ? setIsNameEmpty(true) : setIsNameEmpty(false);
     nameValue.length > 20 && setNameValue(nameValue.slice(0, -1));
