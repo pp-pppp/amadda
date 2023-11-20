@@ -45,9 +45,9 @@ export const TYPE_VARIANT = styleVariants({
   suggestion: [
     BASE,
     {
-      backgroundColor: colors.GREY_800,
+      backgroundColor: colors.key,
       color: colors.white,
-      cursor: 'pointer',
+      // cursor: 'pointer',
     },
   ],
 });
