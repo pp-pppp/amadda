@@ -67,6 +67,9 @@ public class UserService {
 
     @Transactional
     public void saveUser(UserInitRequest request) {
+        boolean chk = checkIsInited(request.kakaoId());
+        if(chk) throw new RestApiException(UserErrorCode.USER_KAKAO_ID_DUPLICATED);
+
         String fileName = getFileName(request.kakaoId());
         String s3Url = imageService.saveKakaoImgInS3(request.imageUrl(), fileName);
 
