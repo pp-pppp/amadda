@@ -14,15 +14,16 @@ export interface ScheduleDetailReadResponse {
   isTimeSelected: boolean;
   isDateSelected: boolean;
   isAllday: boolean;
-  isAuthorizedAll: boolean;
   scheduleStartAt: string;
   scheduleEndAt: string;
+  isAuthorizedAll: boolean;
+  authorizedUser: UserReadResponse;
   participants: Array<UserScheduleResponse>;
-  comments: CommentReadResponse;
+  comments: CommentReadResponse[];
   alarmTime: string;
   scheduleName: string;
   scheduleMemo: string;
-  categoryName: string;
+  category: CategoryReadResponse;
 }
 export interface ScheduleListReadResponse {
   scheduleSeq: number;

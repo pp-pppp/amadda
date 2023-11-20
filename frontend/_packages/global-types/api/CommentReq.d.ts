@@ -1,1 +1,3 @@
-export interface CommentCreateRequest {}
+export interface CommentCreateRequest {
+  commentContent: string;
+}
