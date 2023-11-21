@@ -5,8 +5,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.pppppp.amadda.IntegrationTestSupport;
 import com.pppppp.amadda.global.entity.exception.RestApiException;
-import jakarta.servlet.http.Cookie;
+
 import java.util.List;
+
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,30 +74,46 @@ class TokenProviderTest extends IntegrationTestSupport {
         assertThat(userSeq).isEqualTo(1111L);
     }
 
-    @DisplayName("헤더에서 토큰을 추출한다. - 정상")
+    @DisplayName("쿠키에서 토큰을 추출한다. - 정상")
     @Test
     void getTokenFromHeader() {
         // given
         MockHttpServletRequest http = new MockHttpServletRequest();
-        http.addHeader("Authorization", "originalToken");
+        Cookie cookie = new Cookie("Auth", "originalToken");
+        http.setCookies(cookie);
 
         // when
-        String token = tokenProvider.getTokenFromHeader(http);
+        String token = tokenProvider.getTokenFromCookie(http);
 
         // then
         assertThat(token).isEqualTo("originalToken");
     }
 
-    @DisplayName("헤더에서 토큰을 추출한다. - 헤더 내에 해당 키 없음. ")
+    @DisplayName("쿠키에서 토큰을 추출한다. - 쿠키 비었음. ")
     @Test
-    void getTokenFromCookie_headerNoKey() {
+    void getTokenFromCookie_cookieNull() {
         // given
         MockHttpServletRequest http = new MockHttpServletRequest();
 
         // when // then
-        assertThatThrownBy(() -> tokenProvider.getTokenFromHeader(http))
-            .isInstanceOf(RestApiException.class)
-            .hasMessage("HTTP_HEADER_KEY_NOT_FOUND");
+        assertThatThrownBy(() -> tokenProvider.getTokenFromCookie(http))
+                .isInstanceOf(RestApiException.class)
+                .hasMessage("HTTP_COOKIE_NULL");
+    }
+
+    @DisplayName("쿠키에서 토큰을 추출한다. - 쿠키 내에 해당 키 없음. ")
+    @Test
+    void getTokenFromCookie_cookieNoKey() {
+        // given
+        MockHttpServletRequest http = new MockHttpServletRequest();
+
+        Cookie cookie = new Cookie("Authasdfdsa", "originalToken");
+        http.setCookies(cookie);
+
+        // when // then
+        assertThatThrownBy(() -> tokenProvider.getTokenFromCookie(http))
+                .isInstanceOf(RestApiException.class)
+                .hasMessage("HTTP_COOKIE_KEY_NOT_FOUND");
     }
 
     @DisplayName("쿠키를 주고 유저 seq를 반환받는다. ")
@@ -105,7 +123,8 @@ class TokenProviderTest extends IntegrationTestSupport {
         List<String> l = tokenProvider.createTokens(1111L);
 
         MockHttpServletRequest http = new MockHttpServletRequest();
-        http.addHeader("Authorization", l.get(0));
+        Cookie cookie = new Cookie("Auth", l.get(0));
+        http.setCookies(cookie);
         // when
         Long userSeq = tokenProvider.getUserSeq(http);
 
