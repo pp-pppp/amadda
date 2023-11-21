@@ -7,7 +7,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum HttpErrorCode implements ErrorCode {
-    HTTP_HEADER_KEY_NOT_FOUND(HttpStatus.NOT_FOUND, "쿠키 내에 해당 키가 존재하지 않습니다. "),
+    HTTP_COOKIE_NULL(HttpStatus.UNAUTHORIZED, "쿠키가 비어있습니다. "),
+    HTTP_COOKIE_KEY_NOT_FOUND(HttpStatus.NOT_FOUND, "쿠키 내에 해당 키가 존재하지 않습니다. "),
     ;
 
     private final HttpStatus httpStatus;
