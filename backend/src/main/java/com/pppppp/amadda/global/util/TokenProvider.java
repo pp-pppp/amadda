@@ -86,13 +86,21 @@ public class TokenProvider {
     }
 
     public Long getUserSeq(HttpServletRequest http) {
-        return parseUserSeq(getTokenFromHeader(http));
+        return parseUserSeq(getTokenFromCookie(http));
     }
 
-    public String getTokenFromHeader(HttpServletRequest http) {
-        String token = http.getHeader("Authorization");
-        if(token == null) throw new RestApiException(HttpErrorCode.HTTP_HEADER_KEY_NOT_FOUND);
-        return token;
+    public String getTokenFromCookie(HttpServletRequest http) {
+        Cookie[] cookies = http.getCookies();
+        if (cookies == null) {
+            throw new RestApiException(HttpErrorCode.HTTP_COOKIE_NULL);
+        }
+
+        for (Cookie c : cookies) {
+            if (c.getName().equals("Auth")) {
+                return c.getValue();
+            }
+        }
+        throw new RestApiException(HttpErrorCode.HTTP_COOKIE_KEY_NOT_FOUND);
     }
 
     public Long parseUserSeq(String token) {
