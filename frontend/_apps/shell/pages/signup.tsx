@@ -16,7 +16,7 @@ export default function KakaoPage({ ...props }: KakaoPageProps) {
 export const getServerSideProps = (async context => {
   const { code } = context.query;
   const TOKEN_RES = await fetch(
-    `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.NEXT_PUBLIC_KAKAO_KEY}&redirect_url=${process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI}&code=${code}`,
+    `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.NEXT_PUBLIC_KAKAO_KEY}&redirect_uri=${process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI}&code=${code}`,
     {
       method: 'POST',
       body: JSON.stringify(null),
