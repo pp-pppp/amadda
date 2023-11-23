@@ -13,30 +13,12 @@ export const middlewareConfig = {
 export const gateway = async (req: NextRequest) => {
   const { pathname } = req.nextUrl;
   if (pathname === '/') return NextResponse.next();
-  if (pathname === '/main') return NextResponse.next();
-
-  if (req.headers.has('init')) {
-    //init 헤더가 있으면 초기 로그인 상황입니다.
-    const INITIAL_AT = req.headers.get('init') || '';
-    req.headers.delete('init');
-    if (INITIAL_AT.length > 0) {
-      const response = NextResponse.next();
-      //토큰을 쿠키에 주입합니다.
-      response.cookies.set('Auth', INITIAL_AT, {
-        httpOnly: true,
-        sameSite: 'lax',
-      });
-      return response;
-    } else
-      return NextResponse.rewrite(
-        `${process.env.NEXT_PUBLIC_SHELL}/api/auth/signout`
-      ); //초기 요청에서 토큰 로드에 실패한 것이므로 로그아웃 처리합니다.
-  }
+  if (pathname === '/signup') return NextResponse.next();
 
   if (!req.cookies.has('Auth'))
     return NextResponse.rewrite(
       `${process.env.NEXT_PUBLIC_SHELL}/api/auth/signout`
-    ); //만약 쿠키의 액세스 토큰이 아예 없다면 로그아웃시킵니다.
+    ); //만약 쿠키의 액세스 토큰이 없다면 로그아웃시킵니다.
 
   const AT = req.cookies.get('Auth')?.value || ''; //쿠키의 access token입니다.
 
@@ -78,7 +60,13 @@ export const gateway = async (req: NextRequest) => {
       ); //리프레시 토큰을 레디스에 저장하고,
       const new_AT = re_preflight.data.accessToken; //새로운 액세스 토큰을 넣어서
       const response = NextResponse.next();
-      response.headers.set('Auth', new_AT);
+      response.cookies.set('Auth', new_AT, {
+        httpOnly: true,
+        sameSite: 'lax',
+        maxAge: 60 * 15,
+        secure: process.env.NODE_ENV !== 'development',
+        path: '/',
+      });
       return response; //원래 요청을 재시도합니다.
     } else {
       //다른 모든 경우의 경우 로그아웃시킵니다.
