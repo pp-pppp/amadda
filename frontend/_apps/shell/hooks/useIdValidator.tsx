@@ -4,11 +4,14 @@ import { useState, useEffect } from 'react';
 
 export default function useIdValidator(id: string) {
   const [userId, setUserId] = useState<string>(id);
-  const [isIdEmpty, setIsIdEmpty] = useState(false);
-  const [isIdValid, setIsIdValid] = useState(true);
-  const [isIdDuplicated, setIsIdDuplicated] = useState(false);
   const [idValue, setIdValue] = useState(id);
-  const [initial, setInitial] = useState(true);
+
+  const [isIdDuplicated, setIsIdDuplicated] = useState(false);
+  const [isIdValid, setIsIdValid] = useState(true);
+  const [isIdEmpty, setIsIdEmpty] = useState(false);
+
+  const [isInitial, setIsInitial] = useState(true);
+
   useEffect(() => {
     const UserIdCheckRequestBody: UserIdCheckRequest = {
       userId: idValue,
@@ -22,24 +25,38 @@ export default function useIdValidator(id: string) {
       },
     })
       .then(res => res.json())
-      .then(json => {
-        json.data.isDuplicated
-          ? setIsIdDuplicated(true)
-          : setIsIdDuplicated(false);
-        initial && setInitial(false);
-        !initial && idValue.length === 0
-          ? setIsIdEmpty(true)
-          : setIsIdEmpty(false);
-        idValue.length > 20 && setIdValue(idValue.slice(0, -1));
-      });
+      .then(json => json.data)
+      .then(data => {
+        data.isDuplicated ? setIsIdDuplicated(true) : setIsIdDuplicated(false);
 
-    setUserId(idValue);
+        if (data.isValid) {
+          setIsIdValid(data.isValid);
+          setUserId(idValue);
+          setIsIdEmpty(false);
+          return;
+        }
+
+        if (isInitial) {
+          setIsIdValid(true);
+          return;
+        }
+
+        if (!isInitial && idValue.length < 3) {
+          setIsIdValid(true);
+          setIsIdEmpty(true);
+          setUserId(idValue);
+        } else {
+          setIsIdValid(false);
+        }
+      });
   }, [idValue]);
 
   return {
     userId,
     idValue,
     setIdValue,
+    isInitial,
+    setIsInitial,
     isIdDuplicated: isIdDuplicated,
     isIdValid: isIdValid,
     isIdEmpty: isIdEmpty,
