@@ -21,7 +21,7 @@ export const gateway = async (req: NextRequest) => {
   const AT = req.cookies.get('Auth')?.value || ''; //쿠키의 access token입니다.
 
   const preflight: UserAccessResponse = await fetch(
-    `${process.env.SPRING_ROOT as string}/user/access`,
+    `${process.env.SPRING_API_ROOT as string}/user/access`,
     {
       headers: { Cookie: `Auth=${AT}` }, //프리플라이트 요청을 보냅니다. 본 요청을 보내기 전에 헤더만 떼어 미리 보내고, 토큰이 어떤 상태인지 백엔드에 확인받습니다.
     }

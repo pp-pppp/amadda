@@ -32,3 +32,4 @@ export * from './components/view/Profile/Profile';
 export * from './components/view/Tooltip/Tooltip';
 
 export * from './util/global.css';
+export * from './util/throttle';

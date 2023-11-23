@@ -9,6 +9,7 @@ import {
   P,
   Profile,
   Spacing,
+  throttle,
 } from 'external-temporal';
 import { IndexLayout } from '@SH/layout/IndexLayout';
 import useIdValidator from '@SH/hooks/useIdValidator';
@@ -16,6 +17,8 @@ import SIGNUP_TEXT from '@SH/constants/SIGNUP_TEXT';
 import SignUpCaption from '../SignUpCaption/SignUpCaption';
 import { UserInitRequest } from 'amadda-global-types';
 import { http } from '@SH/utils/http';
+import useNameValidator from '@SH/hooks/useNameValidator';
+import { useRouter } from 'next/router';
 
 export interface SignUpProps {
   userInfo: {
@@ -26,36 +29,32 @@ export interface SignUpProps {
   };
 }
 export default function SignUp({ userInfo }: SignUpProps) {
-  // const { data: session, update } = useSession();
-  // const [kakaoId, setKakaoId] = useState('');
-  // const [imageUrl, setImageUrl] = useState('');
-  const [userName, setUserName] = useState(userInfo.userName);
-  // const userSeq = session?.user.userId || '';
-  // const imageUrl = session?.user.imageUrl || '';
-  // const userName = session?.user.userName || '';
+  const router = useRouter();
 
-  const [nameValue, setNameValue] = useState<string>('');
-  const [isIdEmpty, setIsIdEmpty] = useState(false);
-
-  const { userId, idValue, isIdDuplicated, isIdValid, setIdValue } =
-    useIdValidator('');
+  const {
+    isIdDuplicated,
+    isIdEmpty,
+    isIdValid,
+    idValue,
+    setIsInitial,
+    setIdValue,
+    userId,
+    isInitial,
+  } = useIdValidator('');
+  const { nameValue, setNameValue, userName, isNameValid } = useNameValidator(
+    userInfo.userName
+  );
 
   const [btnDisable, setBtnDisable] = useState(true);
 
-  // useEffect(() => {
-  //   if (session) {
-  //     setKakaoId(session.user.kakaoId);
-  //     setImageUrl(session.user.imageUrl);
-  //     setUserName(session.user.userName);
-  //   }
-  // }, [session]);
-
-  useEffect(() => {
-    userName && setNameValue(userName);
-  }, [userName]);
-
   const checkAllValid = () => {
-    if (!isIdDuplicated && !isIdEmpty && isIdValid && idValue.length !== 0)
+    if (
+      !isIdDuplicated &&
+      !isIdEmpty &&
+      isIdValid &&
+      idValue.length > 3 &&
+      nameValue.length !== 0
+    )
       return true;
     return false;
   };
@@ -71,7 +70,7 @@ export default function SignUp({ userInfo }: SignUpProps) {
 
   // userName onChange
   const userNameOnChange = (value: string) => {
-    const reg = /^[^A-Z!@#$%^&*`\-()_+={}|\[\]\\:";'<>?,./\s]{0,20}$/;
+    const reg = /^[ㄱ-힣a-z0-9]{0,10}$/;
     if (!reg.test(value)) {
       value = value.slice(0, -1);
     }
@@ -81,24 +80,19 @@ export default function SignUp({ userInfo }: SignUpProps) {
 
   // userId onChagnge
   const userIdOnChange = (value: string) => {
-    const reg =
-      /^[^A-Z!@#$%^&*`\-()_+={}|\[\]\\:";'<>?,.\s\u3131-\uD79D]{0,20}$/;
+    setIsInitial(false);
+    const reg = /^[a-z0-9]{0,20}$/;
     if (!reg.test(value)) {
       value = value.slice(0, -1);
     }
-    value.length === 0 ? setIsIdEmpty(true) : setIsIdEmpty(false);
     setIdValue(value);
 
     btnControl();
-    console.log(isIdDuplicated);
   };
 
   // siginup
   const amaddaSignUp = async () => {
     if (checkAllValid()) {
-      // await update({ userName: nameValue, userId: userId, isInited: true });
-
-      console.log(userName);
       const UserInitRequest: UserInitRequest = {
         kakaoId: userInfo.kakaoId,
         imageUrl: userInfo.imageUrl,
@@ -113,6 +107,9 @@ export default function SignUp({ userInfo }: SignUpProps) {
         )
         .then(res => {
           res.data;
+        })
+        .then(data => {
+          router.push(`${process.env.NEXT_PUBLIC_SHELL}/schedule`);
         })
         .catch(error => {
           console.error('Error:', error);
@@ -130,15 +127,19 @@ export default function SignUp({ userInfo }: SignUpProps) {
       <Spacing size="2" />
       <Form formName="singup" onSubmit={e => amaddaSignUp()}>
         <Label htmlFor="getNickname">{SIGNUP_TEXT.NICKNAME}</Label>
-        <Spacing size="0.25" />
-        <Spacing size="0.25" />
+        <Spacing size="0.5" />
         <Input
           type="text"
-          id="getNickname"
-          name="nickname"
+          id="getUserName"
+          name="userName"
           disabled={false}
           value={nameValue}
-          onChange={e => userNameOnChange(e.target.value)}
+          validator={target => isNameValid}
+          onChange={e =>
+            throttle(() => {
+              userNameOnChange(e.target.value);
+            }, 1000)
+          }
           placeholder={SIGNUP_TEXT.NICKNAME_PLACEHOLDER}
           autoComplete="off"
         />
@@ -163,12 +164,18 @@ export default function SignUp({ userInfo }: SignUpProps) {
           validator={target => isIdValid}
           disabled={false}
           value={userId}
-          onChange={e => userIdOnChange(e.target.value)}
+          onChange={e =>
+            throttle(() => {
+              userIdOnChange(e.target.value);
+            }, 1000)
+          }
           placeholder={SIGNUP_TEXT.ID_PLACEHOLDER}
           autoComplete="off"
         />
         <Spacing size="0.25" />
-        {isIdEmpty ? (
+        {isInitial ? (
+          <SignUpCaption color="grey">{SIGNUP_TEXT.ID_DESC}</SignUpCaption>
+        ) : isIdEmpty ? (
           <SignUpCaption color="warn">{SIGNUP_TEXT.ID_EMPTY}</SignUpCaption>
         ) : (
           <SignUpCaption color="grey">{SIGNUP_TEXT.ID_DESC}</SignUpCaption>
