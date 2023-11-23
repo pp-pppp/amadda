@@ -11,7 +11,6 @@ import {
   Spacing,
 } from 'external-temporal';
 import { IndexLayout } from '@SH/layout/IndexLayout';
-import { useSession } from 'next-auth/react';
 import useIdValidator from '@SH/hooks/useIdValidator';
 import SIGNUP_TEXT from '@SH/constants/SIGNUP_TEXT';
 import SignUpCaption from '../SignUpCaption/SignUpCaption';
