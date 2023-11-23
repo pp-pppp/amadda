@@ -9,6 +9,7 @@ import {
   P,
   Profile,
   Spacing,
+  throttle,
 } from 'external-temporal';
 import { IndexLayout } from '@SH/layout/IndexLayout';
 import useIdValidator from '@SH/hooks/useIdValidator';
@@ -70,17 +71,6 @@ export default function SignUp({ userInfo }: SignUpProps) {
     btnControl();
   };
 
-  const throttle = func => {
-    let timer;
-    return function () {
-      const args = arguments;
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        func.apply(this, args);
-      }, 100);
-    };
-  };
-
   // userId onChagnge
   const userIdOnChange = (value: string) => {
     idValidator.setIsInitial(false);
@@ -138,7 +128,11 @@ export default function SignUp({ userInfo }: SignUpProps) {
           disabled={false}
           value={nameValidator.nameValue}
           validator={target => nameValidator.isNameValid}
-          onChange={e => userNameOnChange(e.target.value)}
+          onChange={e =>
+            throttle(() => {
+              userNameOnChange(e.target.value);
+            }, 1000)
+          }
           placeholder={SIGNUP_TEXT.NICKNAME_PLACEHOLDER}
           autoComplete="off"
         />
@@ -163,7 +157,11 @@ export default function SignUp({ userInfo }: SignUpProps) {
           validator={target => idValidator.isIdValid}
           disabled={false}
           value={idValidator.userId}
-          onChange={e => throttle(userIdOnChange(e.target.value))}
+          onChange={e =>
+            throttle(() => {
+              userIdOnChange(e.target.value);
+            }, 1000)
+          }
           placeholder={SIGNUP_TEXT.ID_PLACEHOLDER}
           autoComplete="off"
         />
