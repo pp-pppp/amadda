@@ -39,7 +39,18 @@ module.exports = withVanillaExtract({
             notice: `notice@${process.env.NEXT_PUBLIC_NOTICE}/_next/static/chunks/entry.js`,
           },
           exposes: {},
-          shared: {},
+          shared: {
+            next: {
+              eager: true,
+              singleton: true,
+              requiredVersion: '13.4.12',
+            },
+            '@vanilla-extract/css': {
+              eager: true,
+              singleton: true,
+              requiredVersion: '1.13.0',
+            },
+          },
         })
       );
     }

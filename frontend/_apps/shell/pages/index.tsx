@@ -21,7 +21,7 @@ export default function Page() {
         <img
           src="image/kakao_login.png"
           alt="카카오로 로그인하기"
-          onClick={async () => signIn()}
+          onClick={() => signIn()}
           className={BASE}
         />
       </Flex>

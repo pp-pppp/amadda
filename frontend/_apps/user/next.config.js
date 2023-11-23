@@ -37,7 +37,18 @@ module.exports = withVanillaExtract({
           exposes: {
             './Friend': './pages/friend/index',
           },
-          shared: {},
+          shared: {
+            next: {
+              eager: true,
+              singleton: true,
+              requiredVersion: '13.4.12',
+            },
+            '@vanilla-extract/css': {
+              eager: true,
+              singleton: true,
+              requiredVersion: '1.13.0',
+            },
+          },
         })
       );
     }
