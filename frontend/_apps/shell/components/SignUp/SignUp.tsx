@@ -18,11 +18,19 @@ import SignUpCaption from '../SignUpCaption/SignUpCaption';
 import { UserInitRequest } from 'amadda-global-types';
 import { http } from '@SH/utils/http';
 
-export default function SignUp() {
-  const { data: session, update } = useSession();
-  const [kakaoId, setKakaoId] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
-  const [userName, setUserName] = useState('');
+export interface SignUpProps {
+  userInfo: {
+    kakaoId: string;
+    imageUrl: string;
+    userName: string;
+    isInited: boolean;
+  };
+}
+export default function SignUp({ userInfo }: SignUpProps) {
+  // const { data: session, update } = useSession();
+  // const [kakaoId, setKakaoId] = useState('');
+  // const [imageUrl, setImageUrl] = useState('');
+  const [userName, setUserName] = useState(userInfo.userName);
   // const userSeq = session?.user.userId || '';
   // const imageUrl = session?.user.imageUrl || '';
   // const userName = session?.user.userName || '';
@@ -35,13 +43,13 @@ export default function SignUp() {
 
   const [btnDisable, setBtnDisable] = useState(true);
 
-  useEffect(() => {
-    if (session) {
-      setKakaoId(session.user.kakaoId);
-      setImageUrl(session.user.imageUrl);
-      setUserName(session.user.userName);
-    }
-  }, [session]);
+  // useEffect(() => {
+  //   if (session) {
+  //     setKakaoId(session.user.kakaoId);
+  //     setImageUrl(session.user.imageUrl);
+  //     setUserName(session.user.userName);
+  //   }
+  // }, [session]);
 
   useEffect(() => {
     userName && setNameValue(userName);
@@ -89,17 +97,15 @@ export default function SignUp() {
   // siginup
   const amaddaSignUp = async () => {
     if (checkAllValid()) {
-      await update({ userName: nameValue, userId: userId, isInited: true });
+      // await update({ userName: nameValue, userId: userId, isInited: true });
 
       console.log(userName);
       const UserInitRequest: UserInitRequest = {
-        kakaoId: kakaoId,
-        imageUrl: imageUrl,
+        kakaoId: userInfo.kakaoId,
+        imageUrl: userInfo.imageUrl,
         userName: userName,
         userId: userId,
       };
-
-      console.log(UserInitRequest);
 
       http
         .post<UserInitRequest>(
@@ -120,7 +126,7 @@ export default function SignUp() {
       <Flex justifyContents="center" alignItems="center" flexDirection="column">
         <H1>A M A D D A</H1>
         <Spacing size="2" />
-        <Profile src={imageUrl} alt="profile image" size="large" />
+        <Profile src={userInfo.imageUrl} alt="profile image" size="large" />
       </Flex>
       <Spacing size="2" />
       <Form formName="singup" onSubmit={e => amaddaSignUp()}>
@@ -130,7 +136,6 @@ export default function SignUp() {
         <Input
           type="text"
           id="getNickname"
-          // validator={target => }
           name="nickname"
           disabled={false}
           value={nameValue}
