@@ -31,18 +31,29 @@ export interface SignUpProps {
 export default function SignUp({ userInfo }: SignUpProps) {
   const router = useRouter();
 
-  const { ...idValidator } = useIdValidator('');
-  const { ...nameValidator } = useNameValidator(userInfo.userName);
+  const {
+    isIdDuplicated,
+    isIdEmpty,
+    isIdValid,
+    idValue,
+    setIsInitial,
+    setIdValue,
+    userId,
+    isInitial,
+  } = useIdValidator('');
+  const { nameValue, setNameValue, userName, isNameValid } = useNameValidator(
+    userInfo.userName
+  );
 
   const [btnDisable, setBtnDisable] = useState(true);
 
   const checkAllValid = () => {
     if (
-      !idValidator.isIdDuplicated &&
-      !idValidator.isIdEmpty &&
-      idValidator.isIdValid &&
-      idValidator.idValue.length > 3 &&
-      nameValidator.nameValue.length !== 0
+      !isIdDuplicated &&
+      !isIdEmpty &&
+      isIdValid &&
+      idValue.length > 3 &&
+      nameValue.length !== 0
     )
       return true;
     return false;
@@ -50,11 +61,7 @@ export default function SignUp({ userInfo }: SignUpProps) {
   useEffect(() => {
     if (checkAllValid()) setBtnDisable(false);
     else setBtnDisable(true);
-  }, [
-    idValidator.isIdDuplicated,
-    idValidator.isIdEmpty,
-    idValidator.isIdValid,
-  ]);
+  }, [isIdDuplicated, isIdEmpty, isIdValid]);
 
   const btnControl = () => {
     if (checkAllValid()) setBtnDisable(false);
@@ -67,18 +74,18 @@ export default function SignUp({ userInfo }: SignUpProps) {
     if (!reg.test(value)) {
       value = value.slice(0, -1);
     }
-    nameValidator.setNameValue(value);
+    setNameValue(value);
     btnControl();
   };
 
   // userId onChagnge
   const userIdOnChange = (value: string) => {
-    idValidator.setIsInitial(false);
+    setIsInitial(false);
     const reg = /^[a-z0-9]{0,20}$/;
     if (!reg.test(value)) {
       value = value.slice(0, -1);
     }
-    idValidator.setIdValue(value);
+    setIdValue(value);
 
     btnControl();
   };
@@ -89,8 +96,8 @@ export default function SignUp({ userInfo }: SignUpProps) {
       const UserInitRequest: UserInitRequest = {
         kakaoId: userInfo.kakaoId,
         imageUrl: userInfo.imageUrl,
-        userName: nameValidator.userName,
-        userId: idValidator.userId,
+        userName: userName,
+        userId: userId,
       };
 
       http
@@ -126,8 +133,8 @@ export default function SignUp({ userInfo }: SignUpProps) {
           id="getUserName"
           name="userName"
           disabled={false}
-          value={nameValidator.nameValue}
-          validator={target => nameValidator.isNameValid}
+          value={nameValue}
+          validator={target => isNameValid}
           onChange={e =>
             throttle(() => {
               userNameOnChange(e.target.value);
@@ -137,7 +144,7 @@ export default function SignUp({ userInfo }: SignUpProps) {
           autoComplete="off"
         />
         <Spacing size="0.25" />
-        {nameValidator.nameValue.length === 0 ? (
+        {nameValue.length === 0 ? (
           <SignUpCaption color="warn">
             {SIGNUP_TEXT.NICKNAME_EMPTY}
           </SignUpCaption>
@@ -154,9 +161,9 @@ export default function SignUp({ userInfo }: SignUpProps) {
           type="text"
           id="getUserId"
           name="userId"
-          validator={target => idValidator.isIdValid}
+          validator={target => isIdValid}
           disabled={false}
-          value={idValidator.userId}
+          value={userId}
           onChange={e =>
             throttle(() => {
               userIdOnChange(e.target.value);
@@ -166,15 +173,15 @@ export default function SignUp({ userInfo }: SignUpProps) {
           autoComplete="off"
         />
         <Spacing size="0.25" />
-        {idValidator.isInitial ? (
+        {isInitial ? (
           <SignUpCaption color="grey">{SIGNUP_TEXT.ID_DESC}</SignUpCaption>
-        ) : idValidator.isIdEmpty ? (
+        ) : isIdEmpty ? (
           <SignUpCaption color="warn">{SIGNUP_TEXT.ID_EMPTY}</SignUpCaption>
         ) : (
           <SignUpCaption color="grey">{SIGNUP_TEXT.ID_DESC}</SignUpCaption>
         )}
         <P type="caption" color="warn">
-          {idValidator.isIdDuplicated && SIGNUP_TEXT.ID_DUPLICATE}
+          {isIdDuplicated && SIGNUP_TEXT.ID_DUPLICATE}
         </P>
 
         <Spacing size="2" />
