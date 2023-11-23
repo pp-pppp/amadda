@@ -38,7 +38,18 @@ module.exports = withVanillaExtract({
             './Calendar': './pages/mobile-main/index',
             './Edit': './pages/edit/index',
           },
-          shared: {},
+          shared: {
+            next: {
+              eager: true,
+              singleton: true,
+              requiredVersion: '13.4.12',
+            },
+            '@vanilla-extract/css': {
+              eager: true,
+              singleton: true,
+              requiredVersion: '1.13.0',
+            },
+          },
         })
       );
     }

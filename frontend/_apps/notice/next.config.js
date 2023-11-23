@@ -34,8 +34,22 @@ module.exports = withVanillaExtract({
         new NextFederationPlugin({
           name: 'notice',
           filename: 'static/chunks/entry.js',
-          exposes: {},
-          shared: {},
+          exposes: {
+            '/Notice': './pages/notice/index',
+            '/NoticeConfig': './pages/notice-config/index',
+          },
+          shared: {
+            next: {
+              eager: true,
+              singleton: true,
+              requiredVersion: '13.4.12',
+            },
+            '@vanilla-extract/css': {
+              eager: true,
+              singleton: true,
+              requiredVersion: '1.13.0',
+            },
+          },
         })
       );
     }
