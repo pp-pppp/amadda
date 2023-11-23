@@ -148,7 +148,7 @@ public class UserService {
     }
 
     private boolean isValidName(String name) {
-        String regex = "^[가-힣a-z0-9]{1,10}$";
+        String regex = "^[ㄱ-힣a-z0-9]{1,10}$";
         return Pattern.matches(regex, name);
     }
 
