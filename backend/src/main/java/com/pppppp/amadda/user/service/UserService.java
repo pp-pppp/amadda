@@ -69,6 +69,8 @@ public class UserService {
     public void saveUser(UserInitRequest request) {
         boolean chk = checkIsInited(request.kakaoId());
         if(chk) throw new RestApiException(UserErrorCode.USER_KAKAO_ID_DUPLICATED);
+        if(!isValidId(request.userId())) throw new RestApiException(UserErrorCode.USER_ID_INVALID);
+        if(!isValidName(request.userName())) throw new RestApiException(UserErrorCode.USER_NAME_INVALID);
 
         String fileName = getFileName(request.kakaoId());
         String s3Url = imageService.saveKakaoImgInS3(request.imageUrl(), fileName);
@@ -136,7 +138,7 @@ public class UserService {
     }
 
     private boolean isValidId(String id) {
-        String regex = "^[^A-Z!@#$%^&*()_+={}|\\[\\]:\";'<>?,.\\s\\u3131-\\uD79D]{1,20}$";
+        String regex = "^[a-z0-9]{3,20}$";
         return Pattern.matches(regex, id);
     }
 
@@ -146,7 +148,7 @@ public class UserService {
     }
 
     private boolean isValidName(String name) {
-        String regex = "^[^A-Z!@#$%^&*()_+={}|\\[\\]\\\\:\";'<>?,./\\s]{1,20}$";
+        String regex = "^[가-힣a-z0-9]{1,10}$";
         return Pattern.matches(regex, name);
     }
 

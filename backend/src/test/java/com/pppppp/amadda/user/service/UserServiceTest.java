@@ -249,6 +249,53 @@ class UserServiceTest extends IntegrationTestSupport {
             .hasMessage("USER_ID_DUPLICATED");
     }
 
+    @DisplayName("유저 id가 유효하지 않다. ")
+    @Test
+    void saveUser_invalidId() {
+        // given
+        UserInitRequest request = UserInitRequest.builder()
+                .userId("-")
+                .userName("잼민정")
+                .imageUrl("https://www.readersnews.com/news/photo/202305/108912_78151_1733.jpg")
+                .kakaoId("1111")
+                .build();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
+        String fileName = String.format("1111_%s.jpg", LocalDateTime.now().format(formatter));
+        String url = String.format("https://amadda-bucket.s3.ap-northeast-2.amazonaws.com/%s",
+                fileName);
+        given(imageService.saveKakaoImgInS3(request.imageUrl(), fileName))
+                .willReturn(url);
+
+        // when // then
+        assertThatThrownBy(() -> userService.saveUser(request))
+                .isInstanceOf(RestApiException.class)
+                .hasMessage("USER_ID_INVALID");
+    }
+
+    @DisplayName("유저 이름이 유효하지 않다. ")
+    @Test
+    void saveUser_invalidName() {
+        // given
+        UserInitRequest request = UserInitRequest.builder()
+                .userId("jammminjung")
+                .userName("***")
+                .imageUrl("https://www.readersnews.com/news/photo/202305/108912_78151_1733.jpg")
+                .kakaoId("1111")
+                .build();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
+        String fileName = String.format("1111_%s.jpg", LocalDateTime.now().format(formatter));
+        String url = String.format("https://amadda-bucket.s3.ap-northeast-2.amazonaws.com/%s",
+                fileName);
+
+        given(imageService.saveKakaoImgInS3(request.imageUrl(), fileName))
+                .willReturn(url);
+
+        // when // then
+        assertThatThrownBy(() -> userService.saveUser(request))
+                .isInstanceOf(RestApiException.class)
+                .hasMessage("USER_NAME_INVALID");
+    }
+
     @DisplayName("정상 토큰인 경우 ")
     @Test
     void validateUser1() {
@@ -458,7 +505,7 @@ class UserServiceTest extends IntegrationTestSupport {
         List<User> users = userRepository.saveAll(List.of(u1, u2));
 
         UserIdCheckRequest request = UserIdCheckRequest.builder()
-            .userId("id")
+            .userId("idd")
             .build();
 
         // when
