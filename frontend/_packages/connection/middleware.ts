@@ -40,7 +40,7 @@ export const gateway = async (req: NextRequest) => {
       const RT = (await KV.getRefreshToken(preflight.refreshAccessKey)) || ''; //리프레시 토큰은 레디스에 있습니다. 레디스에서 key를 통해 토큰을 꺼냅니다.
 
       const re_preflight: UserJwtResponse = await fetch(
-        `${process.env.SPRING_ROOT as string}/user/refresh`,
+        `${process.env.SPRING_API_ROOT as string}/user/refresh`,
         {
           headers: { Cookie: `Auth=${RT}` }, //Auth 헤더에 RT를 넣어서 백엔드에 확인받습니다.
         }
