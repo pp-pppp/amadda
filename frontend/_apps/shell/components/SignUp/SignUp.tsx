@@ -17,7 +17,7 @@ import useIdValidator from '@SH/hooks/useIdValidator';
 import SIGNUP_TEXT from '@SH/constants/SIGNUP_TEXT';
 import SignUpCaption from '../SignUpCaption/SignUpCaption';
 import { UserInitRequest } from 'amadda-global-types';
-import { http } from '@SH/utils/http';
+import { http } from 'connection';
 import useNameValidator from '@SH/hooks/useNameValidator';
 import { useRouter } from 'next/router';
 
