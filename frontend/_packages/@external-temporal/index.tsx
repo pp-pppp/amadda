@@ -33,3 +33,4 @@ export * from './components/view/Tooltip/Tooltip';
 
 export * from './util/global.css';
 export * from './util/throttle';
+export * from './util/debounce';
