@@ -2,7 +2,7 @@ import axios from 'axios';
 import useSWR from 'swr';
 import { useDateStore } from '@SCH/store/dateStore';
 import { useEffect } from 'react';
-import { http } from '@SCH/utils/http';
+import { http } from 'connection';
 
 const fetcher = url =>
   axios
