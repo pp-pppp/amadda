@@ -92,7 +92,7 @@ public class TokenProvider {
     public String getTokenFromHeader(HttpServletRequest http) {
         String token = http.getHeader("Authorization");
         if(token == null) throw new RestApiException(HttpErrorCode.HTTP_HEADER_KEY_NOT_FOUND);
-        return token;
+        return token.substring(7);
     }
 
     public Long parseUserSeq(String token) {

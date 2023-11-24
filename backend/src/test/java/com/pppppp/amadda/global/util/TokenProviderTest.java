@@ -79,7 +79,7 @@ class TokenProviderTest extends IntegrationTestSupport {
     void getTokenFromHeader() {
         // given
         MockHttpServletRequest http = new MockHttpServletRequest();
-        http.addHeader("Authorization", "originalToken");
+        http.addHeader("Authorization", "Bearer originalToken");
 
         // when
         String token = tokenProvider.getTokenFromHeader(http);
@@ -107,7 +107,7 @@ class TokenProviderTest extends IntegrationTestSupport {
         List<String> l = tokenProvider.createTokens(1111L);
 
         MockHttpServletRequest http = new MockHttpServletRequest();
-        http.addHeader("Authorization", l.get(0));
+        http.addHeader("Authorization", "Bearer "+l.get(0));
 
         // when
         Long userSeq = tokenProvider.getUserSeq(http);
