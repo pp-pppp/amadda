@@ -1,21 +1,48 @@
+import colors from '#/constants/colors';
 import { style } from '@vanilla-extract/css';
 
 export const APPLAYOUT_MOBILE = style({
-  margin: '0 auto',
-  width: '430px',
-  height: '100vh',
+  width: '100vw',
+  minHeight: '100vh',
   position: 'relative',
-  '@media': {
-    'screen and (max-width: 430px)': {
-      width: '100vw',
-    },
-  },
+  backgroundColor: colors.GREY_800,
 });
 
 export const INDEXLAYOUT_MOBILE = style({
+  // position: 'absolute',
+  // width: '90%',
+  // left: '50%',
+  // top: '50%',
+  // transform: 'translate(-50%, -50%)',
+
+  position: 'relative',
+  minHeight: '100vh',
+  margin: '0 auto',
+  maxWidth: '462px',
+  padding: '1rem',
+  paddingBottom: '10rem',
+  backgroundColor: colors.white,
+});
+
+export const FABLAYOUT_MOBILE = style({
+  position: 'fixed',
+  bottom: '1rem',
+  right: 'calc(50vw - 223px)',
+  zIndex: '999',
+  cursor: 'pointer',
+});
+
+export const MAIN = style({
   position: 'absolute',
+  margin: '0 auto',
   width: '90%',
   left: '50%',
   top: '50%',
   transform: 'translate(-50%, -50%)',
+
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  // height: '100vh',
 });
