@@ -11,6 +11,7 @@ const unsubscribe = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(SPRING_RES.status).json(SPRING_RES.data);
     }
   } catch (err) {
+    console.log(err);
     res
       .status(err.status || 500)
       .json(err?.data || { data: 'internal server error' });
