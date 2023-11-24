@@ -1,4 +1,4 @@
-import { http } from 'connection';
+import { http } from '@U/utils/http';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const groupSeq = async (req: NextApiRequest, res: NextApiResponse) => {
