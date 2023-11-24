@@ -5,8 +5,10 @@ import CALENDAR from '@SCH/constants/CALENDAR';
 import useCategory from '@SCH/hooks/useCategory';
 import { useCategoryStore } from '@SCH/store/categoryStore';
 import { useFilterStore } from '@SCH/store/filterStore';
+import useServerTime from '@SCH/hooks/useServerTime';
 
 export function CalendarHeader() {
+  const { data } = useServerTime();
   const { isOpen } = useFilterStore();
   const { selectedYear, selectedMonth, selectedDate } = useDateStore();
   const { selectedCategorySeq, selectedAll, selectedNone } = useCategoryStore();
@@ -31,9 +33,10 @@ export function CalendarHeader() {
     useCategoryStore.setState(prevState => {
       if (!prevState.selectedAll) {
         const categorySeqs: number[] = [];
-        categories.map((category, idx) => {
-          categorySeqs.push(category.categorySeq);
-        });
+        categories.length !== 0 &&
+          categories.map((category, idx) => {
+            categorySeqs.push(category.categorySeq);
+          });
 
         return {
           selectedCategorySeq: categorySeqs,
@@ -86,6 +89,16 @@ export function CalendarHeader() {
     });
   };
 
+  const goToday = () => {
+    console.log(data);
+    useDateStore.setState(state => ({
+      ...state,
+      selectedYear: data.split('-')[0],
+      selectedMonth: data.split('-')[1],
+      selectedDate: data.split('-')[2],
+    }));
+  };
+
   return (
     <>
       <Flex justifyContents="spaceBetween" alignItems="center">
@@ -94,7 +107,7 @@ export function CalendarHeader() {
           type="button"
           variant="key"
           disabled={false}
-          onClick={() => {}}
+          onClick={() => goToday()}
         >
           {CALENDAR.TODAY}
         </BtnRound>
@@ -112,21 +125,23 @@ export function CalendarHeader() {
           >
             {CALENDAR.CATEGORY_ALL}
           </Filter.FilterOption>
-          {categories.map((category, idx) => (
-            <Filter.FilterOption
-              key={idx}
-              id={'category_' + category.categorySeq}
-              name={'category_' + category.categorySeq}
-              onChange={() => selectCategory(category.categorySeq)}
-              value={category.categoryName}
-              checked={
-                selectedAll ||
-                selectedCategorySeq.includes(category.categorySeq)
-              }
-            >
-              {category.categoryName}
-            </Filter.FilterOption>
-          ))}
+          {categories.map((category, idx) => {
+            return (
+              <Filter.FilterOption
+                key={idx}
+                id={'category_' + category.categorySeq}
+                name={'category_' + category.categorySeq}
+                onChange={() => selectCategory(category.categorySeq)}
+                value={category.categoryName}
+                checked={
+                  selectedAll ||
+                  selectedCategorySeq.includes(category.categorySeq)
+                }
+              >
+                {category.categoryName}
+              </Filter.FilterOption>
+            );
+          })}
           <Filter.FilterOption
             id="category_none"
             name="category_none"

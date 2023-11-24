@@ -6,8 +6,9 @@ import { Spacing, Span } from '../../../../../../_packages/@external-temporal';
 import { BASE } from './DailyList.css';
 import CALENDAR from '@SCH/constants/CALENDAR';
 import { useDailySchedule } from '@SCH/hooks/useScheduleList';
-import { toLower } from '@SCH/utils/convertColors';
+import { toLower, toUpper } from '@SCH/utils/convertColors';
 import { useCategoryStore } from '@SCH/store/categoryStore';
+import { CATEGORY } from '@SCH/components/MobileDailyPlate/MobileDailyPlate.css';
 
 export function DailyList() {
   const { selectedCategorySeq, selectedAll, selectedNone } = useCategoryStore();
@@ -28,7 +29,7 @@ export function DailyList() {
         ]);
       });
     });
-  }, [dailyScheduleList]);
+  }, [selectedDate]);
 
   return (
     <div className={BASE}>
@@ -37,25 +38,19 @@ export function DailyList() {
           <Span color="grey">{CALENDAR.NO_PLAN}</Span>
         ) : (
           dailyScheduleList
-            .filter(schedule =>
-              selectedCategorySeq.includes(schedule.category.categorySeq)
+            .filter(
+              schedule =>
+                selectedCategorySeq.includes(schedule.category.categorySeq) ||
+                selectedAll
             )
-            .map((schedule, idx) => (
-              <div key={idx}>
-                <MobileDailyPlate
-                  color={toLower[schedule.category.categoryColor]}
-                  scheduleName={schedule.scheduleName}
-                  participants={profileImages}
-                  person={schedule.participants.length}
-                  isTimeSelected={schedule.isTimeSelected}
-                  isDateSelected={schedule.isDateSelected}
-                  isAllday={schedule.isTimeSelected}
-                  scheduleStartAt={schedule.scheduleStartAt}
-                  scheduleEndAt={schedule.scheduleEndAt}
-                />
-                <Spacing dir="v" size="0.5" />
-              </div>
-            ))
+            .map((schedule, idx) => {
+              return (
+                <div key={idx}>
+                  <MobileDailyPlate MobileDailyPlateProps={schedule} />
+                  <Spacing dir="v" size="0.5" />
+                </div>
+              );
+            })
         )}
       </MobileDailyPlateList>
     </div>
