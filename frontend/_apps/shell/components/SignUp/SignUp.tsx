@@ -9,6 +9,7 @@ import {
   P,
   Profile,
   Spacing,
+  debounce,
   throttle,
 } from 'external-temporal';
 import { IndexLayout } from '@SH/layout/IndexLayout';
@@ -31,42 +32,41 @@ export interface SignUpProps {
 export default function SignUp({ userInfo }: SignUpProps) {
   const router = useRouter();
 
+  const [nameInput, setNameInput] = useState(userInfo.userName);
+  const [idInput, setIdInput] = useState('');
+  const [userName, setUserName] = useState(userInfo.userName);
+  const [userId, setUserId] = useState('');
+
+  const [lenCheck, setLenCheck] = useState(false);
+
   const {
     isIdDuplicated,
-    isIdEmpty,
     isIdValid,
     idValue,
     setIsInitial,
     setIdValue,
-    userId,
     isInitial,
+    isIdEmpty,
   } = useIdValidator('');
-  const { nameValue, setNameValue, userName, isNameValid } = useNameValidator(
+  const { nameValue, setNameValue, isNameValid } = useNameValidator(
     userInfo.userName
   );
 
-  const [btnDisable, setBtnDisable] = useState(true);
+  // const [btnDisable, setBtnDisable] = useState(true);
 
-  const checkAllValid = () => {
-    if (
-      !isIdDuplicated &&
-      !isIdEmpty &&
-      isIdValid &&
-      idValue.length > 3 &&
-      nameValue.length !== 0
-    )
-      return true;
-    return false;
-  };
-  useEffect(() => {
-    if (checkAllValid()) setBtnDisable(false);
-    else setBtnDisable(true);
-  }, [isIdDuplicated, isIdEmpty, isIdValid]);
+  // const checkAllValid = () => {
+  //   console.log('체크');
+  //   if (userName.length > 0 && userId.length > 3) return true;
+  //   return false;
+  // };
 
-  const btnControl = () => {
-    if (checkAllValid()) setBtnDisable(false);
-    else setBtnDisable(true);
-  };
+  // const btnControl = () => {
+  //   console.log('버튼');
+  //   if (checkAllValid()) {
+  //     console.log(checkAllValid());
+  //     setBtnDisable(false);
+  //   } else setBtnDisable(true);
+  // };
 
   // userName onChange
   const userNameOnChange = (value: string) => {
@@ -74,8 +74,7 @@ export default function SignUp({ userInfo }: SignUpProps) {
     if (!reg.test(value)) {
       value = value.slice(0, -1);
     }
-    setNameValue(value);
-    btnControl();
+    setUserName(value);
   };
 
   // userId onChagnge
@@ -85,14 +84,17 @@ export default function SignUp({ userInfo }: SignUpProps) {
     if (!reg.test(value)) {
       value = value.slice(0, -1);
     }
-    setIdValue(value);
 
-    btnControl();
+    setUserId(value);
   };
 
   // siginup
-  const amaddaSignUp = async () => {
-    if (checkAllValid()) {
+  const amaddaSignUp = () => {
+    // valid 체크
+    setNameValue(userName);
+    setIdValue(userId);
+
+    if (isIdValid && !isIdDuplicated && isNameValid) {
       const UserInitRequest: UserInitRequest = {
         kakaoId: userInfo.kakaoId,
         imageUrl: userInfo.imageUrl,
@@ -133,18 +135,13 @@ export default function SignUp({ userInfo }: SignUpProps) {
           id="getUserName"
           name="userName"
           disabled={false}
-          value={nameValue}
-          validator={target => isNameValid}
-          onChange={e =>
-            throttle(() => {
-              userNameOnChange(e.target.value);
-            }, 1000)
-          }
+          value={userName}
+          onChange={e => userNameOnChange(e.target.value)}
           placeholder={SIGNUP_TEXT.NICKNAME_PLACEHOLDER}
           autoComplete="off"
         />
         <Spacing size="0.25" />
-        {nameValue.length === 0 ? (
+        {userName.length === 0 ? (
           <SignUpCaption color="warn">
             {SIGNUP_TEXT.NICKNAME_EMPTY}
           </SignUpCaption>
@@ -161,21 +158,16 @@ export default function SignUp({ userInfo }: SignUpProps) {
           type="text"
           id="getUserId"
           name="userId"
-          validator={target => isIdValid}
           disabled={false}
           value={userId}
-          onChange={e =>
-            throttle(() => {
-              userIdOnChange(e.target.value);
-            }, 1000)
-          }
+          onChange={e => userIdOnChange(e.target.value)}
           placeholder={SIGNUP_TEXT.ID_PLACEHOLDER}
           autoComplete="off"
         />
         <Spacing size="0.25" />
         {isInitial ? (
           <SignUpCaption color="grey">{SIGNUP_TEXT.ID_DESC}</SignUpCaption>
-        ) : isIdEmpty ? (
+        ) : userId.length === 0 ? (
           <SignUpCaption color="warn">{SIGNUP_TEXT.ID_EMPTY}</SignUpCaption>
         ) : (
           <SignUpCaption color="grey">{SIGNUP_TEXT.ID_DESC}</SignUpCaption>
@@ -185,7 +177,7 @@ export default function SignUp({ userInfo }: SignUpProps) {
         </P>
 
         <Spacing size="2" />
-        <Btn type="submit" variant="key" disabled={btnDisable}>
+        <Btn type="submit" variant="key" disabled={false}>
           AMADDA 시작하기
         </Btn>
       </Form>
