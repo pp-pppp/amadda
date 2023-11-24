@@ -74,57 +74,41 @@ class TokenProviderTest extends IntegrationTestSupport {
         assertThat(userSeq).isEqualTo(1111L);
     }
 
-    @DisplayName("쿠키에서 토큰을 추출한다. - 정상")
+    @DisplayName("헤더에서 토큰을 추출한다. - 정상")
     @Test
     void getTokenFromHeader() {
         // given
         MockHttpServletRequest http = new MockHttpServletRequest();
-        Cookie cookie = new Cookie("Auth", "originalToken");
-        http.setCookies(cookie);
+        http.addHeader("Authorization", "originalToken");
 
         // when
-        String token = tokenProvider.getTokenFromCookie(http);
+        String token = tokenProvider.getTokenFromHeader(http);
 
         // then
         assertThat(token).isEqualTo("originalToken");
     }
 
-    @DisplayName("쿠키에서 토큰을 추출한다. - 쿠키 비었음. ")
-    @Test
-    void getTokenFromCookie_cookieNull() {
-        // given
-        MockHttpServletRequest http = new MockHttpServletRequest();
-
-        // when // then
-        assertThatThrownBy(() -> tokenProvider.getTokenFromCookie(http))
-                .isInstanceOf(RestApiException.class)
-                .hasMessage("HTTP_COOKIE_NULL");
-    }
-
-    @DisplayName("쿠키에서 토큰을 추출한다. - 쿠키 내에 해당 키 없음. ")
+    @DisplayName("헤더에서 토큰을 추출한다. - 헤더 내에 해당 키 없음. ")
     @Test
     void getTokenFromCookie_cookieNoKey() {
         // given
         MockHttpServletRequest http = new MockHttpServletRequest();
 
-        Cookie cookie = new Cookie("Authasdfdsa", "originalToken");
-        http.setCookies(cookie);
-
         // when // then
-        assertThatThrownBy(() -> tokenProvider.getTokenFromCookie(http))
+        assertThatThrownBy(() -> tokenProvider.getTokenFromHeader(http))
                 .isInstanceOf(RestApiException.class)
-                .hasMessage("HTTP_COOKIE_KEY_NOT_FOUND");
+                .hasMessage("HTTP_HEADER_KEY_NOT_FOUND");
     }
 
-    @DisplayName("쿠키를 주고 유저 seq를 반환받는다. ")
+    @DisplayName("헤더를 주고 유저 seq를 반환받는다. ")
     @Test
     void getUserSeq() {
         // given
         List<String> l = tokenProvider.createTokens(1111L);
 
         MockHttpServletRequest http = new MockHttpServletRequest();
-        Cookie cookie = new Cookie("Auth", l.get(0));
-        http.setCookies(cookie);
+        http.addHeader("Authorization", l.get(0));
+
         // when
         Long userSeq = tokenProvider.getUserSeq(http);
 

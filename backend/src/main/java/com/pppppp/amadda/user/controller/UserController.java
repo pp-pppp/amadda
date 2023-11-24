@@ -53,7 +53,7 @@ public class UserController {
 
     @GetMapping("/access")
     public ApiResponse<UserAccessResponse> validateAccessToken(HttpServletRequest request) {
-        String token = tokenProvider.getTokenFromCookie(request);
+        String token = tokenProvider.getTokenFromHeader(request);
         UserAccessResponse response = userService.validateUser(token);
         return ApiResponse.ok(response);
     }
