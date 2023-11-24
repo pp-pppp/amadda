@@ -1,7 +1,7 @@
 // 한달치 스케줄 리스트를 갖고오는 훅
 import useSWR from 'swr';
 import { useDateStore } from '@SCH/store/dateStore';
-import { http } from 'connection';
+import { http } from '@SCH/utils/http';
 import { useEffect, useState } from 'react';
 import {
   ScheduleListReadResponse,

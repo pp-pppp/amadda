@@ -3,7 +3,7 @@ import { FriendGroups } from '@U/components/Friend/FriendGroups/FriendGroups';
 import { Friend } from '@U/components/Friend/Friend/Friend';
 import FRIENDS from '@U/constants/FRIENDS';
 import { useFriend } from '@U/hooks/useFriend';
-import { http } from 'connection';
+import { http } from '@U/utils/http';
 
 export default function FriendPage() {
   const { data, isLoading, error } = useFriend();
