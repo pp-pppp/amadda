@@ -1,4 +1,4 @@
-import { http } from '@SCH/utils/http';
+import { http } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import type { ScheduleDetailReadResponse } from 'amadda-global-types';
 const scheduleSeq = async (req: NextApiRequest, res: NextApiResponse) => {

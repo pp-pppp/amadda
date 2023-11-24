@@ -1,4 +1,4 @@
-import { http } from '@U/utils/http';
+import { http } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const request = async (req: NextApiRequest, res: NextApiResponse) => {

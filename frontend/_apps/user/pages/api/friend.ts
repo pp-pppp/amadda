@@ -1,4 +1,4 @@
-import { http } from '@U/utils/http';
+import { http } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import type { FriendReadResponse } from 'amadda-global-types';
 

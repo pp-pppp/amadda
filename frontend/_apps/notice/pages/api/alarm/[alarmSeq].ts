@@ -1,4 +1,4 @@
-import { http } from '@N/utils/http';
+import { http } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import type { AlarmReadResponse } from 'amadda-global-types';
 
