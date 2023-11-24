@@ -11,7 +11,9 @@ export default function Page({ children }) {
         <title>AMADDA</title>
         <meta property="og:title" content="AMADDA" key="title" />
       </Head>
-      <Calendar />
+      <HeaderLayout>
+        <Calendar />
+      </HeaderLayout>
     </div>
   );
 }
