@@ -1,9 +1,9 @@
-import { style } from '@vanilla-extract/css';
+import { style, styleVariants } from '@vanilla-extract/css';
 import colors from '#/constants/colors';
 
 export const BASE = style({
-  width: 'calc(100vw / 7)',
-  maxWidth: 'calc(430px / 7)',
+  // width: 'calc(430px / 7)',
+  // maxWidth: 'calc(430px / 7)',
   textAlign: 'center',
   height: '3.5rem',
   border: `1px solid transparent`,
@@ -13,12 +13,39 @@ export const BASE = style({
   alignItems: 'end',
 
   cursor: 'pointer',
+});
 
-  ':active': {
-    border: `1px solid ${colors.key}`,
-  },
+export const DATE = style({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  borderRadius: 50,
+  // padding: '1rem',
+  width: '2rem',
+  height: '2rem',
+  textAlign: 'center',
 });
 
 export const SELECTED = style({
-  border: `1px solid ${colors.key}`,
+  backgroundColor: colors.key,
+});
+
+export const SPAN = styleVariants({
+  WEEKDAY: {
+    textAlign: 'center',
+    color: colors.BLACK,
+  },
+  WEEKEND: {
+    textAlign: 'center',
+    color: colors.category.salmon,
+  },
+  OTHER: {
+    textAlign: 'center',
+    color: colors.GREY_400,
+  },
+});
+
+export const SELECTED_SPAN = style({
+  textAlign: 'center',
+  color: colors.white,
 });
