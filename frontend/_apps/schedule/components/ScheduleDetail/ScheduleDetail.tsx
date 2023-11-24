@@ -16,7 +16,7 @@ import {
   Btn,
   Textarea,
 } from 'external-temporal';
-import { http } from 'connection';
+import { http } from '@SCH/utils/http';
 import { InferGetServerSidePropsType } from 'next';
 import { getServerSideProps } from '@SCH/pages/schedule/[id]';
 import CALENDAR from '@SCH/constants/CALENDAR';

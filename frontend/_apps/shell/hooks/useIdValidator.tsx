@@ -1,3 +1,4 @@
+import { http } from '@SH/utils/http';
 import { UserIdCheckRequest, UserIdCheckResponse } from 'amadda-global-types';
 import { useState, useEffect } from 'react';
 
