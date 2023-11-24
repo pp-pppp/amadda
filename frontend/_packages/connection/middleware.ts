@@ -50,7 +50,7 @@ export const gateway = async (req: NextRequest) => {
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${RT}`,
+            Authorization: `${RT}`,
           }, //리프레시 토큰으로 프리플라이트 요청을 다시 보냅니다.
         }
       ).then(res => res.json());
