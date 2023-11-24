@@ -3,7 +3,7 @@ import { style } from '@vanilla-extract/css';
 
 export const BASE = style({
   padding: '0.75rem',
-  backgroundColor: colors.GREY_200,
+  backgroundColor: colors.GREY_100,
   borderRadius: '0.5rem',
 });
 
