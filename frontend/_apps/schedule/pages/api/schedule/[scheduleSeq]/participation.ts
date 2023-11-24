@@ -1,4 +1,4 @@
-import { http } from '@SCH/utils/http';
+import { http } from 'connection';
 import type { ParticipationListReadResponse } from 'amadda-global-types';
 import type { NextApiRequest, NextApiResponse } from 'next';
 

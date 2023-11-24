@@ -1,4 +1,4 @@
-import { http } from '@SCH/utils/http';
+import { http } from 'connection';
 import type {
   ScheduleCreateResponse,
   ScheduleListReadResponse,

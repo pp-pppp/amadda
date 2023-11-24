@@ -3,6 +3,10 @@ export const ROOT = process.env.SPRING_API_ROOT as string;
 
 const axios = Axios.create({
   baseURL: ROOT,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  withCredentials: true,
 });
 
 export const http = {
