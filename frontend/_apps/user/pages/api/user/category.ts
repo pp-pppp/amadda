@@ -1,4 +1,4 @@
-import { http } from 'connection';
+import { http } from '@U/utils/http';
 import {
   CategoryCreateResponse,
   CategoryReadResponse,
