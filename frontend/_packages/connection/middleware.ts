@@ -27,7 +27,10 @@ export const gateway = async (req: NextRequest) => {
     }
   )
     .then(res => res.json())
-    .catch(err => err.status);
+    .catch(err => {
+      console.log('preflight error', err);
+      return err.status;
+    });
 
   if ((await preflight.isBroken) || !preflight)
     //토큰이 만료된 것이 아니라 손상되었다면 로그아웃시킵니다.
@@ -64,6 +67,7 @@ export const gateway = async (req: NextRequest) => {
 
       return response; //원래 요청을 재시도합니다.
     } catch (err) {
+      console.log('re-preflight error', err);
       //400번대 이상의 응답이 온다면 리프레시 토큰에 문제가 있는 것이고,
       //300번대 응답이 온다면 문제가 있는 상황이므로 로그아웃시킵니다
       return NextResponse.rewrite(

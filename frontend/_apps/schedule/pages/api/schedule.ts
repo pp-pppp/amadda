@@ -31,15 +31,17 @@ const schedule = async (req: NextApiRequest, res: NextApiResponse) => {
       }
 
       const queryString = queryParams.toString();
-      const url = queryString
-        ? `${process.env.SPRING_API_ROOT}/schedule?${queryString}`
-        : `${process.env.SPRING_API_ROOT}/schedule`;
+      const url =
+        queryString.length > 0
+          ? `${process.env.SPRING_API_ROOT}/schedule?${queryString}`
+          : `${process.env.SPRING_API_ROOT}/schedule`;
 
       const SPRING_RES = await http.get<ScheduleListReadResponse>(
         `${process.env.SPRING_API_ROOT}/schedule${url}`
       );
       res.status(SPRING_RES.status).json(SPRING_RES.data);
     } catch (err) {
+      console.log(err);
       res
         .status(err.status || 500)
         .json(err?.data || { data: 'internal server error' });
@@ -54,6 +56,7 @@ const schedule = async (req: NextApiRequest, res: NextApiResponse) => {
       );
       res.status(SPRING_RES.status).json(SPRING_RES.data);
     } catch (err) {
+      console.log(err);
       res
         .status(err.status || 500)
         .json(err?.data || { data: 'internal server error' });
