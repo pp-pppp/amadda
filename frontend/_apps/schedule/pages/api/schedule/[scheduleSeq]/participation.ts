@@ -6,9 +6,9 @@ const participation = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
     //멘션 검색
     try {
-      const { searchKey } = req.query;
+      const { searchKey, scheduleSeq } = req.query;
       const SPRING_RES = await http.get<ParticipationListReadResponse>(
-        `${process.env.SPRING_API_ROOT}/schedule/{scheduleSeq}/participation?searchKey=${searchKey}`
+        `${process.env.SPRING_API_ROOT}/schedule/${scheduleSeq}/participation?searchKey=${searchKey}`
       );
       res.status(SPRING_RES.status).json(SPRING_RES.data);
     } catch (err) {
@@ -20,8 +20,9 @@ const participation = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'DELETE') {
     //참가 정보 삭제
     try {
+      const { scheduleSeq } = req.query;
       const SPRING_RES = await http.delete(
-        `${process.env.SPRING_API_ROOT}/schedule/{scheduleSeq}/participation`
+        `${process.env.SPRING_API_ROOT}/schedule/${scheduleSeq}/participation`
       );
       res.status(SPRING_RES.status).json(SPRING_RES.data);
     } catch (err) {
