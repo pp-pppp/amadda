@@ -14,20 +14,26 @@ const schedule = async (req: NextApiRequest, res: NextApiResponse) => {
 
       if (categorySeq) {
         let result: string = '';
-        if (Array.isArray(categorySeq)) result = categorySeq.join(',');
-        queryParams.append('category', result);
+        if (Array.isArray(categorySeq)) {
+          result = categorySeq.join(',');
+          queryParams.append('category', result);
+        }
       }
 
       if (searchKey) {
         let result: string = '';
-        if (Array.isArray(searchKey)) result = searchKey.join(',');
-        queryParams.append('searchKey', result);
+        if (Array.isArray(searchKey)) {
+          result = searchKey.join(',');
+          queryParams.append('searchKey', result);
+        }
       }
 
       if (unscheduled) {
         let result: string = '';
-        if (Array.isArray(unscheduled)) result = unscheduled.join(',');
-        queryParams.append('unscheduled', result);
+        if (Array.isArray(unscheduled)) {
+          result = unscheduled.join(',');
+          queryParams.append('unscheduled', result);
+        }
       }
 
       const queryString = queryParams.toString();
@@ -36,9 +42,7 @@ const schedule = async (req: NextApiRequest, res: NextApiResponse) => {
           ? `${process.env.SPRING_API_ROOT}/schedule?${queryString}`
           : `${process.env.SPRING_API_ROOT}/schedule`;
 
-      const SPRING_RES = await http.get<ScheduleListReadResponse>(
-        `${process.env.SPRING_API_ROOT}/schedule${url}`
-      );
+      const SPRING_RES = await http.get<ScheduleListReadResponse>(url);
       res.status(SPRING_RES.status).json(SPRING_RES.data);
     } catch (err) {
       console.log(err);
