@@ -92,6 +92,7 @@ public class UserService {
 
     public UserAccessResponse validateUser(String token) {
         try {
+            if(token.substring(0, 7).equals("Bearer ")) token = token.substring(7);
             tokenProvider.verifyToken(token);
             return UserAccessResponse.of(false, false, "-");
         } catch (ExpiredJwtException e1) {
