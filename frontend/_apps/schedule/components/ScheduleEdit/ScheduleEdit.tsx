@@ -68,7 +68,7 @@ export function ScheduleEdit() {
               />
               <Spacing dir="v" size="2" />
               <Flex justifyContents="start" width="fill">
-                <Span>시작</Span>
+                <Span>시작 날짜</Span>
                 <Spacing dir="h" size="0.5" />
                 <Input
                   id="start_year"
@@ -103,6 +103,10 @@ export function ScheduleEdit() {
                   disabled={data.isDateSelected ? true : false}
                   placeholder={CREATE.PLACEHOLDERS.TIME.DATE_START.DD}
                 />
+              </Flex>
+              <Spacing dir="v" size="0.5" />
+              <Flex justifyContents="start" width="fill">
+                <Span>시작 시간</Span>
                 <Spacing dir="h" size="0.5" />
                 <Input
                   id="start_time"
@@ -129,7 +133,7 @@ export function ScheduleEdit() {
               <Spacing dir="v" size="1" />
               {/* 종료 날짜 및 시간 */}
               <Flex justifyContents="start" width="fill">
-                <Span>종료</Span>
+                <Span>종료 날짜</Span>
                 <Spacing dir="h" size="0.5" />
                 <Input
                   id="end_year"
@@ -164,6 +168,11 @@ export function ScheduleEdit() {
                   disabled={data.isAllday || data.isDateSelected ? true : false}
                   placeholder={CREATE.PLACEHOLDERS.TIME.DATE_END.DD}
                 />
+                <Spacing dir="h" size="0.5" />
+              </Flex>
+              <Spacing dir="v" size="0.5" />
+              <Flex justifyContents="start" width="fill">
+                <Span>종료 시간</Span>
                 <Spacing dir="h" size="0.5" />
                 <Input
                   id="end_time"

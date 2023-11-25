@@ -1,76 +1,150 @@
-import { Flex, Profile, Spacing, Span } from 'external-temporal';
+import { Flex, P, Profile, Spacing, Span } from 'external-temporal';
 import React from 'react';
-import { CATEGORY, LAYOUT, NAME, PROFILE } from './MobileDailyPlate.css';
+import {
+  CATEGORY,
+  LAYOUT_SCH,
+  LAYOUT_UN,
+  NAME,
+  PERSON,
+  PROFILE,
+} from './MobileDailyPlate.css';
 import DAILYPLATE_TEXT from '@SCH/constants/DAILYPLATE_TEXT';
+import { ScheduleListReadResponse } from 'amadda-global-types';
+import { toLower } from '@SCH/utils/convertColors';
+import { useRouter } from 'next/router';
 
 export interface MobileDailyPlateProps {
-  color: keyof typeof CATEGORY;
-  scheduleName: string;
-  person: number;
-  participants?: string[];
-  isTimeSelected?: boolean;
-  isDateSelected?: boolean;
-  isAllday?: boolean;
-  scheduleStartAt?: string; //"yyyy-MM-dd hh:mm:ss",
-  scheduleEndAt?: string; //"yyyy-MM-dd hh:mm:ss",
-}
-
-export interface PropsObj {
-  MobileDailyPlateProps: MobileDailyPlateProps;
+  MobileDailyPlateProps: ScheduleListReadResponse;
+  type?: 'unscheduled' | 'scheduled';
 }
 
 export function MobileDailyPlate({
-  color,
-  scheduleName,
-  person,
-  participants = [],
-  isTimeSelected = false,
-  isDateSelected = false,
-  isAllday = false,
-  scheduleStartAt = '',
-  scheduleEndAt = '',
+  MobileDailyPlateProps,
+  type = 'scheduled',
 }: MobileDailyPlateProps) {
+  const router = useRouter();
+
   return (
-    <div className={LAYOUT.plate}>
-      <div className={LAYOUT.title}>
-        <div className={CATEGORY[color]} />
+    <div
+      className={type === 'scheduled' ? LAYOUT_SCH.plate : LAYOUT_UN.plate}
+      onClick={() =>
+        router.push(
+          `${process.env.NEXT_PUBLIC_SCHEDULE}/schedule/${MobileDailyPlateProps.scheduleSeq}`
+        )
+      }
+    >
+      <div
+        className={type === 'scheduled' ? LAYOUT_SCH.title : LAYOUT_UN.title}
+      >
+        <div
+          className={
+            CATEGORY[toLower[MobileDailyPlateProps.category.categoryColor]]
+          }
+        />
         <Spacing size="0.5" dir="h" />
-        <span className={NAME}>{scheduleName}</span>
+        <span className={NAME}>{MobileDailyPlateProps.scheduleName}</span>
       </div>
-      {person > 1 && (
-        <Flex flexDirection="row" justifyContents="flexEnd" alignItems="center">
+      {MobileDailyPlateProps.participants.length > 0 && (
+        <div
+          className={
+            type === 'scheduled'
+              ? LAYOUT_SCH.participants
+              : LAYOUT_UN.participants
+          }
+        >
           <Flex
             flexDirection="row"
-            justifyContents="center"
+            justifyContents="start"
             alignItems="center"
+            flexWrap="nowrap"
           >
-            {participants?.map((participant, idx) => (
-              <div className={PROFILE[idx]}>
-                <Profile src={participant} alt="part" size="small" />
+            {MobileDailyPlateProps.participants.length === 1 ? (
+              <div className={PROFILE[2]}>
+                <Profile
+                  src={MobileDailyPlateProps.participants[0].imageUrl}
+                  alt="part"
+                  size="small"
+                />
               </div>
-            ))}
+            ) : MobileDailyPlateProps.participants.length === 2 ? (
+              <>
+                <div className={PROFILE[1]}>
+                  <Profile
+                    src={MobileDailyPlateProps.participants[0].imageUrl}
+                    alt="part"
+                    size="small"
+                  />
+                </div>
+                <div className={PROFILE[2]}>
+                  <Profile
+                    src={MobileDailyPlateProps.participants[1].imageUrl}
+                    alt="part"
+                    size="small"
+                  />
+                </div>
+              </>
+            ) : (
+              MobileDailyPlateProps.participants
+                ?.slice(0, 3)
+                .map((participant, idx) => (
+                  <div className={PROFILE[idx]}>
+                    <Profile
+                      src={participant.imageUrl}
+                      alt="part"
+                      size="small"
+                    />
+                  </div>
+                ))
+            )}
           </Flex>
-          <Spacing size="0.25" dir="h" />
-          {person > 3 && (
-            <Span>{DAILYPLATE_TEXT.PARTICIPANTS(person - 3)}</Span>
+          {MobileDailyPlateProps.participants.length > 3 && (
+            <span className={PERSON}>
+              {DAILYPLATE_TEXT.PARTICIPANTS(
+                MobileDailyPlateProps.participants.length
+              )}
+            </span>
           )}
-        </Flex>
+        </div>
       )}
-      {isDateSelected && (
+      {MobileDailyPlateProps.isDateSelected && (
         <Flex flexDirection="row" justifyContents="flexEnd">
           <Spacing size="2" dir="h" />
-          {isAllday ? (
-            <div className={LAYOUT.width}>
+          {MobileDailyPlateProps.isAllday ? (
+            <div className={LAYOUT_SCH.width}>
               <Span>{DAILYPLATE_TEXT.ALLDAY}</Span>
             </div>
-          ) : isTimeSelected ? (
-            <div className={LAYOUT.width}>
-              <Span color="lightgrey">{DAILYPLATE_TEXT.UNSCHEDULED}</Span>
+          ) : MobileDailyPlateProps.isTimeSelected ? (
+            <div className={LAYOUT_SCH.time}>
+              <Span>
+                {
+                  MobileDailyPlateProps.scheduleStartAt
+                    .split(' ')[1]
+                    .split(':')[0]
+                }
+                :
+                {
+                  MobileDailyPlateProps.scheduleStartAt
+                    .split(' ')[1]
+                    .split(':')[1]
+                }
+              </Span>
+              <Span>
+                {
+                  MobileDailyPlateProps.scheduleEndAt
+                    .split(' ')[1]
+                    .split(':')[0]
+                }
+                :
+                {
+                  MobileDailyPlateProps.scheduleEndAt
+                    .split(' ')[1]
+                    .split(':')[1]
+                }
+              </Span>
             </div>
           ) : (
-            <div className={LAYOUT.time}>
-              <Span>{scheduleStartAt}</Span>
-              <Span>{scheduleEndAt}</Span>
+            <div className={LAYOUT_SCH.width}>
+              <Span color="lightgrey">{DAILYPLATE_TEXT.UNSCHEDULED}</Span>
             </div>
           )}
         </Flex>

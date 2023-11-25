@@ -25,5 +25,5 @@ export default function useServerTime() {
     }
   }, [data]);
 
-  return {};
+  return { data };
 }

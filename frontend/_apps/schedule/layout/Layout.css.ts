@@ -19,9 +19,10 @@ export const INDEXLAYOUT_MOBILE = style({
 });
 
 export const FABLAYOUT_MOBILE = style({
-  position: 'fixed',
+  position: 'absolute',
   bottom: '1rem',
-  right: 'calc(50vw - 223px)',
+  right: '1rem',
+  // right: 'calc(50vw - 223px)',
   zIndex: '999',
   cursor: 'pointer',
 });

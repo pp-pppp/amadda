@@ -72,9 +72,9 @@ export function MobileCalendarDate() {
     monthType: 'prev' | 'curr' | 'next',
     colIndex: number
   ) => {
-    if (monthType === 'prev' || monthType === 'next') return 'other';
-    else if (colIndex % 7 === 0 || colIndex % 7 === 6) return 'weekend';
-    return 'weekday';
+    if (monthType === 'prev' || monthType === 'next') return 'OTHER';
+    else if (colIndex % 7 === 0 || colIndex % 7 === 6) return 'WEEKEND';
+    return 'WEEKDAY';
   };
 
   const goPrev = (currDate: number) => {
