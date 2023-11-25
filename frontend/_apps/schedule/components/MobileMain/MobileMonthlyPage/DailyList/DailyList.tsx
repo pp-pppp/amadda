@@ -2,7 +2,7 @@ import { MobileDailyPlate } from '@SCH/components/MobileDailyPlate/MobileDailyPl
 import { MobileDailyPlateList } from '@SCH/components/MobileDailyPlateList/MobileDailyPlateList';
 import { useDateStore } from '@SCH/store/dateStore';
 import { useEffect, useState } from 'react';
-import { Spacing, Span } from '../../../../../../_packages/@external-temporal';
+import { Spacing, Span } from 'external-temporal';
 import { BASE } from './DailyList.css';
 import CALENDAR from '@SCH/constants/CALENDAR';
 import { useDailySchedule } from '@SCH/hooks/useScheduleList';
