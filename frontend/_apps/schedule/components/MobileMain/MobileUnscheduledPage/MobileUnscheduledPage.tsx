@@ -30,10 +30,8 @@ export function MobileUnscheduledPage(): ReactNode {
           unscheduledList.map((schedule, idx) => (
             <div key={idx}>
               <MobileDailyPlate
-                color={toLower[schedule.category.categoryColor]}
-                scheduleName={schedule.scheduleName}
-                participants={profileImages}
-                person={schedule.participants.length}
+                MobileDailyPlateProps={schedule}
+                type="unscheduled"
               />
               <Spacing dir="v" size="0.5" />
             </div>
