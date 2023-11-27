@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Flex, H6, P, Spacing, Switch } from 'external-temporal';
 import ALARMTYPE from '../../constants/ALARMTYPE';
 import { BACKGROUND } from '../Notice/Notice.css';
-import { http } from 'connection';
+import { http } from '@N/utils/http';
 
 export interface NoticeProps {
   alarmSeq?: number | null;

@@ -1,14 +1,13 @@
+import { http } from '@U/utils/http';
+import { auth } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { auth, https } from 'connection';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const token = req.headers.authorization || '';
   if (req.method === 'POST') {
     //친구신청 보내기
     try {
-      const SPRING_RES = await https.post(
+      const SPRING_RES = await http.post(
         `${process.env.SPRING_API_ROOT}/friend/request`,
-        token,
         req.body
       );
       res.status(SPRING_RES.status).json(SPRING_RES.data);

@@ -1,8 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { auth, https } from 'connection';
+import { auth } from 'connection';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const token = req.headers.authorization || '';
   if (req.method === 'POST') {
     try {
     } catch (err) {

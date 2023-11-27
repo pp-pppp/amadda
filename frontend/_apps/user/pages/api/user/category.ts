@@ -1,18 +1,17 @@
+import { http } from '@U/utils/http';
 import {
   CategoryCreateResponse,
   CategoryReadResponse,
 } from 'amadda-global-types';
+import { auth } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { auth, https } from 'connection';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const token = req.headers.authorization || '';
   if (req.method === 'GET') {
     //해당 사용자의 카테고리 목록 띄워주기
     try {
-      const SPRING_RES = await https.get<Array<CategoryReadResponse>>(
-        `${process.env.SPRING_API_ROOT}/user/category`,
-        token
+      const SPRING_RES = await http.get<Array<CategoryReadResponse>>(
+        `${process.env.SPRING_API_ROOT}/user/category`
       );
       res.status(SPRING_RES.status).json(SPRING_RES.data);
     } catch (err) {
@@ -25,9 +24,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     //카테고리 생성
     try {
-      const SPRING_RES = await https.post<CategoryCreateResponse>(
+      const SPRING_RES = await http.post<CategoryCreateResponse>(
         `${process.env.SPRING_API_ROOT}/user/category`,
-        token,
         req.body
       );
       res.status(SPRING_RES.status).json(SPRING_RES.data);

@@ -2,7 +2,7 @@ import axios from 'axios';
 import useSWR from 'swr';
 import { useDateStore } from '@SCH/store/dateStore';
 import { useEffect, useState } from 'react';
-import { http } from 'connection';
+import { http } from '@SCH/utils/http';
 import { CategoryReadResponse } from 'amadda-global-types';
 
 const fetcher = url =>

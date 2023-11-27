@@ -1,14 +1,12 @@
+import { http } from '@SCH/utils/http';
 import type {
   ScheduleCreateResponse,
   ScheduleListReadResponse,
 } from 'amadda-global-types';
-
+import { auth } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { auth, https } from 'connection';
-
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const token = req.headers.authorization || '';
   if (req.method === 'GET') {
     //일정 조회 및 검색
     try {
@@ -45,7 +43,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           ? `${process.env.SPRING_API_ROOT}/schedule?${queryString}`
           : `${process.env.SPRING_API_ROOT}/schedule`;
 
-      const SPRING_RES = await https.get<ScheduleListReadResponse>(url, token);
+      const SPRING_RES = await http.get<ScheduleListReadResponse>(url);
       res.status(SPRING_RES.status).json(SPRING_RES.data);
     } catch (err) {
       console.log(err);
@@ -57,9 +55,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     //일정 생성
     try {
-      const SPRING_RES = await https.post<ScheduleCreateResponse>(
+      const SPRING_RES = await http.post<ScheduleCreateResponse>(
         `${process.env.SPRING_API_ROOT}/schedule`,
-        token,
         req.body
       );
       res.status(SPRING_RES.status).json(SPRING_RES.data);
