@@ -1,11 +1,13 @@
-import { auth, http } from 'connection';
+import { auth, https } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  const token = req.headers.authorization || '';
   try {
     if (req.method === 'POST') {
-      const SPRING_RES = await http.post(
+      const SPRING_RES = await https.post(
         `${process.env.SPRING_API_ROOT}/alarm/unsubscribe`,
+        token,
         req.body
       );
       res.status(SPRING_RES.status).json(SPRING_RES.data);
