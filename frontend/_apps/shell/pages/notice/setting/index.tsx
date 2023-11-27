@@ -14,11 +14,9 @@ export default function Page({ children }) {
         <title>AMADDA</title>
         <meta property="og:title" content="AMADDA" key="title" />
       </Head>
-      <NoticeConfig />
+      <HeaderLayout>
+        <NoticeConfig />
+      </HeaderLayout>
     </div>
   );
 }
-
-Page.getLayout = function getLayout(page: ReactNode) {
-  return <HeaderLayout>{page}</HeaderLayout>;
-};

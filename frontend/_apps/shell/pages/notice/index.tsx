@@ -13,12 +13,10 @@ export default function Page({ children }) {
         <meta property="og:title" content="AMADDA" key="title" />
       </Head>
       <main>
-        <Notice />
+        <HeaderLayout>
+          <Notice />
+        </HeaderLayout>
       </main>
     </div>
   );
 }
-
-Page.getLayout = function getLayout(page: ReactNode) {
-  return <HeaderLayout>{page}</HeaderLayout>;
-};
