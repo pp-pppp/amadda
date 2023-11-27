@@ -45,7 +45,8 @@ export function useMonthlySchedule() {
   const [monthlyScheduleList, setMonthlyScheduleList] =
     useState<ScheduleSearchResponse>({});
   const { selectedYear, selectedMonth } = useDateStore();
-  const { data, error, isLoading } = useSWR('/api/schedule?', () =>
+
+  const { data, error, isLoading } = useSWR('/api/schedule', () =>
     scheduleList({ year: selectedYear, month: selectedMonth })
   );
 
@@ -60,7 +61,7 @@ export function useDailySchedule() {
   >([]);
   const { selectedYear, selectedMonth, selectedDate } = useDateStore();
 
-  const { data, error, isLoading } = useSWR('/api/schedule?', () =>
+  const { data, error, isLoading } = useSWR('/api/schedule', () =>
     scheduleList({
       year: selectedYear,
       month: selectedMonth,
@@ -84,7 +85,7 @@ export function useUnscheduled() {
   const [unscheduledList, setUnscheduledList] = useState<
     Array<ScheduleListReadResponse>
   >([]);
-  const { data, error, isLoading } = useSWR('/api/schedule?', () =>
+  const { data, error, isLoading } = useSWR('/api/schedule', () =>
     scheduleList({ unscheduled: true })
   );
 
