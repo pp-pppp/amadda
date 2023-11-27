@@ -1,8 +1,9 @@
 import { http } from '@N/utils/http';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import type { AlarmReadResponse } from 'amadda-global-types';
+import { auth } from 'connection';
 
-const alarmSeq = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { alarmSeq } = req.query;
   if (req.method === 'POST') {
     try {
@@ -20,4 +21,4 @@ const alarmSeq = async (req: NextApiRequest, res: NextApiResponse) => {
   res.status(400).json({ data: 'bad request' });
 };
 
-export default alarmSeq;
+export default auth(handler);

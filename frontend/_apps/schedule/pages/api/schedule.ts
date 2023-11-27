@@ -3,9 +3,10 @@ import type {
   ScheduleCreateResponse,
   ScheduleListReadResponse,
 } from 'amadda-global-types';
+import { auth } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const schedule = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
     //일정 조회 및 검색
     try {
@@ -69,4 +70,4 @@ const schedule = async (req: NextApiRequest, res: NextApiResponse) => {
   res.status(400).json({ data: 'bad request' });
 };
 
-export default schedule;
+export default auth(handler);

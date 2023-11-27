@@ -1,7 +1,9 @@
 import { http } from '@SCH/utils/http';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import type { ScheduleDetailReadResponse } from 'amadda-global-types';
-const scheduleSeq = async (req: NextApiRequest, res: NextApiResponse) => {
+import { auth } from 'connection';
+
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { scheduleSeq } = req.query;
   if (req.method === 'GET') {
     //사용자 일정 상세 보기 (댓글 포함)
@@ -47,4 +49,4 @@ const scheduleSeq = async (req: NextApiRequest, res: NextApiResponse) => {
   res.status(400).json({ data: 'bad request' });
 };
 
-export default scheduleSeq;
+export default auth(handler);

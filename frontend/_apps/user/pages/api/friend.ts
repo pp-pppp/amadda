@@ -1,8 +1,9 @@
 import { http } from '@U/utils/http';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import type { FriendReadResponse } from 'amadda-global-types';
+import { auth } from 'connection';
 
-const friend = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
     //친구 목록 검색(친구+그룹)
     try {
@@ -20,4 +21,4 @@ const friend = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   res.status(400).json({ data: 'bad request' });
 };
-export default friend;
+export default auth(handler);

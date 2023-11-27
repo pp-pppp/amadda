@@ -1,7 +1,7 @@
-import { http } from 'connection';
+import { auth, http } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const subscribe = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     if (req.method === 'POST') {
       const SPRING_RES = await http.post(
@@ -20,4 +20,4 @@ const subscribe = async (req: NextApiRequest, res: NextApiResponse) => {
   res.status(400).json({ data: 'bad request' });
 };
 
-export default subscribe;
+export default auth(handler);

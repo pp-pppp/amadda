@@ -1,8 +1,9 @@
 import { http } from '@U/utils/http';
 import { CategoryUpdateResponse } from 'amadda-global-types';
+import { auth } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const categorySeq = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { categorySeq } = req.query;
   if (req.method === 'PUT') {
     //카테고리 수정 (이름/색깔)
@@ -35,4 +36,4 @@ const categorySeq = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   res.status(400).json({ data: 'bad request' });
 };
-export default categorySeq;
+export default auth(handler);

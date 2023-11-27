@@ -1,8 +1,9 @@
 import { http } from '@U/utils/http';
 import { UserRelationResponse } from 'amadda-global-types';
+import { auth } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const user = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
     //전체 유저 검색
     try {
@@ -34,4 +35,4 @@ const user = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   res.status(400).json({ data: 'bad request' });
 };
-export default user;
+export default auth(handler);

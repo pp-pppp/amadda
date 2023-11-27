@@ -1,7 +1,8 @@
 import { http } from '@SCH/utils/http';
+import { auth } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const comment = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { scheduleSeq } = req.query;
   if (req.method === 'POST') {
     //댓글 작성
@@ -20,4 +21,4 @@ const comment = async (req: NextApiRequest, res: NextApiResponse) => {
   res.status(400).json({ data: 'bad request' });
 };
 
-export default comment;
+export default auth(handler);

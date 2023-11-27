@@ -1,7 +1,8 @@
 import { http } from '@U/utils/http';
+import { auth } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const friendUserSeq = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { friendUserSeq } = req.query;
   if (req.method === 'DELETE') {
     //친구 언팔
@@ -18,4 +19,4 @@ const friendUserSeq = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   res.status(400).json({ data: 'bad request' });
 };
-export default friendUserSeq;
+export default auth(handler);

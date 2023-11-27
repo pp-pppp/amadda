@@ -1,7 +1,8 @@
 import { http } from '@U/utils/http';
+import { auth } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const requestSeq = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { requestSeq } = req.query;
   if (req.method === 'POST') {
     //친구신청 수락
@@ -33,4 +34,4 @@ const requestSeq = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   res.status(400).json({ data: 'bad request' });
 };
-export default requestSeq;
+export default auth(handler);

@@ -1,8 +1,9 @@
 import { http } from '@SCH/utils/http';
 import type { ParticipationListReadResponse } from 'amadda-global-types';
+import { auth } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const participation = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
     //멘션 검색
     try {
@@ -34,4 +35,4 @@ const participation = async (req: NextApiRequest, res: NextApiResponse) => {
   res.status(400).json({ data: 'bad request' });
 };
 
-export default participation;
+export default auth(handler);
