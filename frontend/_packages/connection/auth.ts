@@ -14,7 +14,7 @@ export function auth(fn: API_HANDLER): API_HANDLER {
     //클라이언트에서 보낸 쿠키의 access token을 가져옵니다.
 
     try {
-      const ACCESS_TOKEN = VERIFIED_TOKEN(CLIENT_TOKEN);
+      const ACCESS_TOKEN = await VERIFIED_TOKEN(CLIENT_TOKEN);
       //현재 토큰이 유효하면 현재 토큰, 아니라면 새 토큰이 들어옵니다.
       req.headers.authorization = `Bearer ${ACCESS_TOKEN}`;
       await fn(req, res);
@@ -24,6 +24,7 @@ export function auth(fn: API_HANDLER): API_HANDLER {
       );
     } catch (err) {
       //모든 종류의 에러는 로그아웃으로 리다이렉트시킵니다.
+      console.log(err);
       return res.redirect(`${process.env.NEXT_PUBLIC_SHELL}/signout`);
     }
   };
@@ -35,7 +36,7 @@ async function VERIFY(type: 'access' | 'refresh', token: string): Promise<any> {
     {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `${token}`,
+        Authorization: `Bearer ${token}`,
       },
     }
   );
