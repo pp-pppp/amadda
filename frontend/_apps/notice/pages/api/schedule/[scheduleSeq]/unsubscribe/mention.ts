@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { auth } from 'connection';
 
-const mention = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     try {
     } catch (err) {
@@ -10,4 +11,4 @@ const mention = async (req: NextApiRequest, res: NextApiResponse) => {
   res.status(400).json({ data: 'bad request' });
 };
 
-export default mention;
+export default auth(handler);
