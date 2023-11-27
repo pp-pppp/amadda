@@ -17,7 +17,7 @@ export function MobileMain() {
       <div
         className={FABLAYOUT_MOBILE}
         onClick={() =>
-          router.push(`${process.env.NEXT_PUBLIC_SHELL}/schedule/edit`)
+          router.push(`${process.env.NEXT_PUBLIC_SHELL}/schedule/create`)
         }
       >
         <FAB />
