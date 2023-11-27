@@ -36,7 +36,7 @@ const scheduleList = ({
 
   return http
     .get<ScheduleSearchResponse>(
-      `${process.env.NEXT_PUBLIC_SCHEDULE}/api/schedule${params.toString()}`
+      `${process.env.NEXT_PUBLIC_SCHEDULE}/api/schedule?${params.toString()}`
     )
     .then(res => res.data);
 };

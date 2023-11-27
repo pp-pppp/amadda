@@ -227,9 +227,7 @@ export function ScheduleEditData(props: {
         .then(json =>
           router.push(`${process.env.NEXT_PUBLIC_SHELL}/schedule/${json.data}`)
         )
-        .catch(err =>
-          router.push(`${process.env.NEXT_PUBLIC_SHELL}/schedule)`)
-        );
+        .catch(err => router.push(`${process.env.NEXT_PUBLIC_SHELL}/schedule`));
     }
     data = {
       scheduleContent,
@@ -255,7 +253,7 @@ export function ScheduleEditData(props: {
       .then(json =>
         router.push(`${process.env.NEXT_PUBLIC_SHELL}/schedule/${json.data}`)
       )
-      .catch(err => router.push(`${process.env.NEXT_PUBLIC_SHELL}/schedule)`));
+      .catch(err => router.push(`${process.env.NEXT_PUBLIC_SHELL}/schedule`));
   };
 
   const data = {
