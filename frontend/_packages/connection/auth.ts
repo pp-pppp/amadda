@@ -7,7 +7,7 @@ type API_HANDLER = (
   response: NextApiResponse
 ) => Promise<NextApiResponse | void>;
 
-export default function auth(fn: API_HANDLER): API_HANDLER {
+export function auth(fn: API_HANDLER): API_HANDLER {
   return async function (req: NextApiRequest, res: NextApiResponse) {
     //auth는 api 핸들러를 받아 인증 처리를 한 API 결과를 리턴합니다.
     const CLIENT_TOKEN = req.cookies.Auth || '';
