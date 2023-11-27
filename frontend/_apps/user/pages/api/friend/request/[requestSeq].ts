@@ -1,15 +1,14 @@
+import { http } from '@U/utils/http';
+import { auth } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { auth, https } from 'connection';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const token = req.headers.authorization || '';
   const { requestSeq } = req.query;
   if (req.method === 'POST') {
     //친구신청 수락
     try {
-      const SPRING_RES = await https.post(
+      const SPRING_RES = await http.post(
         `${process.env.SPRING_API_ROOT}/friend/request/${requestSeq}`,
-        token,
         req.body
       );
       res.status(SPRING_RES.status).json(SPRING_RES.data);
@@ -22,9 +21,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'PUT') {
     //친구신청 거절
     try {
-      const SPRING_RES = await https.put(
+      const SPRING_RES = await http.put(
         `${process.env.SPRING_API_ROOT}/friend/request/${requestSeq}`,
-        token,
         req.body
       );
       res.status(SPRING_RES.status).json(SPRING_RES.data);

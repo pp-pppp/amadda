@@ -7,7 +7,7 @@ import { useSearchFriend, useSearchUser } from '@U/hooks/useFriend';
 import { FriendGroups } from '../FriendGroups/FriendGroups';
 import FRIENDS from '../../../constants/FRIENDS';
 import { Friend } from '../Friend/Friend';
-import { http } from 'connection';
+import { http } from '@U/utils/http';
 
 export interface FriendSearchProps {}
 export function FriendSearch({}: FriendSearchProps) {

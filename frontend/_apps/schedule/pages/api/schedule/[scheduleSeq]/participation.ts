@@ -1,16 +1,15 @@
+import { http } from '@SCH/utils/http';
 import type { ParticipationListReadResponse } from 'amadda-global-types';
+import { auth } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { auth, https } from 'connection';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const token = req.headers.authorization || '';
   if (req.method === 'GET') {
     //멘션 검색
     try {
       const { searchKey, scheduleSeq } = req.query;
-      const SPRING_RES = await https.get<ParticipationListReadResponse>(
-        `${process.env.SPRING_API_ROOT}/schedule/${scheduleSeq}/participation?searchKey=${searchKey}`,
-        token
+      const SPRING_RES = await http.get<ParticipationListReadResponse>(
+        `${process.env.SPRING_API_ROOT}/schedule/${scheduleSeq}/participation?searchKey=${searchKey}`
       );
       res.status(SPRING_RES.status).json(SPRING_RES.data);
     } catch (err) {
@@ -23,9 +22,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //참가 정보 삭제
     try {
       const { scheduleSeq } = req.query;
-      const SPRING_RES = await https.delete(
-        `${process.env.SPRING_API_ROOT}/schedule/${scheduleSeq}/participation`,
-        token
+      const SPRING_RES = await http.delete(
+        `${process.env.SPRING_API_ROOT}/schedule/${scheduleSeq}/participation`
       );
       res.status(SPRING_RES.status).json(SPRING_RES.data);
     } catch (err) {

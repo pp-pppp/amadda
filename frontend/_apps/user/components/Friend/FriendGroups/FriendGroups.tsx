@@ -15,7 +15,7 @@ import {
 import { MODE_CONTEXT } from '../FriendFrame/FriendFrame';
 import FriendsConstants from '../../../constants/FRIENDS';
 import { useRouter } from 'next/router';
-import { http } from 'connection';
+import { http } from '@U/utils/http';
 import { GroupCreateRequest, GroupUpdateRequest } from 'amadda-global-types';
 
 export interface FriendGroupProps {

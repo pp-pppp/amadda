@@ -1,16 +1,15 @@
+import { http } from '@U/utils/http';
 import { UserRelationResponse } from 'amadda-global-types';
-import { auth, https } from 'connection';
+import { auth } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const token = req.headers.authorization || '';
   if (req.method === 'GET') {
     //전체 유저 검색
     try {
       const { searchKey } = req.query;
-      const SPRING_RES = await https.get<UserRelationResponse>(
-        `${process.env.SPRING_API_ROOT}/user?searchKey=${searchKey}`,
-        token
+      const SPRING_RES = await http.get<UserRelationResponse>(
+        `${process.env.SPRING_API_ROOT}/user?searchKey=${searchKey}`
       );
       res.status(SPRING_RES.status).json(SPRING_RES.data);
     } catch (err) {
@@ -23,9 +22,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'DELETE') {
     //회원탈퇴
     try {
-      const SPRING_RES = await https.delete(
-        `${process.env.SPRING_API_ROOT}/user`,
-        token
+      const SPRING_RES = await http.delete(
+        `${process.env.SPRING_API_ROOT}/user`
       );
       res.status(SPRING_RES.status).json(SPRING_RES.data);
     } catch (err) {

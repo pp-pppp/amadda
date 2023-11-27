@@ -1,15 +1,14 @@
+import { http } from '@U/utils/http';
+import { auth } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { auth, https } from 'connection';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const token = req.headers.authorization || '';
   const { groupSeq } = req.query;
   if (req.method === 'DELETE') {
     //그룹 삭제
     try {
-      const SPRING_RES = await https.delete(
-        `${process.env.SPRING_API_ROOT}/friend/group/${groupSeq}`,
-        token
+      const SPRING_RES = await http.delete(
+        `${process.env.SPRING_API_ROOT}/friend/group/${groupSeq}`
       );
       res.status(SPRING_RES.status).json(SPRING_RES.data);
     } catch (err) {
