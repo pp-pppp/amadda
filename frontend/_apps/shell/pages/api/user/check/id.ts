@@ -1,4 +1,4 @@
-import { http } from '@SH/utils/http';
+import { http } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import type { UserIdCheckResponse } from 'amadda-global-types';
 
