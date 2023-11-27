@@ -1,8 +1,8 @@
-import { http } from '@SCH/utils/http';
-import { auth } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { auth, http } from 'connection';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  const token = req.headers.authorization || '';
   if (req.method === 'GET') {
     //현재 서버 시간 반환
     try {

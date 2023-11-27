@@ -1,8 +1,7 @@
-import { http } from '@SH/utils/http';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import type { UserInitRequest, UserJwtResponse } from 'amadda-global-types';
 import cookie from 'cookie';
-import { KV } from 'connection';
+import { KV, http } from 'connection';
 
 const signup = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {

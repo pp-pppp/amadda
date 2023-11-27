@@ -1,4 +1,4 @@
-import { http } from '@N/utils/http';
+import { http } from 'connection';
 import { AlarmReadResponse } from 'amadda-global-types';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
