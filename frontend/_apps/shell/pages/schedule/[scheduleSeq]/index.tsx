@@ -17,7 +17,3 @@ export default function Page({ children }) {
     </div>
   );
 }
-
-Page.getLayout = function getLayout(page: ReactNode) {
-  return <HeaderLayout>{page}</HeaderLayout>;
-};
