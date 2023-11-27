@@ -3,9 +3,10 @@ import {
   CategoryCreateResponse,
   CategoryReadResponse,
 } from 'amadda-global-types';
+import { auth } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const user = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
     //해당 사용자의 카테고리 목록 띄워주기
     try {
@@ -37,4 +38,4 @@ const user = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   res.status(400).json({ data: 'bad request' });
 };
-export default user;
+export default auth(handler);

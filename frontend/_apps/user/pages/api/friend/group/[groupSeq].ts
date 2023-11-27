@@ -1,7 +1,8 @@
 import { http } from '@U/utils/http';
+import { auth } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const groupSeq = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { groupSeq } = req.query;
   if (req.method === 'DELETE') {
     //그룹 삭제
@@ -18,4 +19,4 @@ const groupSeq = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   res.status(400).json({ data: 'bad request' });
 };
-export default groupSeq;
+export default auth(handler);

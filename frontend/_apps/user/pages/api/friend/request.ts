@@ -1,7 +1,8 @@
 import { http } from '@U/utils/http';
+import { auth } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const request = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     //친구신청 보내기
     try {
@@ -18,4 +19,4 @@ const request = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   res.status(400).json({ data: 'bad request' });
 };
-export default request;
+export default auth(handler);
