@@ -1,7 +1,8 @@
 import { KAFKA_SCHEDULE } from 'amadda-kafka';
+import { auth } from 'connection';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function event(req: NextApiRequest, res: NextApiResponse) {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
@@ -24,3 +25,4 @@ export default async function event(req: NextApiRequest, res: NextApiResponse) {
     return res.status(500).json({ data: 'internal server error' });
   }
 }
+export default auth(handler);

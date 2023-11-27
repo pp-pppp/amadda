@@ -1,7 +1,8 @@
 import { http } from '@SCH/utils/http';
+import { auth } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const commentSeq = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { scheduleSeq, commentSeq } = req.query;
   if (req.method === 'DELETE') {
     //댓글 삭제
@@ -19,4 +20,4 @@ const commentSeq = async (req: NextApiRequest, res: NextApiResponse) => {
   res.status(400).json({ data: 'bad request' });
 };
 
-export default commentSeq;
+export default auth(handler);

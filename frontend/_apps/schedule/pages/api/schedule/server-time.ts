@@ -1,7 +1,8 @@
 import { http } from '@SCH/utils/http';
+import { auth } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const serverTime = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
     //현재 서버 시간 반환
     try {
@@ -18,4 +19,4 @@ const serverTime = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default serverTime;
+export default auth(handler);
