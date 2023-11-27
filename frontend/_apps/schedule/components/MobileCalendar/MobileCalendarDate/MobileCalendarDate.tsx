@@ -9,6 +9,7 @@ import {
   ScheduleSearchResponse,
 } from 'amadda-global-types';
 import { useCategoryStore } from '@SCH/store/categoryStore';
+import useServerTime from '@SCH/hooks/useServerTime';
 
 export interface DateInfo {
   year: string;
@@ -18,6 +19,7 @@ export interface DateInfo {
 
 export function MobileCalendarDate() {
   // 전역 store에서 연월 정보 가져오기
+  useServerTime();
   const { selectedYear, selectedMonth, selectedDate } = useDateStore();
   const { selectedCategorySeq, selectedAll, selectedNone } = useCategoryStore();
   const {
