@@ -1,4 +1,3 @@
-// import { http } from '@SH/utils/http';
 import {
   UserNameCheckRequest,
   UserNameCheckResponse,
