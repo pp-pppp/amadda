@@ -9,7 +9,7 @@ export const BASE = style({
 });
 export const ICON = style({});
 export const MENU = style({
-  width: '3rem',
+  width: '2.5rem',
   height: '2.25rem',
   background: 'transparent',
   border: 'none',
