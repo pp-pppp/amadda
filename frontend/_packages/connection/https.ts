@@ -5,7 +5,7 @@ export const https = {
     axios
       .get<Response>(url, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `${token}`,
         },
       })
       .then(res => res),
@@ -17,7 +17,7 @@ export const https = {
     axios
       .post<Response>(url, body, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `${token}`,
         },
       })
       .then(res => res),
@@ -29,7 +29,7 @@ export const https = {
     axios
       .put<Response>(url, body, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `${token}`,
         },
       })
       .then(res => res),
@@ -41,7 +41,7 @@ export const https = {
     axios
       .patch<Response>(url, body, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `${token}`,
         },
       })
       .then(res => res),
@@ -49,7 +49,7 @@ export const https = {
     axios
       .delete<Response>(url, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `${token}`,
         },
       })
       .then(res => res),
