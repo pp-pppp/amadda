@@ -9,8 +9,8 @@ export const BASE = style({
 });
 export const ICON = style({});
 export const MENU = style({
-  width: '3.25rem',
-  height: '2.5rem',
+  width: '3rem',
+  height: '2.25rem',
   background: 'transparent',
   border: 'none',
   borderRadius: '0.5rem',

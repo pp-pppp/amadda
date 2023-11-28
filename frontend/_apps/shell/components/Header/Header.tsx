@@ -17,10 +17,11 @@ export function Header() {
 
     eventSource.onmessage = async (e: MessageEvent) => {
       const data: AlarmReadResponse = JSON.parse(await e.data);
-      if (data) setNotice(true);
+      if (!data?.isRead) setNotice(true);
     };
 
     eventSource.onerror = async (error: Event) => {
+      setNotice(false);
       console.error('EventSource failed:', error);
       eventSource.close();
     };
@@ -34,9 +35,9 @@ export function Header() {
       <Flex justifyContents="spaceBetween">
         <Flex justifyContents="start">
           <Menu
-            iconType="back"
+            iconType="cal"
             onClick={() => {
-              router.back();
+              router.push(`${process.env.NEXT_PUBLIC_SHELL}/schedule`);
             }}
           />
         </Flex>

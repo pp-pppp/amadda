@@ -11,7 +11,7 @@ export interface MenuProps extends HTMLAttributes<HTMLButtonElement> {
 export function Menu({ iconType, data, onClick }: MenuProps) {
   return (
     <button className={MENU} onClick={onClick}>
-      <Icon type={iconType} color="key" cursor="pointer" />
+      <Icon type={iconType} color="key" cursor="pointer" size="28" />
     </button>
   );
 }
