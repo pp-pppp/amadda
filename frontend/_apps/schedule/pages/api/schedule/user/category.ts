@@ -11,7 +11,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //해당 사용자의 카테고리 목록 띄워주기
     try {
       const SPRING_RES = await https.get<Array<CategoryReadResponse>>(
-        `${process.env.SPRING_API_ROOT}/user/category`,
+        `${process.env.SPRING_API_ROOT}/schedule/user/category`,
         token
       );
       res.status(SPRING_RES.status).json(SPRING_RES.data);
@@ -26,7 +26,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //카테고리 생성
     try {
       const SPRING_RES = await https.post<CategoryCreateResponse>(
-        `${process.env.SPRING_API_ROOT}/user/category`,
+        `${process.env.SPRING_API_ROOT}/schedule/user/category`,
         token,
         req.body
       );

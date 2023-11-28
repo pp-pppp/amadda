@@ -109,7 +109,7 @@ export function ScheduleEditData(props: {
   const [categoryInput, setCategoryInput] = useState<string>('');
 
   const getCategory = () =>
-    fetch(`${process.env.NEXT_PUBLIC_USER}/api/user/category`, {
+    fetch(`${process.env.NEXT_PUBLIC_SCHEDULE}/api/schedule/user/category`, {
       headers: {
         'Content-Type': 'application/json',
       },
