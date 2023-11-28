@@ -9,7 +9,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //카테고리 수정 (이름/색깔)
     try {
       const SPRING_RES = await https.put<CategoryUpdateResponse>(
-        `${process.env.SPRING_API_ROOT}/user/category/${categorySeq}`,
+        `${process.env.SPRING_API_ROOT}/schedule/user/category/${categorySeq}`,
         token,
         req.body
       );
@@ -25,7 +25,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //카테고리 삭제
     try {
       const SPRING_RES = await https.delete(
-        `${process.env.SPRING_API_ROOT}/user/category/${categorySeq}`,
+        `${process.env.SPRING_API_ROOT}/schedule/user/category/${categorySeq}`,
         token
       );
       res.status(SPRING_RES.status).json(SPRING_RES.data);
