@@ -36,7 +36,7 @@ export function Chip({
         <span className={classname}>
           {label}
           <button className={KEYWORD_DELETE} onClick={onDelete}>
-            <Icon type="close" color="white" cursor="pointer" />
+            <Icon type="close" color="white" cursor="pointer" size="20" />
           </button>
         </span>
       );
