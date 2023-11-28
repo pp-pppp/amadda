@@ -8,13 +8,16 @@ import { CategoryReadResponse } from 'amadda-global-types';
 const fetcher = url =>
   http
     .get<Array<CategoryReadResponse>>(
-      `${process.env.NEXT_PUBLIC_USER}/api/user/category`
+      `${process.env.NEXT_PUBLIC_SCHEDULE}/api/schedule/user/category`
     )
     .then(res => res.data);
 
 export default function useCategory() {
   const [categories, setCategories] = useState<Array<CategoryReadResponse>>([]);
-  const { data, error, isLoading } = useSWR('/api/user/category', fetcher);
+  const { data, error, isLoading } = useSWR(
+    '/api/schedule/user/category',
+    fetcher
+  );
 
   useEffect(() => {
     data && setCategories(data);
