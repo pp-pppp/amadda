@@ -5,7 +5,14 @@ module.exports = withVanillaExtract({
   images: {
     domains: [process.env.KAKAO_CDN_DOMAIN, process.env.S3_DOMAIN],
   },
-  transpilePackages: ['ui'],
+  transpilePackages: [
+    'external-temporal',
+    'connection',
+    'amadda-kafka',
+    'global-types',
+    'tsconfig',
+    'eslint-config-custom',
+  ],
   basePath: '/mf/notice',
   async headers() {
     return [
@@ -35,8 +42,8 @@ module.exports = withVanillaExtract({
           name: 'notice',
           filename: 'static/chunks/entry.js',
           exposes: {
-            '/Notice': './pages/notice/index',
-            '/NoticeConfig': './pages/notice-config/index',
+            './Notice': './pages/notice/index.tsx',
+            './NoticeConfig': './pages/notice-config/index.tsx',
           },
           shared: {
             next: {
