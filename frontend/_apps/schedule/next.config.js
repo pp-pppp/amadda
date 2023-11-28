@@ -5,7 +5,14 @@ module.exports = withVanillaExtract({
   images: {
     domains: [process.env.KAKAO_CDN_DOMAIN, process.env.S3_DOMAIN],
   },
-  transpilePackages: ['ui'],
+  transpilePackages: [
+    'external-temporal',
+    'connection',
+    'amadda-kafka',
+    'global-types',
+    'tsconfig',
+    'eslint-config-custom',
+  ],
   basePath: '/mf/schedule',
   async headers() {
     return [

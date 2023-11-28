@@ -11,7 +11,7 @@ declare module 'schedule/Edit' {
   export default Edit;
 }
 declare module 'schedule/Detail' {
-  const Edit: React.LazyExoticComponent<React.FC>;
+  const Detail: React.LazyExoticComponent<React.FC>;
   export default Detail;
 }
 declare module 'notice/Notice' {
