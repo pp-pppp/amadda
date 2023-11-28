@@ -68,9 +68,7 @@ export function Header() {
               <Menu
                 iconType="config"
                 onClick={() => {
-                  router.push(
-                    `${process.env.NEXT_PUBLIC_SHELL}/notice/setting`
-                  );
+                  router.push(`${process.env.NEXT_PUBLIC_SHELL}/notice/config`);
                 }}
               />
             </Flex>
