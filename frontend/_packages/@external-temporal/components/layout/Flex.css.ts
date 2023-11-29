@@ -17,9 +17,11 @@ export const JUSTIFY_VARIANT = styleVariants({
 });
 
 export const ALIGN_VARIANT = styleVariants({
-  start: { alignItems: 'start' },
+  start: { alignItems: 'flex-start' },
+  end: { alignItems: 'flex-end' },
+  flexStart: { alignItems: 'flex-start' },
+  flexEnd: { alignItems: 'flex-end' },
   center: { alignItems: 'center' },
-  end: { alignItems: 'end' },
   stretch: { alignItems: 'stretch' },
 });
 
