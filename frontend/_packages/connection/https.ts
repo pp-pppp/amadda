@@ -9,8 +9,14 @@ export const https = {
         'Content-Type': 'application/json',
       },
     });
-    const { code, message, data } = (await result.json()) satisfies Res;
-    return { status: code, message, data };
+    if (!result.ok) {
+      throw new Error(
+        `status: ${result.status}, message: ${result.statusText}`
+      );
+    } else {
+      const { code, message, data } = (await result.json()) satisfies Res;
+      return { status: code, message, data };
+    }
   },
   post: async <Req = unknown, Res = ApiResponse<unknown>>(
     url: string,
@@ -25,8 +31,14 @@ export const https = {
         'Content-Type': 'application/json',
       },
     });
-    const { code, message, data } = (await result.json()) satisfies Res;
-    return { status: code, message, data };
+    if (!result.ok) {
+      throw new Error(
+        `status: ${result.status}, message: ${result.statusText}`
+      );
+    } else {
+      const { code, message, data } = (await result.json()) satisfies Res;
+      return { status: code, message, data };
+    }
   },
   put: async <Req = unknown, Res = ApiResponse<unknown>>(
     url: string,
@@ -41,8 +53,14 @@ export const https = {
         'Content-Type': 'application/json',
       },
     });
-    const { code, message, data } = (await result.json()) satisfies Res;
-    return { status: code, message, data };
+    if (!result.ok) {
+      throw new Error(
+        `status: ${result.status}, message: ${result.statusText}`
+      );
+    } else {
+      const { code, message, data } = (await result.json()) satisfies Res;
+      return { status: code, message, data };
+    }
   },
   patch: async <Req = unknown, Res = ApiResponse<unknown>>(
     url: string,
@@ -57,8 +75,14 @@ export const https = {
         'Content-Type': 'application/json',
       },
     });
-    const { code, message, data } = (await result.json()) satisfies Res;
-    return { status: code, message, data };
+    if (!result.ok) {
+      throw new Error(
+        `status: ${result.status}, message: ${result.statusText}`
+      );
+    } else {
+      const { code, message, data } = (await result.json()) satisfies Res;
+      return { status: code, message, data };
+    }
   },
   delete: async <Res = ApiResponse<unknown>>(url: string, token: string) => {
     const result = await fetch(url, {
@@ -68,7 +92,13 @@ export const https = {
         'Content-Type': 'application/json',
       },
     });
-    const { code, message, data } = (await result.json()) satisfies Res;
-    return { status: code, message, data };
+    if (!result.ok) {
+      throw new Error(
+        `status: ${result.status}, message: ${result.statusText}`
+      );
+    } else {
+      const { code, message, data } = (await result.json()) satisfies Res;
+      return { status: code, message, data };
+    }
   },
 };
