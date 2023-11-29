@@ -12,13 +12,7 @@ import com.pppppp.amadda.user.dto.request.UserInitRequest;
 import com.pppppp.amadda.user.dto.request.UserJwtRequest;
 import com.pppppp.amadda.user.dto.request.UserNameCheckRequest;
 import com.pppppp.amadda.user.dto.request.UserRefreshRequest;
-import com.pppppp.amadda.user.dto.response.UserAccessResponse;
-import com.pppppp.amadda.user.dto.response.UserIdCheckResponse;
-import com.pppppp.amadda.user.dto.response.UserJwtInitResponse;
-import com.pppppp.amadda.user.dto.response.UserJwtResponse;
-import com.pppppp.amadda.user.dto.response.UserNameCheckResponse;
-import com.pppppp.amadda.user.dto.response.UserReadResponse;
-import com.pppppp.amadda.user.dto.response.UserRelationResponse;
+import com.pppppp.amadda.user.dto.response.*;
 import com.pppppp.amadda.user.entity.User;
 import com.pppppp.amadda.user.repository.UserRepository;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -158,6 +152,11 @@ public class UserService {
         User u = getUserInfoBySeq(userSeq);
         imageService.deleteImgInS3(u.getImageUrl());
         u.delete();
+    }
+
+    public UserKakaoIdResponse getKakaoId(Long userSeq) {
+        User u = getUserInfoBySeq(userSeq);
+        return UserKakaoIdResponse.of(u.getKakaoId());
     }
 
     // =============== 레포지토리에 직접 접근하는 메소드들 ===============

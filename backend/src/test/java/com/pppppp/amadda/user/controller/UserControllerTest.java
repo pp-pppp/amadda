@@ -224,4 +224,18 @@ class UserControllerTest extends ControllerTestSupport {
             .andExpect(jsonPath("$.message").value("OK"));
     }
 
+    @DisplayName("로그아웃을 위해 카카오 아이디를 받는다. ")
+    @Test
+    void getKakaoId() throws Exception {
+        // given // when // then
+        mockMvc.perform(
+                get("/api/user/logout")
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"));
+    }
+
 }

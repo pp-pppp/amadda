@@ -16,13 +16,7 @@ import com.pppppp.amadda.user.dto.request.UserInitRequest;
 import com.pppppp.amadda.user.dto.request.UserJwtRequest;
 import com.pppppp.amadda.user.dto.request.UserNameCheckRequest;
 import com.pppppp.amadda.user.dto.request.UserRefreshRequest;
-import com.pppppp.amadda.user.dto.response.UserAccessResponse;
-import com.pppppp.amadda.user.dto.response.UserIdCheckResponse;
-import com.pppppp.amadda.user.dto.response.UserJwtInitResponse;
-import com.pppppp.amadda.user.dto.response.UserJwtResponse;
-import com.pppppp.amadda.user.dto.response.UserNameCheckResponse;
-import com.pppppp.amadda.user.dto.response.UserReadResponse;
-import com.pppppp.amadda.user.dto.response.UserRelationResponse;
+import com.pppppp.amadda.user.dto.response.*;
 import com.pppppp.amadda.user.entity.User;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -583,6 +577,21 @@ class UserServiceTest extends IntegrationTestSupport {
             .containsExactlyInAnyOrder(
                 tuple(u.getUserSeq(), "", "", "", "")
             );
+    }
+
+    @DisplayName("유저의 카카오 아이디를 반환한다. ")
+    @Test
+    void getKakaoId() {
+        // given
+        User u1 = User.create("1234", "유저1", "id1", "///imageUrl1");
+        User u = userRepository.save(u1);
+
+        // when
+        UserKakaoIdResponse response = userService.getKakaoId(u.getUserSeq());
+
+        //then
+        assertThat(response.kakaoId())
+                .isEqualTo("1234");
     }
 
 }
