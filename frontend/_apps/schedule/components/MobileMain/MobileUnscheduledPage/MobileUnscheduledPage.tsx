@@ -1,3 +1,4 @@
+import ErrorBoundary from '#/components/fallback/ErrorBoundary/ErrorBoundary';
 import { MobileDailyPlate } from '@SCH/components/MobileDailyPlate/MobileDailyPlate';
 import { MobileDailyPlateList } from '@SCH/components/MobileDailyPlateList/MobileDailyPlateList';
 import CALENDAR from '@SCH/constants/CALENDAR';
@@ -22,22 +23,24 @@ export function MobileUnscheduledPage(): ReactNode {
   }, [unscheduledList]);
 
   return (
-    <>
-      <MobileDailyPlateList>
-        {unscheduledList.length === 0 ? (
-          <Span color="grey">{CALENDAR.NO_PLAN}</Span>
-        ) : (
-          unscheduledList.map((schedule, idx) => (
-            <div key={idx}>
-              <MobileDailyPlate
-                MobileDailyPlateProps={schedule}
-                type="unscheduled"
-              />
-              <Spacing dir="v" size="0.5" />
-            </div>
-          ))
-        )}
-      </MobileDailyPlateList>
-    </>
+    <div>
+      <ErrorBoundary>
+        <MobileDailyPlateList>
+          {unscheduledList.length === 0 ? (
+            <Span color="grey">{CALENDAR.NO_PLAN}</Span>
+          ) : (
+            unscheduledList.map((schedule, idx) => (
+              <div key={idx}>
+                <MobileDailyPlate
+                  MobileDailyPlateProps={schedule}
+                  type="unscheduled"
+                />
+                <Spacing dir="v" size="0.5" />
+              </div>
+            ))
+          )}
+        </MobileDailyPlateList>
+      </ErrorBoundary>
+    </div>
   );
 }

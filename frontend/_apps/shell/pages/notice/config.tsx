@@ -1,3 +1,4 @@
+import ErrorBoundary from '#/components/fallback/ErrorBoundary/ErrorBoundary';
 import HeaderLayout from '@SH/components/HeaderLayout';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -15,7 +16,9 @@ export default function Page({ children }) {
         <meta property="og:title" content="AMADDA" key="title" />
       </Head>
       <HeaderLayout>
-        <NoticeConfig />
+        <ErrorBoundary>
+          <NoticeConfig />
+        </ErrorBoundary>
       </HeaderLayout>
     </div>
   );

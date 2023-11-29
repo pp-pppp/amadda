@@ -1,10 +1,10 @@
+import ErrorBoundary from '#/components/fallback/ErrorBoundary/ErrorBoundary';
 import { NoticeFrame } from '@N/components/Notice/NoticeFrame';
-import { Suspense } from 'react';
 
 export default function Page() {
   return (
-    <Suspense fallback={<>Loading</>}>
+    <ErrorBoundary>
       <NoticeFrame />
-    </Suspense>
+    </ErrorBoundary>
   );
 }
