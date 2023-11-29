@@ -10,7 +10,7 @@ export const BASE = style({
 
   display: 'grid',
   gridTemplateRows: '1fr 1fr',
-  alignItems: 'end',
+  alignItems: 'flex-end',
 
   cursor: 'pointer',
 });

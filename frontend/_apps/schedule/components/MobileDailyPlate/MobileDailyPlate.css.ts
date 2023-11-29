@@ -12,7 +12,7 @@ export const LAYOUT_SCH = styleVariants({
   title: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'start',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     width: '12.5rem',
   },
@@ -36,14 +36,14 @@ export const LAYOUT_SCH = styleVariants({
   },
   width: {
     width: '4rem',
-    textAlign: 'end',
+    textAlign: 'right',
   },
   time: {
     width: '4rem',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'end',
-    justifyContent: 'end',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
   },
 });
 
@@ -58,7 +58,7 @@ export const LAYOUT_UN = styleVariants({
   title: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'start',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     width: '18.5rem',
   },

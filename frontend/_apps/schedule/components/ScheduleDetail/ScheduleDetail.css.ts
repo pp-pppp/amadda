@@ -15,5 +15,5 @@ export const GRID = style({
 
 export const BUTTON = style({
   width: '6.5rem',
-  alignContent: 'end',
+  alignContent: 'flex-end',
 });
