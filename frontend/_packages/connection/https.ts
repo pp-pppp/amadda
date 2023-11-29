@@ -10,7 +10,7 @@ export const https = {
       },
     });
     const { code, message, data } = (await result.json()) satisfies Res;
-    return { code, message, data };
+    return { status: code, message, data };
   },
   post: async <Req = unknown, Res = ApiResponse<unknown>>(
     url: string,
@@ -26,7 +26,7 @@ export const https = {
       },
     });
     const { code, message, data } = (await result.json()) satisfies Res;
-    return { code, message, data };
+    return { status: code, message, data };
   },
   put: async <Req = unknown, Res = ApiResponse<unknown>>(
     url: string,
@@ -42,7 +42,7 @@ export const https = {
       },
     });
     const { code, message, data } = (await result.json()) satisfies Res;
-    return { code, message, data };
+    return { status: code, message, data };
   },
   patch: async <Req = unknown, Res = ApiResponse<unknown>>(
     url: string,
@@ -58,7 +58,7 @@ export const https = {
       },
     });
     const { code, message, data } = (await result.json()) satisfies Res;
-    return { code, message, data };
+    return { status: code, message, data };
   },
   delete: async <Res = ApiResponse<unknown>>(url: string, token: string) => {
     const result = await fetch(url, {
@@ -69,6 +69,6 @@ export const https = {
       },
     });
     const { code, message, data } = (await result.json()) satisfies Res;
-    return { code, message, data };
+    return { status: code, message, data };
   },
 };
