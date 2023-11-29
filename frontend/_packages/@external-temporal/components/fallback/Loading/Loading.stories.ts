@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Loading } from './Loading';
 
 const meta = {
-  title: 'External-temporal/Views/Loading',
+  title: 'External-temporal/Fallback/Loading',
   component: Loading,
   parameters: {
     componentSubtitle: '로딩 컴포넌트입니다.',

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import ErrorBoundary from './ErrorBoundary';
 
 const meta = {
-  title: 'External-temporal/Views/Loading',
+  title: 'External-temporal/Fallback/ErrorBoundary',
   component: ErrorBoundary,
   parameters: {
     componentSubtitle:
