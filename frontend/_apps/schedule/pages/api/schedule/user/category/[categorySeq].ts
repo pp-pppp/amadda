@@ -16,7 +16,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         CategoryCreateRequest,
         ApiResponse<CategoryUpdateResponse>
       >(
-        `${process.env.SPRING_API_ROOT}/user/category/${categorySeq}`,
+        `${process.env.SPRING_API_ROOT}/schedule/user/category/${categorySeq}`,
         token,
         req.body
       );
@@ -32,7 +32,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //카테고리 삭제
     try {
       const { status, message, data } = await https.delete(
-        `${process.env.SPRING_API_ROOT}/user/category/${categorySeq}`,
+        `${process.env.SPRING_API_ROOT}/schedule/user/category/${categorySeq}`,
         token
       );
       res.status(status).json(data);

@@ -14,7 +14,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       const { status, message, data } = await https.get<
         ApiResponse<CategoryReadResponse[]>
-      >(`${process.env.SPRING_API_ROOT}/user/category`, token);
+      >(`${process.env.SPRING_API_ROOT}/schedule/user/category`, token);
       res.status(status).json(data);
     } catch (err) {
       console.log(err);
@@ -29,7 +29,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const { status, message, data } = await https.post<
         CategoryCreateRequest,
         ApiResponse<CategoryCreateResponse>
-      >(`${process.env.SPRING_API_ROOT}/user/category`, token, req.body);
+      >(
+        `${process.env.SPRING_API_ROOT}/schedule/user/category`,
+        token,
+        req.body
+      );
       res.status(status).json(data);
     } catch (err) {
       console.log(err);
