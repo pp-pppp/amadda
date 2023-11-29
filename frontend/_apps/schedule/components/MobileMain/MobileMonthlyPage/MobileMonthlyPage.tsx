@@ -5,6 +5,7 @@ import { CalendarHeader } from './CalendarHeader/CalendarHeader';
 import { DailyList } from './DailyList/DailyList';
 import { Spacing } from 'external-temporal';
 import { useFilterStore } from '@SCH/store/filterStore';
+import ErrorBoundary from '#/components/fallback/ErrorBoundary/ErrorBoundary';
 
 export function MobileMonthlyPage(): ReactNode {
   const { isOpen } = useFilterStore();
@@ -28,10 +29,12 @@ export function MobileMonthlyPage(): ReactNode {
 
   return (
     <div ref={ref}>
-      <CalendarHeader />
-      <Spacing dir="v" size="1" />
-      <MobileCalendar />
-      <DailyList />
+      <ErrorBoundary>
+        <CalendarHeader />
+        <Spacing dir="v" size="1" />
+        <MobileCalendar />
+        <DailyList />
+      </ErrorBoundary>
     </div>
   );
 }
