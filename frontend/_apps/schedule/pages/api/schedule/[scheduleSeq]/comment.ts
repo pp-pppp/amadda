@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { auth, https } from 'connection';
+import { ApiResponse, CommentCreateRequest } from 'amadda-global-types';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const token = req.headers.authorization || '';
@@ -7,12 +8,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     //댓글 작성
     try {
-      const SPRING_RES = await https.post(
+      const { status, message, data } = await https.post<
+        CommentCreateRequest,
+        ApiResponse<number>
+      >(
         `${process.env.SPRING_API_ROOT}/schedule/${scheduleSeq}/comment`,
         token,
         req.body
       );
-      res.status(SPRING_RES.status).json(SPRING_RES.data);
+      res.status(status).json(data);
     } catch (err) {
       res
         .status(err.status || 500)

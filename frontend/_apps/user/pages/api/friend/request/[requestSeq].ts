@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { auth, https } from 'connection';
+import { ApiResponse } from 'amadda-global-types';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const token = req.headers.authorization || '';
@@ -7,12 +8,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     //친구신청 수락
     try {
-      const SPRING_RES = await https.post(
+      const { status, message, data } = await https.post<
+        null,
+        ApiResponse<number>
+      >(
         `${process.env.SPRING_API_ROOT}/friend/request/${requestSeq}`,
         token,
         req.body
       );
-      res.status(SPRING_RES.status).json(SPRING_RES.data);
+      res.status(status).json(data);
     } catch (err) {
       res
         .status(err.status || 500)
@@ -22,12 +26,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'PUT') {
     //친구신청 거절
     try {
-      const SPRING_RES = await https.put(
+      const { status, message, data } = await https.put<
+        null,
+        ApiResponse<number>
+      >(
         `${process.env.SPRING_API_ROOT}/friend/request/${requestSeq}`,
         token,
         req.body
       );
-      res.status(SPRING_RES.status).json(SPRING_RES.data);
+      res.status(status).json(data);
     } catch (err) {
       res
         .status(err.status || 500)

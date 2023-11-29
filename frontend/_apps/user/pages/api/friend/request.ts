@@ -1,17 +1,17 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { auth, https } from 'connection';
+import { ApiResponse, FriendRequestRequest } from 'amadda-global-types';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const token = req.headers.authorization || '';
   if (req.method === 'POST') {
     //친구신청 보내기
     try {
-      const SPRING_RES = await https.post(
-        `${process.env.SPRING_API_ROOT}/friend/request`,
-        token,
-        req.body
-      );
-      res.status(SPRING_RES.status).json(SPRING_RES.data);
+      const { status, message, data } = await https.post<
+        FriendRequestRequest,
+        ApiResponse<number>
+      >(`${process.env.SPRING_API_ROOT}/friend/request`, token, req.body);
+      res.status(status).json(data);
     } catch (err) {
       res
         .status(err.status || 500)

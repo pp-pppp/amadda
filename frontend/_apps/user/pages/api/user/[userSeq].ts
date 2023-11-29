@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import type { UserRelationResponse } from 'amadda-global-types';
+import type { ApiResponse, UserRelationResponse } from 'amadda-global-types';
 import { auth, https } from 'connection';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -8,11 +8,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //유저 정보(호버용)
     try {
       const { userSeq } = req.query;
-      const SPRING_RES = await https.get<UserRelationResponse>(
-        `${process.env.SPRING_API_ROOT}/user/${userSeq}`,
-        token
-      );
-      res.status(SPRING_RES.status).json(SPRING_RES.data);
+      const { status, message, data } = await https.get<
+        ApiResponse<UserRelationResponse>
+      >(`${process.env.SPRING_API_ROOT}/user/${userSeq}`, token);
+      res.status(status).json(data);
     } catch (err) {
       console.log(err);
       res

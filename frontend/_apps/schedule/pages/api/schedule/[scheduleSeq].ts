@@ -1,5 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import type { ScheduleDetailReadResponse } from 'amadda-global-types';
+import {
+  ScheduleUpdateRequest,
+  type ApiResponse,
+  type ScheduleDetailReadResponse,
+  ScheduleUpdateResponse,
+} from 'amadda-global-types';
 
 import { auth, https } from 'connection';
 
@@ -9,11 +14,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
     //사용자 일정 상세 보기 (댓글 포함)
     try {
-      const SPRING_RES = await https.get<ScheduleDetailReadResponse>(
-        `${process.env.SPRING_API_ROOT}/schedule/${scheduleSeq}`,
-        token
-      );
-      res.status(SPRING_RES.status).json(SPRING_RES.data);
+      const { status, message, data } = await https.get<
+        ApiResponse<ScheduleDetailReadResponse>
+      >(`${process.env.SPRING_API_ROOT}/schedule/${scheduleSeq}`, token);
+      res.status(status).json(data);
     } catch (err) {
       console.log(err);
       res
@@ -24,12 +28,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'PUT') {
     //일정 수정하기
     try {
-      const SPRING_RES = await https.put(
+      const { status, message, data } = await https.put<
+        ScheduleUpdateRequest,
+        ApiResponse<ScheduleUpdateResponse>
+      >(
         `${process.env.SPRING_API_ROOT}/schedule/${scheduleSeq}`,
         token,
         req.body
       );
-      res.status(SPRING_RES.status).json(SPRING_RES.data);
+      res.status(status).json(data);
     } catch (err) {
       console.log(err);
       res
@@ -39,11 +46,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   if (req.method === 'DELETE') {
     try {
-      const SPRING_RES = await https.delete(
+      const { status, message, data } = await https.delete(
         `${process.env.SPRING_API_ROOT}/schedule/${scheduleSeq}`,
         token
       );
-      res.status(SPRING_RES.status).json(SPRING_RES.data);
+      res.status(status).json(data);
     } catch (err) {
       res
         .status(err.status || 500)

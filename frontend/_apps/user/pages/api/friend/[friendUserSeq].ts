@@ -7,11 +7,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'DELETE') {
     //친구 언팔
     try {
-      const SPRING_RES = await https.delete(
+      const { status, message, data } = await https.delete(
         `${process.env.SPRING_API_ROOT}/friend/${friendUserSeq}`,
         token
       );
-      res.status(SPRING_RES.status).json(SPRING_RES.data);
+      res.status(status).json(data);
     } catch (err) {
       res
         .status(err.status || 500)

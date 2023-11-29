@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import type { UserReadResponse } from 'amadda-global-types';
+import type { ApiResponse, UserReadResponse } from 'amadda-global-types';
 import { auth, https } from 'connection';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -7,11 +7,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
     //내 유저정보 가져오기
     try {
-      const SPRING_RES = await https.get<UserReadResponse>(
-        `${process.env.SPRING_API_ROOT}/user/my`,
-        token
-      );
-      res.status(SPRING_RES.status).json(SPRING_RES.data);
+      const { status, message, data } = await https.get<
+        ApiResponse<UserReadResponse>
+      >(`${process.env.SPRING_API_ROOT}/user/my`, token);
+      res.status(status).json(data);
     } catch (err) {
       console.log(err);
       res

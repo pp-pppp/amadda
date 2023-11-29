@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import type { FriendReadResponse } from 'amadda-global-types';
+import type { ApiResponse, FriendReadResponse } from 'amadda-global-types';
 import { auth, https } from 'connection';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -8,11 +8,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //친구 목록 검색(친구+그룹)
     try {
       const { searchKey } = req.query;
-      const SPRING_RES = await https.get<FriendReadResponse>(
-        `${process.env.SPRING_API_ROOT}/friend?searchKey=${searchKey}`,
-        token
-      );
-      res.status(SPRING_RES.status).json(SPRING_RES.data);
+      const { status, message, data } = await https.get<
+        ApiResponse<FriendReadResponse>
+      >(`${process.env.SPRING_API_ROOT}/friend?searchKey=${searchKey}`, token);
+      res.status(status).json(data);
     } catch (err) {
       console.log(err);
       res
