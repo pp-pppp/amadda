@@ -27,9 +27,12 @@ export * from './components/view/Card/Card';
 export * from './components/view/Filter/Filter';
 export * from './components/view/Icon/Icon';
 export * from './components/view/List/List';
-export * from './components/view/Loading/Loading';
+export * from './components/fallback/Loading/Loading';
 export * from './components/view/Profile/Profile';
 export * from './components/view/Tooltip/Tooltip';
+
+export * from './components/fallback/ErrorBoundary/ErrorBoundary';
+export * from './components/fallback/Loading/Loading';
 
 export * from './util/global.css';
 export * from './util/throttle';
