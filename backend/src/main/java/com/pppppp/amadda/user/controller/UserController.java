@@ -7,13 +7,7 @@ import com.pppppp.amadda.user.dto.request.UserInitRequest;
 import com.pppppp.amadda.user.dto.request.UserJwtRequest;
 import com.pppppp.amadda.user.dto.request.UserNameCheckRequest;
 import com.pppppp.amadda.user.dto.request.UserRefreshRequest;
-import com.pppppp.amadda.user.dto.response.UserAccessResponse;
-import com.pppppp.amadda.user.dto.response.UserIdCheckResponse;
-import com.pppppp.amadda.user.dto.response.UserJwtInitResponse;
-import com.pppppp.amadda.user.dto.response.UserJwtResponse;
-import com.pppppp.amadda.user.dto.response.UserNameCheckResponse;
-import com.pppppp.amadda.user.dto.response.UserReadResponse;
-import com.pppppp.amadda.user.dto.response.UserRelationResponse;
+import com.pppppp.amadda.user.dto.response.*;
 import com.pppppp.amadda.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -42,6 +36,13 @@ public class UserController {
     public ApiResponse<UserJwtInitResponse> getTokenAfterLogin(
         @Valid @RequestBody UserJwtRequest request) {
         UserJwtInitResponse response = userService.getTokensAndCheckInit(request);
+        return ApiResponse.ok(response);
+    }
+
+    @GetMapping("/logout")
+    public ApiResponse<UserKakaoIdResponse> getKakaoId(HttpServletRequest http) {
+        Long userSeq = tokenProvider.getUserSeq(http);
+        UserKakaoIdResponse response = userService.getKakaoId(userSeq);
         return ApiResponse.ok(response);
     }
 
