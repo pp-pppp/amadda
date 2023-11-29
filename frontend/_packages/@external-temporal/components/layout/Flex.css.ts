@@ -8,8 +8,10 @@ export const DIRECTION_VARIANT = styleVariants({
 });
 
 export const JUSTIFY_VARIANT = styleVariants({
-  start: { justifyContent: 'start' },
+  start: { justifyContent: 'flex-start' },
+  end: { justifyContent: 'flex-end' },
   center: { justifyContent: 'center' },
+  flexStart: { justifyContent: 'flex-start' },
   flexEnd: { justifyContent: 'flex-end' },
   spaceBetween: { justifyContent: 'space-between' },
   spaceAround: { justifyContent: 'space-around' },
