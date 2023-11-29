@@ -1,5 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import type { UserInitRequest, UserJwtResponse } from 'amadda-global-types';
+import type {
+  ApiResponse,
+  UserInitRequest,
+  UserJwtResponse,
+} from 'amadda-global-types';
 import cookie from 'cookie';
 import { KV, http } from 'connection';
 
@@ -7,12 +11,12 @@ const signup = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     //첫 로그인시 사용자 회원가입
     try {
-      const SPRING_RES = await http.post<UserInitRequest, UserJwtResponse>(
-        `${process.env.SPRING_API_ROOT}/user/signup`,
-        req.body
-      );
+      const { status, message, data } = await http.post<
+        UserInitRequest,
+        ApiResponse<UserJwtResponse>
+      >(`${process.env.SPRING_API_ROOT}/user/signup`, req.body);
 
-      const COOKIE = cookie.serialize('Auth', SPRING_RES.data.accessToken, {
+      const COOKIE = cookie.serialize('Auth', data.accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV !== 'development',
         path: '/',
@@ -21,12 +25,9 @@ const signup = async (req: NextApiRequest, res: NextApiResponse) => {
       });
 
       res.setHeader('Set-Cookie', COOKIE);
-      await KV.setRefreshToken(
-        SPRING_RES.data.refreshAccessKey,
-        SPRING_RES.data.refreshToken
-      );
+      await KV.setRefreshToken(data.refreshAccessKey, data.refreshToken);
 
-      res.status(SPRING_RES.status).json(SPRING_RES.data);
+      res.status(status).json(data);
     } catch (err) {
       console.log(err);
       res

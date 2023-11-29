@@ -1,4 +1,6 @@
 import type {
+  ApiResponse,
+  ScheduleCreateRequest,
   ScheduleCreateResponse,
   ScheduleListReadResponse,
 } from 'amadda-global-types';
@@ -45,8 +47,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           ? `${process.env.SPRING_API_ROOT}/schedule?${queryString}`
           : `${process.env.SPRING_API_ROOT}/schedule`;
 
-      const SPRING_RES = await https.get<ScheduleListReadResponse>(url, token);
-      res.status(SPRING_RES.status).json(SPRING_RES.data);
+      const { status, message, data } = await https.get<
+        ApiResponse<ScheduleListReadResponse>
+      >(url, token);
+      res.status(status).json(data);
     } catch (err) {
       console.log(err);
       res
@@ -57,12 +61,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     //일정 생성
     try {
-      const SPRING_RES = await https.post<ScheduleCreateResponse>(
-        `${process.env.SPRING_API_ROOT}/schedule`,
-        token,
-        req.body
-      );
-      res.status(SPRING_RES.status).json(SPRING_RES.data);
+      const { status, message, data } = await https.post<
+        ScheduleCreateRequest,
+        ApiResponse<ScheduleCreateResponse>
+      >(`${process.env.SPRING_API_ROOT}/schedule`, token, req.body);
+      res.status(status).json(data);
     } catch (err) {
       console.log(err);
       res

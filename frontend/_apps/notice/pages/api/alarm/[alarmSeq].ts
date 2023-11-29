@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import type { AlarmReadResponse } from 'amadda-global-types';
+import type { ApiResponse, AlarmReadResponse } from 'amadda-global-types';
 import { auth, https } from 'connection';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -7,11 +7,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { alarmSeq } = req.query;
   if (req.method === 'POST') {
     try {
-      const SPRING_RES = await https.get<AlarmReadResponse>(
-        `${process.env.SPRING_API_ROOT}/alarm/${alarmSeq}`,
-        token
-      );
-      res.status(SPRING_RES.status).json(SPRING_RES.data);
+      const { status, message, data } = await https.get<
+        ApiResponse<AlarmReadResponse>
+      >(`${process.env.SPRING_API_ROOT}/alarm/${alarmSeq}`, token);
+      res.status(status).json(data);
     } catch (err) {
       console.log(err);
       res

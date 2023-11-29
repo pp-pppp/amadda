@@ -1,4 +1,7 @@
-import type { ParticipationListReadResponse } from 'amadda-global-types';
+import type {
+  ApiResponse,
+  ParticipationListReadResponse,
+} from 'amadda-global-types';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { auth, https } from 'connection';
 
@@ -8,11 +11,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //멘션 검색
     try {
       const { searchKey, scheduleSeq } = req.query;
-      const SPRING_RES = await https.get<ParticipationListReadResponse>(
+      const { status, message, data } = await https.get<
+        ApiResponse<ParticipationListReadResponse>
+      >(
         `${process.env.SPRING_API_ROOT}/schedule/${scheduleSeq}/participation?searchKey=${searchKey}`,
         token
       );
-      res.status(SPRING_RES.status).json(SPRING_RES.data);
+      res.status(status).json(data);
     } catch (err) {
       res
         .status(err.status || 500)
@@ -23,11 +28,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //참가 정보 삭제
     try {
       const { scheduleSeq } = req.query;
-      const SPRING_RES = await https.delete(
+      const { status, message, data } = await https.delete(
         `${process.env.SPRING_API_ROOT}/schedule/${scheduleSeq}/participation`,
         token
       );
-      res.status(SPRING_RES.status).json(SPRING_RES.data);
+      res.status(status).json(data);
     } catch (err) {
       res
         .status(err.status || 500)

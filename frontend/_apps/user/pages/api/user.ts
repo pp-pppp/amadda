@@ -1,4 +1,4 @@
-import { UserRelationResponse } from 'amadda-global-types';
+import type { ApiResponse, UserRelationResponse } from 'amadda-global-types';
 import { auth, https } from 'connection';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -8,11 +8,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //전체 유저 검색
     try {
       const { searchKey } = req.query;
-      const SPRING_RES = await https.get<UserRelationResponse>(
-        `${process.env.SPRING_API_ROOT}/user?searchKey=${searchKey}`,
-        token
-      );
-      res.status(SPRING_RES.status).json(SPRING_RES.data);
+      const { status, message, data } = await https.get<
+        ApiResponse<UserRelationResponse>
+      >(`${process.env.SPRING_API_ROOT}/user?searchKey=${searchKey}`, token);
+      res.status(status).json(data);
     } catch (err) {
       console.log(err);
       res
@@ -23,11 +22,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'DELETE') {
     //회원탈퇴
     try {
-      const SPRING_RES = await https.delete(
+      const { status, message, data } = await https.delete(
         `${process.env.SPRING_API_ROOT}/user`,
         token
       );
-      res.status(SPRING_RES.status).json(SPRING_RES.data);
+      res.status(status).json(data);
     } catch (err) {
       console.log(err);
       res
