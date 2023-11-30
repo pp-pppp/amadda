@@ -2,10 +2,7 @@ import { UserAccessResponse, UserJwtResponse } from 'amadda-global-types';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { KV } from './kv';
 
-type API_HANDLER = (
-  request: NextApiRequest,
-  response: NextApiResponse
-) => Promise<NextApiResponse | void>;
+type API_HANDLER = (request: NextApiRequest, response: NextApiResponse) => Promise<NextApiResponse | void>;
 
 export function auth(fn: API_HANDLER): API_HANDLER {
   return async function (req: NextApiRequest, res: NextApiResponse) {
@@ -18,10 +15,7 @@ export function auth(fn: API_HANDLER): API_HANDLER {
       //현재 토큰이 유효하면 현재 토큰, 아니라면 새 토큰이 들어옵니다.
       req.headers.authorization = `Bearer ${ACCESS_TOKEN}`;
       await fn(req, res);
-      return res.setHeader(
-        'Set-Cookie',
-        `Auth=${ACCESS_TOKEN}; Max-Age=900; HttpOnly; SameSite=Lax;`
-      );
+      return res.setHeader('Set-Cookie', `Auth=${ACCESS_TOKEN}; Max-Age=900; HttpOnly; SameSite=Lax;`);
     } catch (err) {
       //모든 종류의 에러는 로그아웃으로 리다이렉트시킵니다.
       console.log(err);
@@ -31,15 +25,12 @@ export function auth(fn: API_HANDLER): API_HANDLER {
 }
 
 async function VERIFY(type: 'access' | 'refresh', token: string): Promise<any> {
-  const response = await fetch(
-    `${process.env.SPRING_API_ROOT as string}/user/${type}`,
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await fetch(`${process.env.SPRING_API_ROOT as string}/user/${type}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return await response.json();
 }
 

@@ -8,12 +8,7 @@ export interface IconProps extends HTMLAttributes<HTMLDivElement> {
   cursor?: keyof typeof CURSOR;
   size?: string;
 }
-export function Icon({
-  type,
-  color,
-  cursor = 'default',
-  size = '24',
-}: IconProps) {
+export function Icon({ type, color, cursor = 'default', size = '24' }: IconProps) {
   const className = `${COLOR[color]} ${CURSOR[cursor]}`;
   return (
     <div className={className}>

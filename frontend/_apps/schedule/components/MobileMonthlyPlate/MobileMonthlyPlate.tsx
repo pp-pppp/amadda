@@ -1,13 +1,7 @@
 import React from 'react';
 import { ReactNode } from 'react';
 import { Icon, Span } from 'external-temporal';
-import {
-  BASE,
-  DATE,
-  SELECTED,
-  SELECTED_SPAN,
-  SPAN,
-} from './MobileMonthlyPlate.css';
+import { BASE, DATE, SELECTED, SELECTED_SPAN, SPAN } from './MobileMonthlyPlate.css';
 
 export interface MobileMonthPlateProps {
   dateType: keyof typeof SPAN;
@@ -27,13 +21,7 @@ export interface MobileMonthPlateProps {
 //   other: 'lightgrey',
 // };
 
-export function MobileMonthlyPlate({
-  dateType,
-  isScheduled = false,
-  isSelected = false,
-  onClick = () => {},
-  children,
-}: MobileMonthPlateProps) {
+export function MobileMonthlyPlate({ dateType, isScheduled = false, isSelected = false, onClick = () => {}, children }: MobileMonthPlateProps) {
   const className = isSelected ? `${DATE} ${SELECTED}` : `${DATE}`;
   const spanStyle = isSelected ? SELECTED_SPAN : SPAN[dateType];
 

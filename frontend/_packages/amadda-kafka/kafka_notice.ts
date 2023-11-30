@@ -8,11 +8,7 @@ const scheduleUpdate = 'prod.alarm.schedule-update';
 const scheduleNotification = 'prod.alarm.schedule-notification';
 const kafka = new Kafka({
   clientId: `${process.env.KAFKA_CLIENT_ID}notice`,
-  brokers: [
-    process.env.KAFKA_BROKER_1,
-    process.env.KAFKA_BROKER_2,
-    process.env.KAFKA_BROKER_3,
-  ] as string[],
+  brokers: [process.env.KAFKA_BROKER_1, process.env.KAFKA_BROKER_2, process.env.KAFKA_BROKER_3] as string[],
 });
 
 const notice_consumer = kafka.consumer({ groupId: groupId });
@@ -21,13 +17,7 @@ export const KAFKA_NOTICE = async () => {
 
   await notice_consumer.connect();
   await notice_consumer.subscribe({
-    topics: [
-      friendRequest,
-      friendAccept,
-      scheduleAssigned,
-      scheduleUpdate,
-      scheduleNotification,
-    ],
+    topics: [friendRequest, friendAccept, scheduleAssigned, scheduleUpdate, scheduleNotification],
   });
   return notice_consumer;
 };

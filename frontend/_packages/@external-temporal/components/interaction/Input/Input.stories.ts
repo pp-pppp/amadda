@@ -27,8 +27,7 @@ const meta = {
       description: '입력값이 변경되면 실행될 함수입니다.',
     },
     disabled: {
-      description:
-        '작동 여부를 정합니다. 입력을 막고 싶다면 true를 선택해주세요.',
+      description: '작동 여부를 정합니다. 입력을 막고 싶다면 true를 선택해주세요.',
     },
     placeholder: {
       description: '입력값이 없을 때 보여질 문구입니다',

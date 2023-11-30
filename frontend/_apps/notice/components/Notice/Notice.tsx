@@ -16,11 +16,7 @@ export function Notice({ content, alarmType, isRead }: NoticeProps) {
   return (
     <div className={BACKGROUND[className]}>
       <Flex justifyContents="spaceBetween">
-        <Flex
-          flexDirection="column"
-          justifyContents="center"
-          alignItems="start"
-        >
+        <Flex flexDirection="column" justifyContents="center" alignItems="start">
           <H6>{content}</H6>
           {alarmType === 'FRIEND_REQUEST' && (
             <>
@@ -34,21 +30,11 @@ export function Notice({ content, alarmType, isRead }: NoticeProps) {
         <Spacing dir="h" />
         {alarmType === 'FRIEND_REQUEST' && (
           <Flex justifyContents="start">
-            <BtnRound
-              type="button"
-              variant="key"
-              onClick={() => {}}
-              disabled={false}
-            >
+            <BtnRound type="button" variant="key" onClick={() => {}} disabled={false}>
               수락
             </BtnRound>
             <Spacing dir="h" size="0.5" />
-            <BtnRound
-              type="button"
-              variant="white"
-              onClick={() => {}}
-              disabled={false}
-            >
+            <BtnRound type="button" variant="white" onClick={() => {}} disabled={false}>
               거절
             </BtnRound>
           </Flex>

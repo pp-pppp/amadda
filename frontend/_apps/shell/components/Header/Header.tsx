@@ -11,9 +11,7 @@ export function Header() {
   const router = useRouter();
 
   useEffect(() => {
-    const eventSource = new EventSource(
-      `${process.env.NEXT_PUBLIC_NOTICE}/api/event`
-    );
+    const eventSource = new EventSource(`${process.env.NEXT_PUBLIC_NOTICE}/api/event`);
 
     eventSource.onmessage = async (e: MessageEvent) => {
       const data: AlarmReadResponse = JSON.parse(await e.data);
@@ -41,39 +39,38 @@ export function Header() {
             }}
           />
         </Flex>
-        {router.basePath.includes('notice') ||
-          router.basePath.includes('friends') || (
-            <Flex justifyContents="flexEnd">
-              {/* <Menu
+        {router.basePath.includes('notice') || router.basePath.includes('friends') || (
+          <Flex justifyContents="flexEnd">
+            {/* <Menu
             iconType="search"
             onClick={() => {
               router.push(`${process.env.NEXT_PUBLIC_SHELL}/search`);
               일정 검색 페이지는 추후 구현 예정
             }}
           /> */}
-              <Menu
-                iconType={notice ? 'noti' : 'noti_red'}
-                onClick={() => {
-                  setNotice(false);
-                  router.push(`${process.env.NEXT_PUBLIC_SHELL}/notice`);
-                }}
-              />
-              <Spacing size="0.25" />
-              <Menu
-                iconType="friends"
-                onClick={() => {
-                  router.push(`${process.env.NEXT_PUBLIC_SHELL}/friends`);
-                }}
-              />
-              <Spacing size="0.25" />
-              <Menu
-                iconType="config"
-                onClick={() => {
-                  router.push(`${process.env.NEXT_PUBLIC_SHELL}/notice/config`);
-                }}
-              />
-            </Flex>
-          )}
+            <Menu
+              iconType={notice ? 'noti' : 'noti_red'}
+              onClick={() => {
+                setNotice(false);
+                router.push(`${process.env.NEXT_PUBLIC_SHELL}/notice`);
+              }}
+            />
+            <Spacing size="0.25" />
+            <Menu
+              iconType="friends"
+              onClick={() => {
+                router.push(`${process.env.NEXT_PUBLIC_SHELL}/friends`);
+              }}
+            />
+            <Spacing size="0.25" />
+            <Menu
+              iconType="config"
+              onClick={() => {
+                router.push(`${process.env.NEXT_PUBLIC_SHELL}/notice/config`);
+              }}
+            />
+          </Flex>
+        )}
       </Flex>
     </div>
   );

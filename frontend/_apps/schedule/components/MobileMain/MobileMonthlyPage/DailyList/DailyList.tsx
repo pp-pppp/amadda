@@ -13,20 +13,13 @@ import { CATEGORY } from '@SCH/components/MobileDailyPlate/MobileDailyPlate.css'
 export function DailyList() {
   const { selectedCategorySeq, selectedAll, selectedNone } = useCategoryStore();
   const { selectedYear, selectedMonth, selectedDate } = useDateStore();
-  const {
-    dailyScheduleList,
-    setDailyScheduleList,
-    SWRerror: error,
-  } = useDailySchedule();
+  const { dailyScheduleList, setDailyScheduleList, SWRerror: error } = useDailySchedule();
   const [profileImages, setProfileImages] = useState<string[]>([]);
 
   useEffect(() => {
     dailyScheduleList.forEach((schedule, idx) => {
       schedule.participants.forEach(participant => {
-        setProfileImages(profileImages => [
-          ...profileImages,
-          participant.imageUrl,
-        ]);
+        setProfileImages(profileImages => [...profileImages, participant.imageUrl]);
       });
     });
   }, [selectedDate]);
@@ -38,11 +31,7 @@ export function DailyList() {
           <Span color="grey">{CALENDAR.NO_PLAN}</Span>
         ) : (
           dailyScheduleList
-            .filter(
-              schedule =>
-                selectedCategorySeq.includes(schedule.category.categorySeq) ||
-                selectedAll
-            )
+            .filter(schedule => selectedCategorySeq.includes(schedule.category.categorySeq) || selectedAll)
             .map((schedule, idx) => {
               return (
                 <div key={idx}>

@@ -1,8 +1,5 @@
 // import { http } from '@SH/utils/http';
-import {
-  UserNameCheckRequest,
-  UserNameCheckResponse,
-} from 'amadda-global-types';
+import { UserNameCheckRequest, UserNameCheckResponse } from 'amadda-global-types';
 import { useState, useEffect } from 'react';
 
 export default function useNameValidator(name: string) {

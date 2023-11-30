@@ -6,8 +6,7 @@ const meta = {
   component: Profile,
   parameters: {
     layout: 'centered',
-    componentSubtitle:
-      '유저 프로필 이미지입니다. Next/Image가 내부적으로 사용되어 Next.js에서만 사용할 수 있습니다.',
+    componentSubtitle: '유저 프로필 이미지입니다. Next/Image가 내부적으로 사용되어 Next.js에서만 사용할 수 있습니다.',
   },
   tags: ['autodocs'],
   argTypes: {},

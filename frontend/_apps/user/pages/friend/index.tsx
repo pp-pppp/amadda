@@ -16,11 +16,7 @@ export default function FriendPage() {
             data.map(g => {
               if (g.groupSeq !== null) {
                 return (
-                  <FriendGroups
-                    key={g.groupSeq}
-                    groupSeq={g.groupSeq}
-                    groupName={g.groupName}
-                  >
+                  <FriendGroups key={g.groupSeq} groupSeq={g.groupSeq} groupName={g.groupName}>
                     {g.groupMember.map(f => (
                       <Friend key={f.userId} {...f} />
                     ))}
@@ -28,11 +24,7 @@ export default function FriendPage() {
                 );
               } else
                 return (
-                  <FriendGroups
-                    key={g.groupSeq}
-                    groupSeq={g.groupSeq}
-                    groupName={FRIENDS.GROUPS.ALL_FRIENDS}
-                  >
+                  <FriendGroups key={g.groupSeq} groupSeq={g.groupSeq} groupName={FRIENDS.GROUPS.ALL_FRIENDS}>
                     {g.groupMember.map(f => (
                       <Friend
                         key={f.userId}
@@ -40,9 +32,7 @@ export default function FriendPage() {
                         status="quit"
                         onQuit={async () => {
                           const res = await http
-                            .delete(
-                              `${process.env.NEXT_PUBLIC_USER}/friend/${f.userSeq}`
-                            )
+                            .delete(`${process.env.NEXT_PUBLIC_USER}/friend/${f.userSeq}`)
                             .then(res => res.data)
                             .catch(err => '');
                         }}

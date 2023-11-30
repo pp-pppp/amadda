@@ -14,10 +14,7 @@ export function MobileUnscheduledPage(): ReactNode {
   useEffect(() => {
     unscheduledList.forEach((schedule, idx) => {
       schedule.participants.forEach(participant => {
-        setProfileImages(profileImages => [
-          ...profileImages,
-          participant.imageUrl,
-        ]);
+        setProfileImages(profileImages => [...profileImages, participant.imageUrl]);
       });
     });
   }, [unscheduledList]);
@@ -31,10 +28,7 @@ export function MobileUnscheduledPage(): ReactNode {
           ) : (
             unscheduledList.map((schedule, idx) => (
               <div key={idx}>
-                <MobileDailyPlate
-                  MobileDailyPlateProps={schedule}
-                  type="unscheduled"
-                />
+                <MobileDailyPlate MobileDailyPlateProps={schedule} type="unscheduled" />
                 <Spacing dir="v" size="0.5" />
               </div>
             ))

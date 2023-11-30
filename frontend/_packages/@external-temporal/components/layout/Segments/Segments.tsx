@@ -1,11 +1,6 @@
 import React from 'react';
 import { createContext, useContext, useState } from 'react';
-import {
-  CONTENTS,
-  SEGMENT_CONTAINER,
-  TRIGGER_CONTAINER,
-  TRIGGER_VARIANT,
-} from './Segments.css';
+import { CONTENTS, SEGMENT_CONTAINER, TRIGGER_CONTAINER, TRIGGER_VARIANT } from './Segments.css';
 import Spacing from '#/components/typography/Spacing/Spacing';
 import type { ReactNode } from 'react';
 
@@ -43,11 +38,7 @@ Segments.Triggers = function ({ titles }: SegmentTriggerProps) {
   return (
     <div className={TRIGGER_CONTAINER}>
       {titles.map((title: string, idx: number) => (
-        <button
-          key={idx}
-          className={TRIGGER_VARIANT[page === idx ? 'selected' : 'unselected']}
-          onClick={() => setPage(idx)}
-        >
+        <button key={idx} className={TRIGGER_VARIANT[page === idx ? 'selected' : 'unselected']} onClick={() => setPage(idx)}>
           {titles[idx]}
         </button>
       ))}

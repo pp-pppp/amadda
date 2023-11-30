@@ -6,11 +6,7 @@ export interface CalendarDateType {
   index: number;
 }
 
-export const useCalendarDates = (
-  year: string,
-  month: string,
-  date: string
-): CalendarDateType[][] => {
+export const useCalendarDates = (year: string, month: string, date: string): CalendarDateType[][] => {
   const [calendarDates, setCalendarDates] = useState<CalendarDateType[][]>([]);
 
   useEffect(() => {

@@ -1,13 +1,5 @@
 import React, { useContext } from 'react';
-import {
-  BtnRound,
-  Flex,
-  Input,
-  List,
-  Profile,
-  Spacing,
-  Span,
-} from 'external-temporal';
+import { BtnRound, Flex, Input, List, Profile, Spacing, Span } from 'external-temporal';
 import { FRIEND_PROFILE } from '../FriendGroups/Friends.css';
 import FRIENDS from '@U/constants/FRIENDS';
 import { MODE_CONTEXT } from '../FriendFrame/FriendFrame';
@@ -46,26 +38,12 @@ export function Friend({
           </Flex>
           {(status === 'edit' || EDITING_GROUP !== 'NOT_EDITING') && (
             <>
-              <Input
-                type="checkbox"
-                name={userId}
-                disabled={false}
-                value={String(userSeq)}
-                id={userId}
-                checked={selected}
-                onChange={() => onSelect(userSeq)}
-              />
+              <Input type="checkbox" name={userId} disabled={false} value={String(userSeq)} id={userId} checked={selected} onChange={() => onSelect(userSeq)} />
             </>
           )}
           {status === 'request' && (
             <>
-              <BtnRound
-                type="button"
-                variant="key"
-                size="S"
-                onClick={() => onRequest(userSeq)}
-                disabled={false}
-              >
+              <BtnRound type="button" variant="key" size="S" onClick={() => onRequest(userSeq)} disabled={false}>
                 {FRIENDS.BTN.REQUEST_FRIEND}
               </BtnRound>
             </>
@@ -73,13 +51,7 @@ export function Friend({
           {status === 'quit' && (
             <>
               <>
-                <BtnRound
-                  type="button"
-                  variant="white"
-                  size="S"
-                  onClick={() => onQuit(userSeq)}
-                  disabled={false}
-                >
+                <BtnRound type="button" variant="white" size="S" onClick={() => onQuit(userSeq)} disabled={false}>
                   {FRIENDS.BTN.QUIT_FRIEND}
                 </BtnRound>
               </>

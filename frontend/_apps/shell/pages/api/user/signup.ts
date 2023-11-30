@@ -1,9 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import type {
-  ApiResponse,
-  UserInitRequest,
-  UserJwtResponse,
-} from 'amadda-global-types';
+import type { ApiResponse, UserInitRequest, UserJwtResponse } from 'amadda-global-types';
 import cookie from 'cookie';
 import { KV, http } from 'connection';
 
@@ -11,10 +7,7 @@ const signup = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     //첫 로그인시 사용자 회원가입
     try {
-      const { status, message, data } = await http.post<
-        UserInitRequest,
-        ApiResponse<UserJwtResponse>
-      >(`${process.env.SPRING_API_ROOT}/user/signup`, req.body);
+      const { status, message, data } = await http.post<UserInitRequest, ApiResponse<UserJwtResponse>>(`${process.env.SPRING_API_ROOT}/user/signup`, req.body);
 
       const COOKIE = cookie.serialize('Auth', data.accessToken, {
         httpOnly: true,
@@ -30,9 +23,7 @@ const signup = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(status).json(data);
     } catch (err) {
       console.log(err);
-      res
-        .status(err.status || 500)
-        .json(err?.data || { data: 'internal server error' });
+      res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
     }
   }
   res.status(400).json({ data: 'bad request' });

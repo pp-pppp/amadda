@@ -21,8 +21,7 @@ const meta = {
       description: '폼을 전송할 때 실행될 함수를 받습니다.',
     },
     children: {
-      description:
-        '자식 노드를 받습니다. 폼 안쪽 요소를 자유롭게 구성할 수 있습니다.',
+      description: '자식 노드를 받습니다. 폼 안쪽 요소를 자유롭게 구성할 수 있습니다.',
     },
   },
 } satisfies Meta<typeof Form>;
@@ -36,20 +35,8 @@ export const Primary: Story = {
     onSubmit: e => console.log(e),
     children: (
       <>
-        <Input
-          type="text"
-          disabled={false}
-          value="wow"
-          id="abc"
-          name="abc"
-          onChange={e => console.log(e)}
-        />
-        <Btn
-          type="submit"
-          variant="key"
-          disabled={false}
-          onClick={e => console.log(e)}
-        >
+        <Input type="text" disabled={false} value="wow" id="abc" name="abc" onChange={e => console.log(e)} />
+        <Btn type="submit" variant="key" disabled={false} onClick={e => console.log(e)}>
           wow
         </Btn>
       </>

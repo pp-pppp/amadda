@@ -8,8 +8,7 @@ const meta = {
   component: List,
   parameters: {
     layout: 'centered',
-    componentSubtitle:
-      '리스트 컴포넌트입니다. 기본적으로 세로로 항목을 나열합니다.',
+    componentSubtitle: '리스트 컴포넌트입니다. 기본적으로 세로로 항목을 나열합니다.',
     docs: {
       description: {
         component:

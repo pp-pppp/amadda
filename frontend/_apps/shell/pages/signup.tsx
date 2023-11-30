@@ -1,11 +1,7 @@
 import { KV, http, https } from 'connection';
 import cookie from 'cookie';
 import type { GetServerSideProps } from 'next';
-import {
-  ApiResponse,
-  UserJwtRequest,
-  UserJwtResponse,
-} from 'amadda-global-types';
+import { ApiResponse, UserJwtRequest, UserJwtResponse } from 'amadda-global-types';
 import SignUp from '@SH/components/SignUp/SignUp';
 import kakaoAuth from 'connection/kakaoAuth';
 interface KakaoPageProps {
@@ -26,21 +22,13 @@ export const getServerSideProps = (async context => {
       `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${process.env.NEXT_PUBLIC_KAKAO_KEY}&redirect_uri=${process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI}&code=${code}`
     ); //카카오 토큰 발급
 
-    const USER_RES = await kakaoAuth.secureGet(
-      `https://kapi.kakao.com/v2/user/me`,
-      access_token
-    ); //카카오 유저 정보 조회
+    const USER_RES = await kakaoAuth.secureGet(`https://kapi.kakao.com/v2/user/me`, access_token); //카카오 유저 정보 조회
 
     const SpringTokenReq: UserJwtRequest = {
       kakaoId: USER_RES.id,
       imageUrl: USER_RES.properties.profile_image,
     };
-    const INIT = (
-      await http.post<UserJwtRequest, ApiResponse<UserJwtResponse>>(
-        `${process.env.SPRING_API_ROOT}/user/login`,
-        SpringTokenReq
-      )
-    ).data; //회원가입이 되었는지 아닌지 확인해 회원가입되었다면 토큰 반환
+    const INIT = (await http.post<UserJwtRequest, ApiResponse<UserJwtResponse>>(`${process.env.SPRING_API_ROOT}/user/login`, SpringTokenReq)).data; //회원가입이 되었는지 아닌지 확인해 회원가입되었다면 토큰 반환
 
     const userdata: KakaoPageProps = {
       kakaoId: USER_RES.id,

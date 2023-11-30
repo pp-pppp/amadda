@@ -20,12 +20,7 @@ export default function Page() {
       <MainLayout>
         <H3>AMADDA</H3>
         <Spacing size="5" />
-        <img
-          src="image/kakao_login.png"
-          alt="카카오로 로그인하기"
-          onClick={() => signIn()}
-          className={BASE}
-        />
+        <img src="image/kakao_login.png" alt="카카오로 로그인하기" onClick={() => signIn()} className={BASE} />
       </MainLayout>
     </div>
   );

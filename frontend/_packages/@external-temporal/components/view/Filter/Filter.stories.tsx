@@ -27,8 +27,7 @@ const meta = {
       description: 'main에 보여줄 텍스트를 입력합니다.',
     },
     children: {
-      description:
-        '자식 노드를 받습니다. Filter 컴포넌트의 하위 컴포넌트인 `<Filter.FilterOption>`의 사용을 권고합니다.',
+      description: '자식 노드를 받습니다. Filter 컴포넌트의 하위 컴포넌트인 `<Filter.FilterOption>`의 사용을 권고합니다.',
     },
   },
 } satisfies Meta<typeof Filter>;
@@ -42,28 +41,13 @@ export const Primary: Story = {
     onClick: e => console.log(e),
     main: '뷰 선택하기',
     children: [
-      <Filter.FilterOption
-        id="a"
-        name="a"
-        onChange={e => console.log(e.target.value)}
-        value="a"
-      >
+      <Filter.FilterOption id="a" name="a" onChange={e => console.log(e.target.value)} value="a">
         a
       </Filter.FilterOption>,
-      <Filter.FilterOption
-        id="b"
-        name="b"
-        onChange={e => console.log(e.target.value)}
-        value="b"
-      >
+      <Filter.FilterOption id="b" name="b" onChange={e => console.log(e.target.value)} value="b">
         b
       </Filter.FilterOption>,
-      <Filter.FilterOption
-        id="c"
-        name="c"
-        onChange={e => console.log(e.target.value)}
-        value="c"
-      >
+      <Filter.FilterOption id="c" name="c" onChange={e => console.log(e.target.value)} value="c">
         c
       </Filter.FilterOption>,
     ],

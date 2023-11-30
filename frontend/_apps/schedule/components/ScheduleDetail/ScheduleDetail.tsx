@@ -1,21 +1,6 @@
 import React, { useState } from 'react';
-import {
-  CommentCreateRequest,
-  ScheduleDetailReadResponse,
-} from 'amadda-global-types';
-import {
-  Chip,
-  Flex,
-  H2,
-  P,
-  Icon,
-  Spacing,
-  Span,
-  Profile,
-  Input,
-  Btn,
-  Textarea,
-} from 'external-temporal';
+import { CommentCreateRequest, ScheduleDetailReadResponse } from 'amadda-global-types';
+import { Chip, Flex, H2, P, Icon, Spacing, Span, Profile, Input, Btn, Textarea } from 'external-temporal';
 import { http } from '@SCH/utils/http';
 import { InferGetServerSidePropsType } from 'next';
 import { getServerSideProps } from '@SCH/pages/schedule/[id]';
@@ -23,9 +8,7 @@ import CALENDAR from '@SCH/constants/CALENDAR';
 import { BASE, BUTTON, GRID } from './ScheduleDetail.css';
 import { Category } from '../ScheduleEdit/Category/Category';
 
-export function ScheduleDetail({
-  detail,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export function ScheduleDetail({ detail }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [comment, setComment] = useState('');
 
   const createComment = e => {
@@ -33,12 +16,7 @@ export function ScheduleDetail({
       commentContent: comment,
     };
 
-    http
-      .post(
-        `${process.env.PUBLIC_NEXT_SCHEDULE}/api/schedule/${detail.scheduleSeq}/comment`,
-        CommentCreateRequestBody
-      )
-      .then(res => setComment(''));
+    http.post(`${process.env.PUBLIC_NEXT_SCHEDULE}/api/schedule/${detail.scheduleSeq}/comment`, CommentCreateRequestBody).then(res => setComment(''));
   };
 
   return (
@@ -48,12 +26,7 @@ export function ScheduleDetail({
       <Span>참가자</Span>
       <Spacing dir="v" size="0.5" />
       {detail.participants.map((participant, idx) => (
-        <Chip
-          key={idx}
-          type="suggestion"
-          label={participant.userName}
-          shape="square"
-        />
+        <Chip key={idx} type="suggestion" label={participant.userName} shape="square" />
       ))}
       <Spacing dir="v" size="2" />
       <Span>날짜</Span>
@@ -63,8 +36,7 @@ export function ScheduleDetail({
       ) : (
         <div className={BASE}>
           <Span>
-            {detail.scheduleStartAt.split(' ')[0].split('-')[0]}년{' '}
-            {detail.scheduleStartAt.split(' ')[0].split('-')[1]}월{' '}
+            {detail.scheduleStartAt.split(' ')[0].split('-')[0]}년 {detail.scheduleStartAt.split(' ')[0].split('-')[1]}월{' '}
             {detail.scheduleStartAt.split(' ')[0].split('-')[2]}일
           </Span>
         </div>
@@ -81,8 +53,7 @@ export function ScheduleDetail({
         <Flex justifyContents="start">
           <div className={BASE}>
             <Span>
-              {detail.scheduleStartAt.split(' ')[1].split('-')[0]}시{' '}
-              {detail.scheduleStartAt.split(' ')[1].split('-')[1]}분{' '}
+              {detail.scheduleStartAt.split(' ')[1].split('-')[0]}시 {detail.scheduleStartAt.split(' ')[1].split('-')[1]}분{' '}
             </Span>
           </div>
           <Spacing dir="h" size="0.5" />
@@ -90,8 +61,7 @@ export function ScheduleDetail({
           <Spacing dir="h" size="0.5" />
           <div className={BASE}>
             <Span>
-              {detail.scheduleEndAt.split(' ')[1].split('-')[0]}시{' '}
-              {detail.scheduleEndAt.split(' ')[1].split('-')[1]}분{' '}
+              {detail.scheduleEndAt.split(' ')[1].split('-')[0]}시 {detail.scheduleEndAt.split(' ')[1].split('-')[1]}분{' '}
             </Span>
           </div>
         </Flex>
@@ -109,10 +79,7 @@ export function ScheduleDetail({
       <Spacing dir="v" size="2" />
       <Span>카테고리</Span>
       <Spacing dir="v" size="0.5" />
-      <Category
-        color={detail.category.categoryColor}
-        categoryName={detail.category.categoryName}
-      />
+      <Category color={detail.category.categoryColor} categoryName={detail.category.categoryName} />
       <Spacing dir="v" size="2" />
       <Span>메모</Span>
       <Spacing dir="v" size="0.5" />
@@ -129,15 +96,8 @@ export function ScheduleDetail({
           return (
             <>
               <div className={GRID}>
-                <Profile
-                  src={comment.user.imageUrl}
-                  alt={comment.user.userSeq.toString()}
-                />
-                <Flex
-                  justifyContents="start"
-                  alignItems="start"
-                  flexDirection="column"
-                >
+                <Profile src={comment.user.imageUrl} alt={comment.user.userSeq.toString()} />
+                <Flex justifyContents="start" alignItems="start" flexDirection="column">
                   <Span>{comment.user.userName}</Span>
                 </Flex>
                 <Span>{comment.commentContent}</Span>
@@ -147,13 +107,7 @@ export function ScheduleDetail({
         })
       )}
       <Spacing dir="v" size="2" />
-      <Textarea
-        id="comment"
-        height="5rem"
-        placeholder="댓글을 입력하세요."
-        onChange={e => setComment(e.target.value)}
-        value={comment}
-      />
+      <Textarea id="comment" height="5rem" placeholder="댓글을 입력하세요." onChange={e => setComment(e.target.value)} value={comment} />
       <Spacing dir="v" size="0.5" />
       <Flex justifyContents="flexEnd">
         <div className={BUTTON}>

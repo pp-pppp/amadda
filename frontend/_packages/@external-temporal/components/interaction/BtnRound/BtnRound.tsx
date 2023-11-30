@@ -10,22 +10,10 @@ export interface BtnRoundProps extends HTMLAttributes<HTMLButtonElement> {
   onClick?: (e: MouseEvent) => void;
   children: ReactNode;
 }
-export function BtnRound({
-  type,
-  variant,
-  disabled,
-  size = 'M',
-  children,
-  onClick,
-}: BtnRoundProps) {
+export function BtnRound({ type, variant, disabled, size = 'M', children, onClick }: BtnRoundProps) {
   const className = `${VARIANTS[variant]} ${SIZE[size]}`;
   return (
-    <button
-      className={className}
-      disabled={disabled}
-      type={type}
-      onClick={onClick}
-    >
+    <button className={className} disabled={disabled} type={type} onClick={onClick}>
       {children}
     </button>
   );

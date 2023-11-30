@@ -12,9 +12,7 @@ export function NoticeFrame() {
   const router = useRouter();
   const basePath = router.asPath;
   useEffect(() => {
-    const eventSource = new EventSource(
-      `${process.env.NEXT_PUBLIC_NOTICE}/api/event`
-    );
+    const eventSource = new EventSource(`${process.env.NEXT_PUBLIC_NOTICE}/api/event`);
 
     eventSource.onmessage = async (e: MessageEvent) => {
       const data: AlarmReadResponse = JSON.parse(await e.data);

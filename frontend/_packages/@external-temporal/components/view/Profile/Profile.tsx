@@ -13,9 +13,5 @@ const profileStyle = {
 };
 
 export function Profile({ src, alt, size = 'medium' }: ProfileProps) {
-  return (
-    <div className={FRAME[size]}>
-      {src && <Image src={src} alt={alt} layout="fill" style={profileStyle} />}
-    </div>
-  );
+  return <div className={FRAME[size]}>{src && <Image src={src} alt={alt} layout="fill" style={profileStyle} />}</div>;
 }

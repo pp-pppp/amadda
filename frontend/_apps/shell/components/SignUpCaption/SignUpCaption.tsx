@@ -6,10 +6,7 @@ export interface SignUpCaptionProps {
   children: string;
 }
 
-export default function SignUpCaption({
-  color = 'grey',
-  children,
-}: SignUpCaptionProps) {
+export default function SignUpCaption({ color = 'grey', children }: SignUpCaptionProps) {
   return (
     <P type="caption" color={color}>
       {children}

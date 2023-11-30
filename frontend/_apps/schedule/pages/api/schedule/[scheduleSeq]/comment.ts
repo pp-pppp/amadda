@@ -8,19 +8,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     //댓글 작성
     try {
-      const { status, message, data } = await https.post<
-        CommentCreateRequest,
-        ApiResponse<number>
-      >(
+      const { status, message, data } = await https.post<CommentCreateRequest, ApiResponse<number>>(
         `${process.env.SPRING_API_ROOT}/schedule/${scheduleSeq}/comment`,
         token,
         req.body
       );
       res.status(status).json(data);
     } catch (err) {
-      res
-        .status(err.status || 500)
-        .json(err?.data || { data: 'internal server error' });
+      res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
     }
   }
   res.status(400).json({ data: 'bad request' });
