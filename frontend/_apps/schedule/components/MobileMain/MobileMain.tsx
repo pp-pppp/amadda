@@ -10,16 +10,8 @@ export function MobileMain() {
 
   return (
     <div className={INDEXLAYOUT_MOBILE}>
-      <Segments
-        titles={[CALENDAR.TITLE_MONTHLY, CALENDAR.TITLE_UNSCHEUDLED]}
-        pages={[<MobileMonthlyPage />, <MobileUnscheduledPage />]}
-      />
-      <div
-        className={FABLAYOUT_MOBILE}
-        onClick={() =>
-          router.push(`${process.env.NEXT_PUBLIC_SHELL}/schedule/create`)
-        }
-      >
+      <Segments titles={[CALENDAR.TITLE_MONTHLY, CALENDAR.TITLE_UNSCHEUDLED]} pages={[<MobileMonthlyPage />, <MobileUnscheduledPage />]} />
+      <div className={FABLAYOUT_MOBILE} onClick={() => router.push(`${process.env.NEXT_PUBLIC_SHELL}/schedule/create`)}>
         <FAB />
       </div>
     </div>

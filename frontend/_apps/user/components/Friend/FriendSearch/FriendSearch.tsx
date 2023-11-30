@@ -41,11 +41,7 @@ export function FriendSearch({}: FriendSearchProps) {
       <Spacing dir="v" size="0.5" />
       {friendData.data &&
         friendData.data.map(g => (
-          <FriendGroups
-            key={g.groupSeq}
-            groupSeq={g.groupSeq}
-            groupName={g.groupName}
-          >
+          <FriendGroups key={g.groupSeq} groupSeq={g.groupSeq} groupName={g.groupName}>
             {g.groupMember.map(f => (
               <Friend {...f} key={f.userId} status="request" />
             ))}

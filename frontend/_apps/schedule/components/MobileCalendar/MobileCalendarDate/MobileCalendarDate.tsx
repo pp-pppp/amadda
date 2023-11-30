@@ -4,10 +4,7 @@ import { MobileMonthlyPlate } from '@SCH/components/MobileMonthlyPlate/MobileMon
 import { useCalendarDates } from '@SCH/hooks/useCalendarInfo';
 import { useDateStore } from '@SCH/store/dateStore';
 import { useMonthlySchedule } from '@SCH/hooks/useScheduleList';
-import {
-  ScheduleListReadResponse,
-  ScheduleSearchResponse,
-} from 'amadda-global-types';
+import { ScheduleListReadResponse, ScheduleSearchResponse } from 'amadda-global-types';
 import { useCategoryStore } from '@SCH/store/categoryStore';
 import useServerTime from '@SCH/hooks/useServerTime';
 
@@ -22,24 +19,14 @@ export function MobileCalendarDate() {
   useServerTime();
   const { selectedYear, selectedMonth, selectedDate } = useDateStore();
   const { selectedCategorySeq, selectedAll, selectedNone } = useCategoryStore();
-  const {
-    monthlyScheduleList,
-    setMonthlyScheduleList,
-    SWRerror: error,
-  } = useMonthlySchedule();
+  const { monthlyScheduleList, setMonthlyScheduleList, SWRerror: error } = useMonthlySchedule();
   const [chosen, setChosen] = useState('');
-  const calendarDates = useCalendarDates(
-    selectedYear,
-    selectedMonth,
-    selectedDate
-  );
+  const calendarDates = useCalendarDates(selectedYear, selectedMonth, selectedDate);
 
   useEffect(() => setChosen(selectedDate), [selectedDate]);
 
   const categoryCheck = (dateString: string) => {
-    const isContain = monthlyScheduleList.dateString.some(schedule =>
-      selectedCategorySeq.includes(schedule.category.categorySeq)
-    );
+    const isContain = monthlyScheduleList.dateString.some(schedule => selectedCategorySeq.includes(schedule.category.categorySeq));
 
     return isContain;
   };
@@ -50,38 +37,24 @@ export function MobileCalendarDate() {
       return false;
     }
 
-    const dateString =
-      selectedYear +
-      '-' +
-      selectedMonth +
-      '-' +
-      date.toString().padStart(2, '0');
+    const dateString = selectedYear + '-' + selectedMonth + '-' + date.toString().padStart(2, '0');
 
-    return dateString in monthlyScheduleList && categoryCheck(dateString)
-      ? true
-      : false;
+    return dateString in monthlyScheduleList && categoryCheck(dateString) ? true : false;
   };
 
-  const isSelected = (
-    monthType: 'prev' | 'curr' | 'next',
-    date: number
-  ): boolean => {
+  const isSelected = (monthType: 'prev' | 'curr' | 'next', date: number): boolean => {
     if (monthType !== 'curr') return false;
     return parseInt(selectedDate) === date ? true : false;
   };
 
-  const dateTypeMapper = (
-    monthType: 'prev' | 'curr' | 'next',
-    colIndex: number
-  ) => {
+  const dateTypeMapper = (monthType: 'prev' | 'curr' | 'next', colIndex: number) => {
     if (monthType === 'prev' || monthType === 'next') return 'OTHER';
     else if (colIndex % 7 === 0 || colIndex % 7 === 6) return 'WEEKEND';
     return 'WEEKDAY';
   };
 
   const goPrev = (currDate: number) => {
-    const newMonth =
-      parseInt(selectedMonth) - 1 > 0 ? parseInt(selectedMonth) - 1 : 12;
+    const newMonth = parseInt(selectedMonth) - 1 > 0 ? parseInt(selectedMonth) - 1 : 12;
     const newYear = newMonth === 12 ? parseInt(selectedYear) - 1 : selectedYear;
     const newDate = currDate.toString().padStart(2, '0');
 
@@ -94,8 +67,7 @@ export function MobileCalendarDate() {
   };
 
   const goNext = (currDate: number) => {
-    const newMonth =
-      parseInt(selectedMonth) + 1 < 13 ? parseInt(selectedMonth) + 1 : 1;
+    const newMonth = parseInt(selectedMonth) + 1 < 13 ? parseInt(selectedMonth) + 1 : 1;
     const newYear = newMonth === 1 ? parseInt(selectedYear) + 1 : selectedYear;
     const newDate = currDate.toString().padStart(2, '0');
 

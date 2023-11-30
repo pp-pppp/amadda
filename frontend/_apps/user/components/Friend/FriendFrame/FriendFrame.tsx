@@ -12,16 +12,11 @@ export interface FriendsProps {
 }
 
 export const MODE_CONTEXT = createContext<
-  [
-    number | 'ADD_GROUP' | 'SEARCH' | 'NOT_EDITING',
-    Dispatch<SetStateAction<number | 'ADD_GROUP' | 'SEARCH' | 'NOT_EDITING'>>,
-  ]
+  [number | 'ADD_GROUP' | 'SEARCH' | 'NOT_EDITING', Dispatch<SetStateAction<number | 'ADD_GROUP' | 'SEARCH' | 'NOT_EDITING'>>]
 >(['NOT_EDITING', () => {}]); //어떤 동작을 하는 중인지. groupSeq 번 그룹 편집 중, 그룹 추가 중, 검색 중, 아무 그룹도 편집중이지 않음
 
 export function FriendFrame({ children }: FriendsProps) {
-  const [MODE, SET_MODE] = useState<
-    number | 'ADD_GROUP' | 'SEARCH' | 'NOT_EDITING'
-  >('NOT_EDITING');
+  const [MODE, SET_MODE] = useState<number | 'ADD_GROUP' | 'SEARCH' | 'NOT_EDITING'>('NOT_EDITING');
   return (
     <MODE_CONTEXT.Provider value={[MODE, SET_MODE]}>
       <div className={FRAME}>
@@ -66,15 +61,7 @@ export function FriendFrame({ children }: FriendsProps) {
           </Flex>
           <Spacing dir="v" size="0.5" />
         </Flex>
-        <>
-          {MODE === 'NOT_EDITING' ? (
-            children
-          ) : MODE === 'SEARCH' ? (
-            <FriendSearch />
-          ) : (
-            <FriendGroupData />
-          )}
-        </>
+        <>{MODE === 'NOT_EDITING' ? children : MODE === 'SEARCH' ? <FriendSearch /> : <FriendGroupData />}</>
       </div>
     </MODE_CONTEXT.Provider>
   );

@@ -31,8 +31,7 @@ const meta = {
       description: '필터 칩이 선택되었을 때 해당 값을 함수로 전달합니다.',
     },
     onDelete: {
-      description:
-        '키워드 칩이 생성된 상태에서 X버튼을 누르면 해당 값을 함수로 전달합니다.',
+      description: '키워드 칩이 생성된 상태에서 X버튼을 누르면 해당 값을 함수로 전달합니다.',
     },
   },
 } satisfies Meta<typeof Chip>;

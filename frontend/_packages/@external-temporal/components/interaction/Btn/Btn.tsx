@@ -14,12 +14,7 @@ export interface BtnProps extends HTMLAttributes<HTMLButtonElement> {
 export function Btn({ type, variant, disabled, onClick, children }: BtnProps) {
   const className = `${VARIANTS[variant]}`;
   return (
-    <button
-      className={className}
-      disabled={disabled}
-      type={type}
-      onClick={onClick}
-    >
+    <button className={className} disabled={disabled} type={type} onClick={onClick}>
       {children}
     </button>
   );

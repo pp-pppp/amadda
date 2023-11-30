@@ -1,10 +1,6 @@
 import CREATE from '@SCH/constants/CREATE';
 import { stringToNumber } from '@SCH/utils/formatDate';
-import {
-  CategoryReadResponse,
-  FriendReadResponse,
-  UserReadResponse,
-} from 'amadda-global-types';
+import { CategoryReadResponse, FriendReadResponse, UserReadResponse } from 'amadda-global-types';
 import { useRouter } from 'next/router';
 
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
@@ -67,9 +63,7 @@ export interface ScheduleEditDataProps {
     submit: () => void;
   };
 }
-export function ScheduleEditData(props: {
-  children: (args: ScheduleEditDataProps) => ReactNode;
-}) {
+export function ScheduleEditData(props: { children: (args: ScheduleEditDataProps) => ReactNode }) {
   const router = useRouter();
 
   const [startYear, setStartYear] = useState<number | undefined>();
@@ -87,8 +81,7 @@ export function ScheduleEditData(props: {
   const [scheduleName, setScheduleName] = useState<string>('');
   const [participants, setParticipants] = useState<Array<UserReadResponse>>([]);
   const [partySearchInput, setPartySearchInput] = useState<string>('');
-  const [partySearchResult, setPartySearchResult] =
-    useState<FriendReadResponse>([]);
+  const [partySearchResult, setPartySearchResult] = useState<FriendReadResponse>([]);
   const [scheduleStartAt, setScheduleStartAt] = useState<string>('');
   const [scheduleEndAt, setScheduleEndAt] = useState<string>('');
   const [isAuthorizedAll, setIsAuthorizedAll] = useState<boolean>(false);
@@ -97,9 +90,7 @@ export function ScheduleEditData(props: {
   const [isAllday, setIsAllday] = useState<boolean>(false);
   const [scheduleContent, setScheduleContent] = useState<string>('');
 
-  const [alarmTime, setAlarmTime] = useState<
-    keyof typeof CREATE.ALARMS | string
-  >('NONE');
+  const [alarmTime, setAlarmTime] = useState<keyof typeof CREATE.ALARMS | string>('NONE');
 
   const [categorySeq, setCategorySeq] = useState<number | undefined>(undefined);
   const [scheduleMemo, setScheduleMemo] = useState<string>('');
@@ -125,14 +116,11 @@ export function ScheduleEditData(props: {
     const { scheduleSeq } = router.query;
     useEffect(() => {
       try {
-        fetch(
-          `${process.env.NEXT_PUBLIC_SCHEDULE}/api/schedule/${scheduleSeq}`,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        )
+        fetch(`${process.env.NEXT_PUBLIC_SCHEDULE}/api/schedule/${scheduleSeq}`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
           .then(res => res.json())
           .then(json => json.data)
           .then(data => {
@@ -165,14 +153,11 @@ export function ScheduleEditData(props: {
 
   const partyAutoComplete = async (key: string) => {
     setPartySearchInput(key);
-    return fetch(
-      `${process.env.NEXT_PUBLIC_USER}/api/friend?searchKey=${key}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    )
+    return fetch(`${process.env.NEXT_PUBLIC_USER}/api/friend?searchKey=${key}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
       .then(res => res.json())
       .then(json => setPartySearchResult(json.data));
   };
@@ -213,20 +198,15 @@ export function ScheduleEditData(props: {
         scheduleMemo,
         categorySeq,
       };
-      return fetch(
-        `${process.env.NEXT_PUBLIC_SCHEDULE}/api/schedule/${scheduleSeq}`,
-        {
-          method: 'PUT',
-          body: data,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
+      return fetch(`${process.env.NEXT_PUBLIC_SCHEDULE}/api/schedule/${scheduleSeq}`, {
+        method: 'PUT',
+        body: data,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
         .then(res => res.json())
-        .then(json =>
-          router.push(`${process.env.NEXT_PUBLIC_SHELL}/schedule/${json.data}`)
-        )
+        .then(json => router.push(`${process.env.NEXT_PUBLIC_SHELL}/schedule/${json.data}`))
         .catch(err => router.push(`${process.env.NEXT_PUBLIC_SHELL}/schedule`));
     }
     data = {
@@ -250,9 +230,7 @@ export function ScheduleEditData(props: {
       },
     })
       .then(res => res.json())
-      .then(json =>
-        router.push(`${process.env.NEXT_PUBLIC_SHELL}/schedule/${json.data}`)
-      )
+      .then(json => router.push(`${process.env.NEXT_PUBLIC_SHELL}/schedule/${json.data}`))
       .catch(err => router.push(`${process.env.NEXT_PUBLIC_SHELL}/schedule`));
   };
 

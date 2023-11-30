@@ -1,17 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Btn,
-  Flex,
-  Form,
-  H1,
-  Input,
-  Label,
-  P,
-  Profile,
-  Spacing,
-  debounce,
-  throttle,
-} from 'external-temporal';
+import { Btn, Flex, Form, H1, Input, Label, P, Profile, Spacing, debounce, throttle } from 'external-temporal';
 import { IndexLayout } from '@SH/layout/IndexLayout';
 import useIdValidator from '@SH/hooks/useIdValidator';
 import SIGNUP_TEXT from '@SH/constants/SIGNUP_TEXT';
@@ -39,18 +27,8 @@ export default function SignUp({ userInfo }: SignUpProps) {
 
   const [lenCheck, setLenCheck] = useState(false);
 
-  const {
-    isIdDuplicated,
-    isIdValid,
-    idValue,
-    setIsInitial,
-    setIdValue,
-    isInitial,
-    isIdEmpty,
-  } = useIdValidator('');
-  const { nameValue, setNameValue, isNameValid } = useNameValidator(
-    userInfo.userName
-  );
+  const { isIdDuplicated, isIdValid, idValue, setIsInitial, setIdValue, isInitial, isIdEmpty } = useIdValidator('');
+  const { nameValue, setNameValue, isNameValid } = useNameValidator(userInfo.userName);
 
   // const [btnDisable, setBtnDisable] = useState(true);
 
@@ -103,10 +81,7 @@ export default function SignUp({ userInfo }: SignUpProps) {
       };
 
       http
-        .post<UserInitRequest>(
-          `${process.env.NEXT_PUBLIC_SHELL}/api/user/signup`,
-          UserInitRequest
-        )
+        .post<UserInitRequest>(`${process.env.NEXT_PUBLIC_SHELL}/api/user/signup`, UserInitRequest)
         .then(res => {
           res.data;
         })
@@ -142,13 +117,9 @@ export default function SignUp({ userInfo }: SignUpProps) {
         />
         <Spacing size="0.25" />
         {userName.length === 0 ? (
-          <SignUpCaption color="warn">
-            {SIGNUP_TEXT.NICKNAME_EMPTY}
-          </SignUpCaption>
+          <SignUpCaption color="warn">{SIGNUP_TEXT.NICKNAME_EMPTY}</SignUpCaption>
         ) : (
-          <SignUpCaption color="grey">
-            {SIGNUP_TEXT.NICKNAME_DESC}
-          </SignUpCaption>
+          <SignUpCaption color="grey">{SIGNUP_TEXT.NICKNAME_DESC}</SignUpCaption>
         )}
         <Spacing size="2" />
 

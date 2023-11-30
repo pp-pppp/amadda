@@ -10,13 +10,7 @@ interface Props {
   onDelete?: (data: any) => void;
 }
 
-export function Chip({
-  type,
-  label,
-  shape = 'round',
-  onFiltered,
-  onDelete,
-}: Props) {
+export function Chip({ type, label, shape = 'round', onFiltered, onDelete }: Props) {
   const classname = `${TYPE_VARIANT[type]} ${SHAPE_VARIANT[shape]}`;
   switch (type) {
     case 'filter':

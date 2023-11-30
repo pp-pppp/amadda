@@ -9,18 +9,13 @@ export const http = {
       },
     });
     if (!result.ok) {
-      throw new Error(
-        `status: ${result.status}, message: ${result.statusText}`
-      );
+      throw new Error(`status: ${result.status}, message: ${result.statusText}`);
     } else {
       const { code, message, data } = (await result.json()) satisfies Res;
       return { status: code, message, data };
     }
   },
-  post: async <Req = unknown, Res = ApiResponse<unknown>>(
-    url: string,
-    body?: Req
-  ) => {
+  post: async <Req = unknown, Res = ApiResponse<unknown>>(url: string, body?: Req) => {
     const result = await fetch(url, {
       method: 'POST',
       body: JSON.stringify(body) || null,
@@ -29,18 +24,13 @@ export const http = {
       },
     });
     if (!result.ok) {
-      throw new Error(
-        `status: ${result.status}, message: ${result.statusText}`
-      );
+      throw new Error(`status: ${result.status}, message: ${result.statusText}`);
     } else {
       const { code, message, data } = (await result.json()) satisfies Res;
       return { status: code, message, data };
     }
   },
-  put: async <Req = unknown, Res = ApiResponse<unknown>>(
-    url: string,
-    body?: Req
-  ) => {
+  put: async <Req = unknown, Res = ApiResponse<unknown>>(url: string, body?: Req) => {
     const result = await fetch(url, {
       method: 'PUT',
       body: JSON.stringify(body) || null,
@@ -49,18 +39,13 @@ export const http = {
       },
     });
     if (!result.ok) {
-      throw new Error(
-        `status: ${result.status}, message: ${result.statusText}`
-      );
+      throw new Error(`status: ${result.status}, message: ${result.statusText}`);
     } else {
       const { code, message, data } = (await result.json()) satisfies Res;
       return { status: code, message, data };
     }
   },
-  patch: async <Req = unknown, Res = ApiResponse<unknown>>(
-    url: string,
-    body?: Req
-  ) => {
+  patch: async <Req = unknown, Res = ApiResponse<unknown>>(url: string, body?: Req) => {
     const result = await fetch(url, {
       method: 'PATCH',
       body: JSON.stringify(body) || null,
@@ -69,9 +54,7 @@ export const http = {
       },
     });
     if (!result.ok) {
-      throw new Error(
-        `status: ${result.status}, message: ${result.statusText}`
-      );
+      throw new Error(`status: ${result.status}, message: ${result.statusText}`);
     } else {
       const { code, message, data } = (await result.json()) satisfies Res;
       return { status: code, message, data };
@@ -85,9 +68,7 @@ export const http = {
       },
     });
     if (!result.ok) {
-      throw new Error(
-        `status: ${result.status}, message: ${result.statusText}`
-      );
+      throw new Error(`status: ${result.status}, message: ${result.statusText}`);
     } else {
       const { code, message, data } = (await result.json()) satisfies Res;
       return { status: code, message, data };

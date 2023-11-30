@@ -1,10 +1,4 @@
-export function numberToString(
-  YYYY: number,
-  MM: number,
-  DD: number,
-  TT: number,
-  mm: number
-) {
+export function numberToString(YYYY: number, MM: number, DD: number, TT: number, mm: number) {
   const pad = num => (num < 10 ? '0' + num : num.toString());
 
   const date = new Date(YYYY, MM - 1, DD, TT, mm); // 월은 0부터 시작함
@@ -19,9 +13,7 @@ export function numberToString(
 }
 
 export function stringToNumber(dateTimeString: string) {
-  const parts = dateTimeString.match(
-    /(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/
-  );
+  const parts = dateTimeString.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/);
 
   return parts?.slice(1).map(part => parseInt(part, 10)) || [];
 }

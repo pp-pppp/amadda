@@ -8,37 +8,27 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     //친구신청 수락
     try {
-      const { status, message, data } = await https.post<
-        null,
-        ApiResponse<number>
-      >(
+      const { status, message, data } = await https.post<null, ApiResponse<number>>(
         `${process.env.SPRING_API_ROOT}/friend/request/${requestSeq}`,
         token,
         req.body
       );
       res.status(status).json(data);
     } catch (err) {
-      res
-        .status(err.status || 500)
-        .json(err?.data || { data: 'internal server error' });
+      res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
     }
   }
   if (req.method === 'PUT') {
     //친구신청 거절
     try {
-      const { status, message, data } = await https.put<
-        null,
-        ApiResponse<number>
-      >(
+      const { status, message, data } = await https.put<null, ApiResponse<number>>(
         `${process.env.SPRING_API_ROOT}/friend/request/${requestSeq}`,
         token,
         req.body
       );
       res.status(status).json(data);
     } catch (err) {
-      res
-        .status(err.status || 500)
-        .json(err?.data || { data: 'internal server error' });
+      res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
     }
   }
   res.status(400).json({ data: 'bad request' });

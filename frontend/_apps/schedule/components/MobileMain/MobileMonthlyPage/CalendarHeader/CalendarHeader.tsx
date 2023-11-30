@@ -75,9 +75,7 @@ export function CalendarHeader() {
     useCategoryStore.setState(prevState => {
       if (prevState.selectedCategorySeq.includes(categorySeq)) {
         return {
-          selectedCategorySeq: prevState.selectedCategorySeq.filter(
-            seq => seq !== categorySeq
-          ),
+          selectedCategorySeq: prevState.selectedCategorySeq.filter(seq => seq !== categorySeq),
           selectedAll: false,
           selectedNone: prevState.selectedNone,
         };
@@ -103,12 +101,7 @@ export function CalendarHeader() {
     <>
       <Flex justifyContents="spaceBetween" alignItems="center">
         <P color="grey">{selectedYear}</P>
-        <BtnRound
-          type="button"
-          variant="key"
-          disabled={false}
-          onClick={() => goToday()}
-        >
+        <BtnRound type="button" variant="key" disabled={false} onClick={() => goToday()}>
           {CALENDAR.TODAY}
         </BtnRound>
       </Flex>
@@ -133,10 +126,7 @@ export function CalendarHeader() {
                 name={'category_' + category.categorySeq}
                 onChange={() => selectCategory(category.categorySeq)}
                 value={category.categoryName}
-                checked={
-                  selectedAll ||
-                  selectedCategorySeq.includes(category.categorySeq)
-                }
+                checked={selectedAll || selectedCategorySeq.includes(category.categorySeq)}
               >
                 {category.categoryName}
               </Filter.FilterOption>

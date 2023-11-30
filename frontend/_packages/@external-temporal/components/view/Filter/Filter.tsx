@@ -38,26 +38,11 @@ export function Filter({ isOpen, onClick, main, children }: FilterProps) {
   );
 }
 
-Filter.FilterOption = function FilterOption({
-  id,
-  name,
-  onChange,
-  value,
-  children,
-  checked,
-}: OptionProps) {
+Filter.FilterOption = function FilterOption({ id, name, onChange, value, children, checked }: OptionProps) {
   return (
     <li className={STATUS['option']}>
       <Label htmlFor={id}>{children}</Label>
-      <Input
-        type="checkbox"
-        id={id}
-        name={name}
-        onChange={onChange}
-        disabled={false}
-        value={value}
-        checked={checked}
-      />
+      <Input type="checkbox" id={id} name={name} onChange={onChange} disabled={false} value={value} checked={checked} />
     </li>
   );
 };
