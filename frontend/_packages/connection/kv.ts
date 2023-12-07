@@ -1,5 +1,5 @@
 export const KV = {
-  async getRefreshToken(k: string): Promise<string> {
+  async getToken(k: string): Promise<string> {
     try {
       const token = await fetch(`${process.env.KV_REST_API_URL}/get/${k}`, {
         headers: {
@@ -12,7 +12,7 @@ export const KV = {
       return '';
     }
   },
-  async setRefreshToken(k: string, token: string): Promise<void> {
+  async setToken(k: string, token: string): Promise<void> {
     try {
       fetch(`${process.env.KV_REST_API_URL}/set/${k}/${token}`, {
         headers: {
