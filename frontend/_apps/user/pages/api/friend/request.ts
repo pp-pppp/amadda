@@ -1,4 +1,4 @@
-import { wrapApiHandlerWithSentry } from '@sentry/nextjs';
+import * as Sentry from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { auth, https } from 'connection';
@@ -16,9 +16,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       );
       res.status(status).json(data);
     } catch (err) {
+      Sentry.captureException(err);
       res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
     }
   }
   res.status(400).json({ data: 'bad request' });
 };
-export default wrapApiHandlerWithSentry(auth(handler), 'user/api/friend/request');
+export default Sentry.wrapApiHandlerWithSentry(auth(handler), 'user/api/friend/request');

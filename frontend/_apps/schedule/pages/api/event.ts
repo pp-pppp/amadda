@@ -1,6 +1,6 @@
 import { KAFKA_SCHEDULE } from 'amadda-kafka';
 import { auth } from 'connection';
-import { wrapApiHandlerWithSentry } from '@sentry/nextjs';
+import * as Sentry from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -23,7 +23,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       return res.end();
     });
   } catch (err) {
+    Sentry.captureException(err);
     return res.status(500).json({ data: 'internal server error' });
   }
 }
-export default wrapApiHandlerWithSentry(auth(handler), 'schedule/api/event');
+export default Sentry.wrapApiHandlerWithSentry(auth(handler), 'schedule/api/event');
