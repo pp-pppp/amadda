@@ -1,5 +1,6 @@
 import type { ApiResponse, ScheduleCreateRequest, ScheduleCreateResponse, ScheduleListReadResponse } from 'amadda-global-types';
 
+import { wrapApiHandlerWithSentry } from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { auth, https } from 'connection';
@@ -63,4 +64,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   res.status(400).json({ data: 'bad request' });
 };
 
-export default auth(handler);
+export default wrapApiHandlerWithSentry(auth(handler), 'schedule/api/schedule');

@@ -1,6 +1,7 @@
 import { KAFKA_SCHEDULE } from 'amadda-kafka';
 import { auth } from 'connection';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { wrapApiHandlerWithSentry } from '@sentry/nextjs';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader('Content-Type', 'text/event-stream');
@@ -25,4 +26,4 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     return res.status(500).json({ data: 'internal server error' });
   }
 }
-export default auth(handler);
+export default wrapApiHandlerWithSentry(auth(handler), 'schedule/api/event');

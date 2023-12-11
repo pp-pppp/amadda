@@ -1,4 +1,6 @@
+import { wrapApiHandlerWithSentry } from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
+
 import { auth, http } from 'connection';
 import type { ApiResponse } from 'amadda-global-types';
 
@@ -16,4 +18,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default auth(handler);
+export default wrapApiHandlerWithSentry(auth(handler), '');
