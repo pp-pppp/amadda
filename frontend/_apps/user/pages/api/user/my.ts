@@ -1,4 +1,6 @@
+import * as Sentry from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
+
 import type { ApiResponse, UserReadResponse } from 'amadda-global-types';
 import { auth, https } from 'connection';
 
@@ -10,9 +12,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const { status, message, data } = await https.get<ApiResponse<UserReadResponse>>(`${process.env.SPRING_API_ROOT}/user/my`, token);
       res.status(status).json(data);
     } catch (err) {
-      console.log(err);
+      Sentry.captureException(err);
       res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
     }
   }
 };
-export default auth(handler);
+export default Sentry.wrapApiHandlerWithSentry(auth(handler), 'user/api/user/my');

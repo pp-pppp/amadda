@@ -1,13 +1,14 @@
 import { ApiResponse } from 'amadda-global-types';
 
 export default {
-  Get: async (url: string) => {
+  get: async (url: string) => {
     const result = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
       },
     });
+    if (result.status > 399) throw new Error(result.statusText || 'kakaoError');
     const response = await result.json();
     return response;
   },
@@ -19,6 +20,7 @@ export default {
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
       },
     });
+    if (result.status > 399) throw new Error(result.statusText || 'kakaoError');
     const response = await result.json();
     return response;
   },
@@ -30,6 +32,7 @@ export default {
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
       },
     });
+    if (result.status > 399) throw new Error(result.statusText || 'kakaoError');
     const response = await result.json();
     return response;
   },
@@ -42,6 +45,7 @@ export default {
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
       },
     });
+    if (result.status > 399) throw new Error(result.statusText || 'kakaoError');
     const response = await result.json();
     return response;
   },
@@ -53,6 +57,7 @@ export default {
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
       },
     });
+    if (result.status > 399) throw new Error(result.statusText || 'kakaoError');
     const response = await result.json();
     return response;
   },

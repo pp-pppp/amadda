@@ -1,4 +1,6 @@
+import * as Sentry from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
+
 import { auth, http } from 'connection';
 import type { ApiResponse } from 'amadda-global-types';
 
@@ -10,10 +12,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const { status, message, data } = await http.get<ApiResponse<string>>(`${process.env.SPRING_API_ROOT}/schedule/server-time`);
       res.status(status).json(data);
     } catch (err) {
-      console.log(err);
+      Sentry.captureException(err);
       res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
     }
   }
 };
 
-export default auth(handler);
+export default Sentry.wrapApiHandlerWithSentry(auth(handler), '');

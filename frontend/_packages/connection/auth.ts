@@ -1,5 +1,6 @@
 import { UserAccessResponse, UserJwtResponse } from 'amadda-global-types';
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import * as Sentry from '@sentry/nextjs';
 import { KV } from './kv';
 
 type API_HANDLER = (request: NextApiRequest, response: NextApiResponse) => Promise<NextApiResponse | void>;
@@ -18,7 +19,7 @@ export function auth(fn: API_HANDLER): API_HANDLER {
       return res.setHeader('Set-Cookie', `Auth=${ACCESS_TOKEN}; Max-Age=900; HttpOnly; SameSite=Lax;`);
     } catch (err) {
       //모든 종류의 에러는 로그아웃으로 리다이렉트시킵니다.
-      console.log(err);
+      Sentry.captureException(err);
       return res.redirect(`${process.env.NEXT_PUBLIC_SHELL}/signout`);
     }
   };
@@ -31,6 +32,7 @@ async function VERIFY(type: 'access' | 'refresh', token: string): Promise<any> {
       Authorization: `Bearer ${token}`,
     },
   });
+  if (!response.ok) throw new Error(response.statusText);
   return await response.json();
 }
 
