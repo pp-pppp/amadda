@@ -12,7 +12,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const { status, message, data } = await https.get<ApiResponse<UserRelationResponse>>(`${process.env.SPRING_API_ROOT}/user?searchKey=${searchKey}`, token);
       res.status(status).json(data);
     } catch (err) {
-      console.log(err);
       res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
     }
   }
@@ -22,7 +21,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const { status, message, data } = await https.delete(`${process.env.SPRING_API_ROOT}/user`, token);
       res.status(status).json(data);
     } catch (err) {
-      console.log(err);
       res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
     }
   }

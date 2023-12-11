@@ -7,11 +7,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const token = req.headers.authorization || '';
   if (req.method === 'POST') {
     try {
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   }
   res.status(400).json({ data: 'bad request' });
 };
 
-export default wrapApiHandlerWithSentry(auth(handler), '');
+export default wrapApiHandlerWithSentry(auth(handler), 'notice/api/schedule/[seheduleSeq]/subscribe/update');

@@ -12,7 +12,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const { status, message, data } = await https.get<ApiResponse<CategoryReadResponse[]>>(`${process.env.SPRING_API_ROOT}/schedule/user/category`, token);
       res.status(status).json(data);
     } catch (err) {
-      console.log(err);
       res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
     }
   }
@@ -26,7 +25,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       );
       res.status(status).json(data);
     } catch (err) {
-      console.log(err);
       res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
     }
   }

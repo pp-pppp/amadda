@@ -12,7 +12,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const { status, message, data } = await https.get<ApiResponse<AlarmReadResponse>>(`${process.env.SPRING_API_ROOT}/alarm/${alarmSeq}`, token);
       res.status(status).json(data);
     } catch (err) {
-      console.log(err);
       res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
     }
   }
