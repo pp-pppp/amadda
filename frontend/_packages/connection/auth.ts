@@ -1,5 +1,5 @@
 import { UserAccessResponse, UserJwtResponse } from 'amadda-global-types';
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import { KV } from './kv';
 
 type API_HANDLER = (request: NextApiRequest, response: NextApiResponse) => Promise<NextApiResponse | void>;
