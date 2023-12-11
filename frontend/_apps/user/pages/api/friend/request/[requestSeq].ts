@@ -1,4 +1,6 @@
+import { wrapApiHandlerWithSentry } from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
+
 import { auth, https } from 'connection';
 import { ApiResponse } from 'amadda-global-types';
 
@@ -33,4 +35,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   res.status(400).json({ data: 'bad request' });
 };
-export default auth(handler);
+export default wrapApiHandlerWithSentry(auth(handler), 'user/api/friend/request/[requestSeq]');
