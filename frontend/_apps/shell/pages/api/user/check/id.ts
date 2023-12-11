@@ -1,8 +1,10 @@
 import { http } from 'connection';
+import { wrapApiHandlerWithSentry } from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
+
 import type { ApiResponse, UserIdCheckResponse } from 'amadda-global-types';
 
-const id = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     //아이디만 중복&유효성 검사
     try {
@@ -15,4 +17,4 @@ const id = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   res.status(400).json({ data: 'bad request' });
 };
-export default id;
+export default wrapApiHandlerWithSentry(handler, 'shell/api/check/id');

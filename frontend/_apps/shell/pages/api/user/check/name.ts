@@ -1,8 +1,10 @@
+import { wrapApiHandlerWithSentry } from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
+
 import type { ApiResponse, UserNameCheckResponse } from 'amadda-global-types';
 import { http } from 'connection';
 
-const name = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     //닉네임 유효성 검사
     try {
@@ -15,4 +17,4 @@ const name = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   res.status(400).json({ data: 'bad request' });
 };
-export default name;
+export default wrapApiHandlerWithSentry(handler, 'shell/api/check/name');
