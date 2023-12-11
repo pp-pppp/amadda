@@ -8,7 +8,7 @@ export default {
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
       },
     });
-    if (!result.ok) throw new Error(result.statusText || 'kakaoError');
+    if (result.status > 399) throw new Error(result.statusText || 'kakaoError');
     const response = await result.json();
     return response;
   },
@@ -20,7 +20,7 @@ export default {
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
       },
     });
-    if (!result.ok) throw new Error(result.statusText || 'kakaoError');
+    if (result.status > 399) throw new Error(result.statusText || 'kakaoError');
     const response = await result.json();
     return response;
   },
@@ -32,7 +32,7 @@ export default {
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
       },
     });
-    if (!result.ok) throw new Error(result.statusText || 'kakaoError');
+    if (result.status > 399) throw new Error(result.statusText || 'kakaoError');
     const response = await result.json();
     return response;
   },
@@ -45,7 +45,7 @@ export default {
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
       },
     });
-    if (!result.ok) throw new Error(result.statusText || 'kakaoError');
+    if (result.status > 399) throw new Error(result.statusText || 'kakaoError');
     const response = await result.json();
     return response;
   },
@@ -57,7 +57,7 @@ export default {
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
       },
     });
-    if (!result.ok) throw new Error(result.statusText || 'kakaoError');
+    if (result.status > 399) throw new Error(result.statusText || 'kakaoError');
     const response = await result.json();
     return response;
   },
