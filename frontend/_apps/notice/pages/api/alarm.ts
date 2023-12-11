@@ -1,4 +1,6 @@
+import { wrapApiHandlerWithSentry } from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
+
 import type { AlarmReadResponse, ApiResponse } from 'amadda-global-types';
 import { auth, https } from 'connection';
 
@@ -16,4 +18,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   return res.status(400).json({ data: 'bad request' });
 };
 
-export default auth(handler);
+export default wrapApiHandlerWithSentry(auth(handler), 'notice/api/alarm');
