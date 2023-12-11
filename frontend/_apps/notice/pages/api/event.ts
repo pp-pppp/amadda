@@ -11,12 +11,13 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     const consumer = await KAFKA_NOTICE();
 
-    await consumer.run({
-      eachMessage: async ({ topic, partition, message }) => {
-        const payload = message.value && message.value.toString();
-        res.write(`data: ${payload}\n\n`);
-      },
-    });
+    consumer &&
+      (await consumer.run({
+        eachMessage: async ({ topic, partition, message }) => {
+          const payload = message.value && message.value.toString();
+          res.write(`data: ${payload}\n\n`);
+        },
+      }));
 
     req.on('close', () => {
       console.log('Client disconnected');
