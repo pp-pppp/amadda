@@ -22,12 +22,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.setHeader('Set-Cookie', COOKIE);
       await KV.setRefreshToken(data.refreshAccessKey, data.refreshToken);
 
-      res.status(status).json(data);
+      return res.status(status).json(data);
     } catch (err) {
       Sentry.captureException(err);
-      res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
+      return res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
     }
   }
-  res.status(400).json({ data: 'bad request' });
+  return res.status(400).json({ data: 'bad request' });
 };
 export default Sentry.wrapApiHandlerWithSentry(handler, 'shell/api/signup');

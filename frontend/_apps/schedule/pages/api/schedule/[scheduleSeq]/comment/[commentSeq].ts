@@ -10,13 +10,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //댓글 삭제
     try {
       const { status, message, data } = await https.delete(`${process.env.SPRING_API_ROOT}/schedule/${scheduleSeq}/comment/${commentSeq}`, token);
-      res.status(status).json(data);
+      return res.status(status).json(data);
     } catch (err) {
       Sentry.captureException(err);
-      res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
+      return res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
     }
   }
-  res.status(400).json({ data: 'bad request' });
+  return res.status(400).json({ data: 'bad request' });
 };
 
 export default Sentry.wrapApiHandlerWithSentry(auth(handler), 'schedule/api/schedule/comment/[commentSeq]');
