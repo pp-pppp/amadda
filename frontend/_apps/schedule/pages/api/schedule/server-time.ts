@@ -10,10 +10,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //현재 서버 시간 반환
     try {
       const { status, message, data } = await http.get<ApiResponse<string>>(`${process.env.SPRING_API_ROOT}/schedule/server-time`);
-      res.status(status).json(data);
+      return res.status(status).json(data);
     } catch (err) {
       Sentry.captureException(err);
-      res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
+      return res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
     }
   }
 };

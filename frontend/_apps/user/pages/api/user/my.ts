@@ -10,11 +10,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //내 유저정보 가져오기
     try {
       const { status, message, data } = await https.get<ApiResponse<UserReadResponse>>(`${process.env.SPRING_API_ROOT}/user/my`, token);
-      res.status(status).json(data);
+      return res.status(status).json(data);
     } catch (err) {
       Sentry.captureException(err);
-      res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
+      return res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
     }
   }
+  return res.status(400).json({ data: 'bad request' });
 };
 export default Sentry.wrapApiHandlerWithSentry(auth(handler), 'user/api/user/my');
