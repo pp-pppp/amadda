@@ -44,8 +44,6 @@ spring:
               packages: com.pppppp.amadda.alarm.dto.topic, com.pppppp.amadda.alarm.dto.topic.alarm, com.pppppp.amadda.alarm.dto.topic.setting
       group-id: ${kafka.group}
       auto-offset-reset: latest
-    streams:
-      replication-factor: 2
     topic:
       sse: "${kafka.prefix}.reload.schedule"
       alarm:
