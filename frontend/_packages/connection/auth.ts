@@ -10,6 +10,7 @@ export function auth(fn: API_HANDLER): API_HANDLER {
     //auth는 api 핸들러를 받아 인증 처리를 한 API 결과를 리턴합니다.
     const CLIENT_TOKEN = req.cookies.Auth || '';
     //클라이언트에서 보낸 쿠키의 access token을 가져옵니다.
+    if (!req.cookies.Auth) return res.redirect(`${process.env.NEXT_PUBLIC_SHELL}/signout`); //만약 쿠키의 액세스 토큰이 없다면 로그아웃시킵니다.
 
     try {
       const ACCESS_TOKEN = await VERIFIED_TOKEN(CLIENT_TOKEN);
