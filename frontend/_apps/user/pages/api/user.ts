@@ -1,5 +1,6 @@
 import type { ApiResponse, UserRelationResponse } from 'amadda-global-types';
 import { auth, https } from 'connection';
+import * as Sentry from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -9,22 +10,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       const { searchKey } = req.query;
       const { status, message, data } = await https.get<ApiResponse<UserRelationResponse>>(`${process.env.SPRING_API_ROOT}/user?searchKey=${searchKey}`, token);
-      res.status(status).json(data);
+      return res.status(status).json(data);
     } catch (err) {
-      console.log(err);
-      res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
+      Sentry.captureException(err);
+      return res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
     }
   }
   if (req.method === 'DELETE') {
     //회원탈퇴
     try {
       const { status, message, data } = await https.delete(`${process.env.SPRING_API_ROOT}/user`, token);
-      res.status(status).json(data);
+      return res.status(status).json(data);
     } catch (err) {
-      console.log(err);
-      res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
+      Sentry.captureException(err);
+      return res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
     }
   }
-  res.status(400).json({ data: 'bad request' });
+  return res.status(400).json({ data: 'bad request' });
 };
-export default auth(handler);
+export default Sentry.wrapApiHandlerWithSentry(auth(handler), 'user/api/user');

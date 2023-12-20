@@ -1,4 +1,6 @@
+import * as Sentry from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
+
 import { auth, https } from 'connection';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -6,10 +8,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     try {
     } catch (err) {
-      console.log(err);
+      Sentry.captureException(err);
+      return res.status(500).json({ data: 'internal server error' });
     }
   }
-  res.status(400).json({ data: 'bad request' });
+  return res.status(400).json({ data: 'bad request' });
 };
 
-export default auth(handler);
+export default Sentry.wrapApiHandlerWithSentry(auth(handler), 'notice/api/schedule/[seheduleSeq]/unsubscribe/mention');
