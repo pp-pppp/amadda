@@ -1,5 +1,7 @@
-import { auth, https } from 'connection';
+import * as Sentry from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
+
+import { auth, https } from 'connection';
 import type { ApiResponse } from 'amadda-global-types';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -16,4 +18,5 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   return res.status(400).json({ data: 'bad request' });
 };
-export default auth(handler);
+
+export default Sentry.wrapApiHandlerWithSentry(handler, 'shell/api/logout');
