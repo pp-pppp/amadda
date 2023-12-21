@@ -1,6 +1,7 @@
 import { KAFKA_NOTICE } from 'amadda-kafka';
 import { auth } from 'connection';
-import { NextApiRequest, NextApiResponse } from 'next';
+import * as Sentry from '@sentry/nextjs';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader('Content-Type', 'text/event-stream');
@@ -10,20 +11,21 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     const consumer = await KAFKA_NOTICE();
 
-    await consumer.run({
-      eachMessage: async ({ topic, partition, message }) => {
-        const payload = message.value && message.value.toString();
-        res.write(`data: ${payload}\n\n`);
-      },
-    });
+    consumer &&
+      (await consumer.run({
+        eachMessage: async ({ topic, partition, message }) => {
+          const payload = message.value && message.value.toString();
+          res.write(`data: ${payload}\n\n`);
+        },
+      }));
 
     req.on('close', () => {
       console.log('Client disconnected');
       return res.end();
     });
   } catch (err) {
-    console.log(err);
+    Sentry.captureException(err);
     return res.status(500).json({ data: 'internal server error' });
   }
 }
-export default auth(handler);
+export default Sentry.wrapApiHandlerWithSentry(auth(handler), 'notice/api/event');

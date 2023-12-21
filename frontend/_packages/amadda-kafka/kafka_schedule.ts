@@ -1,4 +1,5 @@
 import { Kafka } from 'kafkajs';
+import * as Sentry from '@sentry/nextjs';
 
 const groupId = process.env.KAFKA_CLIENT_GROUP_ID as string;
 
@@ -11,10 +12,13 @@ const kafka = new Kafka({
 const schedule_consumer = kafka.consumer({ groupId: groupId });
 export const KAFKA_SCHEDULE = async () => {
   console.log('kafka-start subscribe');
-
-  await schedule_consumer.connect();
-  await schedule_consumer.subscribe({
-    topics: [scheduleReload],
-  });
-  return schedule_consumer;
+  try {
+    await schedule_consumer.connect();
+    await schedule_consumer.subscribe({
+      topics: [scheduleReload],
+    });
+    return schedule_consumer;
+  } catch (err) {
+    Sentry.captureException(err);
+  }
 };

@@ -1,5 +1,6 @@
 import type { ApiResponse, ScheduleCreateRequest, ScheduleCreateResponse, ScheduleListReadResponse } from 'amadda-global-types';
 
+import * as Sentry from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { auth, https } from 'connection';
@@ -40,10 +41,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const url = queryString.length > 0 ? `${process.env.SPRING_API_ROOT}/schedule?${queryString}` : `${process.env.SPRING_API_ROOT}/schedule`;
 
       const { status, message, data } = await https.get<ApiResponse<ScheduleListReadResponse>>(url, token);
-      res.status(status).json(data);
+      return res.status(status).json(data);
     } catch (err) {
-      console.log(err);
-      res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
+      Sentry.captureException(err);
+      return res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
     }
   }
   if (req.method === 'POST') {
@@ -54,13 +55,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         token,
         req.body
       );
-      res.status(status).json(data);
+      return res.status(status).json(data);
     } catch (err) {
-      console.log(err);
-      res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
+      Sentry.captureException(err);
+      return res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
     }
   }
-  res.status(400).json({ data: 'bad request' });
+  return res.status(400).json({ data: 'bad request' });
 };
 
-export default auth(handler);
+export default Sentry.wrapApiHandlerWithSentry(auth(handler), 'schedule/api/schedule');

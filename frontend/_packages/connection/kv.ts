@@ -1,3 +1,5 @@
+import Error from 'next/error';
+
 export const KV = {
   async getToken(k: string): Promise<string> {
     try {
@@ -7,9 +9,8 @@ export const KV = {
         },
       }).then(res => res.json());
       return token || '';
-    } catch (err) {
-      console.log('redisError', err);
-      return '';
+    } catch (err: any) {
+      throw new Error(err.message || 'redisError');
     }
   },
   async setToken(k: string, token: string): Promise<void> {
@@ -19,8 +20,8 @@ export const KV = {
           Authorization: `Bearer ${process.env.KV_REST_API_TOKEN}`,
         },
       }).then(res => res);
-    } catch (err) {
-      console.error('redisError', err);
+    } catch (err: any) {
+      throw new Error(err.message || 'redisError');
     }
   },
 };

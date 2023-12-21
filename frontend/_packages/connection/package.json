@@ -6,11 +6,12 @@
   "main": "index.ts",
   "types": "index.ts",
   "devDependencies": {
+    "@sentry/nextjs": "^7.86.0",
+    "@vercel/kv": "^1.0.0",
     "amadda-global-types": "workspace:*",
     "axios": "^1.6.0",
     "kafkajs": "^2.2.4",
     "next": "13.4.12",
-    "@vercel/kv": "^1.0.0",
     "typescript": "5.2.2"
   }
 }

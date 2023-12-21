@@ -1,9 +1,11 @@
+import * as Sentry from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
+
 import type { ApiResponse, UserInitRequest, UserJwtResponse } from 'amadda-global-types';
 import cookie from 'cookie';
 import { KV, http } from 'connection';
 
-const signup = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     //첫 로그인시 사용자 회원가입
     try {
@@ -20,12 +22,12 @@ const signup = async (req: NextApiRequest, res: NextApiResponse) => {
       res.setHeader('Set-Cookie', COOKIE);
       await KV.setToken(data.refreshAccessKey, data.refreshToken);
 
-      res.status(status).json(data);
+      return res.status(status).json(data);
     } catch (err) {
-      console.log(err);
-      res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
+      Sentry.captureException(err);
+      return res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
     }
   }
-  res.status(400).json({ data: 'bad request' });
+  return res.status(400).json({ data: 'bad request' });
 };
-export default signup;
+export default Sentry.wrapApiHandlerWithSentry(handler, 'shell/api/signup');

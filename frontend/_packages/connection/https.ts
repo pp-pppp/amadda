@@ -13,6 +13,7 @@ export const https = {
       throw new Error(`status: ${result.status}, message: ${result.statusText}`);
     } else {
       const { code, message, data } = (await result.json()) satisfies Res;
+      if (code > 299) throw new Error(`status: ${code}, message: ${message}`);
       return { status: code, message, data };
     }
   },
@@ -29,6 +30,7 @@ export const https = {
       throw new Error(`status: ${result.status}, message: ${result.statusText}`);
     } else {
       const { code, message, data } = (await result.json()) satisfies Res;
+      if (code > 299) throw new Error(`status: ${code}, message: ${message}`);
       return { status: code, message, data };
     }
   },
@@ -45,6 +47,7 @@ export const https = {
       throw new Error(`status: ${result.status}, message: ${result.statusText}`);
     } else {
       const { code, message, data } = (await result.json()) satisfies Res;
+      if (code > 299) throw new Error(`status: ${code}, message: ${message}`);
       return { status: code, message, data };
     }
   },
@@ -61,6 +64,7 @@ export const https = {
       throw new Error(`status: ${result.status}, message: ${result.statusText}`);
     } else {
       const { code, message, data } = (await result.json()) satisfies Res;
+      if (code > 299) throw new Error(`status: ${code}, message: ${message}`);
       return { status: code, message, data };
     }
   },
@@ -76,6 +80,7 @@ export const https = {
       throw new Error(`status: ${result.status}, message: ${result.statusText}`);
     } else {
       const { code, message, data } = (await result.json()) satisfies Res;
+      if (code > 299) throw new Error(`status: ${code}, message: ${message}`);
       return { status: code, message, data };
     }
   },
