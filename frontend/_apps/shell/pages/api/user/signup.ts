@@ -20,7 +20,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       });
 
       res.setHeader('Set-Cookie', COOKIE);
-      await KV.setRefreshToken(data.refreshAccessKey, data.refreshToken);
+      await KV.setToken(data.refreshAccessKey, data.refreshToken);
 
       return res.status(status).json(data);
     } catch (err) {

@@ -1,7 +1,7 @@
 import { createClient } from 'redis';
 
 export const REDIS = {
-  async getRefreshToken(k: string): Promise<string> {
+  async getToken(k: string): Promise<string> {
     const client = createClient({ url: `${process.env.REDIS_ROOT as string}` });
     /*
 		{
@@ -22,7 +22,7 @@ export const REDIS = {
     await client.disconnect();
     return token;
   },
-  async setRefreshToken(k: string, token: string) {
+  async setToken(k: string, token: string) {
     const client = createClient({ url: `${process.env.REDIS_ROOT as string}` });
     await client.connect();
     await client.set(k, token);

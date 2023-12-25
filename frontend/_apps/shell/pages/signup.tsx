@@ -39,10 +39,11 @@ export const getServerSideProps = (async context => {
 
     if (userdata.isInited) {
       //이미 회원인 경우
-      await KV.setRefreshToken(INIT.refreshAccessKey, INIT.refreshToken);
+      await KV.setToken(INIT.refreshAccessKey, INIT.refreshToken);
       //리프레시 토큰 레디스에 저장
 
-      //TODO: 카카오 토큰 레디스에 저장
+      await KV.setToken(INIT.kakaoId, access_token);
+      //카카오 토큰 레디스에 저장
 
       const { res } = context;
       const COOKIE = cookie.serialize('Auth', INIT.accessToken, {
