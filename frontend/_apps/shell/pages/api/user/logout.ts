@@ -9,11 +9,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
     //유저 로그아웃 용 카카오id 받기
     try {
-      const { status, message, data } = await https.get<ApiResponse<string>>(`${process.env.SPRING_API_ROOT}/user/logout`, token);
-      return res.status(status).json(data);
+      const { code, message, data } = await https.get<string>(`${process.env.SPRING_API_ROOT}/user/logout`, token);
+      return res.status(code).json(data);
     } catch (err) {
       console.log(err);
-      return res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
+      return res.status(err.code || 520).json({ data: err.message || 'unknown server error' });
     }
   }
   return res.status(400).json({ data: 'bad request' });
