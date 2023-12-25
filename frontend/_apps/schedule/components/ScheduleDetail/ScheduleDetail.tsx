@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
 import { CommentCreateRequest, ScheduleDetailReadResponse } from 'amadda-global-types';
 import { Chip, Flex, H2, P, Icon, Spacing, Span, Profile, Input, Btn, Textarea } from 'external-temporal';
-import { http } from '@SCH/utils/http';
 import { InferGetServerSidePropsType } from 'next';
 import { getServerSideProps } from '@SCH/pages/schedule/[id]';
 import CALENDAR from '@SCH/constants/CALENDAR';
 import { BASE, BUTTON, GRID } from './ScheduleDetail.css';
 import { Category } from '../ScheduleEdit/Category/Category';
+import { clientFetch } from 'connection';
 
 export function ScheduleDetail({ detail }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [comment, setComment] = useState('');
 
-  const createComment = e => {
+  const createComment = async e => {
     const CommentCreateRequestBody: CommentCreateRequest = {
       commentContent: comment,
     };
 
-    http.post(`${process.env.PUBLIC_NEXT_SCHEDULE}/api/schedule/${detail.scheduleSeq}/comment`, CommentCreateRequestBody).then(res => setComment(''));
+    await clientFetch.post(`${process.env.PUBLIC_NEXT_SCHEDULE}/api/schedule/${detail.scheduleSeq}/comment`, CommentCreateRequestBody);
+    setComment('');
   };
 
   return (

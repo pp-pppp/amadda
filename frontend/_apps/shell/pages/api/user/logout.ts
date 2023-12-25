@@ -12,7 +12,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const { code, message, data } = await https.get<string>(`${process.env.SPRING_API_ROOT}/user/logout`, token);
       return res.status(code).json(data);
     } catch (err) {
-      console.log(err);
+      Sentry.captureException(err);
       return res.status(err.code || 520).json({ data: err.message || 'unknown server error' });
     }
   }

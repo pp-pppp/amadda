@@ -1,6 +1,5 @@
 import React from 'react';
-import { useEffect, useState } from 'react';
-import type { ReactNode } from 'react';
+import { useEffect } from 'react';
 import { Flex, H3, List, Spacing } from 'external-temporal';
 import { AlarmReadResponse } from 'amadda-global-types';
 import { useGetNotice } from '@N/hooks/useGetNotice';

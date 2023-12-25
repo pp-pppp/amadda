@@ -1,8 +1,8 @@
-import { http } from '@N/utils/http';
+import { clientFetch } from 'connection';
 import { AlarmReadResponse } from 'amadda-global-types';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
-const fetcher = () => http.get<Array<AlarmReadResponse>>(`${process.env.NEXT_PUBLIC_NOTICE}/api/alarm`).then(res => res.data);
+const fetcher = () => clientFetch.get<Array<AlarmReadResponse>>(`${process.env.NEXT_PUBLIC_NOTICE}/api/alarm`);
 
 export function useGetNotice() {
   const [noticeList, setNoticeList] = useState<Array<AlarmReadResponse>>([]);

@@ -1,9 +1,9 @@
-import { KV, http, https } from 'connection';
+import { kv, clientFetch } from 'connection';
 import cookie from 'cookie';
 import type { GetServerSideProps } from 'next';
 import { ApiResponse, UserJwtRequest, UserJwtResponse } from 'amadda-global-types';
 import SignUp from '@SH/components/SignUp/SignUp';
-import kakaoAuth from 'connection/kakaoAuth';
+import { kakaoAuth } from 'connection';
 interface KakaoPageProps {
   kakaoId: string;
   imageUrl: string;
@@ -28,7 +28,7 @@ export const getServerSideProps = (async context => {
       kakaoId: USER_RES.id,
       imageUrl: USER_RES.properties.profile_image,
     };
-    const INIT = (await http.post<UserJwtRequest, ApiResponse<UserJwtResponse>>(`${process.env.SPRING_API_ROOT}/user/login`, SpringTokenReq)).data; //회원가입이 되었는지 아닌지 확인해 회원가입되었다면 토큰 반환
+    const INIT = await clientFetch.post<UserJwtRequest, UserJwtResponse>(`${process.env.SPRING_API_ROOT}/user/login`, SpringTokenReq); //회원가입이 되었는지 아닌지 확인해 회원가입되었다면 토큰 반환
 
     const userdata: KakaoPageProps = {
       kakaoId: USER_RES.id,
@@ -39,10 +39,10 @@ export const getServerSideProps = (async context => {
 
     if (userdata.isInited) {
       //이미 회원인 경우
-      await KV.setToken(INIT.refreshAccessKey, INIT.refreshToken);
+      await kv.setToken(INIT.refreshAccessKey, INIT.refreshToken);
       //리프레시 토큰 레디스에 저장
 
-      await KV.setToken(INIT.kakaoId, access_token);
+      await kv.setToken(INIT.kakaoId, access_token);
       //카카오 토큰 레디스에 저장
 
       const { res } = context;

@@ -1,7 +1,7 @@
 // 한달치 스케줄 리스트를 갖고오는 훅
 import useSWR from 'swr';
 import { useDateStore } from '@SCH/store/dateStore';
-import { http } from '@SCH/utils/http';
+import { clientFetch } from 'connection';
 import { useEffect, useState } from 'react';
 import { ScheduleListReadResponse, ScheduleSearchResponse } from 'amadda-global-types';
 
@@ -14,7 +14,7 @@ export interface ScheduleListType {
   day?: string | undefined;
 }
 
-const scheduleList = ({ categorySeq, searchKey, unscheduled, year, month, day }: ScheduleListType) => {
+const getScheduleList = async ({ categorySeq, searchKey, unscheduled, year, month, day }: ScheduleListType) => {
   const params = new URLSearchParams();
 
   categorySeq && params.append('category', categorySeq);
@@ -24,14 +24,14 @@ const scheduleList = ({ categorySeq, searchKey, unscheduled, year, month, day }:
   month && params.append('month', month);
   day && params.append('day', day);
 
-  return http.get<ScheduleSearchResponse>(`${process.env.NEXT_PUBLIC_SCHEDULE}/api/schedule?${params.toString()}`).then(res => res.data);
+  return clientFetch.get<ScheduleSearchResponse>(`${process.env.NEXT_PUBLIC_SCHEDULE}/api/schedule?${params.toString()}`);
 };
 
 export function useMonthlySchedule() {
   const [monthlyScheduleList, setMonthlyScheduleList] = useState<ScheduleSearchResponse>({});
   const { selectedYear, selectedMonth } = useDateStore();
 
-  const { data, error, isLoading } = useSWR('/api/schedule', () => scheduleList({ year: selectedYear, month: selectedMonth }));
+  const { data, error, isLoading } = useSWR('/api/schedule', () => getScheduleList({ year: selectedYear, month: selectedMonth }));
 
   useEffect(() => data && setMonthlyScheduleList(data), [data]);
 
@@ -43,7 +43,7 @@ export function useDailySchedule() {
   const { selectedYear, selectedMonth, selectedDate } = useDateStore();
 
   const { data, error, isLoading } = useSWR('/api/schedule', () =>
-    scheduleList({
+    getScheduleList({
       year: selectedYear,
       month: selectedMonth,
       day: selectedDate,
@@ -57,7 +57,7 @@ export function useDailySchedule() {
 
 export function useUnscheduled() {
   const [unscheduledList, setUnscheduledList] = useState<Array<ScheduleListReadResponse>>([]);
-  const { data, error, isLoading } = useSWR('/api/schedule', () => scheduleList({ unscheduled: true }));
+  const { data, error, isLoading } = useSWR('/api/schedule', () => getScheduleList({ unscheduled: true }));
 
   useEffect(() => data?.unscheduled && setUnscheduledList(data.unscheduled), [data]);
 
