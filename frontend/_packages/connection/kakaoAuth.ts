@@ -1,4 +1,4 @@
-export const kakaoHttp = {
+export const kakaoAuth = {
   get: async (url: string) => {
     const response = await fetch(url, {
       method: 'GET',
