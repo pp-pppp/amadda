@@ -1,6 +1,6 @@
 import Error from 'next/error';
 
-export const KV = {
+export const kv = {
   async getToken(k: string): Promise<string> {
     try {
       const token = await fetch(`${process.env.KV_REST_API_URL}/get/${k}`, {

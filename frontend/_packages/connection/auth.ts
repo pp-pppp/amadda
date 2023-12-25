@@ -1,7 +1,7 @@
 import { UserAccessResponse, UserJwtResponse } from 'amadda-global-types';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import * as Sentry from '@sentry/nextjs';
-import { KV } from './kv';
+import { kv } from './kv';
 
 type API_HANDLER = (request: NextApiRequest, response: NextApiResponse) => Promise<NextApiResponse | void>;
 
@@ -44,12 +44,12 @@ async function VERIFIED_TOKEN(accessToken: string) {
   //토큰이 손상되었다면 exception을 던집니다.
   if (inspect_AT.isExpired) {
     //토큰 시간이 만료된 것이라면 리프레시 토큰을 확인할 수 있는 key가 제공됩니다.
-    const RT = (await KV.getToken(inspect_AT.refreshAccessKey)) || '';
-    //리프레시 토큰은 레디스(vercel KV)에 저장되어 있습니다. 레디스에서 key를 통해 토큰을 꺼냅니다.
+    const RT = (await kv.getToken(inspect_AT.refreshAccessKey)) || '';
+    //리프레시 토큰은 레디스(vercel kv)에 저장되어 있습니다. 레디스에서 key를 통해 토큰을 꺼냅니다.
     const inspect_RT: UserJwtResponse = await VERIFY('refresh', RT);
     //리프레시 토큰에 대한 검증 요청을 보냅니다.
-    KV.setToken(inspect_RT.refreshAccessKey, inspect_RT.refreshToken);
-    //검증 응답이 잘 왔다면 새 리프레시 토큰을 레디스(vercel KV)에 저장하고,
+    kv.setToken(inspect_RT.refreshAccessKey, inspect_RT.refreshToken);
+    //검증 응답이 잘 왔다면 새 리프레시 토큰을 레디스(vercel kv)에 저장하고,
     return inspect_RT.accessToken;
     //새로운 액세스 토큰을 넣어서 리턴합니다.
   }
