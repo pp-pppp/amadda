@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { Btn, Flex, Form, H1, Input, Label, P, Profile, Spacing, debounce, throttle } from 'external-temporal';
+import React from 'react';
+import { useState } from 'react';
+import { Btn, Flex, Form, H1, Input, Label, P, Profile, Spacing } from 'external-temporal';
 import { IndexLayout } from '@SH/layout/IndexLayout';
 import useIdValidator from '@SH/hooks/useIdValidator';
 import SIGNUP_TEXT from '@SH/constants/SIGNUP_TEXT';
 import SignUpCaption from '../SignUpCaption/SignUpCaption';
 import { UserInitRequest } from 'amadda-global-types';
-import { http } from '@SH/utils/http';
 import useNameValidator from '@SH/hooks/useNameValidator';
 import { useRouter } from 'next/router';
+import { clientFetch } from 'connection';
+import * as Sentry from '@sentry/nextjs';
 
 export interface SignUpProps {
   userInfo: {
@@ -67,7 +69,7 @@ export default function SignUp({ userInfo }: SignUpProps) {
   };
 
   // siginup
-  const amaddaSignUp = () => {
+  const amaddaSignUp = async () => {
     // valid 체크
     setNameValue(userName);
     setIdValue(userId);
@@ -80,17 +82,12 @@ export default function SignUp({ userInfo }: SignUpProps) {
         userId: userId,
       };
 
-      http
-        .post<UserInitRequest>(`${process.env.NEXT_PUBLIC_SHELL}/api/user/signup`, UserInitRequest)
-        .then(res => {
-          res.data;
-        })
-        .then(data => {
-          router.push(`${process.env.NEXT_PUBLIC_SHELL}/schedule`);
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
+      try {
+        await clientFetch.post<UserInitRequest>(`${process.env.NEXT_PUBLIC_SHELL}/api/user/signup`, UserInitRequest);
+        router.push(`${process.env.NEXT_PUBLIC_SHELL}/schedule`);
+      } catch (err) {
+        Sentry.captureException(err);
+      }
     }
   };
 

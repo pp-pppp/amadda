@@ -661,18 +661,9 @@ importers:
       amadda-global-types:
         specifier: workspace:*
         version: link:../global-types
-      axios:
-        specifier: ^1.6.0
-        version: 1.6.0
-      kafkajs:
-        specifier: ^2.2.4
-        version: 2.2.4
       next:
         specifier: 13.4.12
         version: 13.4.12(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)
-      typescript:
-        specifier: 5.2.2
-        version: 5.2.2
 
   _packages/eslint-config-custom:
     devDependencies:

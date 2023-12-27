@@ -2,7 +2,6 @@ import ErrorBoundary from '#/components/fallback/ErrorBoundary/ErrorBoundary';
 import HeaderLayout from '@SH/components/HeaderLayout';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import type { ReactNode } from 'react';
 
 const Edit = dynamic(() => import('schedule/Edit'), { ssr: false });
 export default function Page({ children }) {

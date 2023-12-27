@@ -1,8 +1,8 @@
-import { http } from '@U/utils/http';
+import { clientFetch } from 'connection';
 import { FriendReadResponse, UserReadResponse, UserRelationResponse } from 'amadda-global-types';
 import useSWR, { mutate } from 'swr';
 
-const getFriends = () => http.get<FriendReadResponse>(`${process.env.NEXT_PUBLIC_USER}/api/friend`).then(res => res.data);
+const getFriends = () => clientFetch.get<FriendReadResponse>(`${process.env.NEXT_PUBLIC_USER}/api/friend`);
 
 export function useFriend() {
   const { data, error, isLoading } = useSWR<FriendReadResponse>('/api/friend', getFriends);
@@ -14,8 +14,7 @@ export function useFriend() {
   };
 }
 
-const searchFriends = (searchKey: string) =>
-  http.get<FriendReadResponse>(`${process.env.NEXT_PUBLIC_USER}/api/friend?searchkey=${searchKey}`).then(res => res.data);
+const searchFriends = (searchKey: string) => clientFetch.get<FriendReadResponse>(`${process.env.NEXT_PUBLIC_USER}/api/friend?searchkey=${searchKey}`);
 export function useSearchFriend(searchKey: string) {
   const { data, error, isLoading } = useSWR('/api/friend/searchKey', () => searchFriends(searchKey));
 
@@ -26,8 +25,7 @@ export function useSearchFriend(searchKey: string) {
   };
 }
 
-const searchUser = (searchKey: string) =>
-  http.get<UserRelationResponse>(`${process.env.NEXT_PUBLIC_USER}/api/user?searchKey=${searchKey}`).then(res => res.data);
+const searchUser = (searchKey: string) => clientFetch.get<UserRelationResponse>(`${process.env.NEXT_PUBLIC_USER}/api/user?searchKey=${searchKey}`);
 export function useSearchUser(searchKey: string) {
   const { data, error, isLoading } = useSWR('/api/user/searchKey', () => searchUser(searchKey));
 

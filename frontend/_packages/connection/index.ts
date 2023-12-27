@@ -3,3 +3,4 @@ export * from './https';
 export * from './kv';
 export * from './auth';
 export * from './kakaoAuth';
+export * from './clientFetch';

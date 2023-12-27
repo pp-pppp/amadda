@@ -10,25 +10,25 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //멘션 검색
     try {
       const { searchKey, scheduleSeq } = req.query;
-      const { status, message, data } = await https.get<ApiResponse<ParticipationListReadResponse>>(
+      const { code, message, data } = await https.get<ParticipationListReadResponse>(
         `${process.env.SPRING_API_ROOT}/schedule/${scheduleSeq}/participation?searchKey=${searchKey}`,
         token
       );
-      return res.status(status).json(data);
+      return res.status(code).json(data);
     } catch (err) {
       Sentry.captureException(err);
-      return res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
+      return res.status(err.code || 520).json({ data: err.message || 'unknown server error' });
     }
   }
   if (req.method === 'DELETE') {
     //참가 정보 삭제
     try {
       const { scheduleSeq } = req.query;
-      const { status, message, data } = await https.delete(`${process.env.SPRING_API_ROOT}/schedule/${scheduleSeq}/participation`, token);
-      return res.status(status).json(data);
+      const { code, message, data } = await https.delete(`${process.env.SPRING_API_ROOT}/schedule/${scheduleSeq}/participation`, token);
+      return res.status(code).json(data);
     } catch (err) {
       Sentry.captureException(err);
-      return res.status(err.status || 500).json(err?.data || { data: 'internal server error' });
+      return res.status(err.code || 520).json({ data: err.message || 'unknown server error' });
     }
   }
   return res.status(400).json({ data: 'bad request' });

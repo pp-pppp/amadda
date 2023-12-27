@@ -88,7 +88,6 @@ export function CalendarHeader() {
   };
 
   const goToday = () => {
-    console.log(data);
     useDateStore.setState(state => ({
       ...state,
       selectedYear: data.split('-')[0],

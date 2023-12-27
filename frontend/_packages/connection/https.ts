@@ -1,24 +1,24 @@
 import { ApiResponse } from 'amadda-global-types';
 
 export const https = {
-  get: async <Res = ApiResponse<unknown>>(url: string, token: string) => {
-    const result = await fetch(url, {
+  get: async <Res = unknown>(url: string, token: string) => {
+    const response = await fetch(url, {
       method: 'GET',
       headers: {
         Authorization: `${token}`,
         'Content-Type': 'application/json',
       },
     });
-    if (!result.ok) {
-      throw new Error(`status: ${result.status}, message: ${result.statusText}`);
+    const { code, message, data }: ApiResponse<Res> = await response.json();
+
+    if (response.status > 399) {
+      throw new Error(`status: ${code || response.status}, message: ${message || response.statusText}`);
     } else {
-      const { code, message, data } = (await result.json()) satisfies Res;
-      if (code > 299) throw new Error(`status: ${code}, message: ${message}`);
-      return { status: code, message, data };
+      return { code, message, data };
     }
   },
-  post: async <Req = unknown, Res = ApiResponse<unknown>>(url: string, token: string, body?: Req) => {
-    const result = await fetch(url, {
+  post: async <Req = unknown, Res = unknown>(url: string, token: string, body?: Req) => {
+    const response = await fetch(url, {
       method: 'POST',
       body: JSON.stringify(body) || null,
       headers: {
@@ -26,16 +26,16 @@ export const https = {
         'Content-Type': 'application/json',
       },
     });
-    if (!result.ok) {
-      throw new Error(`status: ${result.status}, message: ${result.statusText}`);
+    const { code, message, data }: ApiResponse<Res> = await response.json();
+
+    if (response.status > 399) {
+      throw new Error(`status: ${code || response.status}, message: ${message || response.statusText}`);
     } else {
-      const { code, message, data } = (await result.json()) satisfies Res;
-      if (code > 299) throw new Error(`status: ${code}, message: ${message}`);
-      return { status: code, message, data };
+      return { code, message, data };
     }
   },
-  put: async <Req = unknown, Res = ApiResponse<unknown>>(url: string, token: string, body?: Req) => {
-    const result = await fetch(url, {
+  put: async <Req = unknown, Res = unknown>(url: string, token: string, body?: Req) => {
+    const response = await fetch(url, {
       method: 'PUT',
       body: JSON.stringify(body) || null,
       headers: {
@@ -43,16 +43,16 @@ export const https = {
         'Content-Type': 'application/json',
       },
     });
-    if (!result.ok) {
-      throw new Error(`status: ${result.status}, message: ${result.statusText}`);
+    const { code, message, data }: ApiResponse<Res> = await response.json();
+
+    if (response.status > 399) {
+      throw new Error(`status: ${code || response.status}, message: ${message || response.statusText}`);
     } else {
-      const { code, message, data } = (await result.json()) satisfies Res;
-      if (code > 299) throw new Error(`status: ${code}, message: ${message}`);
-      return { status: code, message, data };
+      return { code, message, data };
     }
   },
-  patch: async <Req = unknown, Res = ApiResponse<unknown>>(url: string, token: string, body?: Req) => {
-    const result = await fetch(url, {
+  patch: async <Req = unknown, Res = unknown>(url: string, token: string, body?: Req) => {
+    const response = await fetch(url, {
       method: 'PATCH',
       body: JSON.stringify(body) || null,
       headers: {
@@ -60,28 +60,28 @@ export const https = {
         'Content-Type': 'application/json',
       },
     });
-    if (!result.ok) {
-      throw new Error(`status: ${result.status}, message: ${result.statusText}`);
+    const { code, message, data }: ApiResponse<Res> = await response.json();
+
+    if (response.status > 399) {
+      throw new Error(`status: ${code || response.status}, message: ${message || response.statusText}`);
     } else {
-      const { code, message, data } = (await result.json()) satisfies Res;
-      if (code > 299) throw new Error(`status: ${code}, message: ${message}`);
-      return { status: code, message, data };
+      return { code, message, data };
     }
   },
-  delete: async <Res = ApiResponse<unknown>>(url: string, token: string) => {
-    const result = await fetch(url, {
+  delete: async <Res = unknown>(url: string, token: string) => {
+    const response = await fetch(url, {
       method: 'DELETE',
       headers: {
         Authorization: `${token}`,
         'Content-Type': 'application/json',
       },
     });
-    if (!result.ok) {
-      throw new Error(`status: ${result.status}, message: ${result.statusText}`);
+    const { code, message, data }: ApiResponse<Res> = await response.json();
+
+    if (response.status > 399) {
+      throw new Error(`status: ${code || response.status}, message: ${message || response.statusText}`);
     } else {
-      const { code, message, data } = (await result.json()) satisfies Res;
-      if (code > 299) throw new Error(`status: ${code}, message: ${message}`);
-      return { status: code, message, data };
+      return { code, message, data };
     }
   },
 };

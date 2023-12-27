@@ -1,14 +1,9 @@
-import axios from 'axios';
 import useSWR from 'swr';
 import { useDateStore } from '@SCH/store/dateStore';
 import { useEffect } from 'react';
-import { http } from '@SCH/utils/http';
+import { clientFetch } from 'connection';
 
-const fetcher = url =>
-  axios
-    .get(`${process.env.NEXT_PUBLIC_SCHEDULE}/api/schedule/server-time`)
-    .then(res => res.data)
-    .then(data => data.data);
+const fetcher = () => clientFetch.get<string>(`${process.env.NEXT_PUBLIC_SCHEDULE}/api/schedule/server-time`);
 
 export default function useServerTime() {
   const { selectedYear, selectedMonth, selectedDate } = useDateStore();
@@ -25,5 +20,6 @@ export default function useServerTime() {
     }
   }, [data]);
 
-  return { data };
+  if (data) return { data };
+  else return { data: '' };
 }

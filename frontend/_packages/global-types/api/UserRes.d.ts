@@ -16,6 +16,7 @@ export interface UserJwtResponse {
   refreshToken: string;
   refreshAccessKey: string;
   isInited: boolean;
+  kakaoId: string;
 }
 export interface UserJwtInitResponse {
   accessToken: string;
