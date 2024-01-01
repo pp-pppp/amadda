@@ -1,9 +1,11 @@
 import React from 'react';
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 import { BASE } from './ErrorBoundary.css';
-import { H2 } from '#/components/typography/Hn/H2';
 import { H3 } from '#/components/typography/Hn/H3';
+import * as Sentry from '@sentry/nextjs';
 export interface ErrorBoundaryProps {
+  fallback?: ReactNode;
+  message?: string;
   children?: ReactNode;
 }
 interface ErrorBoundaryState {
@@ -18,22 +20,19 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
     return { hasError: true };
   }
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // You can use your own error logging service here
-    console.log({ error, errorInfo });
+    Sentry.captureException(error);
   }
   render() {
-    // Check if the error is thrown
     if (this.state.hasError) {
-      // You can render any custom fallback UI
-      return (
+      return this.props.fallback ? (
+        this.props.fallback
+      ) : (
         <div className={BASE}>
-          <H3>죄송해요! 잠시 후 다시 시도해주세요.</H3>
+          <H3>{this.props.message ? this.props.message : '에러가 발생했어요. 다시 한 번 시도해주세요.'}</H3>
         </div>
       );
     }
-
     // Return children components in case of no error
-
     return this.props.children;
   }
 }
