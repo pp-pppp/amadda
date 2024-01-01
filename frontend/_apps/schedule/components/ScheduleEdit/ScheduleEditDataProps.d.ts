@@ -1,3 +1,5 @@
+import { CategoryReadResponse, FriendReadResponse, UserReadResponse } from 'amadda-global-types';
+
 export interface ScheduleEditDataProps {
   states: {
     startYear: number | undefined;
