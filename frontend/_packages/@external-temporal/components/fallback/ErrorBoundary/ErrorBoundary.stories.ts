@@ -15,5 +15,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
-  args: {},
+  args: {
+    message: '커스텀 에러 메세지를 넣을 수 있습니다',
+  },
 };
