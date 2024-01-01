@@ -4,7 +4,7 @@ import { useGetNotice } from '@N/hooks/useGetNotice';
 import { NoticeToggle } from './NoticeToggle';
 
 export function NoticeConfigFrame() {
-  const { noticeList, setNoticeList, error } = useGetNotice();
+  const { noticeList, error } = useGetNotice();
 
   return (
     <div>

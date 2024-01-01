@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 import { Notice } from './Notice';
 
 export function NoticeFrame() {
-  const { noticeList, setNoticeList, error } = useGetNotice();
+  const { noticeList, error } = useGetNotice();
 
   return (
     <div>
