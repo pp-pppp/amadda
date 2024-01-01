@@ -1,17 +1,14 @@
 import React from 'react';
-import { Btn, Chip, Flex, Form, H2, H4, Input, Label, Spacing, Span, Textarea } from 'external-temporal';
+import { Btn, Chip, Flex, Form, H2, H4, Input, Label, Spacing, Span, Textarea, ErrorBoundary } from 'external-temporal';
 import { AC, BASE, PARTICIPANTS, SEARCHRESULT } from './ScheduleEdit.css';
 import { ScheduleEditData } from './ScheduleEditData';
 import CREATE from '@SCH/constants/CREATE';
-import { CATEGORY } from '../MobileDailyPlate/MobileDailyPlate.css';
-import { Category } from './Category/Category';
-import { Container } from './Category/Container';
-import ErrorBoundary from '#/components/fallback/ErrorBoundary/ErrorBoundary';
+import { CategoryContainer } from '../Category/CategoryContainer';
 
 export function ScheduleEdit() {
   return (
     <ScheduleEditData>
-      {({ data }) => (
+      {({ states, setStates, fn }) => (
         <ErrorBoundary>
           <div className={BASE}>
             <Spacing size="2" />
@@ -32,8 +29,8 @@ export function ScheduleEdit() {
                       type="checkbox"
                       id="auth"
                       name="auth"
-                      onChange={() => data.setIsAuthorizedAll(!data.isAuthorizedAll)}
-                      checked={data.isAuthorizedAll}
+                      onChange={() => setStates.setIsAuthorizedAll(!states.isAuthorizedAll)}
+                      checked={states.isAuthorizedAll}
                       value={'auth'}
                     />
                     <Spacing size="0.25" dir="h" />
@@ -46,8 +43,8 @@ export function ScheduleEdit() {
                   id="title"
                   type="text"
                   name="title"
-                  value={data.scheduleName}
-                  onChange={e => data.setScheduleName(e.target.value)}
+                  value={states.scheduleName}
+                  onChange={e => setStates.setScheduleName(e.target.value)}
                   placeholder={CREATE.PLACEHOLDERS.TITLE}
                 />
                 <Spacing dir="v" size="2" />
@@ -58,9 +55,9 @@ export function ScheduleEdit() {
                     id="start_year"
                     type="number"
                     name="start_year"
-                    value={data.startYear}
-                    onChange={e => data.setStartYear(Number(e.target.value))}
-                    disabled={data.isDateSelected ? true : false}
+                    value={states.startYear}
+                    onChange={e => setStates.setStartYear(Number(e.target.value))}
+                    disabled={states.isDateSelected ? true : false}
                     placeholder={CREATE.PLACEHOLDERS.TIME.DATE_START.YY}
                   />
                   <Spacing dir="h" size="0.25" />
@@ -70,9 +67,9 @@ export function ScheduleEdit() {
                     id="start_month"
                     type="number"
                     name="start_month"
-                    value={data.startMonth}
-                    onChange={e => data.setStartMonth(Number(e.target.value))}
-                    disabled={data.isDateSelected ? true : false}
+                    value={states.startMonth}
+                    onChange={e => setStates.setStartMonth(Number(e.target.value))}
+                    disabled={states.isDateSelected ? true : false}
                     placeholder={CREATE.PLACEHOLDERS.TIME.DATE_START.MM}
                   />
                   <Spacing dir="h" size="0.25" />
@@ -82,9 +79,9 @@ export function ScheduleEdit() {
                     id="start_date"
                     type="number"
                     name="start_date"
-                    value={data.startDate}
-                    onChange={e => data.setStartDate(Number(e.target.value))}
-                    disabled={data.isDateSelected ? true : false}
+                    value={states.startDate}
+                    onChange={e => setStates.setStartDate(Number(e.target.value))}
+                    disabled={states.isDateSelected ? true : false}
                     placeholder={CREATE.PLACEHOLDERS.TIME.DATE_START.DD}
                   />
                 </Flex>
@@ -96,9 +93,9 @@ export function ScheduleEdit() {
                     id="start_time"
                     type="number"
                     name="start_time"
-                    value={data.startTime}
-                    onChange={e => data.setStartTime(Number(e.target.value))}
-                    disabled={data.isAllday || data.isDateSelected ? true : false}
+                    value={states.startTime}
+                    onChange={e => setStates.setStartTime(Number(e.target.value))}
+                    disabled={states.isAllday || states.isDateSelected ? true : false}
                     placeholder={CREATE.PLACEHOLDERS.TIME.DATE_START.TT}
                   />
                   <Spacing dir="h" size="0.25" />
@@ -108,9 +105,9 @@ export function ScheduleEdit() {
                     id="start_minute"
                     type="number"
                     name="start_minute"
-                    value={data.startMinute}
-                    onChange={e => data.setEndMinute(Number(e.target.value))}
-                    disabled={data.isAllday || data.isDateSelected ? true : false}
+                    value={states.startMinute}
+                    onChange={e => setStates.setEndMinute(Number(e.target.value))}
+                    disabled={states.isAllday || states.isDateSelected ? true : false}
                     placeholder={CREATE.PLACEHOLDERS.TIME.DATE_START.MM}
                   />
                 </Flex>
@@ -123,9 +120,9 @@ export function ScheduleEdit() {
                     id="end_year"
                     type="number"
                     name="end_year"
-                    value={data.endYear}
-                    onChange={e => data.setEndYear(Number(e.target.value))}
-                    disabled={data.isAllday || data.isDateSelected ? true : false}
+                    value={states.endYear}
+                    onChange={e => setStates.setEndYear(Number(e.target.value))}
+                    disabled={states.isAllday || states.isDateSelected ? true : false}
                     placeholder={CREATE.PLACEHOLDERS.TIME.DATE_END.YY}
                   />
                   <Spacing dir="h" size="0.25" />
@@ -135,9 +132,9 @@ export function ScheduleEdit() {
                     id="end_month"
                     type="number"
                     name="end_month"
-                    value={data.endMonth}
-                    onChange={e => data.setEndMonth(Number(e.target.value))}
-                    disabled={data.isAllday || data.isDateSelected ? true : false}
+                    value={states.endMonth}
+                    onChange={e => setStates.setEndMonth(Number(e.target.value))}
+                    disabled={states.isAllday || states.isDateSelected ? true : false}
                     placeholder={CREATE.PLACEHOLDERS.TIME.DATE_END.MM}
                   />
                   <Spacing dir="h" size="0.25" />
@@ -147,9 +144,9 @@ export function ScheduleEdit() {
                     id="end_date"
                     type="number"
                     name="end_date"
-                    value={data.endDate}
-                    onChange={e => data.setEndDate(Number(e.target.value))}
-                    disabled={data.isAllday || data.isDateSelected ? true : false}
+                    value={states.endDate}
+                    onChange={e => setStates.setEndDate(Number(e.target.value))}
+                    disabled={states.isAllday || states.isDateSelected ? true : false}
                     placeholder={CREATE.PLACEHOLDERS.TIME.DATE_END.DD}
                   />
                   <Spacing dir="h" size="0.5" />
@@ -162,9 +159,9 @@ export function ScheduleEdit() {
                     id="end_time"
                     type="number"
                     name="end_time"
-                    value={data.endTime}
-                    onChange={e => data.setEndTime(Number(e.target.value))}
-                    disabled={data.isAllday || data.isDateSelected ? true : false}
+                    value={states.endTime}
+                    onChange={e => setStates.setEndTime(Number(e.target.value))}
+                    disabled={states.isAllday || states.isDateSelected ? true : false}
                     placeholder={CREATE.PLACEHOLDERS.TIME.DATE_END.TT}
                   />
                   <Spacing dir="h" size="0.25" />
@@ -174,9 +171,9 @@ export function ScheduleEdit() {
                     id="end_minute"
                     type="number"
                     name="end_minute"
-                    value={data.endMinute}
-                    onChange={e => data.setEndMinute(Number(e.target.value))}
-                    disabled={data.isAllday || data.isDateSelected ? true : false}
+                    value={states.endMinute}
+                    onChange={e => setStates.setEndMinute(Number(e.target.value))}
+                    disabled={states.isAllday || states.isDateSelected ? true : false}
                     placeholder={CREATE.PLACEHOLDERS.TIME.DATE_END.MM}
                   />
                 </Flex>
@@ -189,10 +186,10 @@ export function ScheduleEdit() {
                       id="iad"
                       name="iad"
                       onChange={() => {
-                        data.setIsAllday(!data.isAllday);
-                        if (data.isDateSelected) data.setIsDateSelected(false);
+                        setStates.setIsAllday(!states.isAllday);
+                        if (states.isDateSelected) setStates.setIsDateSelected(false);
                       }}
-                      checked={data.isAllday}
+                      checked={states.isAllday}
                       value={'iad'}
                     />
                     <Spacing size="0.25" dir="h" />
@@ -208,10 +205,10 @@ export function ScheduleEdit() {
                       id="tbd"
                       name="tbd"
                       onChange={() => {
-                        data.setIsDateSelected(!data.isDateSelected);
-                        if (data.isAllday) data.setIsAllday(false);
+                        setStates.setIsDateSelected(!states.isDateSelected);
+                        if (states.isAllday) setStates.setIsAllday(false);
                       }}
-                      checked={data.isDateSelected}
+                      checked={states.isDateSelected}
                       value={'tbd'}
                     />
                     <Spacing size="0.25" dir="h" />
@@ -223,8 +220,8 @@ export function ScheduleEdit() {
                 {/* 할당된 친구 */}
                 <div className={PARTICIPANTS}>
                   <Flex flexDirection="row" justifyContents="start">
-                    {data.participants.map(p => (
-                      <Chip key={p.userId} label={`${p.userName}@${p.userId}`} type="keyword" onDelete={() => data.onDelete(p.userSeq)} />
+                    {states.participants?.map(p => (
+                      <Chip key={p.userId} label={`${p.userName}@${p.userId}`} type="keyword" onDelete={() => fn.onDelete(p.userSeq)} />
                     ))}
                   </Flex>
                 </div>
@@ -235,8 +232,8 @@ export function ScheduleEdit() {
                   id="party"
                   type="text"
                   name="text"
-                  value={data.partySearchInput}
-                  onChange={e => data.partyAutoComplete(e.target.value)}
+                  value={states.partySearchInput}
+                  onChange={e => fn.partyAutoComplete(e.target.value)}
                   onKeyDown={e => {
                     if (e.key === 'enter') null;
                   }}
@@ -247,13 +244,13 @@ export function ScheduleEdit() {
                 {/* 자동완성 검색결과 */}
                 <div className={SEARCHRESULT}>
                   <Flex flexDirection="row" justifyContents="start">
-                    {data.partySearchResult.map(r => {
+                    {states.partySearchResult?.map(r => {
                       if (r.groupName === null)
                         return (
-                          <Flex flexDirection="row" justifyContents="start">
-                            {r.groupMember.map(m => (
+                          <Flex key={r.groupSeq} flexDirection="row" justifyContents="start">
+                            {r.groupMember?.map(m => (
                               <div key={m.userId}>
-                                <button className={AC} onClick={() => data.setParticipants([...data.participants, m])}>
+                                <button className={AC} onClick={() => setStates.setParticipants([...states.participants, m])}>
                                   <Chip label={`${m.userName}@${m.userId}`} type="suggestion" />
                                 </button>
                                 <Spacing dir="h" size="0.5" />
@@ -268,8 +265,8 @@ export function ScheduleEdit() {
                 <Textarea
                   id="detail"
                   height="10rem"
-                  value={data.scheduleContent}
-                  onChange={e => data.setScheduleContent(e.target.value)}
+                  value={states.scheduleContent}
+                  onChange={e => setStates.setScheduleContent(e.target.value)}
                   placeholder={CREATE.PLACEHOLDERS.DETAIL}
                 />
                 <Spacing dir="v" size="3" />
@@ -280,8 +277,8 @@ export function ScheduleEdit() {
                 <Flex flexDirection="row" justifyContents="start">
                   {Object.keys(CREATE.ALARMS).map(option => (
                     <Chip
-                      type={data.alarmTime === option ? 'filterselected' : 'filter'}
-                      onFiltered={() => data.setAlarmTime(option)}
+                      type={states.alarmTime === option ? 'filterselected' : 'filter'}
+                      onFiltered={() => setStates.setAlarmTime(option)}
                       shape="square"
                       label={CREATE.ALARMS[option]}
                     />
@@ -290,36 +287,33 @@ export function ScheduleEdit() {
                 <Spacing dir="v" size="2" />
                 <Span>{CREATE.PLACEHOLDERS.CATEGORY}</Span>
                 <Spacing dir="v" size="1" />
-                <Container>
-                  {data.category.map(c => (
-                    <Category color={c.categoryColor} categoryName={c.categoryName} key={c.categorySeq} onClick={() => data.setCategorySeq(c.categorySeq)} />
-                  ))}
-                </Container>
-                <Spacing dir="v" size="0.5" />
+                <CategoryContainer categories={states.category} onCategoryClick={setStates.setCategorySeq} />
+                {/* <Spacing dir="v" size="0.5" />
+                TODO: 카테고리 추가 모달 추후 구현
                 <div>
                   <Input
                     type="text"
                     id="categoryadd"
-                    onChange={e => data.setCategoryInput(e.target.value)}
+                    onChange={e => setStates.setCategoryInput(e.target.value)}
                     onKeyDown={e => {
-                      e.key === 'enter' && data.addCategory(data.categoryInput);
-                      data.setCategoryInput('');
+                      e.key === 'enter' && fn.postCategory(states.categoryInput);
+                      setStates.setCategoryInput('');
                     }}
-                    value={data.categoryInput}
+                    value={states.categoryInput}
                     name="categoryadd"
                     placeholder="카테고리 추가"
                   />
-                </div>
+                </div> */}
                 <Spacing dir="v" size="2" />
                 <Textarea
                   id="memo"
                   height="10rem"
-                  value={data.scheduleMemo}
-                  onChange={e => data.setScheduleMemo(e.target.value)}
+                  value={states.scheduleMemo}
+                  onChange={e => setStates.setScheduleMemo(e.target.value)}
                   placeholder={CREATE.PLACEHOLDERS.MEMO}
                 />
                 <Spacing dir="v" size="3" />
-                <Btn type="submit" onClick={data.submit} variant="key">
+                <Btn type="submit" onClick={fn.submit} variant="key">
                   일정 추가
                 </Btn>
               </Flex>
