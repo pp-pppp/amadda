@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Category } from '../../../schedule/components/ScheduleEdit/Category/Category';
+import { Category } from '../../../schedule/components/Category/Category';
 
 const meta = {
   title: 'Schedule/Category',

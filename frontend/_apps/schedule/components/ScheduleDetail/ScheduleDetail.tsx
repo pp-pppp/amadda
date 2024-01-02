@@ -5,7 +5,7 @@ import { InferGetServerSidePropsType } from 'next';
 import { getServerSideProps } from '@SCH/pages/schedule/[id]';
 import CALENDAR from '@SCH/constants/CALENDAR';
 import { BASE, BUTTON, GRID } from './ScheduleDetail.css';
-import { Category } from '../ScheduleEdit/Category/Category';
+import { Category } from '../Category/Category';
 import { clientFetch } from 'connection';
 
 export function ScheduleDetail({ detail }: InferGetServerSidePropsType<typeof getServerSideProps>) {
