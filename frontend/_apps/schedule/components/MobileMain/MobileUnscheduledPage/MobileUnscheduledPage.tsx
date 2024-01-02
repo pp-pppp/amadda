@@ -1,10 +1,8 @@
-import ErrorBoundary from '#/components/fallback/ErrorBoundary/ErrorBoundary';
 import { MobileDailyPlate } from '@SCH/components/MobileDailyPlate/MobileDailyPlate';
 import { MobileDailyPlateList } from '@SCH/components/MobileDailyPlateList/MobileDailyPlateList';
 import CALENDAR from '@SCH/constants/CALENDAR';
 import { useUnscheduled } from '@SCH/hooks/useScheduleList';
-import { toLower } from '@SCH/utils/convertColors';
-import { Spacing, Span } from 'external-temporal';
+import { Spacing, Span, ErrorBoundary } from 'external-temporal';
 import { ReactNode, useEffect, useState } from 'react';
 
 export function MobileUnscheduledPage(): ReactNode {

@@ -1,5 +1,5 @@
-import ErrorBoundary from '#/components/fallback/ErrorBoundary/ErrorBoundary';
 import { NoticeFrame } from '@N/components/Notice/NoticeFrame';
+import { ErrorBoundary } from 'external-temporal';
 
 export default function Page() {
   return (

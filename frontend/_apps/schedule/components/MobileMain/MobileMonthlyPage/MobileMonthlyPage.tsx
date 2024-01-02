@@ -3,9 +3,8 @@ import { MobileCalendar } from '@SCH/components/MobileCalendar/MobileCalendar';
 import { ReactNode, useEffect, useRef } from 'react';
 import { CalendarHeader } from './CalendarHeader/CalendarHeader';
 import { DailyList } from './DailyList/DailyList';
-import { Spacing } from 'external-temporal';
+import { Spacing, ErrorBoundary } from 'external-temporal';
 import { useFilterStore } from '@SCH/store/filterStore';
-import ErrorBoundary from '#/components/fallback/ErrorBoundary/ErrorBoundary';
 
 export function MobileMonthlyPage(): ReactNode {
   const { isOpen } = useFilterStore();
