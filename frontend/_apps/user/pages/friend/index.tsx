@@ -4,7 +4,7 @@ import { Friend } from '@U/components/Friend/Friend/Friend';
 import FRIENDS from '@U/constants/FRIENDS';
 import { useFriend } from '@U/hooks/useFriend';
 import { http } from '@U/utils/http';
-import ErrorBoundary from '#/components/fallback/ErrorBoundary/ErrorBoundary';
+import { ErrorBoundary } from 'external-temporal';
 
 export default function FriendPage() {
   const { data, isLoading, error } = useFriend();

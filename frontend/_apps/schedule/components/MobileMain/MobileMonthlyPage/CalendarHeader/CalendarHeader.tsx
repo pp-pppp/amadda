@@ -2,7 +2,7 @@ import { useDateStore } from '@SCH/store/dateStore';
 import { BtnRound, Filter, Flex, H2, P, Spacing } from 'external-temporal';
 import { useEffect, useState, MouseEvent, ChangeEvent } from 'react';
 import CALENDAR from '@SCH/constants/CALENDAR';
-import useCategory from '@SCH/hooks/useCategory';
+import { useGetCategory } from '@SCH/hooks/useCategory';
 import { useCategoryStore } from '@SCH/store/categoryStore';
 import { useFilterStore } from '@SCH/store/filterStore';
 import useServerTime from '@SCH/hooks/useServerTime';
@@ -12,10 +12,10 @@ export function CalendarHeader() {
   const { isOpen } = useFilterStore();
   const { selectedYear, selectedMonth, selectedDate } = useDateStore();
   const { selectedCategorySeq, selectedAll, selectedNone } = useCategoryStore();
-  const { categories, setCategories } = useCategory();
+  const { category } = useGetCategory();
 
   useEffect(() => {
-    if (selectedCategorySeq.length === categories.length && selectedNone) {
+    if (selectedCategorySeq.length === category.length && selectedNone) {
       useCategoryStore.setState(() => ({
         selectedAll: true,
       }));
@@ -33,8 +33,8 @@ export function CalendarHeader() {
     useCategoryStore.setState(prevState => {
       if (!prevState.selectedAll) {
         const categorySeqs: number[] = [];
-        categories.length !== 0 &&
-          categories.map((category, idx) => {
+        category.length !== 0 &&
+          category.map((category, idx) => {
             categorySeqs.push(category.categorySeq);
           });
 
@@ -117,7 +117,7 @@ export function CalendarHeader() {
           >
             {CALENDAR.CATEGORY_ALL}
           </Filter.FilterOption>
-          {categories.map((category, idx) => {
+          {category.map((category, idx) => {
             return (
               <Filter.FilterOption
                 key={idx}

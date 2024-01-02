@@ -1,8 +1,7 @@
-import ErrorBoundary from '#/components/fallback/ErrorBoundary/ErrorBoundary';
+import { ErrorBoundary } from 'external-temporal';
 import HeaderLayout from '@SH/components/HeaderLayout';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import type { ReactNode } from 'react';
 
 const Friend = dynamic(() => import('user/Friend'), { ssr: false });
 
