@@ -10,6 +10,7 @@
     "eslint": "^8.48.0",
     "prettier": "^3.0.3",
     "tsconfig": "workspace:*",
+    "eslint-config-custom": "workspace:*",
     "dotenv-cli": "latest",
     "turbo": "latest"
   },
