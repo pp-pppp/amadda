@@ -1,8 +1,8 @@
 import React from 'react';
-import type { HTMLAttributes } from 'react';
+import type { ComponentPropsWithoutRef } from 'react';
 import { HSIZE, VSIZE } from './Spacing.css';
 
-export interface SpacingProps extends HTMLAttributes<HTMLDivElement> {
+export interface SpacingProps extends ComponentPropsWithoutRef<'div'> {
   dir?: 'h' | 'v';
   size?: '0.25' | '0.5' | '1' | '2' | '3' | '5' | '10';
 }

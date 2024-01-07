@@ -2,7 +2,7 @@ import React from 'react';
 import { Icon } from '#/components/view/Icon/Icon';
 import { TYPE_VARIANT, SHAPE_VARIANT, KEYWORD_DELETE } from './Chip.css';
 
-interface Props {
+interface ChipProps {
   type: keyof typeof TYPE_VARIANT;
   label: string;
   shape?: keyof typeof SHAPE_VARIANT;
@@ -10,7 +10,7 @@ interface Props {
   onDelete?: (data: any) => void;
 }
 
-export function Chip({ type, label, shape = 'round', onFiltered, onDelete }: Props) {
+export function Chip({ type, label, shape = 'round', onFiltered, onDelete }: ChipProps) {
   const classname = `${TYPE_VARIANT[type]} ${SHAPE_VARIANT[shape]}`;
   switch (type) {
     case 'filter':

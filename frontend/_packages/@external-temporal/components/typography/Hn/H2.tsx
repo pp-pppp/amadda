@@ -1,12 +1,8 @@
 import React from 'react';
-import type { HTMLAttributes, ReactNode } from 'react';
-import { VARIANTS } from './H.css';
+import { COLOR, VARIANTS } from './H.css';
+import { HnProps } from './HnProps';
 
-export interface Props extends HTMLAttributes<HTMLHeadingElement> {
-  children: ReactNode;
-}
-
-export function H2({ children }: Props) {
-  const className = VARIANTS[2];
+export function H2({ color = 'black', children }: HnProps) {
+  const className = `${VARIANTS[2]} ${COLOR[color]}`;
   return <h2 className={className}>{children}</h2>;
 }

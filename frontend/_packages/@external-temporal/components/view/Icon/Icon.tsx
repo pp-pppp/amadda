@@ -1,8 +1,8 @@
 import React from 'react';
-import type { HTMLAttributes } from 'react';
+import type { ComponentPropsWithoutRef } from 'react';
 import { COLOR, CURSOR } from './Icon.css';
 
-export interface IconProps extends HTMLAttributes<HTMLDivElement> {
+export interface IconProps extends ComponentPropsWithoutRef<'div'> {
   type: keyof ReturnType<typeof ICONS>;
   color: keyof typeof COLOR;
   cursor?: keyof typeof CURSOR;

@@ -1,7 +1,7 @@
 import React from 'react';
-import type { HTMLAttributes } from 'react';
+import type { ComponentPropsWithoutRef } from 'react';
 import { CONTAINER_BASE, CONTAINER_VARIANT, SLIDER, SWITCH_BASE, SWITCH_VARIANT } from './Switch.css';
-interface SwitchProps extends HTMLAttributes<HTMLInputElement> {
+interface SwitchProps extends ComponentPropsWithoutRef<'input'> {
   id: string;
   selected: boolean;
   onToggle?: (arg: boolean) => void;

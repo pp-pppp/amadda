@@ -1,10 +1,10 @@
 import React from 'react';
-import type { FocusEvent, HTMLAttributes, KeyboardEvent } from 'react';
+import type { ComponentPropsWithRef, FocusEvent, KeyboardEvent } from 'react';
 
 import { ChangeEvent } from 'react';
 import { TYPE } from './Input.css';
 
-export interface InputProps extends HTMLAttributes<HTMLInputElement> {
+export interface InputProps extends ComponentPropsWithRef<'input'> {
   type: 'text' | 'checkbox' | 'number';
   validator?: (target: string | number) => boolean;
   id: string;

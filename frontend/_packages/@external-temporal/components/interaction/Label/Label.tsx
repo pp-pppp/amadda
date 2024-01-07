@@ -1,8 +1,8 @@
 import React from 'react';
-import type { HTMLAttributes, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 import { BASE } from './Label.css';
 
-export interface LabelProps extends HTMLAttributes<HTMLLabelElement> {
+export interface LabelProps extends ComponentPropsWithoutRef<'label'> {
   htmlFor: string;
   children: ReactNode;
 }

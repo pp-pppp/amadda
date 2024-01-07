@@ -1,7 +1,7 @@
 import React from 'react';
-import type { HTMLAttributes, FormEvent, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, FormEvent, ReactNode } from 'react';
 
-export interface FormProps extends HTMLAttributes<HTMLFormElement> {
+export interface FormProps extends ComponentPropsWithoutRef<'form'> {
   formName: string;
   onSubmit: (e: FormEvent) => void;
   children: ReactNode;

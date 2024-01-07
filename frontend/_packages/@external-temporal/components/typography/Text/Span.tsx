@@ -1,11 +1,12 @@
 import React from 'react';
-import type { HTMLAttributes, ReactNode } from 'react';
-import { COLOR } from './Texts.css';
+import type { ComponentPropsWithoutRef, ReactNode } from 'react';
+import { textColors } from '#/constants/Text.css';
 
-export interface SpanProps extends HTMLAttributes<HTMLSpanElement> {
-  color?: keyof typeof COLOR;
+export interface SpanProps extends ComponentPropsWithoutRef<'span'> {
+  color?: keyof typeof textColors;
   children: ReactNode;
 }
 export function Span({ color = 'black', children }: SpanProps) {
-  return <span className={COLOR[color]}>{children}</span>;
+  const className = `${textColors[color]}`;
+  return <span className={className}>{children}</span>;
 }

@@ -1,8 +1,8 @@
 import React from 'react';
-import type { HTMLAttributes, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 import { BASE, BORDER } from './Card.css';
 
-export interface CardProps extends HTMLAttributes<HTMLDivElement> {
+export interface CardProps extends ComponentPropsWithoutRef<'div'> {
   children: ReactNode;
   border?: boolean;
 }

@@ -1,15 +1,16 @@
 import React from 'react';
-import type { HTMLAttributes, ReactNode } from 'react';
-import { COLOR } from './Texts.css';
-import { TYPE } from './P.css';
+import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 
-export interface PghProps extends HTMLAttributes<HTMLParagraphElement> {
+import { TYPE } from './P.css';
+import { textColors } from '#/constants/Text.css';
+
+export interface PghProps extends ComponentPropsWithoutRef<'p'> {
   type?: 'text' | 'caption';
-  color?: keyof typeof COLOR;
+  color?: keyof typeof textColors;
   children: ReactNode;
 }
 export function P({ type = 'text', color = 'black', children }: PghProps) {
-  const className = `${COLOR[color]} ${TYPE[type]}`;
+  const className = `${textColors[color]} ${TYPE[type]}`;
 
   return <p className={className}>{children}</p>;
 }

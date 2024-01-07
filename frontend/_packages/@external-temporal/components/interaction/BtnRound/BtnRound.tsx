@@ -1,8 +1,8 @@
 import React from 'react';
-import type { HTMLAttributes, MouseEvent, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, MouseEvent, ReactNode } from 'react';
 import { SIZE, VARIANTS } from './BtnRound.css';
 
-export interface BtnRoundProps extends HTMLAttributes<HTMLButtonElement> {
+export interface BtnRoundProps extends ComponentPropsWithoutRef<'button'> {
   type: 'button' | 'submit';
   variant: keyof typeof VARIANTS;
   size?: keyof typeof SIZE;

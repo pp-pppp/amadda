@@ -1,9 +1,9 @@
 import React from 'react';
-import type { HTMLAttributes, MouseEvent, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, MouseEvent, ReactNode } from 'react';
 
 import { VARIANTS } from './Btn.css';
 
-export interface BtnProps extends HTMLAttributes<HTMLButtonElement> {
+export interface BtnProps extends ComponentPropsWithoutRef<'button'> {
   type: 'button' | 'submit';
   variant: keyof typeof VARIANTS;
   disabled?: boolean;

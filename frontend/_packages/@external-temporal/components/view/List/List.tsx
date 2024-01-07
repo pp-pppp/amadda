@@ -1,18 +1,18 @@
 import React from 'react';
-import type { HTMLAttributes, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 import { LI_DISPLAY_VARIANT, UL_DISPLAY_VARIANT } from './List.css';
 import { H3 } from '#/components/typography/Hn/H3';
 import Spacing from '#/components/typography/Spacing/Spacing';
 
-export interface ListProps extends HTMLAttributes<HTMLDivElement> {
+export interface ListProps extends ComponentPropsWithoutRef<'div'> {
   title?: string;
   children: ReactNode;
 }
-export interface UlProps extends HTMLAttributes<HTMLUListElement> {
+export interface UlProps extends ComponentPropsWithoutRef<'ul'> {
   display?: keyof typeof UL_DISPLAY_VARIANT;
   children: ReactNode;
 }
-export interface LiProps extends HTMLAttributes<HTMLLIElement> {
+export interface LiProps extends ComponentPropsWithoutRef<'li'> {
   display?: keyof typeof LI_DISPLAY_VARIANT;
   children: ReactNode;
 }
