@@ -1,8 +1,7 @@
-import { COLOR } from '#/components/typography/Text/Texts.css';
-import { P } from 'external-temporal';
+import { P, textColors } from 'external-temporal';
 
 export interface SignUpCaptionProps {
-  color?: keyof typeof COLOR;
+  color?: keyof typeof textColors;
   children: string;
 }
 

@@ -1,4 +1,4 @@
-import colors from '#/constants/colors';
+import { colors } from 'external-temporal';
 import { style, styleVariants } from '@vanilla-extract/css';
 
 export const CONTAINER = style({

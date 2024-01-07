@@ -14,7 +14,7 @@ const GREY_700 = '#56535C';
 const GREY_800 = '#353338';
 const GREY_900 = '#131016';
 
-const colors = {
+export const colors = {
   WHITE,
   BLACK,
   GREY_100,
@@ -45,4 +45,3 @@ const colors = {
     grey: GREY_600,
   },
 };
-export default colors;

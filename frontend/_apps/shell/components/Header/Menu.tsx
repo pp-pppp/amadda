@@ -1,9 +1,9 @@
 import React from 'react';
-import type { HTMLAttributes } from 'react';
+import type { ComponentPropsWithoutRef } from 'react';
 import { MENU } from './Header.css';
 import { Icon, IconProps } from 'external-temporal';
 
-export interface MenuProps extends HTMLAttributes<HTMLButtonElement> {
+export interface MenuProps extends ComponentPropsWithoutRef<'button'> {
   data?: any;
   iconType: IconProps['type'];
   onClick: () => void;

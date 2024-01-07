@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css';
-import colors from '#/constants/colors';
+import { colors } from 'external-temporal';
 
 export const BASE = style({
   display: 'grid',

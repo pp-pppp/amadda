@@ -36,3 +36,6 @@ export * from './components/fallback/Loading/Loading';
 export * from './util/global.css';
 export * from './util/throttle';
 export * from './util/debounce';
+
+export * from './constants/colors';
+export * from './constants/Text.css';
