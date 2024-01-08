@@ -1,23 +1,6 @@
 import React from 'react';
-import type { ComponentPropsWithRef, FocusEvent, KeyboardEvent } from 'react';
-
-import { ChangeEvent } from 'react';
 import { TYPE } from './Input.css';
-
-export interface InputProps extends ComponentPropsWithRef<'input'> {
-  type: 'text' | 'checkbox' | 'number';
-  validator?: (target: string | number) => boolean;
-  id: string;
-  name: string;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  onKeyDown?: (e: KeyboardEvent) => void;
-  onFocus?: (e: FocusEvent) => void;
-  disabled?: boolean;
-  placeholder?: string;
-  value?: string | number;
-  checked?: boolean;
-  autoComplete?: undefined | 'off';
-}
+import { InputBaseProps } from './InputBaseProps';
 
 export function Input({
   type,
@@ -32,8 +15,8 @@ export function Input({
   value,
   checked,
   autoComplete = undefined,
-  style = undefined,
-}: InputProps) {
+  ...props
+}: InputBaseProps) {
   return (
     <input
       checked={checked}
@@ -48,7 +31,7 @@ export function Input({
       type={type}
       value={value}
       autoComplete={autoComplete}
-      style={style}
+      {...props}
     />
   );
 }
