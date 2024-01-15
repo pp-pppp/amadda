@@ -7,8 +7,8 @@ import { FOLD_VARIANT, FRIEND_LIST, GROUP_EDIT, GROUP_LAYOUT, GROUP_NAME, GROUP_
 import { MODE_CONTEXT } from '../FriendFrame/FriendFrame';
 import FriendsConstants from '../../../constants/FRIENDS';
 import { useRouter } from 'next/router';
-import { http } from '@U/utils/http';
 import { GroupCreateRequest, GroupUpdateRequest } from '@amadda/global-types';
+import { clientFetch } from '@amadda/fetch';
 
 export interface FriendGroupProps {
   groupSeq: number | null;
@@ -91,32 +91,25 @@ FriendGroups.Title = function ({ groupName, newGroupName, setNewGroupName, fold,
 FriendGroups.Edit = function ({ groupName, groupSeq, newGroupName, newFriends }) {
   const router = useRouter();
   const handleDelete = async () => {
-    const res = await http
-      .delete(`${process.env.NEXT_PUBLIC_USER}/friend/group/${groupSeq}`)
-      .then(res => res.data)
-      .catch(err => '');
+    const res = await clientFetch.delete(`${process.env.NEXT_PUBLIC_USER}/friend/group/${groupSeq}`);
     router.push(`/main`);
   };
   const handleSubmit = async () => {
     if (MODE === 'NOT_EDITING') {
       SET_MODE(groupSeq);
     } else if (MODE === 'ADD_GROUP') {
-      const res = await http
-        .post<GroupCreateRequest>(`${process.env.NEXT_PUBLIC_USER}/friend/group`, {
-          groupName: newGroupName,
-          userSeqs: newFriends,
-        })
-        .then(res => res.data)
-        .catch(err => '');
+      const res = await clientFetch.post<GroupCreateRequest>(`${process.env.NEXT_PUBLIC_USER}/friend/group`, {
+        groupName: newGroupName,
+        userSeqs: newFriends,
+      });
       router.push(`/schedule/${res}`);
       SET_MODE('NOT_EDITING');
     } else if (typeof MODE === 'number') {
-      const res = await http
-        .put<GroupUpdateRequest>(`${process.env.NEXT_PUBLIC_USER}/friend/group`, {
-          groupName: newGroupName.length === 0 ? groupName : newGroupName,
-          userSeqs: newFriends,
-        })
-        .catch(err => '');
+      const res = await clientFetch.put<GroupUpdateRequest>(`${process.env.NEXT_PUBLIC_USER}/friend/group`, {
+        groupName: newGroupName.length === 0 ? groupName : newGroupName,
+        userSeqs: newFriends,
+      });
+
       router.push(`/schedule/${res}`);
     }
   };

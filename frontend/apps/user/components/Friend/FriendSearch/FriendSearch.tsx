@@ -7,7 +7,7 @@ import { useSearchFriend, useSearchUser } from '@U/hooks/useFriend';
 import { FriendGroups } from '../FriendGroups/FriendGroups';
 import FRIENDS from '../../../constants/FRIENDS';
 import { Friend } from '../Friend/Friend';
-import { http } from '@U/utils/http';
+import { clientFetch } from '@amadda/fetch';
 
 export interface FriendSearchProps {}
 export function FriendSearch({}: FriendSearchProps) {
@@ -32,7 +32,7 @@ export function FriendSearch({}: FriendSearchProps) {
           key={newFriendData.data.userId}
           status="request"
           onRequest={async () =>
-            http.post(`${process.env.NEXT_PUBLIC_USER}/friend/request`, {
+            clientFetch.post(`${process.env.NEXT_PUBLIC_USER}/friend/request`, {
               targetSeq: newFriendData.data?.userSeq,
             })
           }

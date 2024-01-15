@@ -117,6 +117,36 @@ importers:
         specifier: ^2.2.4
         version: 2.2.4
 
+  _libs/react-util-hooks:
+    devDependencies:
+      '@sentry/nextjs':
+        specifier: ^7.86.0
+        version: 7.86.0(next@13.4.12)(react@18.2.0)(webpack@5.80.0)
+      '@types/node':
+        specifier: 20.5.2
+        version: 20.5.2
+      '@types/react':
+        specifier: 18.2.28
+        version: 18.2.28
+      '@types/react-dom':
+        specifier: 18.2.14
+        version: 18.2.14
+      eslint-config-custom:
+        specifier: workspace:*
+        version: link:../eslint-config-custom
+      next:
+        specifier: 13.4.12
+        version: 13.4.12(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)
+      react:
+        specifier: 18.2.0
+        version: 18.2.0
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: 5.2.2
+        version: 5.2.2
+
   _libs/tsconfig: {}
 
   apps/docs:
@@ -305,9 +335,6 @@ importers:
       '@vanilla-extract/css':
         specifier: 1.13.0
         version: 1.13.0
-      axios:
-        specifier: ^1.6.0
-        version: 1.6.0
       next:
         specifier: 13.4.12
         version: 13.4.12(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)
@@ -399,15 +426,15 @@ importers:
       '@amadda/kafka':
         specifier: workspace:*
         version: link:../../_libs/kafka
+      '@amadda/react-util-hooks':
+        specifier: workspace:*
+        version: link:../../_libs/react-util-hooks
       '@sentry/nextjs':
         specifier: ^7.86.0
         version: 7.86.0(next@13.4.12)(react@18.2.0)(webpack@5.80.0)
       '@vanilla-extract/css':
         specifier: 1.13.0
         version: 1.13.0
-      axios:
-        specifier: ^1.6.0
-        version: 1.6.0
       next:
         specifier: 13.4.12
         version: 13.4.12(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)
@@ -502,9 +529,6 @@ importers:
       '@vanilla-extract/css':
         specifier: 1.13.0
         version: 1.13.0
-      axios:
-        specifier: ^1.6.0
-        version: 1.6.0
       cookie:
         specifier: ^0.6.0
         version: 0.6.0
@@ -608,9 +632,6 @@ importers:
       '@vanilla-extract/css':
         specifier: 1.13.0
         version: 1.13.0
-      axios:
-        specifier: ^1.6.0
-        version: 1.6.0
       next:
         specifier: 13.4.12
         version: 13.4.12(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)
@@ -5524,7 +5545,7 @@ packages:
   /@swc/helpers@0.5.1:
     resolution: {integrity: sha512-sJ902EfIzn1Fa+qYmjdQqh8tPsoxyBz+8yBKC2HKUxyezKJFwPGOn7pv4WY6QuQW//ySQi5lJjA/ZT9sNWWNTg==}
     dependencies:
-      tslib: 2.5.0
+      tslib: 2.6.2
 
   /@swc/types@0.1.5:
     resolution: {integrity: sha512-myfUej5naTBWnqOCc/MdVOLVjXUXtIA+NpDrDBKJtLLg2shUjBu3cZmB/85RyitKc55+lUUyl7oRfLOvkr2hsw==}
@@ -6728,7 +6749,7 @@ packages:
       esbuild: '>=0.10.0'
     dependencies:
       esbuild: 0.18.20
-      tslib: 2.5.0
+      tslib: 2.6.2
     dev: true
 
   /@yarnpkg/fslib@2.10.3:
@@ -7152,7 +7173,7 @@ packages:
     resolution: {integrity: sha512-c27loCv9QkZinsa5ProX751khO9DJl/AcB5c2KNtA6NRvHKS0PgLfcftz72KVq504vB0Gku5s2kUZzDBvQWvHg==}
     engines: {node: '>=4'}
     dependencies:
-      tslib: 2.5.0
+      tslib: 2.6.2
     dev: true
 
   /ast-types@0.16.1:
@@ -7178,6 +7199,7 @@ packages:
 
   /asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
+    dev: true
 
   /available-typed-arrays@1.0.5:
     resolution: {integrity: sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==}
@@ -7197,6 +7219,7 @@ packages:
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
+    dev: true
 
   /axobject-query@3.2.1:
     resolution: {integrity: sha512-jsyHu61e6N4Vbz/v18DHwWYKK0bSWLqn47eeDSKPB7m8tqMHF9YJ+mhIk2lVteyZrY8tnSj/jHOv4YiTCuCJgg==}
@@ -7951,6 +7974,7 @@ packages:
     engines: {node: '>= 0.8'}
     dependencies:
       delayed-stream: 1.0.0
+    dev: true
 
   /commander@10.0.1:
     resolution: {integrity: sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug==}
@@ -8540,6 +8564,7 @@ packages:
   /delayed-stream@1.0.0:
     resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
     engines: {node: '>=0.4.0'}
+    dev: true
 
   /depd@1.1.2:
     resolution: {integrity: sha512-7emPTl6Dpo6JRXOXjLRxck+FlLRX5847cLKEn00PLAgc3g2hTZZgr+e4c2v6QpSmLeFP3n5yUo7ft6avBK/5jQ==}
@@ -10018,6 +10043,7 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dev: true
 
   /for-each@0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
@@ -10071,6 +10097,7 @@ packages:
       asynckit: 0.4.0
       combined-stream: 1.0.8
       mime-types: 2.1.35
+    dev: true
 
   /forwarded@0.2.0:
     resolution: {integrity: sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==}
@@ -13864,7 +13891,7 @@ packages:
       ast-types: 0.15.2
       esprima: 4.0.1
       source-map: 0.6.1
-      tslib: 2.5.0
+      tslib: 2.6.2
     dev: true
 
   /recast@0.23.4:
@@ -15321,7 +15348,6 @@ packages:
 
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
-    dev: true
 
   /tsutils@3.21.0(typescript@4.9.5):
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
