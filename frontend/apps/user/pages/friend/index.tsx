@@ -3,8 +3,9 @@ import { FriendGroups } from '@U/components/Friend/FriendGroups/FriendGroups';
 import { Friend } from '@U/components/Friend/Friend/Friend';
 import FRIENDS from '@U/constants/FRIENDS';
 import { useFriend } from '@U/hooks/useFriend';
-import { http } from '@U/utils/http';
+
 import { ErrorBoundary } from '@amadda/external-temporal';
+import { clientFetch } from '@amadda/fetch';
 
 export default function FriendPage() {
   const { data, isLoading, error } = useFriend();
@@ -30,12 +31,7 @@ export default function FriendPage() {
                         key={f.userId}
                         {...f}
                         status="quit"
-                        onQuit={async () => {
-                          const res = await http
-                            .delete(`${process.env.NEXT_PUBLIC_USER}/friend/${f.userSeq}`)
-                            .then(res => res.data)
-                            .catch(err => '');
-                        }}
+                        onQuit={async () => await clientFetch.delete(`${process.env.NEXT_PUBLIC_USER}/friend/${f.userSeq}`)}
                       />
                     ))}
                   </FriendGroups>
