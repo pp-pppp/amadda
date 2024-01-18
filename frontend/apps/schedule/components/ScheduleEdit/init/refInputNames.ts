@@ -19,7 +19,7 @@ export const refInputNames: Array<keyof ScheduleEditFormProps> = [
   'isDateSelected',
   'isTimeSelected',
   'isAllday',
-  // 'isAuthorizedAll',
+  'isAuthorizedAll',
   'scheduleContent',
   'alarmTime',
   'categorySeq',

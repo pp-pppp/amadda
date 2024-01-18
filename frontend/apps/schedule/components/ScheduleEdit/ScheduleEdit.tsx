@@ -1,14 +1,12 @@
 import React, { createContext, useContext } from 'react';
 import { Btn, Chip, Flex, Form, H2, H4, Input, Label, Spacing, Span, Textarea, ErrorBoundary, RefInput } from '@amadda/external-temporal';
+import useForm from '@amadda/react-util-hooks/useForm';
 import { AC, BASE, PARTICIPANTS, SEARCHRESULT } from './ScheduleEdit.css';
 import CREATE from '@SCH/constants/CREATE';
 import { CategoryContainer } from '../Category/CategoryContainer';
-import useForm from '@amadda/react-util-hooks/useForm';
-
-import { initFormValues } from './constants/useScheduleEditInit';
-import { useScheduleSubmit } from './constants/useScheduleSubmit';
-import { scheduleFormValidator } from './constants/scheduleFormValidator';
-import { refInputNames } from './constants/refInputNames';
+import { initFormValues, refInputNames } from './init/useScheduleEditInit';
+import { useScheduleSubmit } from './init/useScheduleSubmit';
+import { scheduleFormValidator } from './init/scheduleFormValidator';
 
 export type ScheduleEditProps = Record<string, string> & ReturnType<typeof useForm>;
 
