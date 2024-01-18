@@ -108,7 +108,7 @@ export function ScheduleDetail({ detail }: InferGetServerSidePropsType<typeof ge
         })
       )}
       <Spacing dir="v" size="2" />
-      <Textarea id="comment" height="5rem" placeholder="댓글을 입력하세요." onChange={e => setComment(e.target.value)} value={comment} />
+      <Textarea name="comment" id="comment" height="5rem" placeholder="댓글을 입력하세요." onChange={e => setComment(e.target.value)} value={comment} />
       <Spacing dir="v" size="0.5" />
       <Flex justifyContents="flexEnd">
         <div className={BUTTON}>
