@@ -1,16 +1,5 @@
-import { ScheduleCreateRequest, ScheduleDetailReadResponse } from '@amadda/global-types';
-import { NextRouter } from 'next/router';
-import useSWR from 'swr';
-import { clientFetch } from '@amadda/fetch';
-import { ScheduleEditFormProps } from '../formdata';
-
-export function useScheduleEdit(router: NextRouter) {
-  if (router.basePath.includes('edit')) {
-    const { scheduleSeq } = router.query;
-    const { data, error, isLoading } = useSWR(`${process.env.NEXT_PUBLIC_SCHEDULE}/api/schedule/${scheduleSeq}`, clientFetch.get<ScheduleDetailReadResponse>);
-    return data;
-  }
-}
+import { ScheduleCreateRequest } from '@amadda/global-types';
+import { ScheduleEditFormProps } from '../components/ScheduleEdit/formdata';
 
 export const initFormValues: ScheduleEditFormProps = {
   startYear: '',

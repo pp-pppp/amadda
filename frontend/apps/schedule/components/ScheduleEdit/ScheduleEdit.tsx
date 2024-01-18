@@ -4,11 +4,15 @@ import useForm from '@amadda/react-util-hooks/useForm';
 import { AC, BASE, PARTICIPANTS, SEARCHRESULT } from './ScheduleEdit.css';
 import CREATE from '@SCH/constants/CREATE';
 import { CategoryContainer } from '../Category/CategoryContainer';
-import { initFormValues, refInputNames } from './init/useScheduleEditInit';
-import { useScheduleSubmit } from './init/useScheduleSubmit';
-import { scheduleFormValidator } from './init/scheduleFormValidator';
+import { initFormValues, refInputNames } from '../../constants/SCHEDULE_EDIT_INIT';
+import { useScheduleSubmit } from '../../hooks/useScheduleSubmit';
+import { scheduleFormValidator } from '../../utils/validators/scheduleValidator';
 
 export type ScheduleEditProps = Record<string, string> & ReturnType<typeof useForm>;
+
+/**
+ * TODO: PUT 상황 대응 리팩토링 (SSR)
+ */
 
 export function ScheduleEdit() {
   const data = useForm('scheduleEdit', initFormValues, useScheduleSubmit, scheduleFormValidator, refInputNames);

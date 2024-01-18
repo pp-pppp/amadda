@@ -1,6 +1,6 @@
 import { ScheduleCreateRequest, ScheduleUpdateRequest } from '@amadda/global-types';
 import { useRouter } from 'next/router';
-import { ScheduleEditFormProps } from '../formdata';
+import { ScheduleEditFormProps } from '../components/ScheduleEdit/formdata';
 
 export async function useScheduleSubmit(data: ScheduleEditFormProps) {
   const router = useRouter();
