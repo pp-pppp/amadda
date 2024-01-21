@@ -118,6 +118,10 @@ importers:
         version: 2.2.4
 
   _libs/react-util-hooks:
+    dependencies:
+      zustand:
+        specifier: ^4.4.6
+        version: 4.4.6(@types/react@18.2.28)(react@18.2.0)
     devDependencies:
       '@sentry/nextjs':
         specifier: ^7.86.0
