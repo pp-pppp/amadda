@@ -1,22 +1,29 @@
-import React, { createContext, useContext } from 'react';
+import React from 'react';
 import { Btn, Chip, Flex, Form, H2, H4, Input, Label, Spacing, Span, Textarea, ErrorBoundary, RefInput } from '@amadda/external-temporal';
-import useForm from '@amadda/react-util-hooks/useForm';
+import { useFormStore } from '@amadda/react-util-hooks';
 import { AC, BASE, PARTICIPANTS, SEARCHRESULT } from './ScheduleEdit.css';
 import CREATE from '@SCH/constants/CREATE';
 import { CategoryContainer } from '../Category/CategoryContainer';
 import { initFormValues, refInputNames } from '../../constants/SCHEDULE_EDIT_INIT';
 import { useScheduleSubmit } from '../../hooks/useScheduleSubmit';
 import { scheduleFormValidator } from '../../utils/validators/scheduleValidator';
+import { useShallow } from 'zustand/react/shallow';
+import { ScheduleEditFormProps } from './formdata';
 
-export type ScheduleEditProps = Record<string, string> & ReturnType<typeof useForm>;
+export type ScheduleEditProps = Record<string, string> & ReturnType<typeof useFormStore<ScheduleEditFormProps>>;
 
 /**
  * TODO: PUT 상황 대응 리팩토링 (SSR)
  */
 
 export function ScheduleEdit() {
-  const data = useForm('scheduleEdit', initFormValues, useScheduleSubmit, scheduleFormValidator, refInputNames);
-  const { values, setValues, refValues, invalids, handleChange, refs, submit } = useContext(createContext(data));
+  const [values, refValues, submit, refs, handleChange, setValues] = useFormStore<ScheduleEditFormProps>([
+    'scheduleEdit',
+    initFormValues,
+    useScheduleSubmit,
+    scheduleFormValidator,
+    refInputNames,
+  ])(useShallow(state => [state.values, state.refValues, state.submit, state.refs, state, handleChange, state.setValues]));
 
   return (
     <ErrorBoundary>
