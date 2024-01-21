@@ -1,13 +1,8 @@
-import { createContext, useEffect, useRef, useState } from 'react';
-import type { ChangeEvent, Context, Dispatch, FormEvent, RefObject, SetStateAction } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import type { ChangeEvent, Dispatch, FormEvent, RefObject, SetStateAction } from 'react';
+import { useFormArgs } from './types';
 
-export default function useForm<T>(
-  key: string,
-  initialValues: T,
-  onSubmit: (data: T) => Promise<unknown>,
-  validator?: (data: T) => Array<Record<keyof T, string>>,
-  refInputNames: (keyof T)[] = []
-): {
+export const useForm = <T>([key, initialValues, onSubmit, validator, refInputNames = []]: useFormArgs<T>): {
   key: string;
   values: T;
   setValues: Dispatch<SetStateAction<T>>;
@@ -18,7 +13,7 @@ export default function useForm<T>(
   submit: (e: FormEvent) => Promise<unknown>;
   isLoading: boolean;
   result: unknown;
-} {
+} => {
   const [values, setValues] = useState<typeof initialValues>({ ...initialValues } as const);
   const [invalids, setInvalids] = useState<Array<Record<keyof T, string>>>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -69,7 +64,7 @@ export default function useForm<T>(
   };
 
   return data;
-}
+};
 
 function useRefInputInit<T>(
   refInputNames: readonly (keyof T)[] = []
