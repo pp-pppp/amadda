@@ -6,11 +6,11 @@ export const useForm = <T>([key, initialValues, onSubmit, validator, refInputNam
   key: string;
   values: T;
   setValues: Dispatch<SetStateAction<T>>;
-  refValues: Record<keyof T, any>;
+  refValues: Record<keyof T, any> | null;
   handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => Promise<void>;
   invalids: Array<Record<keyof T, string>>;
-  refs: Record<(typeof refInputNames)[number], RefObject<HTMLInputElement>>;
-  submit: (e: FormEvent) => Promise<unknown>;
+  refs: Record<(typeof refInputNames)[number], RefObject<HTMLInputElement>> | null;
+  submit: (data: any) => Promise<unknown>;
   isLoading: boolean;
   result: unknown;
 } => {
