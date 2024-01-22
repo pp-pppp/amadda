@@ -58,8 +58,6 @@ export const refInputNames: Array<keyof ScheduleEditFormProps> = [
   'category',
   'scheduleName',
   'participants',
-  'scheduleStartAt',
-  'scheduleEndAt',
   'isDateSelected',
   'isTimeSelected',
   'isAllday',
@@ -68,7 +66,5 @@ export const refInputNames: Array<keyof ScheduleEditFormProps> = [
   'alarmTime',
   'categorySeq',
   'scheduleMemo',
-  'partySearchInput',
   'partySearchResult',
-  'categoryInput',
 ];
