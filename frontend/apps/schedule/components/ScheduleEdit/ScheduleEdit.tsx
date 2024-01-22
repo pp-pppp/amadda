@@ -1,35 +1,43 @@
 import React from 'react';
 import { Btn, Chip, Flex, Form, H2, H4, Input, Label, Spacing, Span, Textarea, ErrorBoundary, RefInput } from '@amadda/external-temporal';
-import { useFormStore } from '@amadda/react-util-hooks';
+import { useForm } from '@amadda/react-util-hooks';
 import { AC, BASE, PARTICIPANTS, SEARCHRESULT } from './ScheduleEdit.css';
 import CREATE from '@SCH/constants/CREATE';
 import { CategoryContainer } from '../Category/CategoryContainer';
 import { initFormValues, refInputNames } from '../../constants/SCHEDULE_EDIT_INIT';
 import { useScheduleSubmit } from '../../hooks/useScheduleSubmit';
 import { scheduleFormValidator } from '../../utils/validators/scheduleValidator';
-import { useShallow } from 'zustand/react/shallow';
 import { ScheduleEditFormProps } from './formdata';
+import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
 
-export type ScheduleEditProps = Record<string, string> & ReturnType<typeof useFormStore<ScheduleEditFormProps>>;
+export type ScheduleEditProps = {
+  scheduleDetail?: ScheduleEditFormProps;
+};
 
 /**
  * TODO: PUT 상황 대응 리팩토링 (SSR)
  */
 
-export function ScheduleEdit() {
-  const [values, refValues, submit, refs, handleChange, setValues] = useFormStore<ScheduleEditFormProps>([
-    'scheduleEdit',
-    initFormValues,
-    useScheduleSubmit,
-    scheduleFormValidator,
-    refInputNames,
-  ])(useShallow(state => [state.values, state.refValues, state.submit, state.refs, state, handleChange, state.setValues]));
+export function ScheduleEdit({ scheduleDetail }: ScheduleEditProps) {
+  const data = useForm<ScheduleEditFormProps>(['scheduleEdit', scheduleDetail || initFormValues, useScheduleSubmit, scheduleFormValidator, refInputNames]);
+  const [values, setValues, refValues, handleChange, submit, refs, requestData, setRequestData, setUseFormData] = useScheduleEditStore(state => [
+    state.values,
+    state.setValues,
+    state.refValues,
+    state.handleChange,
+    state.submit,
+    state.refs,
+    state.requestData,
+    state.setRequestData,
+    state.setUseFormData,
+  ]);
+  setUseFormData({ data });
 
   return (
     <ErrorBoundary>
       <div className={BASE}>
         <Spacing size="2" />
-        <Form formName="scheduleEdit" onSubmit={submit}>
+        <Form formName="scheduleEdit" onSubmit={() => submit(requestData)}>
           <Flex flexDirection="column" justifyContents="start" alignItems="start">
             <H2>{CREATE.ADD_SCHEDULE}</H2>
             {/* 일정 추가 */}
@@ -38,7 +46,7 @@ export function ScheduleEdit() {
             <Label htmlFor="auth">
               <Flex justifyContents="start" alignItems="center">
                 <RefInput
-                  ref={refs.isAuthorizedAll}
+                  ref={refs?.isAuthorizedAll}
                   type="checkbox"
                   id="isAuthorizedAll"
                   name="isAuthorizedAll"
