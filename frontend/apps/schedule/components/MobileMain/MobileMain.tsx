@@ -1,3 +1,4 @@
+import React from 'react';
 import { FABLAYOUT_MOBILE, INDEXLAYOUT_MOBILE } from '@SCH/layout/Layout.css';
 import { FAB, Segments } from '@amadda/external-temporal';
 import { MobileMonthlyPage } from './MobileMonthlyPage/MobileMonthlyPage';
@@ -9,11 +10,13 @@ export function MobileMain() {
   const router = useRouter();
 
   return (
-    <div className={INDEXLAYOUT_MOBILE}>
-      <Segments titles={[CALENDAR.TITLE_MONTHLY, CALENDAR.TITLE_UNSCHEUDLED]} pages={[<MobileMonthlyPage />, <MobileUnscheduledPage />]} />
+    <>
+      <div className={INDEXLAYOUT_MOBILE}>
+        <Segments titles={[CALENDAR.TITLE_MONTHLY, CALENDAR.TITLE_UNSCHEUDLED]} pages={[<MobileMonthlyPage />, <MobileUnscheduledPage />]} />
+      </div>
       <div className={FABLAYOUT_MOBILE} onClick={() => router.push(`${process.env.NEXT_PUBLIC_SHELL}/schedule/create`)}>
         <FAB />
       </div>
-    </div>
+    </>
   );
 }
