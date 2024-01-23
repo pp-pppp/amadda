@@ -7,7 +7,7 @@ import { StateCreator, create } from 'zustand';
 
 export interface InputSlice {
   requestData: ScheduleCreateRequest | ScheduleUpdateRequest | null;
-  setRequestData: (by: { values: ScheduleEditFormProps; refValues: ScheduleEditFormProps }) => void;
+  setRequestData: () => void;
 }
 
 export interface UseFormSlice extends ReturnType<typeof useForm<ScheduleEditFormProps>> {
