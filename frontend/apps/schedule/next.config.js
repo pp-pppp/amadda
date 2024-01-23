@@ -35,6 +35,9 @@ module.exports = withVanillaExtract({
     ];
   },
   webpack(config, options) {
+    config.infrastructureLogging = {
+      level: 'error',
+    };
     if (!options.isServer) {
       config.plugins.push(
         new NextFederationPlugin({
@@ -42,8 +45,9 @@ module.exports = withVanillaExtract({
           filename: 'static/chunks/entry.js',
           exposes: {
             './Calendar': './pages/mobile-main/index',
-            './Detail': './pages/schedule/[id]/index',
-            './Edit': './pages/edit/index',
+            './Detail': './pages/schedule/[scheduleSeq]/index',
+            './Create': './pages/create/index',
+            './Update': './pages/schedule/[scheduleSeq]/update/index',
           },
           shared: {
             next: {

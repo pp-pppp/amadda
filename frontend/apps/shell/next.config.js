@@ -34,6 +34,9 @@ module.exports = withVanillaExtract({
     ];
   },
   webpack(config, options) {
+    config.infrastructureLogging = {
+      level: 'error',
+    };
     if (!options.isServer) {
       config.plugins.push(
         new NextFederationPlugin({
