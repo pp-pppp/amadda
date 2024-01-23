@@ -1,4 +1,4 @@
-import CREATE from '@SCH/constants/CREATE';
+import { CREATE } from '@SCH/constants/CREATE';
 import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
 import { Label, Textarea } from '@amadda/external-temporal';
 

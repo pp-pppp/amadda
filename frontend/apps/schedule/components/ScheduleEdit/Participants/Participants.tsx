@@ -1,7 +1,7 @@
 import { Flex, Chip, Input, Spacing } from '@amadda/external-temporal';
 import { AC, PARTICIPANTS, SEARCHRESULT } from '../ScheduleEdit.css';
 import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
-import CREATE from '@SCH/constants/CREATE';
+import { CREATE } from '@SCH/constants/CREATE';
 
 export function Participants() {
   const [values, setValues] = useScheduleEditStore(state => [state.values, state.setValues]);
