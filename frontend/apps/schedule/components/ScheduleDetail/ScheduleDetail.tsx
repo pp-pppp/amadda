@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { CommentCreateRequest, ScheduleDetailReadResponse } from '@amadda/global-types';
 import { Chip, Flex, H2, P, Icon, Spacing, Span, Profile, Input, Btn, Textarea } from '@amadda/external-temporal';
 import { InferGetServerSidePropsType } from 'next';
-import { getServerSideProps } from '@SCH/pages/schedule/[id]';
+import { getServerSideProps } from '@SCH/pages/schedule/[scheduleSeq]';
 import CALENDAR from '@SCH/constants/CALENDAR';
 import { BASE, BUTTON, GRID } from './ScheduleDetail.css';
-import { Category } from '../Category/Category';
+import { CategoryOption } from '../CategorySelect/CategoryOption';
 import { clientFetch } from '@amadda/fetch';
 
 export function ScheduleDetail({ detail }: InferGetServerSidePropsType<typeof getServerSideProps>) {
@@ -80,7 +80,7 @@ export function ScheduleDetail({ detail }: InferGetServerSidePropsType<typeof ge
       <Spacing dir="v" size="2" />
       <Span>카테고리</Span>
       <Spacing dir="v" size="0.5" />
-      <Category color={detail.category.categoryColor} categoryName={detail.category.categoryName} />
+      <CategoryOption category={detail.category} />
       <Spacing dir="v" size="2" />
       <Span>메모</Span>
       <Spacing dir="v" size="0.5" />

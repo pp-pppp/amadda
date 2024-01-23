@@ -1,4 +1,4 @@
-import { CategoryContainer } from '@SCH/components/Category/CategoryContainer';
+import { CategorySelectContainer } from '@SCH/components/CategorySelect/CategorySelectContainer';
 import { CREATE } from '@SCH/constants/CREATE';
 import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
 import { Spacing, Span } from '@amadda/external-temporal';
@@ -10,7 +10,7 @@ export function Category() {
     <>
       <Span>{CREATE.PLACEHOLDERS.CATEGORY}</Span>
       <Spacing dir="v" size="1" />
-      <CategoryContainer categories={values.category} onCategoryClick={() => setValues({ ...values, categorySeq: values.categorySeq })} />
+      <CategorySelectContainer categories={values.category} onCategoryClick={() => setValues({ ...values, categorySeq: values.categorySeq })} />
       {/* <Spacing dir="v" size="0.5" />
                 TODO: 카테고리 추가 모달 추후 구현
                 <div>
