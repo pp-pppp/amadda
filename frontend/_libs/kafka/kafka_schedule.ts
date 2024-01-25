@@ -17,8 +17,10 @@ export const KAFKA_SCHEDULE = async () => {
     await schedule_consumer.subscribe({
       topics: [scheduleReload],
     });
-    return schedule_consumer;
   } catch (err) {
+    //TODO: 중복 구독 처리
     Sentry.captureException(err);
+  } finally {
+    return schedule_consumer;
   }
 };

@@ -21,8 +21,10 @@ export const KAFKA_NOTICE = async () => {
     await notice_consumer.subscribe({
       topics: [friendRequest, friendAccept, scheduleAssigned, scheduleUpdate, scheduleNotification],
     });
-    return notice_consumer;
   } catch (err) {
+    //TODO: 중복 구독 처리
     Sentry.captureException(err);
+  } finally {
+    return notice_consumer;
   }
 };
