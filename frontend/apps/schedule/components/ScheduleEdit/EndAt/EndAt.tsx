@@ -1,9 +1,10 @@
 import { CREATE } from '@SCH/constants/CREATE';
 import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
+import { useShallow } from 'zustand/react/shallow';
 import { Flex, Spacing, Input, Span, Label } from '@amadda/external-temporal';
 
 export function EndAt() {
-  const [values, handleChange] = useScheduleEditStore(state => [state.values, state.handleChange]);
+  const [values, handleChange] = useScheduleEditStore(useShallow(state => [state.values, state.handleChange]));
   return (
     <Label htmlFor="EndAt">
       <Flex justifyContents="start" width="fill">

@@ -1,9 +1,10 @@
 import { CREATE } from '@SCH/constants/CREATE';
 import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
+import { useShallow } from 'zustand/react/shallow';
 import { Chip, Flex, Spacing, Span } from '@amadda/external-temporal';
 
 export function AlarmTime() {
-  const [values, setValues] = useScheduleEditStore(state => [state.values, state.setValues]);
+  const [values, setValues] = useScheduleEditStore(useShallow(state => [state.values, state.setValues]));
 
   return (
     <>

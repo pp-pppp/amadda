@@ -1,8 +1,9 @@
 import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
+import { useShallow } from 'zustand/react/shallow';
 import { Label, Flex, Input, Spacing, Span } from '@amadda/external-temporal';
 
 export function IsDateSelected() {
-  const [values, setValues, handleChange, refs] = useScheduleEditStore(state => [state.values, state.setValues, state.handleChange, state.refs]);
+  const [values, setValues, handleChange, refs] = useScheduleEditStore(useShallow(state => [state.values, state.setValues, state.handleChange, state.refs]));
   return (
     <Label htmlFor="IsDateSelected">
       <Flex justifyContents="start" alignItems="center">

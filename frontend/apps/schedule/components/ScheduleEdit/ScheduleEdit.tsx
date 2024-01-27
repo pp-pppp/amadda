@@ -7,6 +7,7 @@ import { initFormValues, refInputNames } from '@SCH/constants/SCHEDULE_EDIT_INIT
 import { useScheduleSubmit } from '@SCH/hooks/useScheduleSubmit';
 import { scheduleFormValidator } from '@SCH/utils/validators/scheduleValidator';
 import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
+import { useShallow } from 'zustand/react/shallow';
 import { ScheduleEditFormProps } from './formdata';
 import { IsAuthorizedAll } from './IsAuthorizedAll/IsAuthorizedAll';
 import { StartAt } from './StartAt/StartAt';
@@ -25,7 +26,9 @@ export type ScheduleEditProps = {
 };
 
 export function ScheduleEdit({ scheduleDetail }: ScheduleEditProps) {
-  const [values, refValues, submit, setUseFormData] = useScheduleEditStore(state => [state.values, state.refValues, state.submit, state.setUseFormData]);
+  const [values, refValues, submit, setUseFormData] = useScheduleEditStore(
+    useShallow(state => [state.values, state.refValues, state.submit, state.setUseFormData])
+  );
   const scheduleSubmit = useScheduleSubmit();
   const data = useForm<ScheduleEditFormProps>(['scheduleEdit', scheduleDetail || initFormValues, scheduleSubmit, scheduleFormValidator, refInputNames]);
   setUseFormData({ data });

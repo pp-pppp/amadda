@@ -1,8 +1,9 @@
 import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
+import { useShallow } from 'zustand/react/shallow';
 import { Flex, Input, Label, Spacing, Span } from '@amadda/external-temporal';
 
 export function IsAllDay() {
-  const [values, handleChange] = useScheduleEditStore(state => [state.refValues, state.handleChange, state.refs]);
+  const [values, handleChange] = useScheduleEditStore(useShallow(state => [state.refValues, state.handleChange, state.refs]));
 
   return (
     <Label htmlFor="IsAllDay">
