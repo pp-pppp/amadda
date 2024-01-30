@@ -5,7 +5,6 @@ export * from './components/interaction/Chip/Chip';
 export * from './components/interaction/FAB/FAB';
 export * from './components/interaction/Form/Form';
 export * from './components/interaction/Input/Input';
-export * from './components/interaction/Input/RefInput';
 export * from './components/interaction/Label/Label';
 export * from './components/interaction/Switch/Switch';
 export * from './components/interaction/Textarea/Textarea';

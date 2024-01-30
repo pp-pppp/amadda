@@ -9,7 +9,7 @@ export default function Page({ detail }: InferGetServerSidePropsType<typeof getS
 }
 
 export const getServerSideProps = (async context => {
-  const scheduleSeq = context.params?.scheduleSeq;
+  const scheduleSeq = context.params?.id;
   const detail = await clientFetch.get<ScheduleDetailReadResponse>(`${process.env.NEXT_PUBLIC_SCHEDULE}/api/schedule/${scheduleSeq}`);
   return { props: { detail } };
 }) satisfies GetServerSideProps<{

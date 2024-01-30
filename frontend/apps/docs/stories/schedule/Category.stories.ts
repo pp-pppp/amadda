@@ -1,20 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { CategoryOption } from '../../../schedule/components/CategorySelect/CategoryOption';
+import { Category } from '../../../schedule/components/Category/Category';
 
 const meta = {
-  title: 'Schedule/CategoryOption',
-  component: CategoryOption,
+  title: 'Schedule/Category',
+  component: Category,
   parameters: {
     layout: 'centered',
-    componentSubtitle: '일정의 카테고리입니다.',
+    componentSubtitle: '모바일 일정 생성 페이지입니다.',
   },
   tags: ['autodocs'],
   argTypes: {},
-} satisfies Meta<typeof CategoryOption>;
+} satisfies Meta<typeof Category>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
-  args: { category: { categoryColor: 'GRAY', categoryName: 'wow' } },
+  args: { color: 'GRAY', categoryName: 'wow' },
 };
