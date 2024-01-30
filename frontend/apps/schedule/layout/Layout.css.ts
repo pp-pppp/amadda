@@ -22,7 +22,6 @@ export const FABLAYOUT_MOBILE = style({
   position: 'absolute',
   bottom: '1rem',
   right: '1rem',
-  // right: 'calc(50vw - 223px)',
   zIndex: '999',
   cursor: 'pointer',
 });

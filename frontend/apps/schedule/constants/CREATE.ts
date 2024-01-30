@@ -1,4 +1,4 @@
-export default {
+export const CREATE = {
   ADD_SCHEDULE: '일정 추가',
   ONLY_ME: '이 항목은 나에게만 적용돼요.',
   ONLY_I_CAN_SEE: '이 항목은 나만 볼 수 있어요.',
