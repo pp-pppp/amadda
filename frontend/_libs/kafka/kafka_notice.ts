@@ -12,17 +12,12 @@ const kafka = new Kafka({
   brokers: [process.env.KAFKA_BROKER_1, process.env.KAFKA_BROKER_2, process.env.KAFKA_BROKER_3] as string[],
 });
 
-const notice_consumer = kafka.consumer({ groupId: groupId });
-export const KAFKA_NOTICE = async () => {
-  console.log('kafka-start subscribe');
-
-  try {
-    await notice_consumer.connect();
-    await notice_consumer.subscribe({
-      topics: [friendRequest, friendAccept, scheduleAssigned, scheduleUpdate, scheduleNotification],
-    });
-    return notice_consumer;
-  } catch (err) {
-    Sentry.captureException(err);
-  }
-};
+export const KAFKA_NOTICE = kafka.consumer({ groupId: groupId });
+try {
+  KAFKA_NOTICE.connect();
+  KAFKA_NOTICE.subscribe({
+    topics: [friendRequest, friendAccept, scheduleAssigned, scheduleUpdate, scheduleNotification],
+  });
+} catch (err) {
+  Sentry.captureException(err);
+}

@@ -7,19 +7,15 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
-
+  const consumer = KAFKA_SCHEDULE;
   try {
-    const consumer = await KAFKA_SCHEDULE();
-
-    consumer &&
-      (await consumer.run({
-        eachMessage: async ({ topic, partition, message }) => {
-          res.status(204);
-        },
-      }));
+    await consumer.run({
+      eachMessage: async ({ topic, partition, message }) => {
+        res.status(204);
+      },
+    });
 
     req.on('close', () => {
-      console.log('Client disconnected');
       return res.end();
     });
   } catch (err) {

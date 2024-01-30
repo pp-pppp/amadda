@@ -9,16 +9,13 @@ const kafka = new Kafka({
   brokers: [process.env.KAFKA_BROKER_1, process.env.KAFKA_BROKER_2, process.env.KAFKA_BROKER_3] as string[],
 });
 
-const schedule_consumer = kafka.consumer({ groupId: groupId });
-export const KAFKA_SCHEDULE = async () => {
-  console.log('kafka-start subscribe');
-  try {
-    await schedule_consumer.connect();
-    await schedule_consumer.subscribe({
-      topics: [scheduleReload],
-    });
-    return schedule_consumer;
-  } catch (err) {
-    Sentry.captureException(err);
-  }
-};
+export const KAFKA_SCHEDULE = kafka.consumer({ groupId: groupId });
+try {
+  KAFKA_SCHEDULE.connect();
+  KAFKA_SCHEDULE.subscribe({
+    topics: [scheduleReload],
+  });
+} catch (err) {
+  //TODO: 중복 구독 처리
+  Sentry.captureException(err);
+}
