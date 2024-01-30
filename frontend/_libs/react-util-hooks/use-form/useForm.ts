@@ -7,7 +7,7 @@ export const useForm = <T>([key, initialValues, onSubmit, validator, refInputNam
   values: T;
   setValues: Dispatch<SetStateAction<T>>;
   refValues: Record<keyof T, any> | null;
-  handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => Promise<void>;
+  handleChange: (e: ChangeEvent<HTMLInputElement & HTMLTextAreaElement>) => Promise<void>;
   invalids: Array<Record<keyof T, string>>;
   refs: Record<(typeof refInputNames)[number], RefObject<HTMLInputElement>> | null;
   submit: (data: any) => Promise<unknown>;
@@ -19,9 +19,11 @@ export const useForm = <T>([key, initialValues, onSubmit, validator, refInputNam
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [result, setResult] = useState<unknown>(null);
 
-  const handleChange = async (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setValues({ ...values, [name]: value });
+  const handleChange = async (e: ChangeEvent<HTMLInputElement & HTMLTextAreaElement>) => {
+    const { name, value, checked, type } = e.target;
+    if (type === 'checkbox') {
+      setValues({ ...values, [name]: checked });
+    } else setValues({ ...values, [name]: value });
   };
 
   const refInputNamesType = [...refInputNames] as const;
@@ -32,7 +34,7 @@ export const useForm = <T>([key, initialValues, onSubmit, validator, refInputNam
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    validator && setInvalids(validator({ ...values, ...refs }));
+    validator && setInvalids(validator({ ...values, ...convertedRefValues }));
     return result;
   };
 
@@ -40,7 +42,7 @@ export const useForm = <T>([key, initialValues, onSubmit, validator, refInputNam
     isLoading &&
       (async () => {
         if (!invalids || Object.keys(invalids).length === 0) {
-          if (refInputNames) setValues({ ...values, ...currRefValues });
+          if (refInputNames) setValues({ ...values, ...convertedRefValues });
           else setValues({ ...values });
 
           const response = await onSubmit(values);
