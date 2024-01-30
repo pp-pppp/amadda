@@ -1,6 +1,6 @@
 import { CategoryReadResponse, FriendReadResponse, UserReadResponse } from '@amadda/global-types';
 
-export interface ScheduleEditFormProps {
+export interface ScheduleEditFormData {
   startYear: string;
   startMonth: string;
   startDate: string;
