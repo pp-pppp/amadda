@@ -1,13 +1,13 @@
 import { ScheduleUpdateRequest } from '@amadda/global-types';
 import { useRouter } from 'next/router';
-import { ScheduleEditFormProps } from '../components/ScheduleEdit/formdata';
+import { ScheduleEditFormData } from '../components/ScheduleEdit/formdata';
 import { clientFetch } from '@amadda/fetch';
 import { formToRequest } from '@SCH/utils/convertFormData';
 
 export function useScheduleSubmit() {
   const router = useRouter();
 
-  async function submit(data: ScheduleEditFormProps) {
+  async function submit(data: ScheduleEditFormData) {
     const requestBody = formToRequest(data);
     if (router.basePath.includes('update')) {
       const { scheduleSeq } = router.query;
