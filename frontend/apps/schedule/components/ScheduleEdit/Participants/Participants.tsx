@@ -3,10 +3,11 @@ import { AC, PARTICIPANTS, SEARCHRESULT } from '../ScheduleEdit.css';
 import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
 import { useShallow } from 'zustand/react/shallow';
 import { CREATE } from '@SCH/constants/CREATE';
+import { useContext } from 'react';
+import { ScheduleFormContext } from '../ScheduleEdit';
 
 export function Participants() {
-  const [values, setValues] = useScheduleEditStore(useShallow(state => [state.values, state.setValues]));
-
+  const { values, setValues, handleChange } = useContext(ScheduleFormContext);
   return (
     <>
       <div className={PARTICIPANTS}>
@@ -25,11 +26,11 @@ export function Participants() {
       </div>
       <Spacing dir="v" size="0.5" />
       <Input
-        id="party"
+        id="partySearchInput"
         type="text"
-        name="text"
+        name="partySearchInput"
         value={values.partySearchInput}
-        onChange={() => {}}
+        onChange={handleChange}
         // onChange={e => fn.partyAutoComplete(e.target.value)}
         onKeyDown={e => {
           if (e.key === 'enter') null;

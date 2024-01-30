@@ -1,24 +1,18 @@
-import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
-import { useShallow } from 'zustand/react/shallow';
 import { Flex, Input, Label, Spacing, Span } from '@amadda/external-temporal';
+import { useContext } from 'react';
+import { ScheduleFormContext } from '../ScheduleEdit';
 
 export function IsAllDay() {
-  const [values, handleChange] = useScheduleEditStore(useShallow(state => [state.refValues, state.handleChange, state.refs]));
+  const { values, setValues, handleChange } = useContext(ScheduleFormContext);
+  const handleIsAllDay = e => {
+    handleChange(e);
+    if (values?.isDateSelected) setValues({ ...values, isDateSelected: false, isAllday: !values.isAllday });
+  };
 
   return (
-    <Label htmlFor="IsAllDay">
+    <Label htmlFor="isAllday">
       <Flex justifyContents="start" alignItems="center">
-        <Input
-          type="checkbox"
-          id="isAllday"
-          name="isAllday"
-          onChange={e => {
-            e.target.value = String(!values?.isAllday);
-            handleChange(e);
-          }}
-          checked={Boolean(values?.isAllday)}
-          value={String(values?.isAllday)}
-        />
+        <Input type="checkbox" id="isAllday" name="isAllday" onChange={handleIsAllDay} checked={values?.isAllday} />
         <Spacing size="0.25" dir="h" />
         <Span color="key">하루 종일</Span>
       </Flex>

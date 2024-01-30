@@ -1,11 +1,11 @@
 import { CategorySelectContainer } from '@SCH/components/CategorySelect/CategorySelectContainer';
 import { CREATE } from '@SCH/constants/CREATE';
-import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
-import { useShallow } from 'zustand/react/shallow';
 import { Spacing, Span } from '@amadda/external-temporal';
+import { useContext } from 'react';
+import { ScheduleFormContext } from '../ScheduleEdit';
 
 export function Category() {
-  const [values, setValues] = useScheduleEditStore(useShallow(state => [state.values, state.setValues]));
+  const { values, setValues } = useContext(ScheduleFormContext);
 
   return (
     <>
