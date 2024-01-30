@@ -2,7 +2,6 @@ import { UserAccessResponse, UserJwtResponse } from '@amadda/global-types';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import * as Sentry from '@sentry/nextjs';
 import { kv } from './kv';
-import { kakaoAuth } from './kakaoAuth';
 import { https } from './https';
 
 type API_HANDLER = (request: NextApiRequest, response: NextApiResponse) => Promise<NextApiResponse | void>;
