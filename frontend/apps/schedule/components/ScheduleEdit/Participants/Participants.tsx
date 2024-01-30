@@ -1,7 +1,5 @@
 import { Flex, Chip, Input, Spacing } from '@amadda/external-temporal';
 import { AC, PARTICIPANTS, SEARCHRESULT } from '../ScheduleEdit.css';
-import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
-import { useShallow } from 'zustand/react/shallow';
 import { CREATE } from '@SCH/constants/CREATE';
 import { useContext } from 'react';
 import { ScheduleFormContext } from '../ScheduleEdit';
