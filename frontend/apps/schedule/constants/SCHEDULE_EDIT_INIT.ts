@@ -1,7 +1,8 @@
 import { ScheduleCreateRequest } from '@amadda/global-types';
-import { ScheduleEditFormProps } from '../components/ScheduleEdit/formdata';
+import { ScheduleEditFormData } from '../components/ScheduleEdit/formdata';
+import { useForm } from '@amadda/react-util-hooks';
 
-export const initFormValues: ScheduleEditFormProps = {
+export const initFormValues: ScheduleEditFormData = {
   startYear: '',
   startMonth: '',
   startDate: '',
@@ -44,7 +45,7 @@ export const scheduleCreateRequestInit: ScheduleCreateRequest = {
   scheduleMemo: '',
 };
 
-export const refInputNames: Array<keyof ScheduleEditFormProps> = [
+export const refInputNames: Array<keyof ScheduleEditFormData> = [
   'startYear',
   'startMonth',
   'startDate',
@@ -56,15 +57,23 @@ export const refInputNames: Array<keyof ScheduleEditFormProps> = [
   'endTime',
   'endMinute',
   'category',
-  'scheduleName',
   'participants',
-  'isDateSelected',
-  'isTimeSelected',
-  'isAllday',
-  'isAuthorizedAll',
   'scheduleContent',
   'alarmTime',
   'categorySeq',
   'scheduleMemo',
   'partySearchResult',
 ];
+
+export const USEFORM_RETURN_INIT: ReturnType<typeof useForm<ScheduleEditFormData>> = {
+  key: '',
+  values: initFormValues,
+  setValues: () => {},
+  refValues: null,
+  result: undefined,
+  handleChange: e => new Promise(() => {}),
+  invalids: [],
+  refs: null,
+  submit: data => new Promise(() => {}),
+  isLoading: false,
+};
