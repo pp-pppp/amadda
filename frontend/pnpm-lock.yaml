@@ -629,6 +629,9 @@ importers:
       '@amadda/fetch':
         specifier: workspace:*
         version: link:../../_libs/fetch
+      '@amadda/react-util-hooks':
+        specifier: workspace:*
+        version: link:../../_libs/react-util-hooks
       '@sentry/nextjs':
         specifier: ^7.86.0
         version: 7.86.0(next@13.4.12)(react@18.2.0)(webpack@5.80.0)
