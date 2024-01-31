@@ -2,12 +2,16 @@ import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent, Dispatch, FormEvent, RefObject, SetStateAction } from 'react';
 import { useFormArgs } from './types';
 
-export const useForm = <T>([key, initialValues, onSubmit, validator, refInputNames = []]: useFormArgs<T>): {
-  key: string;
+export const useForm = <T>({
+  initialValues,
+  onSubmit,
+  validator,
+  refInputNames = [],
+}: useFormArgs<T>): {
   values: T;
   setValues: Dispatch<SetStateAction<T>>;
   refValues: Record<keyof T, any> | null;
-  handleChange: (e: ChangeEvent<HTMLInputElement & HTMLTextAreaElement>) => Promise<void>;
+  handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => Promise<void>;
   invalids: Array<Record<keyof T, string>>;
   refs: Record<(typeof refInputNames)[number], RefObject<HTMLInputElement>> | null;
   submit: (data: any) => Promise<unknown>;
@@ -19,11 +23,9 @@ export const useForm = <T>([key, initialValues, onSubmit, validator, refInputNam
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [result, setResult] = useState<unknown>(null);
 
-  const handleChange = async (e: ChangeEvent<HTMLInputElement & HTMLTextAreaElement>) => {
-    const { name, value, checked, type } = e.target;
-    if (type === 'checkbox') {
-      setValues({ ...values, [name]: checked });
-    } else setValues({ ...values, [name]: value });
+  const handleChange = async (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setValues({ ...values, [name]: value });
   };
 
   const refInputNamesType = [...refInputNames] as const;
@@ -34,7 +36,7 @@ export const useForm = <T>([key, initialValues, onSubmit, validator, refInputNam
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    validator && setInvalids(validator({ ...values, ...convertedRefValues }));
+    validator && setInvalids(validator({ ...values, ...refs }));
     return result;
   };
 
@@ -42,7 +44,7 @@ export const useForm = <T>([key, initialValues, onSubmit, validator, refInputNam
     isLoading &&
       (async () => {
         if (!invalids || Object.keys(invalids).length === 0) {
-          if (refInputNames) setValues({ ...values, ...convertedRefValues });
+          if (refInputNames) setValues({ ...values, ...currRefValues });
           else setValues({ ...values });
 
           const response = await onSubmit(values);
@@ -53,7 +55,6 @@ export const useForm = <T>([key, initialValues, onSubmit, validator, refInputNam
   }, [invalids]);
 
   const data = {
-    key,
     values,
     setValues,
     refValues: convertedRefValues,
