@@ -1,12 +1,17 @@
-import { ScheduleEdit } from '@SCH/components/ScheduleEdit/ScheduleEdit';
-import { ScheduleEditFormData } from '@SCH/components/ScheduleEdit/formdata';
+import { ScheduleEditForm } from '@SCH/components/ScheduleEdit/ScheduleEditForm/ScheduleEditForm';
+import { ScheduleEditFrame } from '@SCH/components/ScheduleEdit/ScheduleEditFrame/ScheduleEditFrame';
+import { ScheduleEditFormData } from '@SCH/components/ScheduleEdit/ScheduleEditForm/formdata';
 import { responseToForm } from '@SCH/utils/convertFormData';
 import { auth, https } from '@amadda/fetch';
 import { ScheduleDetailReadResponse } from '@amadda/global-types';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
 export default function Page({ scheduleDetail }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  return <ScheduleEdit scheduleDetail={scheduleDetail} />;
+  return (
+    <ScheduleEditFrame>
+      <ScheduleEditForm scheduleDetail={scheduleDetail} />
+    </ScheduleEditFrame>
+  );
 }
 
 export const getServerSideProps = (async context => {

@@ -1,6 +1,6 @@
 import { Label, Flex, Input, Spacing, Span } from '@amadda/external-temporal';
 import { DATE_INIT } from '@SCH/constants/DATE_INIT';
-import { ScheduleFormContext } from '../ScheduleEdit';
+import { ScheduleFormContext } from '../ScheduleEditForm';
 import { useContext } from 'react';
 
 export function IsDateSelected() {

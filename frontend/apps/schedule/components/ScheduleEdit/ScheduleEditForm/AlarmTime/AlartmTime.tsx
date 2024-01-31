@@ -1,7 +1,7 @@
 import { CREATE } from '@SCH/constants/CREATE';
 import { Chip, Flex, Spacing, Span } from '@amadda/external-temporal';
 import { useContext } from 'react';
-import { ScheduleFormContext } from '../ScheduleEdit';
+import { ScheduleFormContext } from '../ScheduleEditForm';
 
 export function AlarmTime() {
   const { values, setValues } = useContext(ScheduleFormContext);

@@ -1,8 +1,8 @@
 import { Flex, Chip, Input, Spacing } from '@amadda/external-temporal';
-import { AC, PARTICIPANTS, SEARCHRESULT } from '../ScheduleEdit.css';
+import { AC, PARTICIPANTS, SEARCHRESULT } from './Participants.css';
 import { CREATE } from '@SCH/constants/CREATE';
 import { useContext } from 'react';
-import { ScheduleFormContext } from '../ScheduleEdit';
+import { ScheduleFormContext } from '../ScheduleEditForm';
 
 export function Participants() {
   const { values, setValues, handleChange } = useContext(ScheduleFormContext);

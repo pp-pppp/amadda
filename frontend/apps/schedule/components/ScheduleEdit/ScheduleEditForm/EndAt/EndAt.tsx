@@ -1,82 +1,83 @@
 import { CREATE } from '@SCH/constants/CREATE';
 import { Flex, Spacing, Input, Span, Label } from '@amadda/external-temporal';
 import { useContext } from 'react';
-import { ScheduleFormContext } from '../ScheduleEdit';
+import { ScheduleFormContext } from '../ScheduleEditForm';
 
-export function StartAt() {
+export function EndAt() {
   const { values, handleChange } = useContext(ScheduleFormContext);
   return (
     <>
       <Flex justifyContents="start" width="fill">
-        <Span>시작 날짜</Span>
+        <Span>종료 날짜</Span>
         <Spacing dir="h" size="0.5" />
-        <Label htmlFor="startYear">
+        <Label htmlFor="endYear">
           <Input
-            id="startYear"
+            id="endYear"
             type="number"
-            name="startYear"
-            value={values.startYear}
+            name="endYear"
+            value={values.endYear}
             onChange={handleChange}
             disabled={values.isDateSelected ? true : false}
-            placeholder={CREATE.PLACEHOLDERS.TIME.DATE_START.YY}
+            placeholder={CREATE.PLACEHOLDERS.TIME.DATE_END.YY}
           />
         </Label>
         <Spacing dir="h" size="0.25" />
         <Span>/</Span>
-        <Spacing dir="h" size="0.25" />{' '}
-        <Label htmlFor="startYear">
+        <Spacing dir="h" size="0.25" />
+        <Label htmlFor="endMonth">
           <Input
-            id="startMonth"
+            id="endMonth"
             type="number"
-            name="startMonth"
-            value={values.startMonth}
+            name="endMonth"
+            value={values.endMonth}
             onChange={handleChange}
             disabled={values.isDateSelected ? true : false}
-            placeholder={CREATE.PLACEHOLDERS.TIME.DATE_START.MM}
+            placeholder={CREATE.PLACEHOLDERS.TIME.DATE_END.MM}
           />
         </Label>
         <Spacing dir="h" size="0.25" />
         <Span>/</Span>
-        <Spacing dir="h" size="0.25" />{' '}
-        <Label htmlFor="startDate">
+        <Spacing dir="h" size="0.25" />
+        <Label htmlFor="endDate">
           <Input
-            id="startDate"
+            id="endDate"
             type="number"
-            name="startDate"
-            value={values.startDate}
+            name="endDate"
+            value={values.endDate}
             onChange={handleChange}
             disabled={values.isDateSelected ? true : false}
-            placeholder={CREATE.PLACEHOLDERS.TIME.DATE_START.DD}
+            placeholder={CREATE.PLACEHOLDERS.TIME.DATE_END.DD}
           />
         </Label>
+        <Spacing dir="h" size="0.5" />
       </Flex>
       <Spacing dir="v" size="0.5" />
       <Flex justifyContents="start" width="fill">
-        <Span>시작 시간</Span>
-        <Spacing dir="h" size="0.5" />{' '}
-        <Label htmlFor="startTime">
+        <Span>종료 시간</Span>
+        <Spacing dir="h" size="0.5" />
+        <Label htmlFor="endTime">
           <Input
-            id="startTime"
+            id="endTime"
             type="number"
-            name="startTime"
-            value={values.startTime}
+            name="endTime"
+            value={values.endTime}
             onChange={handleChange}
             disabled={values.isAllday || values.isDateSelected ? true : false}
-            placeholder={CREATE.PLACEHOLDERS.TIME.DATE_START.TT}
+            placeholder={CREATE.PLACEHOLDERS.TIME.DATE_END.TT}
           />
         </Label>
         <Spacing dir="h" size="0.25" />
         <Span>:</Span>
-        <Spacing dir="h" size="0.25" />{' '}
-        <Label htmlFor="startMinute">
+        <Spacing dir="h" size="0.25" />
+        <Label htmlFor="endMinute">
           <Input
-            id="startMinute"
+            id="endMinute"
             type="number"
-            name="startMinute"
-            value={values.startMinute}
+            name="endMinute"
+            value={values.endMinute}
             onChange={handleChange}
             disabled={values.isAllday || values.isDateSelected ? true : false}
-            placeholder={CREATE.PLACEHOLDERS.TIME.DATE_START.MM}
+            placeholder={CREATE.PLACEHOLDERS.TIME.DATE_END.MM}
           />
         </Label>
       </Flex>

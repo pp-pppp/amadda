@@ -1,6 +1,6 @@
 import { Flex, Input, Label, Spacing, Span } from '@amadda/external-temporal';
 import { useContext } from 'react';
-import { ScheduleFormContext } from '../ScheduleEdit';
+import { ScheduleFormContext } from '../ScheduleEditForm';
 
 export function IsAllDay() {
   const { values, setValues, handleChange } = useContext(ScheduleFormContext);

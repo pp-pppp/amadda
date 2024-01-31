@@ -1,7 +1,7 @@
 import { CREATE } from '@SCH/constants/CREATE';
 import { Textarea, Label } from '@amadda/external-temporal';
 import { useContext } from 'react';
-import { ScheduleFormContext } from '../ScheduleEdit';
+import { ScheduleFormContext } from '../ScheduleEditForm';
 
 export function ScheduleContent() {
   const { values, handleChange } = useContext(ScheduleFormContext);

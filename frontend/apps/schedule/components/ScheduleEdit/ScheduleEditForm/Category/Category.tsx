@@ -2,7 +2,7 @@ import { CategorySelectContainer } from '@SCH/components/CategorySelect/Category
 import { CREATE } from '@SCH/constants/CREATE';
 import { Spacing, Span } from '@amadda/external-temporal';
 import { useContext } from 'react';
-import { ScheduleFormContext } from '../ScheduleEdit';
+import { ScheduleFormContext } from '../ScheduleEditForm';
 
 export function Category() {
   const { values, setValues } = useContext(ScheduleFormContext);

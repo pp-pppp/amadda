@@ -1,6 +1,6 @@
 import { Label, Flex, Spacing, Span, Input } from '@amadda/external-temporal';
 import { useContext } from 'react';
-import { ScheduleFormContext } from '../ScheduleEdit';
+import { ScheduleFormContext } from '../ScheduleEditForm';
 
 export function IsAuthorizedAll() {
   const { values, handleChange } = useContext(ScheduleFormContext);
