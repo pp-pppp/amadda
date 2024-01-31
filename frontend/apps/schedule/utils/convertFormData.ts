@@ -1,4 +1,4 @@
-import type { ScheduleEditFormData } from '@SCH/components/ScheduleEdit/formdata';
+import type { ScheduleEditFormData } from '@SCH/components/ScheduleEdit/ScheduleEditForm/formdata';
 import type { ScheduleCreateRequest, ScheduleDetailReadResponse, ScheduleUpdateRequest } from '@amadda/global-types';
 import { numberToString, stringToNumber } from './formatDate';
 

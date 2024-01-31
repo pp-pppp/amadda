@@ -1,5 +1,5 @@
 import { ScheduleCreateRequest } from '@amadda/global-types';
-import { ScheduleEditFormData } from '../components/ScheduleEdit/formdata';
+import { ScheduleEditFormData } from '../components/ScheduleEdit/ScheduleEditForm/formdata';
 import { useForm } from '@amadda/react-util-hooks';
 
 export const initFormValues: ScheduleEditFormData = {
@@ -66,7 +66,6 @@ export const refInputNames: Array<keyof ScheduleEditFormData> = [
 ];
 
 export const USEFORM_RETURN_INIT: ReturnType<typeof useForm<ScheduleEditFormData>> = {
-  key: '',
   values: initFormValues,
   setValues: () => {},
   refValues: null,
