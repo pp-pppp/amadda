@@ -11,7 +11,7 @@ export function useGetNotice() {
   const { data, error } = useSWR<Array<AlarmReadResponse>>('/api/alarm', fetcher);
 
   const { data: sub, error: eventSrcError } = useSWRSubscription('/notice/event', (key, { next }) => {
-    const eventSource = new EventSource(`${process.env.NEXT_PUBLIC_NOTICE}/api/event`);
+    const eventSource = new EventSource(`${process.env.NEXT_PUBLIC_NOTICE}/api/eventsrc`);
     eventSource.onmessage = async (e: MessageEvent) => next(null, e.data);
     eventSource.onerror = async (error: Event) => next(error);
     return () => eventSource.close();
