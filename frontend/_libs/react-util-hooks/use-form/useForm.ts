@@ -1,30 +1,27 @@
 import { useEffect, useRef, useState } from 'react';
-import type { ChangeEvent, Dispatch, FormEvent, RefObject, SetStateAction } from 'react';
-import { useFormArgs } from './types';
+import type { ChangeEvent, FormEvent, RefObject } from 'react';
+import type { UseForm, UseFormArgs } from './types';
 
 export const useForm = <T>({
   initialValues,
   onSubmit,
   validator,
   refInputNames = [],
-}: useFormArgs<T>): {
-  values: T;
-  setValues: Dispatch<SetStateAction<T>>;
-  refValues: Record<keyof T, any> | null;
-  handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => Promise<void>;
-  invalids: Array<Record<keyof T, string>>;
-  refs: Record<(typeof refInputNames)[number], RefObject<HTMLInputElement>> | null;
-  submit: (data: any) => Promise<unknown>;
-  isLoading: boolean;
-  result: unknown;
-} => {
+  setExternalStoreValues = () => {},
+  setExternalStoreData = () => {},
+}: UseFormArgs<T>): UseForm<T> | void => {
   const [values, setValues] = useState<typeof initialValues>({ ...initialValues } as const);
   const [invalids, setInvalids] = useState<Array<Record<keyof T, string>>>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [result, setResult] = useState<unknown>(null);
 
+  const saveExternalStoreValue = (value: T) => {
+    typeof setExternalStoreValues === 'function' ? setExternalStoreValues(value) : console.error('<!> useForm: setExternalStoreValues should be a function');
+  };
+
   const handleChange = async (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    saveExternalStoreValue({ ...values, [name]: value });
     setValues({ ...values, [name]: value });
   };
 
@@ -44,8 +41,11 @@ export const useForm = <T>({
     isLoading &&
       (async () => {
         if (!invalids || Object.keys(invalids).length === 0) {
-          if (refInputNames) setValues({ ...values, ...currRefValues });
-          else setValues({ ...values });
+          if (!refInputNames) setValues({ ...values });
+          else {
+            saveExternalStoreValue({ ...values, ...currRefValues });
+            setValues({ ...values, ...currRefValues });
+          }
 
           const response = await onSubmit(values);
           setResult(response);
@@ -65,6 +65,15 @@ export const useForm = <T>({
     isLoading,
     result,
   };
+
+  typeof setExternalStoreData === 'function'
+    ? useEffect(() => {
+        const updateExternalStore = () => {
+          setExternalStoreData(data);
+        };
+        updateExternalStore();
+      }, [setExternalStoreData])
+    : console.error('<!> useForm: setExternalStoreData should be a function');
 
   return data;
 };
