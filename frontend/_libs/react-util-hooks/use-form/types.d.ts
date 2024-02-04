@@ -1,15 +1,15 @@
 import { useForm } from './useForm';
 
-export type UseFormArgs<T> = {
+export interface UseFormArgs<T> {
   initialValues: T;
   onSubmit: (data: T) => Promise<unknown>;
   validator?: (data: T) => Array<Record<keyof T, string>>;
   refInputNames?: (keyof T)[];
   setExternalStoreValues?: (formdata: T) => void;
   setExternalStoreData?: (data: UseForm) => void;
-};
+}
 
-export type UseForm<T> = {
+export interface UseForm<T> {
   values: T;
   setValues: Dispatch<SetStateAction<T>>;
   refValues: Record<keyof T, any> | null;
@@ -19,4 +19,4 @@ export type UseForm<T> = {
   submit: (data: any) => Promise<unknown>;
   isLoading: boolean;
   response: unknown;
-};
+}
