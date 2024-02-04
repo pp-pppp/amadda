@@ -102,21 +102,6 @@ importers:
         specifier: 5.2.2
         version: 5.2.2
 
-  _libs/kafka:
-    devDependencies:
-      '@amadda/global-types':
-        specifier: workspace:*
-        version: link:../global-types
-      '@sentry/nextjs':
-        specifier: ^7.86.0
-        version: 7.86.0(next@13.4.12)(react@18.2.0)(webpack@5.80.0)
-      axios:
-        specifier: ^1.6.0
-        version: 1.6.0
-      kafkajs:
-        specifier: ^2.2.4
-        version: 2.2.4
-
   _libs/react-util-hooks:
     devDependencies:
       '@sentry/nextjs':
@@ -329,15 +314,15 @@ importers:
       '@amadda/fetch':
         specifier: workspace:*
         version: link:../../_libs/fetch
-      '@amadda/kafka':
-        specifier: workspace:*
-        version: link:../../_libs/kafka
       '@sentry/nextjs':
         specifier: ^7.86.0
         version: 7.86.0(next@13.4.12)(react@18.2.0)(webpack@5.80.0)
       '@vanilla-extract/css':
         specifier: 1.13.0
         version: 1.13.0
+      kafkajs:
+        specifier: ^2.2.4
+        version: 2.2.4
       next:
         specifier: 13.4.12
         version: 13.4.12(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)
@@ -426,9 +411,6 @@ importers:
       '@amadda/fetch':
         specifier: workspace:*
         version: link:../../_libs/fetch
-      '@amadda/kafka':
-        specifier: workspace:*
-        version: link:../../_libs/kafka
       '@amadda/react-util-hooks':
         specifier: workspace:*
         version: link:../../_libs/react-util-hooks
@@ -438,6 +420,9 @@ importers:
       '@vanilla-extract/css':
         specifier: 1.13.0
         version: 1.13.0
+      kafkajs:
+        specifier: ^2.2.4
+        version: 2.2.4
       next:
         specifier: 13.4.12
         version: 13.4.12(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)
@@ -7214,16 +7199,6 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
-  /axios@1.6.0:
-    resolution: {integrity: sha512-EZ1DYihju9pwVB+jg67ogm+Tmqc6JmhamRN6I4Zt8DfZu5lbcQGw3ozH9lFejSJgs/ibaef3A9PMXPLeefFGJg==}
-    dependencies:
-      follow-redirects: 1.15.3
-      form-data: 4.0.0
-      proxy-from-env: 1.1.0
-    transitivePeerDependencies:
-      - debug
-    dev: true
-
   /axobject-query@3.2.1:
     resolution: {integrity: sha512-jsyHu61e6N4Vbz/v18DHwWYKK0bSWLqn47eeDSKPB7m8tqMHF9YJ+mhIk2lVteyZrY8tnSj/jHOv4YiTCuCJgg==}
     dependencies:
@@ -12043,7 +12018,7 @@ packages:
   /kafkajs@2.2.4:
     resolution: {integrity: sha512-j/YeapB1vfPT2iOIUn/vxdyKEuhuY2PxMBvf5JWux6iSaukAccrMtXEY/Lb7OvavDhOWME589bpLrEdnVHjfjA==}
     engines: {node: '>=14.0.0'}
-    dev: true
+    dev: false
 
   /kind-of@6.0.3:
     resolution: {integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==}
