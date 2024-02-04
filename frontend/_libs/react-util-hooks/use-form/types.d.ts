@@ -14,9 +14,9 @@ export type UseForm<T> = {
   setValues: Dispatch<SetStateAction<T>>;
   refValues: Record<keyof T, any> | null;
   handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => Promise<void>;
-  invalids: Array<Record<keyof T, string>>;
+  invalidFields: Array<Record<keyof T, string>>;
   refs: Record<(typeof refInputNames)[number], RefObject<HTMLInputElement>> | null;
   submit: (data: any) => Promise<unknown>;
   isLoading: boolean;
-  result: unknown;
+  response: unknown;
 };

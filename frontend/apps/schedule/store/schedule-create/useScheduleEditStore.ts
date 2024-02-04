@@ -29,11 +29,11 @@ const createUseFormSlice: StateCreator<InputSlice & UseFormSlice, [], [], UseFor
   setValues: (v: ScheduleEditFormData) => {},
   refValues: null,
   handleChange: e => new Promise(() => {}),
-  invalids: [],
+  invalidFields: [],
   refs: null,
   submit: e => new Promise(() => {}),
   isLoading: false,
-  result: null,
+  response: null,
   setUseFormValues: by => {
     console.log(by, 'useformvalues');
     return set(state => ({
@@ -46,14 +46,14 @@ const createUseFormSlice: StateCreator<InputSlice & UseFormSlice, [], [], UseFor
       setValues: by.setValues,
       refValues: by.refValues,
       handleChange: by.handleChange,
-      invalids: by.invalids,
+      invalidFields: by.invalidFields,
       refs: by.refs,
       submit: by.submit,
       isLoading: by.isLoading,
     })),
   setResult: by =>
     set(state => ({
-      result: by.result,
+      response: by.response,
     })),
 });
 
