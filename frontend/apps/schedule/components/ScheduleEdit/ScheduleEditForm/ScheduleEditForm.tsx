@@ -1,9 +1,8 @@
 import React from 'react';
-import { createContext, useContext } from 'react';
 import { Btn, Flex, Form, H2, H4, Spacing } from '@amadda/external-temporal';
 import { useForm } from '@amadda/react-util-hooks';
 import { CREATE } from '@SCH/constants/CREATE';
-import { USEFORM_RETURN_INIT, initFormValues, refInputNames } from '@SCH/constants/SCHEDULE_EDIT_INIT';
+import { initFormValues, refInputNames } from '@SCH/constants/SCHEDULE_EDIT_INIT';
 import { useScheduleSubmit } from '@SCH/hooks/useScheduleSubmit';
 import { scheduleFormValidator } from '@SCH/utils/validators/scheduleValidator';
 import { ScheduleEditFormData } from './formdata';
@@ -18,25 +17,29 @@ import { ScheduleContent } from './ScheduleContent/ScheduleContent';
 import { AlarmTime } from './AlarmTime/AlartmTime';
 import { Category } from './Category/Category';
 import { ScheduleMemo } from './ScheduleMemo/ScheduleMemo';
+import { useShallow } from 'zustand/react/shallow';
+import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
 
 export type ScheduleEditFormProps = {
   scheduleDetail?: ScheduleEditFormData;
 };
-export const ScheduleFormContext = createContext<ReturnType<typeof useForm<ScheduleEditFormData>>>(USEFORM_RETURN_INIT);
 
 export function ScheduleEditForm({ scheduleDetail }: ScheduleEditFormProps) {
   const scheduleSubmit = useScheduleSubmit();
-  const data = useForm<ScheduleEditFormData>({
+  const [values, refValues, submit, setUseFormValues, setUseFormData] = useScheduleEditStore(
+    useShallow(state => [state.values, state.refValues, state.submit, state.setUseFormValues, state.setUseFormData])
+  );
+  useForm<ScheduleEditFormData>({
     initialValues: scheduleDetail || initFormValues,
     onSubmit: scheduleSubmit,
     validator: scheduleFormValidator,
     refInputNames: refInputNames,
+    setExternalStoreValues: setUseFormValues,
+    setExternalStoreData: setUseFormData,
   });
 
-  const { values, refValues, submit } = useContext(ScheduleFormContext);
-
   return (
-    <ScheduleFormContext.Provider value={data}>
+    <>
       <Form
         formName="scheduleEdit"
         onSubmit={() => {
@@ -75,6 +78,6 @@ export function ScheduleEditForm({ scheduleDetail }: ScheduleEditFormProps) {
         </Flex>
       </Form>
       <Spacing dir="v" size="5" />
-    </ScheduleFormContext.Provider>
+    </>
   );
 }

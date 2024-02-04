@@ -1,11 +1,12 @@
 import { Flex, Chip, Input, Spacing } from '@amadda/external-temporal';
 import { AC, PARTICIPANTS, SEARCHRESULT } from './Participants.css';
 import { CREATE } from '@SCH/constants/CREATE';
-import { useContext } from 'react';
-import { ScheduleFormContext } from '../ScheduleEditForm';
+import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
+import { useShallow } from 'zustand/react/shallow';
 
 export function Participants() {
-  const { values, setValues, handleChange } = useContext(ScheduleFormContext);
+  const [values, setValues, handleChange] = useScheduleEditStore(useShallow(state => [state.values, state.setValues, state.handleChange]));
+
   return (
     <>
       <div className={PARTICIPANTS}>

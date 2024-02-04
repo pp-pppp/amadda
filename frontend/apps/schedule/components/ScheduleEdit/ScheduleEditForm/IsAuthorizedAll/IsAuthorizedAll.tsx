@@ -1,9 +1,10 @@
+import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
 import { Label, Flex, Spacing, Span, Input } from '@amadda/external-temporal';
-import { useContext } from 'react';
-import { ScheduleFormContext } from '../ScheduleEditForm';
+import { useShallow } from 'zustand/react/shallow';
 
 export function IsAuthorizedAll() {
-  const { values, handleChange } = useContext(ScheduleFormContext);
+  const [values, handleChange] = useScheduleEditStore(useShallow(state => [state.values, state.handleChange]));
+
   return (
     <Label htmlFor="isAuthorizedAll">
       <Flex justifyContents="start" alignItems="center">

@@ -1,10 +1,12 @@
 import { Flex, Input, Label, Spacing, Span } from '@amadda/external-temporal';
-import { useContext } from 'react';
-import { ScheduleFormContext } from '../ScheduleEditForm';
+import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
+import { ChangeEvent } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
 export function IsAllDay() {
-  const { values, setValues, handleChange } = useContext(ScheduleFormContext);
-  const handleIsAllDay = e => {
+  const [values, setValues, handleChange] = useScheduleEditStore(useShallow(state => [state.values, state.setValues, state.handleChange]));
+
+  const handleIsAllDay = (e: ChangeEvent<HTMLInputElement>) => {
     handleChange(e);
     if (values?.isDateSelected) setValues({ ...values, isDateSelected: false, isAllday: !values.isAllday });
   };

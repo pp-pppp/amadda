@@ -1,10 +1,11 @@
 import { CREATE } from '@SCH/constants/CREATE';
 import { Chip, Flex, Spacing, Span } from '@amadda/external-temporal';
-import { useContext } from 'react';
-import { ScheduleFormContext } from '../ScheduleEditForm';
+import { useShallow } from 'zustand/react/shallow';
+import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
 
 export function AlarmTime() {
-  const { values, setValues } = useContext(ScheduleFormContext);
+  const [values, setValues] = useScheduleEditStore(useShallow(state => [state.values, state.setValues]));
+
   return (
     <>
       <Span>{CREATE.PLACEHOLDERS.NOTI}</Span>
