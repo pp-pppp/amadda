@@ -1,6 +1,6 @@
-import { ScheduleEditFormProps } from '../../components/ScheduleEdit/formdata';
+import { ScheduleEditFormData } from '../../components/ScheduleEdit/ScheduleEditForm/formdata';
 
-export function scheduleFormValidator(data: ScheduleEditFormProps) {
+export function scheduleFormValidator(data: ScheduleEditFormData) {
   const errors = [];
 
   return errors;

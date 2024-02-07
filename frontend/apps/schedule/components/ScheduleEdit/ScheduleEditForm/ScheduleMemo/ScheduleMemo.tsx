@@ -1,13 +1,13 @@
 import { CREATE } from '@SCH/constants/CREATE';
 import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
-import { useShallow } from 'zustand/react/shallow';
 import { Label, Textarea } from '@amadda/external-temporal';
+import { useShallow } from 'zustand/react/shallow';
 
 export function ScheduleMemo() {
-  const [values, handleChange] = useScheduleEditStore(useShallow(state => [state.values, state.handleChange, state.refs]));
+  const [values, handleChange] = useScheduleEditStore(useShallow(state => [state.values, state.handleChange]));
 
   return (
-    <Label htmlFor="ScheduleMemo">
+    <Label htmlFor="scheduleMemo">
       <Textarea
         id="scheduleMemo"
         name="scheduleMemo"

@@ -1,7 +1,5 @@
 import { colors } from '@amadda/external-temporal';
 import { style } from '@vanilla-extract/css';
-
-export const BASE = style({});
 export const PARTICIPANTS = style({
   backgroundColor: colors.GREY_100,
   height: '2.5rem',
@@ -20,3 +18,5 @@ export const SEARCHRESULT = style({
   borderRadius: '1rem',
   padding: '0.75rem',
 });
+
+export const BASE = style({});

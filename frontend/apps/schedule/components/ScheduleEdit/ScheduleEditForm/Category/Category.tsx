@@ -1,8 +1,8 @@
 import { CategorySelectContainer } from '@SCH/components/CategorySelect/CategorySelectContainer';
 import { CREATE } from '@SCH/constants/CREATE';
-import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
-import { useShallow } from 'zustand/react/shallow';
 import { Spacing, Span } from '@amadda/external-temporal';
+import { useShallow } from 'zustand/react/shallow';
+import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
 
 export function Category() {
   const [values, setValues] = useScheduleEditStore(useShallow(state => [state.values, state.setValues]));

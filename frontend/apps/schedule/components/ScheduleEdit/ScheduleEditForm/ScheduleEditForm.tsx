@@ -1,14 +1,11 @@
 import React from 'react';
 import { Btn, Flex, Form, H2, H4, Spacing } from '@amadda/external-temporal';
 import { useForm } from '@amadda/react-util-hooks';
-import { BASE } from './ScheduleEdit.css';
 import { CREATE } from '@SCH/constants/CREATE';
 import { initFormValues, refInputNames } from '@SCH/constants/SCHEDULE_EDIT_INIT';
 import { useScheduleSubmit } from '@SCH/hooks/useScheduleSubmit';
 import { scheduleFormValidator } from '@SCH/utils/validators/scheduleValidator';
-import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
-import { useShallow } from 'zustand/react/shallow';
-import { ScheduleEditFormProps } from './formdata';
+import { ScheduleEditFormData } from './formdata';
 import { IsAuthorizedAll } from './IsAuthorizedAll/IsAuthorizedAll';
 import { StartAt } from './StartAt/StartAt';
 import { ScheduleName } from './ScheduleName/ScheduleName';
@@ -20,22 +17,29 @@ import { ScheduleContent } from './ScheduleContent/ScheduleContent';
 import { AlarmTime } from './AlarmTime/AlartmTime';
 import { Category } from './Category/Category';
 import { ScheduleMemo } from './ScheduleMemo/ScheduleMemo';
+import { useShallow } from 'zustand/react/shallow';
+import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
 
-export type ScheduleEditProps = {
-  scheduleDetail?: ScheduleEditFormProps;
+export type ScheduleEditFormProps = {
+  scheduleDetail?: ScheduleEditFormData;
 };
 
-export function ScheduleEdit({ scheduleDetail }: ScheduleEditProps) {
-  const [values, refValues, submit, setUseFormData] = useScheduleEditStore(
-    useShallow(state => [state.values, state.refValues, state.submit, state.setUseFormData])
-  );
+export function ScheduleEditForm({ scheduleDetail }: ScheduleEditFormProps) {
   const scheduleSubmit = useScheduleSubmit();
-  const data = useForm<ScheduleEditFormProps>(['scheduleEdit', scheduleDetail || initFormValues, scheduleSubmit, scheduleFormValidator, refInputNames]);
-  setUseFormData({ data });
+  const [values, refValues, submit, setUseFormValues, setUseFormData] = useScheduleEditStore(
+    useShallow(state => [state.values, state.refValues, state.submit, state.setUseFormValues, state.setUseFormData])
+  );
+  useForm<ScheduleEditFormData>({
+    initialValues: scheduleDetail || initFormValues,
+    onSubmit: scheduleSubmit,
+    validator: scheduleFormValidator,
+    refInputNames: refInputNames,
+    setExternalStoreValues: setUseFormValues,
+    setExternalStoreData: setUseFormData,
+  });
 
   return (
-    <div className={BASE}>
-      <Spacing size="2" />
+    <>
       <Form
         formName="scheduleEdit"
         onSubmit={() => {
@@ -74,6 +78,6 @@ export function ScheduleEdit({ scheduleDetail }: ScheduleEditProps) {
         </Flex>
       </Form>
       <Spacing dir="v" size="5" />
-    </div>
+    </>
   );
 }

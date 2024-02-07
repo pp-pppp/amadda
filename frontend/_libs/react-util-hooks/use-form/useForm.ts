@@ -1,67 +1,87 @@
-import { useEffect, useRef, useState } from 'react';
-import type { ChangeEvent, Dispatch, FormEvent, RefObject, SetStateAction } from 'react';
-import { useFormArgs } from './types';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { ChangeEvent, FormEvent, RefObject } from 'react';
+import type { UseForm, UseFormArgs } from './types';
 
-export const useForm = <T>([key, initialValues, onSubmit, validator, refInputNames = []]: useFormArgs<T>): {
-  key: string;
-  values: T;
-  setValues: Dispatch<SetStateAction<T>>;
-  refValues: Record<keyof T, any> | null;
-  handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => Promise<void>;
-  invalids: Array<Record<keyof T, string>>;
-  refs: Record<(typeof refInputNames)[number], RefObject<HTMLInputElement>> | null;
-  submit: (data: any) => Promise<unknown>;
-  isLoading: boolean;
-  result: unknown;
-} => {
+export const useForm = <T>({
+  initialValues,
+  onSubmit,
+  validator,
+  refInputNames = [],
+  setExternalStoreValues = () => {},
+  setExternalStoreData = () => {},
+}: UseFormArgs<T>): UseForm<T> | void => {
   const [values, setValues] = useState<typeof initialValues>({ ...initialValues } as const);
-  const [invalids, setInvalids] = useState<Array<Record<keyof T, string>>>([]);
+  const [invalidFields, setInvalidFields] = useState<Array<Record<keyof T, string>>>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [result, setResult] = useState<unknown>(null);
+  const [response, setResponse] = useState<unknown>(null);
 
-  const handleChange = async (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setValues({ ...values, [name]: value });
-  };
+  const saveExternalStoreValue = useCallback(
+    (data: T) => {
+      typeof setExternalStoreValues === 'function' ? setExternalStoreValues(data) : console.error('<!> useForm: setExternalStoreValues should be a function');
+    },
+    [setExternalStoreValues]
+  );
+
+  const handleChange = useCallback(
+    async (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { name, value } = e.target;
+      saveExternalStoreValue({ ...values, [name]: value });
+      setValues({ ...values, [name]: value });
+    },
+    [saveExternalStoreValue, setValues]
+  );
 
   const refInputNamesType = [...refInputNames] as const;
   const [currRefValues, refs] = useRefInputInit<T>(refInputNamesType);
-
   const convertedRefValues = typeof currRefValues === 'function' ? currRefValues() : currRefValues;
 
-  const submit = async (e: FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    validator && setInvalids(validator({ ...values, ...refs }));
-    return result;
-  };
+  const submit = useCallback(
+    async (e: FormEvent) => {
+      e.preventDefault();
+      setIsLoading(true);
+      validator && setInvalidFields(validator({ ...values, ...convertedRefValues }));
+    },
+    [setIsLoading, validator, setInvalidFields, values, convertedRefValues]
+  );
 
   useEffect(() => {
     isLoading &&
       (async () => {
-        if (!invalids || Object.keys(invalids).length === 0) {
-          if (refInputNames) setValues({ ...values, ...currRefValues });
-          else setValues({ ...values });
-
-          const response = await onSubmit(values);
-          setResult(response);
+        if (!invalidFields || Object.keys(invalidFields).length === 0) {
+          if (!refInputNames) setValues({ ...values });
+          else {
+            saveExternalStoreValue({ ...values, ...currRefValues });
+            setValues({ ...values, ...convertedRefValues });
+          }
+          const res = await onSubmit(values);
+          setResponse(res);
           setIsLoading(false);
         }
       })();
-  }, [invalids]);
+  }, [isLoading, invalidFields]);
 
-  const data = {
-    key,
-    values,
-    setValues,
-    refValues: convertedRefValues,
-    handleChange,
-    invalids,
-    refs,
-    submit,
-    isLoading,
-    result,
-  };
+  const data = useMemo(
+    () => ({
+      values,
+      setValues,
+      refValues: convertedRefValues,
+      handleChange,
+      invalidFields,
+      refs,
+      submit,
+      isLoading,
+      response,
+    }),
+    [values, setValues, convertedRefValues, handleChange, invalidFields, refs, submit, isLoading, response]
+  );
+
+  const updateExternalStore = useCallback(() => {
+    typeof setExternalStoreData === 'function' ? setExternalStoreData(data) : console.error('<!> useForm: setExternalStoreData should be a function');
+  }, [data, setExternalStoreData]);
+
+  useEffect(() => {
+    updateExternalStore();
+  }, [updateExternalStore]);
 
   return data;
 };

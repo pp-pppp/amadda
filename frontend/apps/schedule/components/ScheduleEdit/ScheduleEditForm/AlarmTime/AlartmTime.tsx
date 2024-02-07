@@ -1,7 +1,7 @@
 import { CREATE } from '@SCH/constants/CREATE';
-import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
-import { useShallow } from 'zustand/react/shallow';
 import { Chip, Flex, Spacing, Span } from '@amadda/external-temporal';
+import { useShallow } from 'zustand/react/shallow';
+import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
 
 export function AlarmTime() {
   const [values, setValues] = useScheduleEditStore(useShallow(state => [state.values, state.setValues]));
@@ -13,6 +13,7 @@ export function AlarmTime() {
       <Flex flexDirection="row" justifyContents="start">
         {Object.keys(CREATE.ALARMS).map(option => (
           <Chip
+            key={option}
             type={values.alarmTime === option ? 'filterselected' : 'filter'}
             onFiltered={() => setValues({ ...values, alarmTime: option })}
             shape="square"

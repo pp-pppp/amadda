@@ -1,11 +1,11 @@
 import { Flex, Chip, Input, Spacing } from '@amadda/external-temporal';
-import { AC, PARTICIPANTS, SEARCHRESULT } from '../ScheduleEdit.css';
+import { AC, PARTICIPANTS, SEARCHRESULT } from './Participants.css';
+import { CREATE } from '@SCH/constants/CREATE';
 import { useScheduleEditStore } from '@SCH/store/schedule-create/useScheduleEditStore';
 import { useShallow } from 'zustand/react/shallow';
-import { CREATE } from '@SCH/constants/CREATE';
 
 export function Participants() {
-  const [values, setValues] = useScheduleEditStore(useShallow(state => [state.values, state.setValues]));
+  const [values, setValues, handleChange] = useScheduleEditStore(useShallow(state => [state.values, state.setValues, state.handleChange]));
 
   return (
     <>
@@ -25,11 +25,11 @@ export function Participants() {
       </div>
       <Spacing dir="v" size="0.5" />
       <Input
-        id="party"
+        id="partySearchInput"
         type="text"
-        name="text"
+        name="partySearchInput"
         value={values.partySearchInput}
-        onChange={() => {}}
+        onChange={handleChange}
         // onChange={e => fn.partyAutoComplete(e.target.value)}
         onKeyDown={e => {
           if (e.key === 'enter') null;
