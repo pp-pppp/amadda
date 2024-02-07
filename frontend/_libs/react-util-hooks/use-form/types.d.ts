@@ -1,4 +1,4 @@
-import { useForm } from './useForm';
+import { useForm } from './use-form';
 
 export interface UseFormArgs<T> {
   initialValues: T;

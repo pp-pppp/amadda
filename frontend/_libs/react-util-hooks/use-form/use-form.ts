@@ -7,17 +7,19 @@ export const useForm = <T>({
   onSubmit,
   validator,
   refInputNames = [],
-  setExternalStoreValues = () => {},
-  setExternalStoreData = () => {},
+  setExternalStoreValues = undefined,
+  setExternalStoreData = undefined,
 }: UseFormArgs<T>): UseForm<T> | void => {
   const [values, setValues] = useState<typeof initialValues>({ ...initialValues } as const);
   const [invalidFields, setInvalidFields] = useState<Array<Record<keyof T, string>>>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [response, setResponse] = useState<unknown>(null);
 
-  const saveExternalStoreValue = useCallback(
+  const saveValue = useCallback(
     (data: T) => {
-      typeof setExternalStoreValues === 'function' ? setExternalStoreValues(data) : console.error('<!> useForm: setExternalStoreValues should be a function');
+      if (typeof setExternalStoreValues !== 'function' && typeof setExternalStoreData !== 'undefined')
+        console.error('<!> useForm: setExternalStoreValues should be a function');
+      typeof setExternalStoreValues === 'function' ? setExternalStoreValues(data) : setValues(data);
     },
     [setExternalStoreValues]
   );
@@ -25,10 +27,9 @@ export const useForm = <T>({
   const handleChange = useCallback(
     async (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const { name, value } = e.target;
-      saveExternalStoreValue({ ...values, [name]: value });
-      setValues({ ...values, [name]: value });
+      saveValue({ ...values, [name]: value });
     },
-    [saveExternalStoreValue, setValues]
+    [saveValue, setValues]
   );
 
   const refInputNamesType = [...refInputNames] as const;
@@ -49,10 +50,8 @@ export const useForm = <T>({
       (async () => {
         if (!invalidFields || Object.keys(invalidFields).length === 0) {
           if (!refInputNames) setValues({ ...values });
-          else {
-            saveExternalStoreValue({ ...values, ...currRefValues });
-            setValues({ ...values, ...convertedRefValues });
-          }
+          else saveValue({ ...values, ...convertedRefValues });
+
           const res = await onSubmit(values);
           setResponse(res);
           setIsLoading(false);
@@ -76,12 +75,14 @@ export const useForm = <T>({
   );
 
   const updateExternalStore = useCallback(() => {
-    typeof setExternalStoreData === 'function' ? setExternalStoreData(data) : console.error('<!> useForm: setExternalStoreData should be a function');
+    if (typeof setExternalStoreData !== 'function' && typeof setExternalStoreData !== 'undefined')
+      console.error('<!> useForm: setExternalStoreData should be a function');
+    typeof setExternalStoreData === 'function' && setExternalStoreData(data);
   }, [data, setExternalStoreData]);
 
   useEffect(() => {
     updateExternalStore();
-  }, [updateExternalStore]);
+  }, [setExternalStoreData]);
 
   return data;
 };
