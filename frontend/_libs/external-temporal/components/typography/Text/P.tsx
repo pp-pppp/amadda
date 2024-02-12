@@ -2,7 +2,7 @@ import React from 'react';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 
 import { TYPE } from './P.css';
-import { textColors } from '#/constants/Text.css';
+import { textColors } from '#/style/text.css';
 
 export interface PghProps extends ComponentPropsWithoutRef<'p'> {
   type?: 'text' | 'caption';

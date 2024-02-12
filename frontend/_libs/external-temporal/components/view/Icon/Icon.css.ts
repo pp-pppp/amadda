@@ -1,4 +1,4 @@
-import { colors } from '#/constants/colors';
+import { colors } from '#/style/colors';
 import { styleVariants } from '@vanilla-extract/css';
 
 export const COLOR = styleVariants({
