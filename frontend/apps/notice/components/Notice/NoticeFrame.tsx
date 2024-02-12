@@ -1,13 +1,10 @@
-import React from 'react';
-import { useEffect } from 'react';
-import { ErrorBoundary, Flex, H3, List, Spacing } from '@amadda/external-temporal';
-import { AlarmReadResponse } from '@amadda/global-types';
+import React, { Suspense } from 'react';
+import { ErrorBoundary, Flex, H3, List, Loading, Spacing } from '@amadda/external-temporal';
 import { useGetNotice } from '@N/hooks/useGetNotice';
-import { useRouter } from 'next/router';
 import { Notice } from './Notice';
 
 export function NoticeFrame() {
-  const { noticeList, error } = useGetNotice();
+  const { noticeList } = useGetNotice();
 
   return (
     <div>
@@ -16,11 +13,14 @@ export function NoticeFrame() {
         <Spacing dir="v" size="0.25" />
         <ErrorBoundary message="알람을 가져오는 데 실패했어요.">
           <List.Ul>
-            {noticeList.map(n => (
-              <List.Li key={n.alarmSeq + n.content}>
-                <Notice {...n} />
-              </List.Li>
-            ))}
+            <Suspense fallback={<Loading />}>
+              {noticeList &&
+                noticeList.map(n => (
+                  <List.Li key={n.alarmSeq + n.content}>
+                    <Notice {...n} />
+                  </List.Li>
+                ))}
+            </Suspense>
           </List.Ul>
         </ErrorBoundary>
       </Flex>
