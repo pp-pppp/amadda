@@ -1,5 +1,5 @@
 import { List } from '@amadda/external-temporal';
-import { Friend } from '../../Friend/Friend';
+import { Friend } from '../Friend/Friend';
 import { useFriendRouter } from '@U/store/friendRouter/useFriendRouter';
 
 interface FriendGroupBodyProps {

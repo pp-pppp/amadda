@@ -1,5 +1,5 @@
 import { useFriendRouter } from '@U/store/friendRouter/useFriendRouter';
-import { FriendGroupProps } from '../../FriendGroup';
+import { FriendGroupProps } from '../../FriendGroup/FriendGroup';
 import FRIENDS from '@U/constants/FRIENDS';
 import { Btn } from '@amadda/external-temporal';
 import { ROUTES } from '@U/store/friendRouter/pageSlice';
