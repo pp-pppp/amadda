@@ -2,7 +2,7 @@ import { useForm } from './use-form';
 
 export interface UseFormArgs<T> {
   initialValues: T;
-  onSubmit: (data: T) => Promise<unknown>;
+  onSubmit: (data: T) => any;
   validator?: (data: T) => Array<Record<keyof T, string>>;
   refInputNames?: (keyof T)[];
   setExternalStoreValues?: (formdata: T) => void;
@@ -16,7 +16,7 @@ export interface UseForm<T> {
   handleChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => Promise<void>;
   invalidFields: Array<Record<keyof T, string>>;
   refs: Record<(typeof refInputNames)[number], RefObject<HTMLInputElement>> | null;
-  submit: (data: any) => Promise<unknown>;
+  submit: (data: any) => any;
   isLoading: boolean;
   response: unknown;
 }
