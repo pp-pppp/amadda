@@ -1,8 +1,8 @@
-import type { ScheduleEditFormProps } from '@SCH/components/ScheduleEdit/formdata';
+import type { ScheduleEditFormData } from '@SCH/components/ScheduleEdit/ScheduleEditForm/formdata';
 import type { ScheduleCreateRequest, ScheduleDetailReadResponse, ScheduleUpdateRequest } from '@amadda/global-types';
 import { numberToString, stringToNumber } from './formatDate';
 
-export const formToRequest = (data: ScheduleEditFormProps): ScheduleCreateRequest | ScheduleUpdateRequest => {
+export const formToRequest = (data: ScheduleEditFormData): ScheduleCreateRequest | ScheduleUpdateRequest => {
   const startAt = numberToString(Number(data.startYear), Number(data.startMonth), Number(data.startDate), Number(data.startTime), Number(data.startMinute));
   const endAt = numberToString(Number(data.endYear), Number(data.endMonth), Number(data.endDate), Number(data.endTime), Number(data.endMinute));
 
@@ -37,11 +37,11 @@ export const formToRequest = (data: ScheduleEditFormProps): ScheduleCreateReques
     };
 };
 
-export const responseToForm = (data: ScheduleDetailReadResponse): ScheduleEditFormProps => {
+export const responseToForm = (data: ScheduleDetailReadResponse): ScheduleEditFormData => {
   const startAt = stringToNumber(data.scheduleStartAt).map(String);
   const endAt = stringToNumber(data.scheduleStartAt).map(String);
 
-  const result: ScheduleEditFormProps = {
+  const result: ScheduleEditFormData = {
     startYear: startAt[0],
     startMonth: startAt[1],
     startDate: startAt[2],

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { ScheduleEdit } from '../../../schedule/components/ScheduleEdit/ScheduleEdit';
+import { ScheduleEdit } from '../../../schedule/components/ScheduleEdit/ScheduleEditForm/ScheduleEditForm';
 
 const meta = {
   title: 'Schedule/ScheduleEdit',
