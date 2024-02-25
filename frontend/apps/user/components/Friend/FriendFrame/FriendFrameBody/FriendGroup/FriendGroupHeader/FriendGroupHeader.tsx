@@ -1,9 +1,13 @@
 import FRIENDS from '@U/constants/FRIENDS';
-import { H3 } from '@amadda/external-temporal';
+import { Flex, H3 } from '@amadda/external-temporal';
+import { FriendGroupProps } from '../FriendGroup';
+import { FriendGroupEditRouteControl } from './FriendGroupEditRouteControl/FriendGroupEditRouteControl';
 
-interface FriendGroupHeaderProps {
-  groupName?: string;
-}
-export function FriendGroupHeader({ groupName = FRIENDS.GROUPS.ALL_FRIENDS }: FriendGroupHeaderProps) {
-  return <H3>{groupName}</H3>;
+export function FriendGroupHeader({ groupName, groupSeq, groupMember }: FriendGroupProps) {
+  return (
+    <Flex flexDirection="row" justifyContents="flexStart" alignItems="center">
+      <H3>{groupName || FRIENDS.GROUPS.ALL_FRIENDS}</H3>
+      <FriendGroupEditRouteControl groupName={groupName} groupSeq={groupSeq} groupMember={groupMember} />
+    </Flex>
+  );
 }
