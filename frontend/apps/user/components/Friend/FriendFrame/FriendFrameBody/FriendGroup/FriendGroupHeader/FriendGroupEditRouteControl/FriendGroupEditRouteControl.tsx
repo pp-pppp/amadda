@@ -27,7 +27,7 @@ FriendGroupEditRouteControl.PathIsRead = ({ PushToFriend, groupName, groupSeq, g
       variant="black"
       onClick={() => {
         PushToFriend('EDIT');
-        //지금 몇 번 그룹 편집?
+        //TODO: 지금 몇 번 그룹 편집?
       }}
     >
       {FRIENDS.BTN.GROUP_EDIT}

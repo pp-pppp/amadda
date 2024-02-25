@@ -1,6 +1,6 @@
 import { useFriendRouter } from '@U/store/friendRouter/useFriendRouter';
-import { FriendReadResult } from './FriendReadResultBlock';
-import { FriendSearchResult } from './FriendSearchResultBlock';
+import { FriendReadResultBlock } from './FriendReadResultBlock';
+import { FriendSearchResultBlock } from './FriendSearchResultBlock';
 import { FriendEditBlock } from './FriendEditBlock';
 import { FriendAddBlock } from './FriendAddBlock';
 
@@ -11,9 +11,9 @@ export function FriendFrameBody() {
     case 'ADD':
       return <FriendAddBlock />;
     case 'READ':
-      return <FriendReadResult />;
+      return <FriendReadResultBlock />;
     case 'SEARCH':
-      return <FriendSearchResult />;
+      return <FriendSearchResultBlock />;
     case 'EDIT':
       return <FriendEditBlock />;
     default:
