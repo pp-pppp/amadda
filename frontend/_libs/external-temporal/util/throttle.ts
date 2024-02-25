@@ -1,6 +1,6 @@
 let timer: number;
 
-export const throttle = (fn: () => void, delay: number) => {
+export const throttle = (fn: Function | (() => Function), delay: number) => {
   if (typeof window === 'undefined') return;
   if (timer) return;
 
