@@ -1,3 +1,5 @@
+import { FriendSearch } from '@U/components/Friend/FriendFrame/FriendFrameHeader/FriendSearchInput/FriendSearchInput';
+import { useFriendSearchStore } from '@U/store/friendSearchForm/useFriendSearchStore';
 import { clientFetch } from '@amadda/fetch';
 import { FriendReadResponse, UserReadResponse, UserRelationResponse } from '@amadda/global-types';
 import useSWR, { mutate } from 'swr';
@@ -15,8 +17,8 @@ export function useFriend() {
 }
 
 const searchFriends = (searchKey: string) => clientFetch.get<FriendReadResponse>(`${process.env.NEXT_PUBLIC_USER}/api/friend?searchkey=${searchKey}`);
-export function useSearchFriend(searchKey: string) {
-  const { data, error, isLoading } = useSWR('/api/friend/searchKey', () => searchFriends(searchKey));
+export function useSearchFriend({ friendSearch }: FriendSearch) {
+  const { data, error, isLoading } = useSWR('/api/friend/searchKey', () => searchFriends(friendSearch));
 
   return {
     data,
