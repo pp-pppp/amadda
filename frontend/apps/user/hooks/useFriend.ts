@@ -1,4 +1,4 @@
-import { FriendSearch } from '@U/components/FriendFrameHeader/FriendSearchInput/FriendSearchInput';
+import { FriendSearch } from '@U/components/FriendFrame/FriendFrameHeader/FriendSearchInput/FriendSearchInput';
 import { useFriendSearchStore } from '@U/store/friendSearchForm/useFriendSearchStore';
 import { clientFetch } from '@amadda/fetch';
 import { FriendReadResponse, UserReadResponse, UserRelationResponse } from '@amadda/global-types';

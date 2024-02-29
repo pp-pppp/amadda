@@ -1,9 +1,9 @@
 import { useFriendRouter } from '@U/store/friendRouter/useFriendRouter';
 import { useFriend, useSearchFriend } from '@U/hooks/useFriend';
-import { FriendLoading } from '../FriendFallback/FriendLoading';
-import { NoFriend } from '../FriendFallback/NoFriend';
-import { FriendGroupEdit } from '../FriendGroup/FriendGroupEdit';
-import { FriendGroup } from '../FriendGroup/FriendGroup';
+import { FriendLoading } from '../../FriendFallback/FriendLoading';
+import { NoFriend } from '../../FriendFallback/NoFriend';
+import { FriendGroupEdit } from '../../FriendGroup/FriendGroupEdit/FriendGroupEdit';
+import { FriendGroup } from '../../FriendGroup/FriendGroup';
 import { useFriendSearchStore } from '@U/store/friendSearchForm/useFriendSearchStore';
 
 export function FriendFrameBody() {

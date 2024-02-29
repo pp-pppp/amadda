@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Input, Label, debounce } from '@amadda/external-temporal';
-import FriendsConstants from '../../../constants/FRIENDS';
+import FriendsConstants from '../../../../constants/FRIENDS';
 import { useForm } from '@amadda/react-util-hooks';
 import { FRIEND_SEARCH_FORM_INIT } from '@U/constants/FRIEND_SEARCH_FORM_INIT';
 import { useFriendRouter } from '@U/store/friendRouter/useFriendRouter';

@@ -1,6 +1,6 @@
 import { Spacing } from '@amadda/external-temporal';
-import { FriendGroupHeader } from '../FriendGroupHeader/FriendGroupHeader';
-import { FriendGroupBody } from '../FriendGroupBody/FriendGroupBody';
+import { FriendGroupHeader } from './FriendGroupHeader/FriendGroupHeader';
+import { FriendGroupBody } from './FriendGroupBody/FriendGroupBody';
 import { useFriendRouter } from '@U/store/friendRouter/useFriendRouter';
 
 export interface FriendGroupProps {
