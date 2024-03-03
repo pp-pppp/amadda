@@ -1,4 +1,5 @@
 export default {
+  TITLE: '내 친구',
   BTN: {
     READ: '내 친구 보기',
     GROUP_EDIT: '그룹 편집',

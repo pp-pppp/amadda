@@ -1,9 +1,8 @@
 import { Chip, Spacing } from '@amadda/external-temporal';
-import { FriendGroupHeader } from '../FriendGroupHeader/FriendGroupHeader';
-import { FriendGroupBody } from '../FriendGroupBody/FriendGroupBody';
 import { useFriend } from '@U/hooks/useFriend';
 import { useGroupRequestStore } from '@U/store/friendGroupForm/useGroupRequestStore';
 import { useEffect } from 'react';
+import { FriendGroup } from '../FriendGroup';
 
 export interface FriendGroupEditProps {
   groupSeq?: number;
@@ -26,7 +25,7 @@ export function FriendGroupEdit({ groupSeq }: FriendGroupEditProps) {
 
   return (
     <>
-      <FriendGroupHeader groupName={groupName} groupSeq={TARGET_GROUP.groupSeq} groupMember={TARGET_GROUP.groupMember} />
+      <FriendGroup.Header groupName={groupName} groupSeq={TARGET_GROUP.groupSeq} groupMember={TARGET_GROUP.groupMember} />
       {/* TODO: 그룹 이름 수정 기능 */}
       <Spacing size="0.5" />
       {users.map(selected => (
@@ -36,7 +35,7 @@ export function FriendGroupEdit({ groupSeq }: FriendGroupEditProps) {
       ))}
       <Spacing size="0.5" />
       {/* TODO: 선택시 ADD USER */}
-      <FriendGroupBody groupMember={ALL_FRIENDS.groupMember} />
+      <FriendGroup.Body groupMember={ALL_FRIENDS.groupMember} />
     </>
   );
 }

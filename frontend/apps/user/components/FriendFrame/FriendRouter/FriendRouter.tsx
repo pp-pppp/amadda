@@ -6,24 +6,24 @@ import { FriendGroupEdit } from '../../FriendGroup/FriendGroupEdit/FriendGroupEd
 import { FriendGroup } from '../../FriendGroup/FriendGroup';
 import { useFriendSearchStore } from '@U/store/friendSearchForm/useFriendSearchStore';
 
-export function FriendFrameBody() {
+export function FriendRouter() {
   const [PATH, PushToFriend] = useFriendRouter(state => [state.PATH, state.PushToFriend]);
 
   switch (PATH) {
     case 'ADD':
-      return <FriendFrameBody.FriendAddBlock />;
+      return <FriendRouter.FriendAddBlock />;
     case 'READ':
-      return <FriendFrameBody.FriendReadResultBlock />;
+      return <FriendRouter.FriendReadResultBlock />;
     case 'SEARCH':
-      return <FriendFrameBody.FriendSearchResultBlock />;
+      return <FriendRouter.FriendSearchResultBlock />;
     case 'EDIT':
-      return <FriendFrameBody.FriendEditBlock />;
+      return <FriendRouter.FriendEditBlock />;
     default:
       PushToFriend('READ');
   }
 }
 
-FriendFrameBody.FriendAddBlock = () => {
+FriendRouter.FriendAddBlock = () => {
   const { data, error, isLoading } = useFriend();
 
   if (isLoading) return <FriendLoading />;
@@ -31,7 +31,7 @@ FriendFrameBody.FriendAddBlock = () => {
   else return <>{data?.filter(group => <FriendGroupEdit {...group} />)}</>;
 };
 
-FriendFrameBody.FriendReadResultBlock = () => {
+FriendRouter.FriendReadResultBlock = () => {
   const { data, error, isLoading } = useFriend();
 
   if (isLoading) return <FriendLoading />;
@@ -39,7 +39,7 @@ FriendFrameBody.FriendReadResultBlock = () => {
   else return <>{data?.map(group => <FriendGroup {...group} />)}</>;
 };
 
-FriendFrameBody.FriendSearchResultBlock = () => {
+FriendRouter.FriendSearchResultBlock = () => {
   const [searchKey] = useFriendSearchStore(state => [state.searchKey]);
   const { data, error, isLoading } = useSearchFriend({ friendSearch: searchKey });
 
@@ -48,7 +48,7 @@ FriendFrameBody.FriendSearchResultBlock = () => {
   else return <>{data?.map(group => <FriendGroup {...group} />)}</>;
 };
 
-FriendFrameBody.FriendEditBlock = () => {
+FriendRouter.FriendEditBlock = () => {
   const { data, error, isLoading } = useFriend();
 
   if (isLoading) return <FriendLoading />;
