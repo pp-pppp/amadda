@@ -34,9 +34,9 @@ export * from './components/view/Tooltip/Tooltip';
 export * from './components/fallback/ErrorBoundary/ErrorBoundary';
 export * from './components/fallback/Loading/Loading';
 
-export * from './util/global.css';
+export * from './style/global.css';
 export * from './util/throttle';
 export * from './util/debounce';
 
-export * from './constants/colors';
-export * from './constants/Text.css';
+export * from './style/colors';
+export * from './style/text.css';

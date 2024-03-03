@@ -1,5 +1,5 @@
 import { style, styleVariants } from '@vanilla-extract/css';
-import { colors } from '#/constants/colors';
+import { colors } from '#/style/colors';
 
 const BASE = style({
   backgroundColor: colors.GREY_200,

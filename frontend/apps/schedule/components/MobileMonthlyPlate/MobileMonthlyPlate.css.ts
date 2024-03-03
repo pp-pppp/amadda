@@ -1,5 +1,5 @@
 import { style, styleVariants } from '@vanilla-extract/css';
-import { colors } from '@amadda/external-temporal';
+import { colors } from '#/style/colors';
 
 export const BASE = style({
   // width: 'calc(430px / 7)',

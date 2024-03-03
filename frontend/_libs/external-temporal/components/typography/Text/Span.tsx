@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
-import { textColors } from '#/constants/Text.css';
+import { textColors } from '#/style/text.css';
 
 export interface SpanProps extends ComponentPropsWithoutRef<'span'> {
   color?: keyof typeof textColors;

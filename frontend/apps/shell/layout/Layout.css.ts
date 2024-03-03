@@ -1,4 +1,4 @@
-import { colors } from '@amadda/external-temporal';
+import { colors } from '#/style/colors';
 import { style } from '@vanilla-extract/css';
 
 export const APPLAYOUT_MOBILE = style({
