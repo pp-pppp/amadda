@@ -1,33 +1,14 @@
 import React from 'react';
-import { useEffect, useState } from 'react';
 import { Flex, Spacing } from '@amadda/external-temporal';
 import { BASE } from './Header.css';
 import { Menu } from './Menu';
-import type { AlarmReadResponse } from '@amadda/global-types';
+
 import { useRouter } from 'next/router';
+import { useSubscribeNotice } from '@SH/hooks/useSubscribeNotice';
 
 export function Header() {
-  const [notice, setNotice] = useState(false);
   const router = useRouter();
-
-  useEffect(() => {
-    const eventSource = new EventSource(`${process.env.NEXT_PUBLIC_NOTICE}/api/event`);
-
-    eventSource.onmessage = async (e: MessageEvent) => {
-      const data: AlarmReadResponse = JSON.parse(await e.data);
-      if (!data?.isRead) setNotice(true);
-    };
-
-    eventSource.onerror = async (error: Event) => {
-      setNotice(false);
-      console.error('EventSource failed:', error);
-      eventSource.close();
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, [router.basePath]);
+  const { data, error } = useSubscribeNotice();
   return (
     <div className={BASE}>
       <Flex justifyContents="spaceBetween">
@@ -49,9 +30,8 @@ export function Header() {
             }}
           /> */}
             <Menu
-              iconType={notice ? 'noti' : 'noti_red'}
+              iconType={data ? 'noti' : 'noti_red'}
               onClick={() => {
-                setNotice(false);
                 router.push(`${process.env.NEXT_PUBLIC_SHELL}/notice`);
               }}
             />
