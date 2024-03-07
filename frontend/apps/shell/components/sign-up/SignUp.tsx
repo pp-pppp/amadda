@@ -1,12 +1,12 @@
 import React from 'react';
 import { useState } from 'react';
 import { Btn, Flex, Form, H1, Input, Label, P, Profile, Spacing } from '@amadda/external-temporal';
-import { IndexLayout } from '@SH/layout/IndexLayout';
-import useIdValidator from '@SH/hooks/useIdValidator';
-import SIGNUP_TEXT from '@SH/constants/SIGNUP_TEXT';
-import SignUpCaption from '../SignUpCaption/SignUpCaption';
+import { IndexLayout } from '@/layout/IndexLayout';
+import useIdValidator from '@/hooks/user/useIdValidator';
+import SIGNUP_TEXT from '@/constants/user/SIGNUP_TEXT';
+import SignUpCaption from '../sign-up-caption/SignUpCaption';
 import { UserInitRequest } from '@amadda/global-types';
-import useNameValidator from '@SH/hooks/useNameValidator';
+import useNameValidator from '@/hooks/user/useNameValidator';
 import { useRouter } from 'next/router';
 import { clientFetch } from '@amadda/fetch';
 import * as Sentry from '@sentry/nextjs';

@@ -4,7 +4,7 @@ import { BASE } from './Header.css';
 import { Menu } from './Menu';
 
 import { useRouter } from 'next/router';
-import { useSubscribeNotice } from '@SH/hooks/useSubscribeNotice';
+import { useSubscribeNotice } from '@/hooks/notice/useSubscribeNotice';
 
 export function Header() {
   const router = useRouter();
