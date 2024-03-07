@@ -7,9 +7,11 @@ import { https } from './https';
 type API_HANDLER = (request: NextApiRequest, response: NextApiResponse) => Promise<NextApiResponse | void>;
 
 /**
-  @deprecated use withAuth instead of auth
+ * 클라이언트 사이드의 통신 규격은 쿠키, 서버 사이드의 통신 규격은 Bearer Auth입니다.
+ * 따라서 next.js에서는 클라이언트 요청을 spring으로 보낼 때 쿠키를 header로 변환하고,
+ * 응답을 받아 쿠키를 지속적으로 갱신해줘야 합니다.
  */
-export function auth(fn: API_HANDLER): API_HANDLER {
+export function withAuth(fn: API_HANDLER): API_HANDLER {
   return async function (req: NextApiRequest, res: NextApiResponse) {
     let ACCESS_TOKEN = req.cookies.Auth || '';
     if (!req.cookies.Auth) {
