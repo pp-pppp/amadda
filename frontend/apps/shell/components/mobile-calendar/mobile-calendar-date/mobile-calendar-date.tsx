@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { GRID } from './MobileCalendarDate.css';
-import { MobileMonthlyPlate } from '@/components/mobile-monthly-plate/MobileMonthlyPlate';
+import { GRID } from './mobile-calendar-date.css';
+import { MobileMonthlyPlate } from '@/components/mobile-monthly-plate/mobile-monthly-plate';
 import { useCalendarDates } from '@/hooks/schedule/use-calendar-info';
 import { useDateStore } from '@/store/schedule/date-store';
 import { useMonthlySchedule } from '@/hooks/schedule/use-schedule-list';

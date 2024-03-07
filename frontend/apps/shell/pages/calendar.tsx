@@ -1,4 +1,4 @@
-import { MobileMain } from '@/components/mobile-calendar/MobileMain';
+import { MobileMain } from '@/components/mobile-calendar/mobile-main';
 
 export default function Page() {
   return <MobileMain />;

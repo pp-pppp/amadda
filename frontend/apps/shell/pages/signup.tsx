@@ -2,7 +2,7 @@ import { kv, clientFetch } from '@amadda/fetch';
 import cookie from 'cookie';
 import type { GetServerSideProps } from 'next';
 import { ApiResponse, UserJwtRequest, UserJwtResponse } from '@amadda/global-types';
-import SignUp from '@/components/sign-up/SignUp';
+import SignUp from '@/components/sign-up/sign-up';
 import { kakaoAuth } from '@amadda/fetch';
 interface KakaoPageProps {
   kakaoId: string;

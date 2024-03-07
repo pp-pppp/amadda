@@ -1,7 +1,7 @@
 import { useDateStore } from '@/store/schedule/date-store';
 import { useEffect, useState } from 'react';
 import { Spacing, Span } from '@amadda/external-temporal';
-import { BASE } from './DailyList.css';
+import { BASE } from './daily-list.css';
 import CALENDAR from '@/constants/schedule/CALENDAR';
 import { useDailySchedule } from '@/hooks/schedule/use-schedule-list';
 import { useCategoryStore } from '@/store/schedule/category-store';

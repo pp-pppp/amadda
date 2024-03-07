@@ -1,7 +1,7 @@
-import { MobileCalendar } from '@/components/mobile-calendar/MobileCalendar';
+import { MobileCalendar } from '@/components/mobile-calendar/mobile-calendar';
 import { ReactNode, useEffect, useRef } from 'react';
-import { CalendarHeader } from './CalendarHeader/CalendarHeader';
-import { DailyList } from './DailyList/DailyList';
+import { CalendarHeader } from './calendar-header/calendar-header';
+import { DailyList } from './daily-list/daily-list';
 import { Spacing, ErrorBoundary } from '@amadda/external-temporal';
 import { useFilterStore } from '@/store/schedule/filter-store';
 

@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { BASE } from './MobileDailyPlateList.css';
+import { BASE } from './mobile-daily-plate-list.css';
 
 export interface MobileDailyPlateListProps {
   children: ReactNode;

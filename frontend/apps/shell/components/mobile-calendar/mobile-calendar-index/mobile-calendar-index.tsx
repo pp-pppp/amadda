@@ -1,5 +1,5 @@
 import React from 'react';
-import { BASE } from './MobileCalendarIndex.css';
+import { BASE } from './mobile-calendar-index.css';
 import WEEKDAY from '@/constants/schedule/WEEKDAY';
 import { Span } from '@amadda/external-temporal';
 

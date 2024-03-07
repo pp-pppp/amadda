@@ -1,8 +1,8 @@
 import React from 'react';
 import { FABLAYOUT_MOBILE, INDEXLAYOUT_MOBILE } from '@/layout/layouts.css';
 import { FAB, Segments } from '@amadda/external-temporal';
-import { MobileMonthlyPage } from './MobileMonthlyPage/MobileMonthlyPage';
-import { MobileUnscheduledPage } from './MobileUnscheduledPage/MobileUnscheduledPage';
+import { MobileMonthlyPage } from './mobile-monthly-page/mobile-monthly-page';
+import { MobileUnscheduledPage } from './mobile-unscheduled-page/mobile-unscheduled-page';
 import CALENDAR from '@/constants/schedule/CALENDAR';
 import { useRouter } from 'next/router';
 

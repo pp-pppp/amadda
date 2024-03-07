@@ -1,7 +1,7 @@
 import React from 'react';
 import { ReactNode } from 'react';
 import { Icon, Span } from '@amadda/external-temporal';
-import { BASE, DATE, SELECTED, SELECTED_SPAN, SPAN } from './MobileMonthlyPlate.css';
+import { BASE, DATE, SELECTED, SELECTED_SPAN, SPAN } from './mobile-monthly-plate.css';
 
 export interface MobileMonthPlateProps {
   dateType: keyof typeof SPAN;

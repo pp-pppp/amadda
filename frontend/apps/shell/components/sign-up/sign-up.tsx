@@ -4,7 +4,7 @@ import { Btn, Flex, Form, H1, Input, Label, P, Profile, Spacing } from '@amadda/
 import { IndexLayout } from '@/layout/index-layout';
 import useIdValidator from '@/hooks/user/use-id-validator';
 import SIGNUP_TEXT from '@/constants/user/SIGNUP_TEXT';
-import SignUpCaption from '../sign-up-caption/SignUpCaption';
+import SignUpCaption from '../sign-up-caption/sign-up-caption';
 import { UserInitRequest } from '@amadda/global-types';
 import useNameValidator from '@/hooks/user/use-name-validator';
 import { useRouter } from 'next/router';
