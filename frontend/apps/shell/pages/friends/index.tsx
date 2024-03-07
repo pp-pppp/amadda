@@ -1,5 +1,5 @@
 import { ErrorBoundary } from '@amadda/external-temporal';
-import HeaderLayout from '@/components/layout/HeaderLayout';
+import HeaderLayout from '@/components/layout/header-layout';
 import Head from 'next/head';
 import FriendPage from '@/components/friend-page/friend-page';
 

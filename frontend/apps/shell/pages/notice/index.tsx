@@ -1,5 +1,5 @@
 import { NoticeFrame } from '@/components/notice-view/notice-frame';
-import HeaderLayout from '@/components/layout/HeaderLayout';
+import HeaderLayout from '@/components/layout/header-layout';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import type { ReactNode } from 'react';

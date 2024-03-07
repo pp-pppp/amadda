@@ -1,6 +1,6 @@
 import { Flex, P, Profile, Spacing, Span } from '@amadda/external-temporal';
 import React from 'react';
-import { CATEGORY, LAYOUT_SCH, LAYOUT_UN, NAME, PERSON, PROFILE } from './MobileDailyPlate.css';
+import { CATEGORY, LAYOUT_SCH, LAYOUT_UN, NAME, PERSON, PROFILE } from './mobile-daily-plate.css';
 import DAILYPLATE_TEXT from '@/constants/schedule/DAILYPLATE_TEXT';
 import { ScheduleListReadResponse } from '@amadda/global-types';
 import { toLower } from '@/utils/schedule/convertColors';

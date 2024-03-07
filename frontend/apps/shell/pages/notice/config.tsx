@@ -1,4 +1,4 @@
-import HeaderLayout from '@/components/layout/HeaderLayout';
+import HeaderLayout from '@/components/layout/header-layout';
 import { NoticeFrame } from '@/components/notice-view/notice-frame';
 import { NoticeConfigFrame } from '@/components/notice-config/notice-config-frame';
 import { ErrorBoundary } from '@amadda/external-temporal';

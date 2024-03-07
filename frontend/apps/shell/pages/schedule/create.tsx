@@ -1,5 +1,5 @@
 import { ErrorBoundary } from '@amadda/external-temporal';
-import HeaderLayout from '@/components/layout/HeaderLayout';
+import HeaderLayout from '@/components/layout/header-layout';
 import Head from 'next/head';
 import { ScheduleEditFrame } from '@/components/schedule-edit/schedule-edit-frame/schedule-edit-frame';
 import { ScheduleEditForm } from '@/components/schedule-edit/schedule-edit-form/schedule-edit-form';

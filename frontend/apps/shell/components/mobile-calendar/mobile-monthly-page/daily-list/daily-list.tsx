@@ -5,8 +5,8 @@ import { BASE } from './DailyList.css';
 import CALENDAR from '@/constants/schedule/CALENDAR';
 import { useDailySchedule } from '@/hooks/schedule/use-schedule-list';
 import { useCategoryStore } from '@/store/schedule/category-store';
-import { MobileDailyPlateList } from '@/components/mobile-daily-plate-list/MobileDailyPlateList';
-import { MobileDailyPlate } from '@/components/mobile-daily-plate/MobileDailyPlate';
+import { MobileDailyPlateList } from '@/components/mobile-daily-plate-list/mobile-daily-plate-list';
+import { MobileDailyPlate } from '@/components/mobile-daily-plate/mobile-daily-plate';
 
 export function DailyList() {
   const { selectedCategorySeq, selectedAll, selectedNone } = useCategoryStore();

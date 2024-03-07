@@ -1,4 +1,4 @@
-import { Header } from '../navigation/Header';
+import { Header } from '../navigation/header';
 
 export default function HeaderLayout({ children }) {
   return (
