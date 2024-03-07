@@ -1,4 +1,4 @@
-const NextFederationPlugin = require('@module-federation/nextjs-mf');
+// const NextFederationPlugin = require('@module-federation/nextjs-mf');
 const { createVanillaExtractPlugin } = require('@vanilla-extract/next-plugin');
 const withVanillaExtract = createVanillaExtractPlugin();
 module.exports = withVanillaExtract({
@@ -37,32 +37,32 @@ module.exports = withVanillaExtract({
     config.infrastructureLogging = {
       level: 'error',
     };
-    if (!options.isServer) {
-      config.plugins.push(
-        new NextFederationPlugin({
-          name: 'shell',
-          filename: 'static/chunks/entry.js',
-          remotes: {
-            user: `user@${process.env.NEXT_PUBLIC_USER}/_next/static/chunks/entry.js`,
-            schedule: `schedule@${process.env.NEXT_PUBLIC_SCHEDULE}/_next/static/chunks/entry.js`,
-            notice: `notice@${process.env.NEXT_PUBLIC_NOTICE}/_next/static/chunks/entry.js`,
-          },
-          exposes: {},
-          shared: {
-            next: {
-              eager: true,
-              singleton: true,
-              requiredVersion: '13.4.12',
-            },
-            '@vanilla-extract/css': {
-              eager: true,
-              singleton: true,
-              requiredVersion: '1.13.0',
-            },
-          },
-        })
-      );
-    }
+    // if (!options.isServer) {
+    //   config.plugins.push(
+    //     new NextFederationPlugin({
+    //       name: 'shell',
+    //       filename: 'static/chunks/entry.js',
+    //       remotes: {
+    //         user: `user@${process.env.NEXT_PUBLIC_USER}/_next/static/chunks/entry.js`,
+    //         schedule: `schedule@${process.env.NEXT_PUBLIC_SCHEDULE}/_next/static/chunks/entry.js`,
+    //         notice: `notice@${process.env.NEXT_PUBLIC_NOTICE}/_next/static/chunks/entry.js`,
+    //       },
+    //       exposes: {},
+    //       shared: {
+    //         next: {
+    //           eager: true,
+    //           singleton: true,
+    //           requiredVersion: '13.4.12',
+    //         },
+    //         '@vanilla-extract/css': {
+    //           eager: true,
+    //           singleton: true,
+    //           requiredVersion: '1.13.0',
+    //         },
+    //       },
+    //     })
+    //   );
+    // }
     return config;
   },
 });
