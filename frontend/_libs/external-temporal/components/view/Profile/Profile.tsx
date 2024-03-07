@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { FRAME } from './profile.css;
+import { FRAME } from './profile.css';
 
 export interface ProfileProps {
   src: string;

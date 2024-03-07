@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
-import { LI_DISPLAY_VARIANT, UL_DISPLAY_VARIANT } from './list.css;
+import { LI_DISPLAY_VARIANT, UL_DISPLAY_VARIANT } from './list.css';
 import { H3 } from '#/components/typography/hn/h3';
 import Spacing from '#/components/typography/spacing/spacing';
 
