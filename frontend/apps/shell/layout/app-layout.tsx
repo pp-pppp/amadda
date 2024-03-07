@@ -1,4 +1,4 @@
-import { APPLAYOUT_MOBILE } from './Layout.css';
+import { APPLAYOUT_MOBILE } from './layouts.css';
 import type { ReactNode } from 'react';
 
 export interface LayoutProps {

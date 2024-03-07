@@ -1,5 +1,5 @@
 import { AlarmConfigRequest, ApiResponse } from '@amadda/global-types';
-import { auth, https } from '@amadda/fetch';
+import { withAuth, https } from '@amadda/fetch';
 import * as Sentry from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -18,4 +18,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   return res.status(400).json({ data: 'bad request' });
 };
 
-export default Sentry.wrapApiHandlerWithSentry(auth(handler), 'notice/api/alarm/unsubscribe');
+export default Sentry.wrapApiHandlerWithSentry(withAuth(handler), 'notice/api/alarm/unsubscribe');

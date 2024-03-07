@@ -1,9 +1,10 @@
-import { ScheduleEditFormData } from '@/components/ScheduleEdit/ScheduleEditForm/formdata';
-import { initFormValues } from '@/constants/schedule/SCHEDULE_EDIT_INIT';
-import { formToRequest } from '@SCH/utils/convertFormData';
-import { ScheduleCreateRequest, ScheduleUpdateRequest } from '@amadda/global-types';
+import type { ScheduleCreateRequest, ScheduleUpdateRequest } from '@amadda/global-types';
+import type { ScheduleEditFormData } from '@/components/schedule-edit/schedule-edit-form/formdata';
 import type { UseForm } from '@amadda/react-util-hooks';
-import { StateCreator, create } from 'zustand';
+import type { StateCreator } from 'zustand';
+import { initFormValues } from '@/constants/schedule/SCHEDULE_EDIT_INIT';
+import { formToRequest } from '@/utils/schedule/convertFormData';
+import { create } from 'zustand';
 
 export interface InputSlice {
   requestData: ScheduleCreateRequest | ScheduleUpdateRequest | null;

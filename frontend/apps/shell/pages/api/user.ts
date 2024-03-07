@@ -1,5 +1,5 @@
 import type { ApiResponse, UserRelationResponse } from '@amadda/global-types';
-import { auth, https } from '@amadda/fetch';
+import { withAuth, https } from '@amadda/fetch';
 import * as Sentry from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -28,4 +28,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   return res.status(400).json({ data: 'bad request' });
 };
-export default Sentry.wrapApiHandlerWithSentry(auth(handler), 'user/api/user');
+export default Sentry.wrapApiHandlerWithSentry(withAuth(handler), 'user/api/user');

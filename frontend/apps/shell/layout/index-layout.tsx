@@ -1,4 +1,4 @@
-import { INDEXLAYOUT_MOBILE } from './Layout.css';
+import { INDEXLAYOUT_MOBILE } from './layouts.css';
 import type { ReactNode } from 'react';
 
 export interface LayoutProps {

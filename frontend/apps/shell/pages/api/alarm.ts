@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import type { AlarmReadResponse, ApiResponse } from '@amadda/global-types';
-import { auth, https } from '@amadda/fetch';
+import { withAuth, https } from '@amadda/fetch';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const token = req.headers.authorization || '';
@@ -18,4 +18,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   return res.status(400).json({ data: 'bad request' });
 };
 
-export default Sentry.wrapApiHandlerWithSentry(auth(handler), 'notice/api/alarm');
+export default Sentry.wrapApiHandlerWithSentry(withAuth(handler), 'notice/api/alarm');

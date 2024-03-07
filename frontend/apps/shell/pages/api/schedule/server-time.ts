@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { auth, http } from '@amadda/fetch';
+import { withAuth, http } from '@amadda/fetch';
 import type { ApiResponse } from '@amadda/global-types';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -18,4 +18,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default Sentry.wrapApiHandlerWithSentry(auth(handler), '');
+export default Sentry.wrapApiHandlerWithSentry(withAuth(handler), '');

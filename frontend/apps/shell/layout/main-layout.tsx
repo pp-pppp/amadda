@@ -1,4 +1,4 @@
-import { MAIN } from './Layout.css';
+import { MAIN } from './layouts.css';
 import type { ReactNode } from 'react';
 
 export interface LayoutProps {

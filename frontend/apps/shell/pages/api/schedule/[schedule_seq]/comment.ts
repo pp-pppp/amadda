@@ -1,17 +1,17 @@
 import * as Sentry from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { auth, https } from '@amadda/fetch';
+import { withAuth, https } from '@amadda/fetch';
 import { ApiResponse, CommentCreateRequest } from '@amadda/global-types';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const token = req.headers.authorization || '';
-  const { scheduleSeq } = req.query;
+  const { schedule_seq } = req.query;
   if (req.method === 'POST') {
     //댓글 작성
     try {
       const { code, message, data } = await https.post<CommentCreateRequest, number>(
-        `${process.env.SPRING_API_ROOT}/schedule/${scheduleSeq}/comment`,
+        `${process.env.SPRING_API_ROOT}/schedule/${schedule_seq}/comment`,
         token,
         req.body
       );
@@ -24,4 +24,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   return res.status(400).json({ data: 'bad request' });
 };
 
-export default Sentry.wrapApiHandlerWithSentry(auth(handler), 'schedule/api/schedule/comment');
+export default Sentry.wrapApiHandlerWithSentry(withAuth(handler), 'schedule/api/schedule/comment');

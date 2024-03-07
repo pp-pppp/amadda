@@ -1,15 +1,15 @@
 import * as Sentry from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { auth, https } from '@amadda/fetch';
+import { withAuth, https } from '@amadda/fetch';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const token = req.headers.authorization || '';
-  const { requestSeq } = req.query;
+  const { request_seq } = req.query;
   if (req.method === 'POST') {
     //친구신청 수락
     try {
-      const { code, message, data } = await https.post<null, number>(`${process.env.SPRING_API_ROOT}/friend/request/${requestSeq}`, token, req.body);
+      const { code, message, data } = await https.post<null, number>(`${process.env.SPRING_API_ROOT}/friend/request/${request_seq}`, token, req.body);
       return res.status(code).json(data);
     } catch (err) {
       Sentry.captureException(err);
@@ -19,7 +19,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'PUT') {
     //친구신청 거절
     try {
-      const { code, message, data } = await https.put<null, number>(`${process.env.SPRING_API_ROOT}/friend/request/${requestSeq}`, token, req.body);
+      const { code, message, data } = await https.put<null, number>(`${process.env.SPRING_API_ROOT}/friend/request/${request_seq}`, token, req.body);
       return res.status(code).json(data);
     } catch (err) {
       Sentry.captureException(err);
@@ -28,4 +28,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   return res.status(400).json({ data: 'bad request' });
 };
-export default Sentry.wrapApiHandlerWithSentry(auth(handler), 'user/api/friend/request/[requestSeq]');
+export default Sentry.wrapApiHandlerWithSentry(withAuth(handler), 'user/api/friend/request/[request_seq]');

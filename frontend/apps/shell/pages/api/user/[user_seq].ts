@@ -1,15 +1,16 @@
 import * as Sentry from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { auth, https } from '@amadda/fetch';
+import type { ApiResponse, UserRelationResponse } from '@amadda/global-types';
+import { withAuth, https } from '@amadda/fetch';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const token = req.headers.authorization || '';
-  const { groupSeq } = req.query;
-  if (req.method === 'DELETE') {
-    //그룹 삭제
+  if (req.method === 'GET') {
+    //유저 정보(호버용)
     try {
-      const { code, message, data } = await https.delete(`${process.env.SPRING_API_ROOT}/friend/group/${groupSeq}`, token);
+      const { user_seq } = req.query;
+      const { code, message, data } = await https.get<UserRelationResponse>(`${process.env.SPRING_API_ROOT}/user/${user_seq}`, token);
       return res.status(code).json(data);
     } catch (err) {
       Sentry.captureException(err);
@@ -18,4 +19,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   return res.status(400).json({ data: 'bad request' });
 };
-export default Sentry.wrapApiHandlerWithSentry(auth(handler), 'user/api/friend/group/[groupSeq]');
+export default Sentry.wrapApiHandlerWithSentry(withAuth(handler), 'user/api/user/[user_seq]');

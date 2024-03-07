@@ -1,18 +1,19 @@
-import type { ApiResponse, ParticipationListReadResponse } from '@amadda/global-types';
+import type { ApiResponse, CategoryCreateRequest, CategoryUpdateResponse } from '@amadda/global-types';
 import * as Sentry from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { auth, https } from '@amadda/fetch';
+import { withAuth, https } from '@amadda/fetch';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const token = req.headers.authorization || '';
-  if (req.method === 'GET') {
-    //멘션 검색
+  const { category_seq } = req.query;
+  if (req.method === 'PUT') {
+    //카테고리 수정 (이름/색깔)
     try {
-      const { searchKey, scheduleSeq } = req.query;
-      const { code, message, data } = await https.get<ParticipationListReadResponse>(
-        `${process.env.SPRING_API_ROOT}/schedule/${scheduleSeq}/participation?searchKey=${searchKey}`,
-        token
+      const { code, message, data } = await https.put<CategoryCreateRequest, CategoryUpdateResponse>(
+        `${process.env.SPRING_API_ROOT}/schedule/user/category/${category_seq}`,
+        token,
+        req.body
       );
       return res.status(code).json(data);
     } catch (err) {
@@ -21,10 +22,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
   }
   if (req.method === 'DELETE') {
-    //참가 정보 삭제
+    //카테고리 삭제
     try {
-      const { scheduleSeq } = req.query;
-      const { code, message, data } = await https.delete(`${process.env.SPRING_API_ROOT}/schedule/${scheduleSeq}/participation`, token);
+      const { code, message, data } = await https.delete(`${process.env.SPRING_API_ROOT}/schedule/user/category/${category_seq}`, token);
       return res.status(code).json(data);
     } catch (err) {
       Sentry.captureException(err);
@@ -33,5 +33,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   return res.status(400).json({ data: 'bad request' });
 };
-
-export default Sentry.wrapApiHandlerWithSentry(auth(handler), 'schedule/api/schedule/participation');
+export default Sentry.wrapApiHandlerWithSentry(withAuth(handler), 'schedule/api/user/category/[category_seq]');

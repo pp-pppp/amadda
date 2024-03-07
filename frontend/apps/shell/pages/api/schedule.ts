@@ -3,14 +3,14 @@ import type { ApiResponse, ScheduleCreateRequest, ScheduleCreateResponse, Schedu
 import * as Sentry from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { auth, https } from '@amadda/fetch';
+import { withAuth, https } from '@amadda/fetch';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const token = req.headers.authorization || '';
   if (req.method === 'GET') {
     //일정 조회 및 검색
     try {
-      const { categorySeq, searchKey, unscheduled } = req.query;
+      const { category_seq, searchKey, unscheduled } = req.query;
       const queryParams = new URLSearchParams();
 
       if (categorySeq) {
@@ -64,4 +64,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   return res.status(400).json({ data: 'bad request' });
 };
 
-export default Sentry.wrapApiHandlerWithSentry(auth(handler), 'schedule/api/schedule');
+export default Sentry.wrapApiHandlerWithSentry(withAuth(handler), 'schedule/api/schedule');

@@ -2,7 +2,7 @@ import { ApiResponse, CategoryCreateRequest, CategoryCreateResponse, CategoryRea
 import * as Sentry from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { auth, https } from '@amadda/fetch';
+import { withAuth, https } from '@amadda/fetch';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const token = req.headers.authorization || '';
@@ -32,4 +32,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   return res.status(400).json({ data: 'bad request' });
 };
-export default Sentry.wrapApiHandlerWithSentry(auth(handler), 'schedule/api/user/category');
+export default Sentry.wrapApiHandlerWithSentry(withAuth(handler), 'schedule/api/user/category');
