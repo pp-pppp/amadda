@@ -11,9 +11,11 @@
   "dependencies": {
     "@amadda/external-temporal": "workspace:*",
     "@amadda/fetch": "workspace:*",
+    "@amadda/react-util-hooks": "workspace:*",
     "@sentry/nextjs": "^7.86.0",
     "@vanilla-extract/css": "1.13.0",
     "cookie": "^0.6.0",
+    "kafkajs": "^2.2.4",
     "next": "13.4.12",
     "react": "18.2.0",
     "react-dom": "18.2.0",

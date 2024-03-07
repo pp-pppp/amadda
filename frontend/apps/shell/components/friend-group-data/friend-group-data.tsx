@@ -1,7 +1,7 @@
 import { H3, H6 } from '@amadda/external-temporal';
 import React, { useContext, useState } from 'react';
 import { FriendFrame, MODE_CONTEXT } from '../friend-frame/friend-frame';
-import { useFriend } from '@/hooks/friend/useFriend';
+import { useFriend } from '@/hooks/friend/use-friend';
 import { FriendGroups } from '../friend-groups/friend-groups';
 import FRIENDS from '@/constants/friend/FRIENDS';
 import { Friend } from '../friend-component/friend';

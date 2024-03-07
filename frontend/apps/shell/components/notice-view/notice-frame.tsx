@@ -2,7 +2,7 @@ import React from 'react';
 import { useEffect } from 'react';
 import { ErrorBoundary, Flex, H3, List, Spacing } from '@amadda/external-temporal';
 import { AlarmReadResponse } from '@amadda/global-types';
-import { useGetNotice } from '@/hooks/notice/useGetNotice';
+import { useGetNotice } from '@/hooks/notice/use-get-notice';
 import { useRouter } from 'next/router';
 import { Notice } from './notice-list';
 

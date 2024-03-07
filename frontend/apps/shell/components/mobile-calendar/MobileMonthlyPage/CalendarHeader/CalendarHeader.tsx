@@ -1,11 +1,11 @@
-import { useDateStore } from '@/store/schedule/dateStore';
+import { useDateStore } from '@/store/schedule/date-store';
 import { BtnRound, Filter, Flex, H2, P, Spacing } from '@amadda/external-temporal';
 import { useEffect, useState, MouseEvent, ChangeEvent } from 'react';
 import CALENDAR from '@/constants/schedule/CALENDAR';
-import { useGetCategory } from '@/hooks/schedule/useCategory';
-import { useCategoryStore } from '@/store/schedule/categoryStore';
-import { useFilterStore } from '@/store/schedule/filterStore';
-import useServerTime from '@/hooks/schedule/useServerTime';
+import { useGetCategory } from '@/hooks/schedule/use-category';
+import { useCategoryStore } from '@/store/schedule/category-store';
+import { useFilterStore } from '@/store/schedule/filter-store';
+import useServerTime from '@/hooks/schedule/use-server-time';
 
 export function CalendarHeader() {
   const { data } = useServerTime();

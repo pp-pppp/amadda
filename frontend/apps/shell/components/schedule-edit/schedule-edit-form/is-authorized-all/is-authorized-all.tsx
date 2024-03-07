@@ -1,4 +1,4 @@
-import { useScheduleEditStore } from '@/store/schedule/schedule-create/useScheduleEditStore';
+import { useScheduleEditStore } from '@/store/schedule/schedule-create/use-schedule-edit-store';
 import { Label, Flex, Spacing, Span, Input } from '@amadda/external-temporal';
 import { useShallow } from 'zustand/react/shallow';
 

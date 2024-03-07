@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { Btn, Flex, Form, H1, Input, Label, P, Profile, Spacing } from '@amadda/external-temporal';
-import { IndexLayout } from '@/layout/IndexLayout';
+import { IndexLayout } from '@/layout/index-layout';
 import useIdValidator from '@/hooks/user/useIdValidator';
 import SIGNUP_TEXT from '@/constants/user/SIGNUP_TEXT';
 import SignUpCaption from '../sign-up-caption/SignUpCaption';

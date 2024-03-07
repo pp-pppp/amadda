@@ -1,6 +1,6 @@
 import HeaderLayout from '@/components/layout/HeaderLayout';
-import { NoticeFrame } from '@/components/Notice/NoticeFrame';
-import { NoticeConfigFrame } from '@/components/notice-config/NoticeConfigFrame';
+import { NoticeFrame } from '@/components/notice-view/notice-frame';
+import { NoticeConfigFrame } from '@/components/notice-config/notice-config-frame';
 import { ErrorBoundary } from '@amadda/external-temporal';
 
 import dynamic from 'next/dynamic';

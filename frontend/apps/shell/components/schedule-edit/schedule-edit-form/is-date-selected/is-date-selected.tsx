@@ -1,6 +1,6 @@
 import { Label, Flex, Input, Spacing, Span } from '@amadda/external-temporal';
 import { DATE_INIT } from '@/constants/schedule/DATE_INIT';
-import { useScheduleEditStore } from '@/store/schedule/schedule-create/useScheduleEditStore';
+import { useScheduleEditStore } from '@/store/schedule/schedule-create/use-schedule-edit-store';
 import { useShallow } from 'zustand/react/shallow';
 
 export function IsDateSelected() {

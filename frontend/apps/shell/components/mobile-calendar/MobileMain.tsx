@@ -1,5 +1,5 @@
 import React from 'react';
-import { FABLAYOUT_MOBILE, INDEXLAYOUT_MOBILE } from '@/layout/Layout.css';
+import { FABLAYOUT_MOBILE, INDEXLAYOUT_MOBILE } from '@/layout/layouts.css';
 import { FAB, Segments } from '@amadda/external-temporal';
 import { MobileMonthlyPage } from './MobileMonthlyPage/MobileMonthlyPage';
 import { MobileUnscheduledPage } from './MobileUnscheduledPage/MobileUnscheduledPage';

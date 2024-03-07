@@ -1,4 +1,4 @@
-import { NoticeFrame } from '@/components/Notice/NoticeFrame';
+import { NoticeFrame } from '@/components/notice-view/notice-frame';
 import HeaderLayout from '@/components/layout/HeaderLayout';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';

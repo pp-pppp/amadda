@@ -1,6 +1,6 @@
 import { ScheduleUpdateRequest } from '@amadda/global-types';
 import { useRouter } from 'next/router';
-import { ScheduleEditFormData } from '../../components/schedule-edit/ScheduleEditForm/formdata';
+import { ScheduleEditFormData } from '../../components/schedule-edit/schedule-edit-form/formdata';
 import { clientFetch } from '@amadda/fetch';
 import { formToRequest } from '@/utils/schedule/convertFormData';
 

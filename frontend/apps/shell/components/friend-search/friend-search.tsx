@@ -3,7 +3,7 @@ import { Input, Spacing } from '@amadda/external-temporal';
 import FriendsConstants from '../../constants/friend/FRIENDS';
 import { useState } from 'react';
 import { FriendFrame } from '../friend-frame/friend-frame';
-import { useSearchFriend, useSearchUser } from '@/hooks/friend/useFriend';
+import { useSearchFriend, useSearchUser } from '@/hooks/friend/use-friend';
 import { FriendGroups } from '../friend-groups/friend-groups';
 import FRIENDS from '../../constants/friend/FRIENDS';
 import { Friend } from '../friend-component/friend';

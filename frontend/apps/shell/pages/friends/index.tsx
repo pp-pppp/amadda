@@ -1,9 +1,7 @@
 import { ErrorBoundary } from '@amadda/external-temporal';
-import HeaderLayout from '@SH/components/HeaderLayout';
-import dynamic from 'next/dynamic';
+import HeaderLayout from '@/components/layout/HeaderLayout';
 import Head from 'next/head';
-
-const Friend = dynamic(() => import('user/Friend'), { ssr: false });
+import FriendPage from '@/components/friend-page/friend-page';
 
 export default function Page() {
   return (
@@ -14,7 +12,7 @@ export default function Page() {
       </Head>
       <HeaderLayout>
         <ErrorBoundary>
-          <Friend />
+          <FriendPage />
         </ErrorBoundary>
       </HeaderLayout>
     </div>

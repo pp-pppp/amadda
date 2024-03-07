@@ -1,5 +1,5 @@
 import { Flex, Input, Label, Spacing, Span } from '@amadda/external-temporal';
-import { useScheduleEditStore } from '@/store/schedule/schedule-create/useScheduleEditStore';
+import { useScheduleEditStore } from '@/store/schedule/schedule-create/use-schedule-edit-store';
 import { ChangeEvent } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 

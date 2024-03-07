@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { GRID } from './MobileCalendarDate.css';
 import { MobileMonthlyPlate } from '@/components/mobile-monthly-plate/MobileMonthlyPlate';
-import { useCalendarDates } from '@/hooks/schedule/useCalendarInfo';
-import { useDateStore } from '@/store/schedule/dateStore';
-import { useMonthlySchedule } from '@/hooks/schedule/useScheduleList';
-import { useCategoryStore } from '@/store/schedule/categoryStore';
-import useServerTime from '@/hooks/schedule/useServerTime';
+import { useCalendarDates } from '@/hooks/schedule/use-calendar-info';
+import { useDateStore } from '@/store/schedule/date-store';
+import { useMonthlySchedule } from '@/hooks/schedule/use-schedule-list';
+import { useCategoryStore } from '@/store/schedule/category-store';
+import useServerTime from '@/hooks/schedule/use-server-time';
 
 export interface DateInfo {
   year: string;

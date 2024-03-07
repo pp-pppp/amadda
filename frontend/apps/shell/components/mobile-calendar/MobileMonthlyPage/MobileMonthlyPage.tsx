@@ -3,7 +3,7 @@ import { ReactNode, useEffect, useRef } from 'react';
 import { CalendarHeader } from './CalendarHeader/CalendarHeader';
 import { DailyList } from './DailyList/DailyList';
 import { Spacing, ErrorBoundary } from '@amadda/external-temporal';
-import { useFilterStore } from '@/store/schedule/filterStore';
+import { useFilterStore } from '@/store/schedule/filter-store';
 
 export function MobileMonthlyPage(): ReactNode {
   const { isOpen } = useFilterStore();

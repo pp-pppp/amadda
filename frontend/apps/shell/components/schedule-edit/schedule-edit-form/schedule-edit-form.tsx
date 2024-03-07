@@ -18,7 +18,7 @@ import { AlarmTime } from './alarm-time/alarm-time';
 import { Category } from './category/category';
 import { ScheduleMemo } from './schedule-memo/schedule-memo';
 import { useShallow } from 'zustand/react/shallow';
-import { useScheduleEditStore } from '@/store/schedule/schedule-create/useScheduleEditStore';
+import { useScheduleEditStore } from '@/store/schedule/schedule-create/use-schedule-edit-store';
 
 export type ScheduleEditFormProps = {
   scheduleDetail?: ScheduleEditFormData;

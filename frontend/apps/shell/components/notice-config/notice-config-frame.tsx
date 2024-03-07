@@ -1,6 +1,6 @@
 import React from 'react';
 import { ErrorBoundary, Flex, H3, List, Spacing } from '@amadda/external-temporal';
-import { useGetNotice } from '@/hooks/notice/useGetNotice';
+import { useGetNotice } from '@/hooks/notice/use-get-notice';
 import { NoticeToggle } from './notice-toggle-list';
 
 export function NoticeConfigFrame() {

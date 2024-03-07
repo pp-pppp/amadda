@@ -1,6 +1,6 @@
 // 한달치 스케줄 리스트를 갖고오는 훅
 import useSWR from 'swr';
-import { useDateStore } from '@/store/schedule/dateStore';
+import { useDateStore } from '@/store/schedule/date-store';
 import { clientFetch } from '@amadda/fetch';
 import { useEffect, useState } from 'react';
 import { ScheduleListReadResponse, ScheduleSearchResponse } from '@amadda/global-types';

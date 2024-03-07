@@ -1,5 +1,5 @@
 import useSWR from 'swr';
-import { useDateStore } from '@/store/schedule/dateStore';
+import { useDateStore } from '@/store/schedule/date-store';
 import { useEffect } from 'react';
 import { clientFetch } from '@amadda/fetch';
 

@@ -1,6 +1,6 @@
 import { FriendGroups } from '@/components/friend-groups/friend-groups';
 import { Friend } from '@/components/friend-component/friend';
-import { useFriend } from '@/hooks/friend/useFriend';
+import { useFriend } from '@/hooks/friend/use-friend';
 import { ErrorBoundary } from '@amadda/external-temporal';
 import { clientFetch } from '@amadda/fetch';
 import FRIENDS from '@/constants/friend/FRIENDS';

@@ -1,10 +1,10 @@
-import { useDateStore } from '@/store/schedule/dateStore';
+import { useDateStore } from '@/store/schedule/date-store';
 import { useEffect, useState } from 'react';
 import { Spacing, Span } from '@amadda/external-temporal';
 import { BASE } from './DailyList.css';
 import CALENDAR from '@/constants/schedule/CALENDAR';
-import { useDailySchedule } from '@/hooks/schedule/useScheduleList';
-import { useCategoryStore } from '@/store/schedule/categoryStore';
+import { useDailySchedule } from '@/hooks/schedule/use-schedule-list';
+import { useCategoryStore } from '@/store/schedule/category-store';
 import { MobileDailyPlateList } from '@/components/mobile-daily-plate-list/MobileDailyPlateList';
 import { MobileDailyPlate } from '@/components/mobile-daily-plate/MobileDailyPlate';
 
