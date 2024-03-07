@@ -1,11 +1,12 @@
 import { ErrorBoundary } from '@amadda/external-temporal';
-import HeaderLayout from '@SH/components/HeaderLayout';
-import dynamic from 'next/dynamic';
+import HeaderLayout from '@/components/layout/HeaderLayout';
 import Head from 'next/head';
-import type { ReactNode } from 'react';
+import { ScheduleDetail } from '@/components/schedule-detail/ScheduleDetail';
+import { ScheduleDetailReadResponse } from '@amadda/global-types';
+import { clientFetch } from '@amadda/fetch';
+import type { InferGetServerSidePropsType, GetServerSideProps } from 'next';
 
-const Detail = dynamic(() => import('schedule/Detail'), { ssr: false });
-export default function Page({ children }) {
+export default function Page({ detail }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <div>
       <Head>
@@ -14,9 +15,17 @@ export default function Page({ children }) {
       </Head>
       <HeaderLayout>
         <ErrorBoundary>
-          <Detail />
+          <ScheduleDetail detail={detail} />;
         </ErrorBoundary>
       </HeaderLayout>
     </div>
   );
 }
+
+export const getServerSideProps = (async context => {
+  const scheduleSeq = context.params?.scheduleSeq;
+  const detail = await clientFetch.get<ScheduleDetailReadResponse>(`${process.env.NEXT_PUBLIC_SCHEDULE}/api/schedule/${scheduleSeq}`);
+  return { props: { detail } };
+}) satisfies GetServerSideProps<{
+  detail: ScheduleDetailReadResponse;
+}>;
