@@ -1,4 +1,5 @@
-import HeaderLayout from '@SH/components/HeaderLayout';
+import { NoticeFrame } from '@/components/Notice/NoticeFrame';
+import HeaderLayout from '@/components/layout/HeaderLayout';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import type { ReactNode } from 'react';
@@ -14,7 +15,7 @@ export default function Page({ children }) {
       </Head>
       <main>
         <HeaderLayout>
-          <Notice />
+          <NoticeFrame />
         </HeaderLayout>
       </main>
     </div>
