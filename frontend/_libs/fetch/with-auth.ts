@@ -14,6 +14,7 @@ type API_HANDLER = (request: NextApiRequest, response: NextApiResponse) => Promi
 export function withAuth(fn: API_HANDLER): API_HANDLER {
   return async function (req: NextApiRequest, res: NextApiResponse) {
     let ACCESS_TOKEN = req.cookies.Auth || '';
+
     if (!req.cookies.Auth) {
       return res.redirect(307, `${process.env.NEXT_PUBLIC_SHELL}`);
     }

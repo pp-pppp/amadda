@@ -20,23 +20,23 @@ module.exports = withVanillaExtract({
         source: '/api/:path*',
         headers: [
           { key: 'Access-Control-Allow-Credentials', value: 'true' },
-          { key: 'Access-Control-Allow-Origin', value: '*' },
+          { key: 'Access-Control-Allow-Origin', value: process.env.NEXT_PUBLIC_SHELL },
           {
             key: 'Access-Control-Allow-Methods',
             value: 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
           },
           {
             key: 'Access-Control-Allow-Headers',
-            value: 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version',
+            value: 'Authorization, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version',
           },
         ],
       },
     ];
   },
   webpack(config, options) {
-    config.infrastructureLogging = {
-      level: 'error',
-    };
+    // config.infrastructureLogging = {
+    //   level: 'error',
+    // };
     // if (!options.isServer) {
     //   config.plugins.push(
     //     new NextFederationPlugin({

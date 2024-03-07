@@ -13,10 +13,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const { category_seq, searchKey, unscheduled } = req.query;
       const queryParams = new URLSearchParams();
 
-      if (categorySeq) {
+      if (category_seq) {
         let result: string = '';
-        if (Array.isArray(categorySeq)) {
-          result = categorySeq.join(',');
+        if (Array.isArray(category_seq)) {
+          result = category_seq.join(',');
           queryParams.append('category', result);
         }
       }

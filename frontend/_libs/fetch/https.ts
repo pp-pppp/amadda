@@ -10,7 +10,6 @@ export const https = {
       },
     });
     const { code, message, data }: ApiResponse<Res> = await response.json();
-
     if (response.status > 399) {
       throw new Error(`status: ${code || response.status}, message: ${message || response.statusText}`);
     } else {
