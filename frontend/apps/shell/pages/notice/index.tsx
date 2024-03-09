@@ -4,8 +4,6 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import type { ReactNode } from 'react';
 
-const Notice = dynamic(() => import('notice/Notice'), { ssr: false });
-
 export default function Page({ children }) {
   return (
     <div>
