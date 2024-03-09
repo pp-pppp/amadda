@@ -1,11 +1,10 @@
+import HeaderLayout from '@/components/layout/header-layout';
+import { NoticeFrame } from '@/components/notice-view/notice-frame';
+import { NoticeConfigFrame } from '@/components/notice-config/notice-config-frame';
 import { ErrorBoundary } from '@amadda/external-temporal';
-import HeaderLayout from '@SH/components/HeaderLayout';
+
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-
-const NoticeConfig = dynamic(() => import('notice/NoticeConfig'), {
-  ssr: false,
-});
 
 export default function Page({ children }) {
   return (
@@ -16,7 +15,7 @@ export default function Page({ children }) {
       </Head>
       <HeaderLayout>
         <ErrorBoundary>
-          <NoticeConfig />
+          <NoticeConfigFrame />
         </ErrorBoundary>
       </HeaderLayout>
     </div>

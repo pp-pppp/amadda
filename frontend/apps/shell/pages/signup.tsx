@@ -2,7 +2,7 @@ import { kv, clientFetch } from '@amadda/fetch';
 import cookie from 'cookie';
 import type { GetServerSideProps } from 'next';
 import { ApiResponse, UserJwtRequest, UserJwtResponse } from '@amadda/global-types';
-import SignUp from '@SH/components/SignUp/SignUp';
+import SignUp from '@/components/sign-up/sign-up';
 import { kakaoAuth } from '@amadda/fetch';
 interface KakaoPageProps {
   kakaoId: string;
@@ -59,7 +59,7 @@ export const getServerSideProps = (async context => {
       // 리다이렉트
       return {
         redirect: {
-          destination: `${process.env.NEXT_PUBLIC_SHELL}/schedule`,
+          destination: `${process.env.NEXT_PUBLIC_SHELL}/calendar`,
           permanent: false,
         },
       };

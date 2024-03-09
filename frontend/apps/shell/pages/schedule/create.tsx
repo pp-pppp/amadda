@@ -1,10 +1,8 @@
 import { ErrorBoundary } from '@amadda/external-temporal';
-import HeaderLayout from '@SH/components/HeaderLayout';
-import dynamic from 'next/dynamic';
+import HeaderLayout from '@/components/layout/header-layout';
 import Head from 'next/head';
-import type { ReactNode } from 'react';
-
-const Edit = dynamic(() => import('schedule/Edit'), { ssr: false });
+import { ScheduleEditFrame } from '@/components/schedule-edit/schedule-edit-frame/schedule-edit-frame';
+import { ScheduleEditForm } from '@/components/schedule-edit/schedule-edit-form/schedule-edit-form';
 
 export default function Page({ children }) {
   return (
@@ -15,7 +13,9 @@ export default function Page({ children }) {
       </Head>
       <HeaderLayout>
         <ErrorBoundary>
-          <Edit />
+          <ScheduleEditFrame>
+            <ScheduleEditForm />
+          </ScheduleEditFrame>
         </ErrorBoundary>
       </HeaderLayout>
     </div>
