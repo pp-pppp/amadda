@@ -11,7 +11,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       const { searchKey, schedule_seq } = req.query;
       const { code, message, data } = await https.get<ParticipationListReadResponse>(
-        `${process.env.SPRING_API_ROOT}/schedule/${scheduleSeq}/participation?searchKey=${searchKey}`,
+        `${process.env.SPRING_API_ROOT}/schedule/${schedule_seq}/participation?searchKey=${searchKey}`,
         token
       );
       return res.status(code).json(data);
@@ -24,7 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //참가 정보 삭제
     try {
       const { schedule_seq } = req.query;
-      const { code, message, data } = await https.delete(`${process.env.SPRING_API_ROOT}/schedule/${scheduleSeq}/participation`, token);
+      const { code, message, data } = await https.delete(`${process.env.SPRING_API_ROOT}/schedule/${schedule_seq}/participation`, token);
       return res.status(code).json(data);
     } catch (err) {
       Sentry.captureException(err);

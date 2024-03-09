@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
-import { BASE } from './Label.css';
+import { BASE } from './label.css';
 
 export interface LabelProps extends ComponentPropsWithoutRef<'label'> {
   htmlFor: string;

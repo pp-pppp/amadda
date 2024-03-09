@@ -1,4 +1,4 @@
-import { ScheduleEditFormData } from '../../components/ScheduleEdit/ScheduleEditForm/formdata';
+import type { ScheduleEditFormData } from '@/components/schedule-edit/schedule-edit-form/formdata';
 
 export function scheduleFormValidator(data: ScheduleEditFormData) {
   const errors = [];

@@ -1,6 +1,6 @@
-import type { ScheduleEditFormData } from '@/components/ScheduleEdit/ScheduleEditForm/formdata';
 import type { ScheduleCreateRequest, ScheduleDetailReadResponse, ScheduleUpdateRequest } from '@amadda/global-types';
 import { numberToString, stringToNumber } from './formatDate';
+import { ScheduleEditFormData } from '@/components/schedule-edit/schedule-edit-form/formdata';
 
 export const formToRequest = (data: ScheduleEditFormData): ScheduleCreateRequest | ScheduleUpdateRequest => {
   const startAt = numberToString(Number(data.startYear), Number(data.startMonth), Number(data.startDate), Number(data.startTime), Number(data.startMinute));

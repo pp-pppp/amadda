@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ComponentPropsWithoutRef } from 'react';
-import { HSIZE, VSIZE } from './Spacing.css';
+import { HSIZE, VSIZE } from './spacing.css';
 
 export interface SpacingProps extends ComponentPropsWithoutRef<'div'> {
   dir?: 'h' | 'v';

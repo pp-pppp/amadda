@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ComponentPropsWithoutRef } from 'react';
-import { CONTAINER_BASE, CONTAINER_VARIANT, SLIDER, SWITCH_BASE, SWITCH_VARIANT } from './Switch.css';
+import { CONTAINER_BASE, CONTAINER_VARIANT, SLIDER, SWITCH_BASE, SWITCH_VARIANT } from './switch.css';
 interface SwitchProps extends ComponentPropsWithoutRef<'input'> {
   id: string;
   selected: boolean;

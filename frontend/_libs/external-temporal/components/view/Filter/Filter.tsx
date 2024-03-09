@@ -3,7 +3,7 @@ import { Icon } from '#/components/view/icon/icon';
 import { Input } from '#/components/interaction/input/input';
 import { Label } from '#/components/interaction/label/label';
 import { H5 } from '#/components/typography/hn/h5';
-import { STATUS } from './Filter.css';
+import { STATUS } from './filter.css';
 import type { ChangeEvent, MouseEvent, ReactNode } from 'react';
 
 export interface FilterProps {

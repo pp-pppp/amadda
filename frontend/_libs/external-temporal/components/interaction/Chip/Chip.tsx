@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon } from '#/components/view/icon/icon';
-import { TYPE_VARIANT, SHAPE_VARIANT, KEYWORD_DELETE } from './Chip.css';
+import { TYPE_VARIANT, SHAPE_VARIANT, KEYWORD_DELETE } from './chip.css';
 
 interface ChipProps {
   type: keyof typeof TYPE_VARIANT;
