@@ -1,24 +1,17 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { BtnRound, Flex, Input, List, Profile, Spacing, Span } from '@amadda/external-temporal';
 import { FRIEND_PROFILE } from './Friend.css';
 import FRIENDS from '@U/constants/FRIENDS';
-import { useFriendRouter } from '@U/store/friendRouter/useFriendRouter';
-import { ROUTES } from '@U/store/friendRouter/pageSlice';
+import { User } from '@amadda/global-types';
 
 export interface FriendProps {
-  groupMember: {
-    userSeq: number;
-    userName: string;
-    userId: string;
-    imageUrl: string;
-  };
-  status: (typeof ROUTES)[number];
+  groupMember: User;
   selected?: boolean;
-  onSelect?: (f: number) => void;
-  onRequest?: (f: number) => void;
-  onQuit?: (f: number) => void;
+  onSelect?: ((f: User) => void) | null;
+  onRequest?: ((f: User) => void) | null;
+  onQuit?: ((f: User) => void) | null;
 }
-export function Friend({ groupMember, status, selected, onSelect = () => {}, onRequest = () => {}, onQuit = () => {} }: FriendProps) {
+export function Friend({ groupMember, selected, onSelect = null, onRequest = null, onQuit = null }: FriendProps) {
   return (
     <List.Li display="block">
       <div className={FRIEND_PROFILE}>
@@ -28,7 +21,7 @@ export function Friend({ groupMember, status, selected, onSelect = () => {}, onR
             <Spacing dir="h" size="0.5" />
             <Span>{groupMember.userName}</Span>
           </Flex>
-          {status === 'EDIT' && (
+          {typeof onSelect === 'function' && (
             <Input
               type="checkbox"
               name={groupMember.userId}
@@ -36,16 +29,16 @@ export function Friend({ groupMember, status, selected, onSelect = () => {}, onR
               value={String(groupMember.userSeq)}
               id={groupMember.userId}
               checked={selected}
-              onChange={() => onSelect(groupMember.userSeq)}
+              onChange={() => onSelect(groupMember)}
             />
           )}
-          {status === 'SEARCH' && (
-            <BtnRound type="button" variant="key" size="S" onClick={() => onRequest(groupMember.userSeq)} disabled={false}>
+          {typeof onRequest === 'function' && (
+            <BtnRound type="button" variant="key" size="S" onClick={() => onRequest(groupMember)} disabled={false}>
               {FRIENDS.BTN.REQUEST_FRIEND}
             </BtnRound>
           )}
-          {status === 'READ' && (
-            <BtnRound type="button" variant="white" size="S" onClick={() => onQuit(groupMember.userSeq)} disabled={false}>
+          {typeof onQuit === 'function' && (
+            <BtnRound type="button" variant="white" size="S" onClick={() => onQuit(groupMember)} disabled={false}>
               {FRIENDS.BTN.QUIT_FRIEND}
             </BtnRound>
           )}
