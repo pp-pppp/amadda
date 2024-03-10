@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, FormEvent, RefObject } from 'react';
 import type { UseForm, UseFormArgs } from './types';
 
-export const useForm = <T>({
+export const useForm = <T extends Object>({
   initialValues,
   onSubmit,
   validator,
@@ -11,6 +11,7 @@ export const useForm = <T>({
   setExternalStoreData = undefined,
 }: UseFormArgs<T>): UseForm<T> => {
   const [values, setValues] = useState<typeof initialValues>({ ...initialValues } as const);
+  const [valid, setValid] = useState<boolean>(true);
   const [invalidFields, setInvalidFields] = useState<Array<Record<keyof T, string>>>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [response, setResponse] = useState<unknown>(null);
@@ -37,18 +38,18 @@ export const useForm = <T>({
   const convertedRefValues = typeof currRefValues === 'function' ? currRefValues() : currRefValues;
 
   const submit = useCallback(
-    async (e: FormEvent) => {
+    (e: FormEvent) => {
       e.preventDefault();
       setIsLoading(true);
-      validator && setInvalidFields(validator({ ...values, ...convertedRefValues }));
+      if (typeof validator === 'function') setValid(validator({ ...values, ...convertedRefValues }));
     },
-    [setIsLoading, validator, setInvalidFields, values, convertedRefValues]
+    [setIsLoading, validator, setValid, values, convertedRefValues]
   );
 
   useEffect(() => {
     isLoading &&
       (async () => {
-        if (!invalidFields || Object.keys(invalidFields).length === 0) {
+        if (valid) {
           if (!refInputNames) setValues({ ...values });
           else saveValue({ ...values, ...convertedRefValues });
 
@@ -57,7 +58,7 @@ export const useForm = <T>({
           setIsLoading(false);
         }
       })();
-  }, [isLoading, invalidFields]);
+  }, [valid]);
 
   const data = useMemo(
     () => ({
@@ -65,13 +66,14 @@ export const useForm = <T>({
       setValues,
       refValues: convertedRefValues,
       handleChange,
+      valid,
       invalidFields,
       refs,
       submit,
       isLoading,
       response,
     }),
-    [values, setValues, convertedRefValues, handleChange, invalidFields, refs, submit, isLoading, response]
+    [values, setValues, convertedRefValues, handleChange, valid, invalidFields, refs, submit, isLoading, response]
   );
 
   const updateExternalStore = useCallback(() => {
