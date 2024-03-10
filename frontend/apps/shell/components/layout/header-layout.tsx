@@ -1,9 +1,9 @@
-import { Header } from '../navigation/header';
+import { Navigation } from '../navigation/navigation';
 
 export default function HeaderLayout({ children }) {
   return (
     <>
-      <Header />
+      <Navigation />
       <main>{children}</main>
     </>
   );
