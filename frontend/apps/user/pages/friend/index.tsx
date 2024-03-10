@@ -1,15 +1,14 @@
-import { FriendFrame } from '@U/components/FriendFrame/FriendFrame';
+import { FriendFrameLayout } from '@U/components/friend-frame/friend-frame-layout/friend-frame-layout';
 import { ErrorBoundary } from '@amadda/external-temporal';
-import { FriendFrameHeader } from '@U/components/FriendFrame/FriendFrameHeader/FriendFrameHeader';
-import { FriendRouter } from '@U/components/FriendFrame/FriendRouter/FriendRouter';
+import { FriendFrameHeader } from '@U/components/friend-frame/friend-frame-layout/friend-frame-header';
+import { FriendRouter } from '@U/components/friend-frame/friend-router';
+import { FriendFrameBody } from '@U/components/friend-frame/friend-frame-layout/friend-frame-body';
 
 export default function FriendPage() {
   return (
-    <FriendFrame>
-      <ErrorBoundary>
-        <FriendFrameHeader />
-        <FriendRouter />
-      </ErrorBoundary>
-    </FriendFrame>
+    <ErrorBoundary>
+      <FriendFrameLayout />
+      <FriendRouter />
+    </ErrorBoundary>
   );
 }
