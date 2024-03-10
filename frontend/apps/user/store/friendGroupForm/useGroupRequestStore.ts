@@ -1,6 +1,7 @@
 import { create } from 'zustand';
-import { GroupRequest, groupRequestSlice } from './groupRequestSlice';
 
-export const useGroupRequestStore = create<GroupRequest>()((...a) => ({
-  ...groupRequestSlice(...a),
+import { GroupRequestFormData, groupRequestFormDataSlice } from './groupRequestFormSlice';
+
+export const useGroupRequestFormStore = create<GroupRequestFormData>()((...a) => ({
+  ...groupRequestFormDataSlice(...a),
 }));

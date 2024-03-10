@@ -1,4 +1,4 @@
-import { FriendSearch } from '@U/components/FriendFrame/FriendFrameHeader/FriendSearchInput/FriendSearchInput';
+import { FriendSearch } from '@U/components/friend-search-input/friend-search-input';
 import { UseForm } from '@amadda/react-util-hooks';
 import { ChangeEvent } from 'react';
 import type { StateCreator } from 'zustand';
