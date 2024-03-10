@@ -1,12 +1,12 @@
 import { FriendLoading } from '@U/components/friend-group/friend-group-fallbacks/friend-loading';
 import { NoFriend } from '@U/components/friend-group/friend-group-fallbacks/no-friend';
-import { deleteFriend, useFriend } from '@U/hooks/useFriend';
+import { deleteFriend, useFriend } from '@U/hooks/use-friend';
 import { GroupHeader } from './friend-group-layout/friend-group-header';
 import { BtnRound, Flex, H3, List } from '@amadda/external-temporal';
 import FRIENDS from '@U/constants/FRIENDS';
 import { GroupBody } from './friend-group-layout/friend-group-body';
 import { Friend } from '@U/components/Friend/Friend';
-import { useFriendRouter } from '@U/store/friendRouter/useFriendRouter';
+import { useFriendRouter } from '@U/store/friend-router/use-friend-router';
 
 export function FriendGroupRead() {
   const [pushToFriend, setEditing] = useFriendRouter(state => [state.PushToFriend, state.setEditing]);

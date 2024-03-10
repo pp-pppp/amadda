@@ -1,6 +1,6 @@
 import FRIENDS from '@U/constants/FRIENDS';
-import { ROUTES } from '@U/store/friendRouter/pageSlice';
-import { useFriendRouter } from '@U/store/friendRouter/useFriendRouter';
+import { ROUTES } from '@U/store/friend-router/page-slice';
+import { useFriendRouter } from '@U/store/friend-router/use-friend-router';
 import { Btn } from '@amadda/external-temporal';
 
 interface FriendControlButtonProps {

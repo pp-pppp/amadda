@@ -1,11 +1,11 @@
 import { BtnRound, Chip, Form, Input, Spacing } from '@amadda/external-temporal';
-import { createGroup, useFriend } from '@U/hooks/useFriend';
-import { useGroupRequestFormStore } from '@U/store/friendGroupForm/useGroupRequestStore';
+import { createGroup, useFriend } from '@U/hooks/use-friend';
+import { useGroupRequestFormStore } from '@U/store/group-request-form/use-group-request-store';
 import { useForm } from '@amadda/react-util-hooks';
 import { useShallow } from 'zustand/react/shallow';
-import { GroupRequestForm } from '@U/store/friendGroupForm/groupRequestFormSlice';
+import { GroupRequestForm } from '@U/store/group-request-form/group-request-form-slice';
 import { Friend } from '@U/components/Friend/Friend';
-import { useFriendRouter } from '@U/store/friendRouter/useFriendRouter';
+import { useFriendRouter } from '@U/store/friend-router/use-friend-router';
 import FRIENDS from '@U/constants/FRIENDS';
 import { friendGroupValidator } from './friend-group-validator';
 import { GroupBody } from './friend-group-layout/friend-group-body';

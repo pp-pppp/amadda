@@ -1,4 +1,4 @@
-import { useFriendRouter } from '@U/store/friendRouter/useFriendRouter';
+import { useFriendRouter } from '@U/store/friend-router/use-friend-router';
 import { FriendGroupEdit } from '../friend-group/friend-group-edit';
 import { FriendGroupCreate } from '@U/components/friend-group/friend-group-create';
 import { FriendGroupRead } from '@U/components/friend-group/friend-group-read';

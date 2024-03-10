@@ -1,5 +1,5 @@
 import { FriendSearch } from '@U/components/friend-search-input/friend-search-input';
-import { GroupRequestForm } from '@U/store/friendGroupForm/groupRequestFormSlice';
+import { GroupRequestForm } from '@U/store/group-request-form/group-request-form-slice';
 import { clientFetch } from '@amadda/fetch';
 import { FriendReadResponse, GroupCreateRequest, GroupUpdateRequest, User, UserRelationResponse } from '@amadda/global-types';
 import useSWR from 'swr';

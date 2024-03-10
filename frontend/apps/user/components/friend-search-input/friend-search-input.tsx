@@ -3,9 +3,9 @@ import { Form, Input, Label, debounce } from '@amadda/external-temporal';
 import FriendsConstants from '../../constants/FRIENDS';
 import { useForm } from '@amadda/react-util-hooks';
 import { FRIEND_SEARCH_FORM_INIT } from '@U/constants/FRIEND_SEARCH_FORM_INIT';
-import { useFriendRouter } from '@U/store/friendRouter/useFriendRouter';
-import { useFriendSearchStore } from '@U/store/friendSearchForm/useFriendSearchStore';
-import { useSearchFriend } from '@U/hooks/useFriend';
+import { useFriendRouter } from '@U/store/friend-router/use-friend-router';
+import { useFriendSearchStore } from '@U/store/friend-search-form/use-friend-search-store';
+import { useSearchFriend } from '@U/hooks/use-friend';
 
 export type FriendSearch = { friendSearch: string };
 

@@ -1,4 +1,4 @@
-import { GroupRequestForm } from '@U/store/friendGroupForm/groupRequestFormSlice';
+import { GroupRequestForm } from '@U/store/group-request-form/group-request-form-slice';
 
 export function friendGroupValidator(formdata: GroupRequestForm) {
   if (formdata.groupName.length === 0) return false;
