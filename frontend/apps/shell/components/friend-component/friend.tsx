@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { BtnRound, Flex, Input, List, Profile, Spacing, Span } from '@amadda/external-temporal';
 import { FRIEND_PROFILE } from '../friend-groups/friends.css';
 import { MODE_CONTEXT } from '../friend-frame/friend-frame';
-import FRIENDS from '@/constants/friend/FRIENDS';
+import FRIENDS from '@/constants/friend/friend';
 
 export interface FriendProps {
   userSeq: number;

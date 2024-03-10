@@ -1,6 +1,6 @@
 import React from 'react';
 import { BASE } from './mobile-calendar-index.css';
-import WEEKDAY from '@/constants/schedule/WEEKDAY';
+import WEEKDAY from '@/constants/schedule/weekday';
 import { Span } from '@amadda/external-temporal';
 
 export function MobileCalendarIndex() {

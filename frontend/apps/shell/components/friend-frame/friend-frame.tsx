@@ -3,7 +3,7 @@ import { BtnRound, Flex, H3, Spacing } from '@amadda/external-temporal';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
 import { createContext, useState } from 'react';
 import { FRAME } from './friend-frame.css';
-import FriendsConstants from '../../constants/friend/FRIENDS';
+import FriendsConstants from '@/constants/friend/friend';
 import { FriendGroupData } from '../friend-group-data/friend-group-data';
 import { FriendSearch } from '../friend-search/friend-search';
 

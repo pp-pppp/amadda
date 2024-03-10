@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Flex, H6, P, Spacing, Switch } from '@amadda/external-temporal';
-import ALARMTYPE from '@/constants/notice/ALARMTYPE';
+import ALARMTYPE from '@/constants/notice/alarm-type';
 import { BACKGROUND } from '../notice-view/notice-list.css';
 import { clientFetch } from '@amadda/fetch';
 

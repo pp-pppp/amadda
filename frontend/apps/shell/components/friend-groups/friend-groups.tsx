@@ -5,7 +5,7 @@ import { Flex, Icon, List, Spacing } from '@amadda/external-temporal';
 import { FOLD_VARIANT, FRIEND_LIST, GROUP_EDIT, GROUP_LAYOUT, GROUP_NAME, GROUP_NAME_CHANGE, TOGGLE } from './friends.css';
 
 import { MODE_CONTEXT } from '../friend-frame/friend-frame';
-import FriendsConstants from '../../constants/friend/FRIENDS';
+import FriendsConstants from '@/constants/friend/friend';
 import { useRouter } from 'next/router';
 import { GroupCreateRequest, GroupUpdateRequest } from '@amadda/global-types';
 import { clientFetch } from '@amadda/fetch';
