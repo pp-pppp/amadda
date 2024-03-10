@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ComponentPropsWithoutRef } from 'react';
-import { MENU } from './header.css';
+import { MENU } from './navigation.css';
 import { Icon, IconProps } from '@amadda/external-temporal';
 
 export interface MenuProps extends ComponentPropsWithoutRef<'button'> {

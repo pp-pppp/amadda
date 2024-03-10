@@ -1,12 +1,12 @@
 import React from 'react';
 import { Flex, Spacing } from '@amadda/external-temporal';
-import { BASE } from './header.css';
+import { BASE } from './navigation.css';
 import { Menu } from './menu';
 
 import { useRouter } from 'next/router';
 import { useSubscribeNotice } from '@/hooks/notice/use-subscribe-notice';
 
-export function Header() {
+export function Navigation() {
   const router = useRouter();
   const { data, error } = useSubscribeNotice();
   return (
