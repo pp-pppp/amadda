@@ -13,9 +13,11 @@ export default {
   },
   INPUT: {
     SEARCH: '친구 찾기',
+    ADD_GROUP: '그룹 이름을 입력하세요',
   },
   GROUPS: {
     ALL_FRIENDS: '전체',
+    SEARCH_RESULT: '친구를 찾았어요',
   },
   FALLBACKS: {
     NO_FRIEND: '새로운 친구를 등록해보세요',
