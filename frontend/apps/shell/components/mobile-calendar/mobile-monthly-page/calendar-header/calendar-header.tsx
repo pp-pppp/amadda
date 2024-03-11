@@ -1,7 +1,7 @@
 import { useDateStore } from '@/store/schedule/date-store';
 import { BtnRound, Filter, Flex, H2, P, Spacing } from '@amadda/external-temporal';
 import { useEffect, useState, MouseEvent, ChangeEvent } from 'react';
-import CALENDAR from '@/constants/schedule/CALENDAR';
+import CALENDAR from '@/constants/schedule/calendar';
 import { useGetCategory } from '@/hooks/schedule/use-category';
 import { useCategoryStore } from '@/store/schedule/category-store';
 import { useFilterStore } from '@/store/schedule/filter-store';

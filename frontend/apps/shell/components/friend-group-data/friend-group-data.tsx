@@ -3,7 +3,7 @@ import React, { useContext, useState } from 'react';
 import { FriendFrame, MODE_CONTEXT } from '../friend-frame/friend-frame';
 import { useFriend } from '@/hooks/friend/use-friend';
 import { FriendGroups } from '../friend-groups/friend-groups';
-import FRIENDS from '@/constants/friend/FRIENDS';
+import FRIENDS from '@/constants/friend/friend';
 import { Friend } from '../friend-component/friend';
 export interface FriendGroupDataProps {
   groupSeq?: number;

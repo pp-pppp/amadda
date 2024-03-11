@@ -2,7 +2,7 @@ import { useDateStore } from '@/store/schedule/date-store';
 import { useEffect, useState } from 'react';
 import { Spacing, Span } from '@amadda/external-temporal';
 import { BASE } from './daily-list.css';
-import CALENDAR from '@/constants/schedule/CALENDAR';
+import CALENDAR from '@/constants/schedule/calendar';
 import { useDailySchedule } from '@/hooks/schedule/use-schedule-list';
 import { useCategoryStore } from '@/store/schedule/category-store';
 import { MobileDailyPlateList } from '@/components/mobile-daily-plate-list/mobile-daily-plate-list';

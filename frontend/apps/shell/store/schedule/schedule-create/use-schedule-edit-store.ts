@@ -2,7 +2,7 @@ import type { ScheduleCreateRequest, ScheduleUpdateRequest } from '@amadda/globa
 import type { ScheduleEditFormData } from '@/components/schedule-edit/schedule-edit-form/formdata';
 import type { UseForm } from '@amadda/react-util-hooks';
 import type { StateCreator } from 'zustand';
-import { initFormValues } from '@/constants/schedule/SCHEDULE_EDIT_INIT';
+import { initFormValues } from '@/constants/schedule/schedule-edit-init';
 import { formToRequest } from '@/utils/schedule/convertFormData';
 import { create } from 'zustand';
 

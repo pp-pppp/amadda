@@ -3,7 +3,7 @@ import { FABLAYOUT_MOBILE, INDEXLAYOUT_MOBILE } from '@/layout/layouts.css';
 import { FAB, Segments } from '@amadda/external-temporal';
 import { MobileMonthlyPage } from './mobile-monthly-page/mobile-monthly-page';
 import { MobileUnscheduledPage } from './mobile-unscheduled-page/mobile-unscheduled-page';
-import CALENDAR from '@/constants/schedule/CALENDAR';
+import CALENDAR from '@/constants/schedule/calendar';
 import { useRouter } from 'next/router';
 
 export function MobileMain() {

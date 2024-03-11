@@ -3,7 +3,7 @@ import { CommentCreateRequest, ScheduleDetailReadResponse } from '@amadda/global
 import { Chip, Flex, H2, P, Icon, Spacing, Span, Profile, Input, Btn, Textarea } from '@amadda/external-temporal';
 import { InferGetServerSidePropsType } from 'next';
 import { getServerSideProps } from '@/pages/schedule/[schedule_seq]';
-import CALENDAR from '@/constants/schedule/CALENDAR';
+import CALENDAR from '@/constants/schedule/calendar';
 import { BASE, BUTTON, GRID } from './schedule-detail.css';
 import { CategoryOption } from '../category-select/category-option';
 import { clientFetch } from '@amadda/fetch';

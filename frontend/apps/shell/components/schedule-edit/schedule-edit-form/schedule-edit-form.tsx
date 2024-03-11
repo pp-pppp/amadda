@@ -1,8 +1,8 @@
 import React from 'react';
 import { Btn, Flex, Form, H2, H4, Spacing } from '@amadda/external-temporal';
 import { useForm } from '@amadda/react-util-hooks';
-import { CREATE } from '@/constants/schedule/CREATE';
-import { initFormValues, refInputNames } from '@/constants/schedule/SCHEDULE_EDIT_INIT';
+import { CREATE } from '@/constants/schedule/edit';
+import { initFormValues, refInputNames } from '@/constants/schedule/schedule-edit-init';
 import { useScheduleSubmit } from '@/hooks/schedule/use-schedule-submit';
 import { scheduleFormValidator } from '@/utils/schedule/validators/scheduleValidator';
 import { ScheduleEditFormData } from './formdata';

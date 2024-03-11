@@ -1,5 +1,5 @@
 import { Label, Flex, Input, Spacing, Span } from '@amadda/external-temporal';
-import { DATE_INIT } from '@/constants/schedule/DATE_INIT';
+import { DATE_INIT } from '@/constants/schedule/date-init';
 import { useScheduleEditStore } from '@/store/schedule/schedule-create/use-schedule-edit-store';
 import { useShallow } from 'zustand/react/shallow';
 

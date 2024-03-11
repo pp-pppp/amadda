@@ -1,7 +1,7 @@
 import React from 'react';
 import { BtnRound, Flex, H6, P, Spacing } from '@amadda/external-temporal';
-import ALARMTYPE from '@/constants/notice/ALARMTYPE';
-import ALARMUI from '@/constants/notice/ALARMUI';
+import ALARMTYPE from '@/constants/notice/alarm-type';
+import ALARMUI from '@/constants/notice/alarm-ui';
 import { BACKGROUND } from './notice-list.css';
 
 export interface NoticeProps {

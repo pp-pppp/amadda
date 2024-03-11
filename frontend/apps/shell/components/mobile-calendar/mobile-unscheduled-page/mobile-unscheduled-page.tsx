@@ -1,6 +1,6 @@
 import { MobileDailyPlate } from '@/components/mobile-daily-plate/mobile-daily-plate';
 import { MobileDailyPlateList } from '@/components/mobile-daily-plate-list/mobile-daily-plate-list';
-import CALENDAR from '@/constants/schedule/CALENDAR';
+import CALENDAR from '@/constants/schedule/calendar';
 import { useUnscheduled } from '@/hooks/schedule/use-schedule-list';
 import { Spacing, Span, ErrorBoundary } from '@amadda/external-temporal';
 import { ReactNode, useEffect, useState } from 'react';

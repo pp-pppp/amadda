@@ -3,7 +3,7 @@ import { Friend } from '@/components/friend-component/friend';
 import { useFriend } from '@/hooks/friend/use-friend';
 import { ErrorBoundary } from '@amadda/external-temporal';
 import { clientFetch } from '@amadda/fetch';
-import FRIENDS from '@/constants/friend/FRIENDS';
+import FRIENDS from '@/constants/friend/friend';
 
 export default function FriendPage() {
   const { data, isLoading, error } = useFriend();
