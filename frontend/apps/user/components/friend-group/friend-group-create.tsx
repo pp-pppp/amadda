@@ -14,14 +14,14 @@ import { GroupHeader } from './friend-group-layout/friend-group-header';
 export function FriendGroupCreate() {
   const pushToFriend = useFriendRouter(state => state.PushToFriend);
 
-  const [values, setGroup, addUser, deleteUser, setFormData] = useGroupRequestFormStore(
-    useShallow(state => [state.values, state.setGroup, state.addUser, state.deleteUser, state.setFormData])
+  const [values, setGroup, submit, handleChange, addUser, deleteUser, setFormData] = useGroupRequestFormStore(
+    useShallow(state => [state.values, state.setGroup, state.submit, state.handleChange, state.addUser, state.deleteUser, state.setFormData])
   );
 
   const { data, mutate } = useFriend();
   const [ALL_FRIENDS] = data?.filter(group => group.groupName === null) || [];
 
-  const { submit, handleChange } = useForm<GroupRequestForm>({
+  useForm<GroupRequestForm>({
     initialValues: values,
     onSubmit: () => createGroup(values),
     setExternalStoreData: setFormData,
