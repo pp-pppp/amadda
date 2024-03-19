@@ -19,8 +19,8 @@ export function FriendGroupUpdate() {
     state.setUpdatingGroupSeq,
   ]);
 
-  const [values, setGroup, addUser, deleteUser, setFormData] = useGroupRequestFormStore(
-    useShallow(state => [state.values, state.setGroup, state.addUser, state.deleteUser, state.setFormData])
+  const [values, setGroup, addUser, submit, handleChange, deleteUser, setFormData] = useGroupRequestFormStore(
+    useShallow(state => [state.values, state.setGroup, state.addUser, state.submit, state.handleChange, state.deleteUser, state.setFormData])
   );
 
   const { data, mutate } = useFriend();
@@ -34,7 +34,7 @@ export function FriendGroupUpdate() {
     { ALL_FRIENDS: null as Group | null, UPDATING_GROUP: null as Group | null }
   ) ?? { ALL_FRIENDS: null, UPDATING_GROUP: null };
 
-  const { submit, handleChange } = useForm<GroupRequestForm>({
+  useForm<GroupRequestForm>({
     initialValues: values,
     onSubmit: () => updateGroup(updatingGroupSeq, values),
     setExternalStoreData: setFormData,
@@ -46,7 +46,7 @@ export function FriendGroupUpdate() {
       const group: GroupRequestForm = { groupName: UPDATING_GROUP.groupName, groupMembers: UPDATING_GROUP.groupMember };
       setGroup(group);
     }
-  }, [updatingGroupSeq]);
+  }, [UPDATING_GROUP]);
 
   return (
     <>
