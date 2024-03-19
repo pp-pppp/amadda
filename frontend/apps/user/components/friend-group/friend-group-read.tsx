@@ -9,7 +9,7 @@ import { Friend } from '@U/components/Friend/Friend';
 import { useFriendRouter } from '@U/store/friend-router/use-friend-router';
 
 export function FriendGroupRead() {
-  const [pushToFriend, setEditing] = useFriendRouter(state => [state.PushToFriend, state.setUpdating]);
+  const [pushToFriend, setEditing] = useFriendRouter(state => [state.PushToFriend, state.setUpdatingGroupSeq]);
 
   const { data, isLoading, error, mutate } = useFriend();
   if (isLoading) return <FriendLoading />;

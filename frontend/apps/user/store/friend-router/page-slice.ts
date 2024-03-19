@@ -4,13 +4,13 @@ export const ROUTES = ['READ', 'SEARCH', 'UPDATE', 'ADD'] as const;
 
 export interface Page {
   PATH: (typeof ROUTES)[number];
-  updating: number | null;
-  setUpdating: (to: number | null) => void;
+  updatingGroupSeq: number | null;
+  setUpdatingGroupSeq: (to: number | null) => void;
   PushToFriend: (to: (typeof ROUTES)[number]) => void;
 }
 export const pageSlice: StateCreator<Page, [], [], Page> = set => ({
   PATH: 'READ',
-  updating: null,
-  setUpdating: to => set(state => ({ updating: to })),
+  updatingGroupSeq: null,
+  setUpdatingGroupSeq: to => set(state => ({ updatingGroupSeq: to })),
   PushToFriend: to => set(state => ({ PATH: to })),
 });
