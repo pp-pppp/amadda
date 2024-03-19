@@ -12,8 +12,8 @@ import { Group } from '@amadda/global-types';
 import { GroupBody } from './friend-group-layout/friend-group-body';
 import { GroupHeader } from './friend-group-layout/friend-group-header';
 
-export function FriendGroupEdit() {
-  const [pushToFriend, editing, setEditing] = useFriendRouter(state => [state.PushToFriend, state.editing, state.setEditing]);
+export function FriendGroupUpdate() {
+  const [pushToFriend, updating, setUpdating] = useFriendRouter(state => [state.PushToFriend, state.updating, state.setUpdating]);
 
   const [values, setGroup, addUser, deleteUser, setFormData] = useGroupRequestFormStore(
     useShallow(state => [state.values, state.setGroup, state.addUser, state.deleteUser, state.setFormData])
@@ -21,25 +21,25 @@ export function FriendGroupEdit() {
 
   const { data, mutate } = useFriend();
 
-  const { ALL_FRIENDS, EDITING_GROUP } = data?.reduce(
+  const { ALL_FRIENDS, UPDATING_GROUP } = data?.reduce(
     (acc, group) => {
-      if (group.groupSeq === editing) acc.EDITING_GROUP = group;
+      if (group.groupSeq === updating) acc.UPDATING_GROUP = group;
       if (group.groupName === null) acc.ALL_FRIENDS = group;
       return acc;
     },
-    { ALL_FRIENDS: null as Group | null, EDITING_GROUP: null as Group | null }
-  ) ?? { ALL_FRIENDS: null, EDITING_GROUP: null };
+    { ALL_FRIENDS: null as Group | null, UPDATING_GROUP: null as Group | null }
+  ) ?? { ALL_FRIENDS: null, UPDATING_GROUP: null };
 
   useEffect(() => {
-    if (EDITING_GROUP) {
-      const group: GroupRequestForm = { groupName: EDITING_GROUP.groupName, groupMembers: EDITING_GROUP.groupMember };
+    if (UPDATING_GROUP) {
+      const group: GroupRequestForm = { groupName: UPDATING_GROUP.groupName, groupMembers: UPDATING_GROUP.groupMember };
       setGroup(group);
     }
-  }, [editing]);
+  }, [updating]);
 
   const { submit, handleChange } = useForm<GroupRequestForm>({
     initialValues: values,
-    onSubmit: () => updateGroup(editing, values),
+    onSubmit: () => updateGroup(updating, values),
     setExternalStoreData: setFormData,
     setExternalStoreValues: setGroup,
   });
@@ -52,7 +52,7 @@ export function FriendGroupEdit() {
           e.preventDefault();
           submit(values);
           await mutate();
-          setEditing(null);
+          setUpdating(null);
           pushToFriend('READ');
         }}
       >
@@ -66,7 +66,7 @@ export function FriendGroupEdit() {
             variant="white"
             onClick={() => {
               pushToFriend('READ');
-              setEditing(null);
+              setUpdating(null);
             }}
           >
             {FRIENDS.BTN.CANCEL}
@@ -90,7 +90,7 @@ export function FriendGroupEdit() {
           type="button"
           variant="black"
           onClick={() => {
-            setEditing(null);
+            setUpdating(null);
           }}
         >
           {FRIENDS.BTN.GROUP_DELETE}

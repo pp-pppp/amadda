@@ -1,5 +1,5 @@
 import { useFriendRouter } from '@U/store/friend-router/use-friend-router';
-import { FriendGroupEdit } from '../friend-group/friend-group-edit';
+import { FriendGroupUpdate } from '../friend-group/friend-group-update';
 import { FriendGroupCreate } from '@U/components/friend-group/friend-group-create';
 import { FriendGroupRead } from '@U/components/friend-group/friend-group-read';
 import { FriendGroupSearch } from '@U/components/friend-group/friend-group-search';
@@ -15,7 +15,7 @@ export function FriendRouter() {
     case 'SEARCH':
       return <FriendGroupSearch />;
     case 'EDIT':
-      return <FriendGroupEdit />;
+      return <FriendGroupUpdate />;
     default:
       PushToFriend('READ');
       return <FriendGroupRead />;
