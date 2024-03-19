@@ -9,7 +9,7 @@ import { Friend } from '@U/components/Friend/Friend';
 import { useFriendRouter } from '@U/store/friend-router/use-friend-router';
 
 export function FriendGroupRead() {
-  const [pushToFriend, setEditing] = useFriendRouter(state => [state.PushToFriend, state.setEditing]);
+  const [pushToFriend, setEditing] = useFriendRouter(state => [state.PushToFriend, state.setUpdating]);
 
   const { data, isLoading, error, mutate } = useFriend();
   if (isLoading) return <FriendLoading />;
@@ -25,10 +25,10 @@ export function FriendGroupRead() {
               variant="key"
               onClick={() => {
                 setEditing(group.groupSeq);
-                pushToFriend('EDIT');
+                pushToFriend('UPDATE');
               }}
             >
-              {FRIENDS.BTN.GROUP_EDIT}
+              {FRIENDS.BTN.GROUP_UPDATE}
             </BtnRound>
           )}
         </GroupHeader>

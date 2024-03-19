@@ -1,6 +1,6 @@
 import type { StateCreator } from 'zustand';
 
-export const ROUTES = ['READ', 'SEARCH', 'EDIT', 'ADD'] as const;
+export const ROUTES = ['READ', 'SEARCH', 'UPDATE', 'ADD'] as const;
 
 export interface Page {
   PATH: (typeof ROUTES)[number];

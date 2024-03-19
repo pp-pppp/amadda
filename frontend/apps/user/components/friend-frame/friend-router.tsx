@@ -14,7 +14,7 @@ export function FriendRouter() {
       return <FriendGroupRead />;
     case 'SEARCH':
       return <FriendGroupSearch />;
-    case 'EDIT':
+    case 'UPDATE':
       return <FriendGroupUpdate />;
     default:
       PushToFriend('READ');

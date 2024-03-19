@@ -2,7 +2,7 @@ export default {
   TITLE: '내 친구',
   BTN: {
     READ: '내 친구 보기',
-    GROUP_EDIT: '그룹 편집',
+    GROUP_UPDATE: '그룹 편집',
     GROUP_SAVE: '저장',
     CANCEL: '취소',
     FIND_FRIEND: '친구 찾기',
