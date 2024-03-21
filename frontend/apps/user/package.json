@@ -4,6 +4,7 @@
   "dependencies": {
     "@amadda/external-temporal": "workspace:*",
     "@amadda/fetch": "workspace:*",
+    "@amadda/react-util-hooks": "workspace:*",
     "@sentry/nextjs": "^7.86.0",
     "@vanilla-extract/css": "1.13.0",
     "next": "13.4.12",
