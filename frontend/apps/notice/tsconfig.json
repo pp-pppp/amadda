@@ -5,8 +5,7 @@
     "baseUrl": "./",
     "paths": {
       "@N/*": ["./*"],
-      "#/components/*": ["../../_libs/external-temporal/components/*"],
-      "#/constants/*": ["../../_libs/external-temporal/constants/*"]
+      "#/*": ["../../_libs/external-temporal/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

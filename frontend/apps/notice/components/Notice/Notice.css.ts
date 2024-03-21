@@ -1,4 +1,4 @@
-import { colors } from '@amadda/external-temporal';
+import { colors } from '#/style/colors';
 import { styleVariants } from '@vanilla-extract/css';
 export const BACKGROUND = styleVariants({
   normal: {
