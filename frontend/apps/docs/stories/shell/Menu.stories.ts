@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Menu } from '../../../shell/components/Header/Menu';
+import { Menu } from '../../../shell/components/navigation/Menu';
 
 const meta = {
   title: 'Shell/Menu',

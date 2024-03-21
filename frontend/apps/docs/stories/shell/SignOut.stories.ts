@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import SignOut from '../../../shell/components/SignOut/SignOut';
+import SignOut from '../../../shell/components/sign-out/SignOut';
 
 const meta = {
   title: 'Shell/SignOut',

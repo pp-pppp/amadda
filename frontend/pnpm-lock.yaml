@@ -511,6 +511,9 @@ importers:
       '@amadda/fetch':
         specifier: workspace:*
         version: link:../../_libs/fetch
+      '@amadda/react-util-hooks':
+        specifier: workspace:*
+        version: link:../../_libs/react-util-hooks
       '@sentry/nextjs':
         specifier: ^7.86.0
         version: 7.86.0(next@13.4.12)(react@18.2.0)(webpack@5.80.0)
@@ -520,6 +523,9 @@ importers:
       cookie:
         specifier: ^0.6.0
         version: 0.6.0
+      kafkajs:
+        specifier: ^2.2.4
+        version: 2.2.4
       next:
         specifier: 13.4.12
         version: 13.4.12(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)
@@ -542,9 +548,6 @@ importers:
       '@amadda/global-types':
         specifier: workspace:*
         version: link:../../_libs/global-types
-      '@module-federation/nextjs-mf':
-        specifier: ^8.1.0
-        version: 8.1.0(next@13.4.12)(react-dom@18.2.0)(react@18.2.0)(webpack@5.80.0)
       '@testing-library/dom':
         specifier: 9.3.3
         version: 9.3.3

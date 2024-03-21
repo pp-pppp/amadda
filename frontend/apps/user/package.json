@@ -1,13 +1,6 @@
 {
   "name": "user",
   "version": "0.1.0",
-  "scripts": {
-    "dev": "rm -rf .next && next dev -p 3001",
-    "build": "next build",
-    "start": "next start -p 3001",
-    "test": "jest --watch --passWithNoTests",
-    "test:ci": "jest --ci --passWithNoTests"
-  },
   "dependencies": {
     "@amadda/external-temporal": "workspace:*",
     "@amadda/fetch": "workspace:*",

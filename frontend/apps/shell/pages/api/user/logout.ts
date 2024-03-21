@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { auth, https } from '@amadda/fetch';
+import { withAuth, https } from '@amadda/fetch';
 import type { ApiResponse } from '@amadda/global-types';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
