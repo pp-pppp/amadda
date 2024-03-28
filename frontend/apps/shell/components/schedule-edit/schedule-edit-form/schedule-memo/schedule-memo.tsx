@@ -1,4 +1,4 @@
-import { CREATE } from '@/constants/schedule/edit';
+import { CREATE } from '@/constants/schedule/edit-ui';
 import { useScheduleEditStore } from '@/store/schedule/schedule-create/use-schedule-edit-store';
 import { Label, Textarea } from '@amadda/external-temporal';
 import { useShallow } from 'zustand/react/shallow';

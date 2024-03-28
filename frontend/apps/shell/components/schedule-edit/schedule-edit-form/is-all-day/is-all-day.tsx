@@ -6,7 +6,7 @@ import { useShallow } from 'zustand/react/shallow';
 export function IsAllDay() {
   const [values, setValues, handleChange] = useScheduleEditStore(useShallow(state => [state.values, state.setValues, state.handleChange]));
 
-  const handleIsAllDay = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleIsAllDay = (e: ChangeEvent<HTMLInputElement & HTMLTextAreaElement>) => {
     handleChange(e);
     if (values?.isDateSelected) setValues({ ...values, isDateSelected: false, isAllday: !values.isAllday });
   };
