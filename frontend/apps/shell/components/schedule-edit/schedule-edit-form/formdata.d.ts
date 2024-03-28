@@ -1,4 +1,4 @@
-import { CREATE } from '@/constants/schedule/edit';
+import { CREATE } from '@/constants/schedule/edit-ui';
 import { CategoryReadResponse, FriendReadResponse, UserReadResponse } from '@amadda/global-types';
 
 export interface ScheduleEditFormData {

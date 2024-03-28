@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ChangeEvent, FormEvent, RefObject } from 'react';
-import type { UseForm, UseFormArgs } from './types';
+import { UseForm, UseFormArgs } from './types';
 
 export const useForm = <T extends Object>({
   initialValues,
@@ -26,9 +26,11 @@ export const useForm = <T extends Object>({
   );
 
   const handleChange = useCallback(
-    async (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const { name, value } = e.target;
-      saveValue({ ...values, [name]: value });
+    async (e: ChangeEvent<HTMLInputElement & HTMLTextAreaElement>) => {
+      const t = e.target;
+      const checkbox = t.type === 'checkbox';
+      if (checkbox) saveValue({ ...values, [t.name]: t.checked });
+      else saveValue({ ...values, [t.name]: t.value });
     },
     [saveValue, setValues]
   );
@@ -37,14 +39,10 @@ export const useForm = <T extends Object>({
   const [currRefValues, refs] = useRefInputInit<T>(refInputNamesType);
   const convertedRefValues = typeof currRefValues === 'function' ? currRefValues() : currRefValues;
 
-  const submit = useCallback(
-    (e: FormEvent) => {
-      e.preventDefault();
-      setIsLoading(true);
-      if (typeof validator === 'function') setValid(validator({ ...values, ...convertedRefValues }));
-    },
-    [setIsLoading, validator, setValid, values, convertedRefValues]
-  );
+  const submit = (e: FormEvent) => {
+    setIsLoading(true);
+    if (typeof validator === 'function') setValid(validator({ ...values, ...convertedRefValues }));
+  };
 
   useEffect(() => {
     isLoading &&
@@ -52,7 +50,6 @@ export const useForm = <T extends Object>({
         if (valid) {
           if (!refInputNames) setValues({ ...values });
           else saveValue({ ...values, ...convertedRefValues });
-
           const res = await onSubmit(values);
           setResponse(res);
           setIsLoading(false);
@@ -60,27 +57,24 @@ export const useForm = <T extends Object>({
       })();
   }, [valid]);
 
-  const data = useMemo(
-    () => ({
-      values,
-      setValues,
-      refValues: convertedRefValues,
-      handleChange,
-      valid,
-      invalidFields,
-      refs,
-      submit,
-      isLoading,
-      response,
-    }),
-    [values, setValues, convertedRefValues, handleChange, valid, invalidFields, refs, submit, isLoading, response]
-  );
+  const data = {
+    values,
+    setValues,
+    refValues: convertedRefValues,
+    handleChange,
+    valid,
+    invalidFields,
+    refs,
+    submit,
+    isLoading,
+    response,
+  };
 
-  const updateExternalStore = useCallback(() => {
+  const updateExternalStore = () => {
     if (typeof setExternalStoreData !== 'function' && typeof setExternalStoreData !== 'undefined')
       console.error('<!> useForm: setExternalStoreData should be a function');
     typeof setExternalStoreData === 'function' && setExternalStoreData(data);
-  }, [data, setExternalStoreData]);
+  };
 
   useEffect(() => {
     updateExternalStore();

@@ -32,13 +32,6 @@ export const TOGGLE = style({
   padding: '0',
   margin: '0 0 0.5rem 0',
 });
-export const FRIEND_LIST = style({
-  width: '100%',
-});
-export const FRIEND_PROFILE = style({
-  padding: '0.25rem',
-  width: '100%',
-});
 
 const GROUP_EDIT_BASE = style({
   border: `1px solid transparent`,

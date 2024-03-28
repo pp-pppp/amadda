@@ -36,7 +36,6 @@ const createUseFormSlice: StateCreator<InputSlice & UseFormSlice, [], [], UseFor
   isLoading: false,
   response: null,
   setUseFormValues: by => {
-    console.log(by, 'useformvalues');
     return set(state => ({
       values: by,
     }));

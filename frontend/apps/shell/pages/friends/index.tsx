@@ -1,7 +1,8 @@
 import { ErrorBoundary } from '@amadda/external-temporal';
 import HeaderLayout from '@/components/layout/header-layout';
 import Head from 'next/head';
-import FriendPage from '@/components/friend-page/friend-page';
+import { FriendFrameLayout } from '@/components/friend-group/friend-group-layout/friend-group-layout';
+import { FriendRouter } from '@/components/friend-frame/friend-router';
 
 export default function Page() {
   return (
@@ -12,7 +13,9 @@ export default function Page() {
       </Head>
       <HeaderLayout>
         <ErrorBoundary>
-          <FriendPage />
+          <FriendFrameLayout>
+            <FriendRouter />
+          </FriendFrameLayout>
         </ErrorBoundary>
       </HeaderLayout>
     </div>
