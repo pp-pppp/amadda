@@ -32,7 +32,6 @@ export function ScheduleEditForm({ scheduleDetail }: ScheduleEditFormProps) {
   useForm<ScheduleEditFormData>({
     initialValues: scheduleDetail || initFormValues,
     onSubmit: scheduleSubmit,
-    validator: scheduleFormValidator,
     refInputNames: refInputNames,
     setExternalStoreValues: setUseFormValues,
     setExternalStoreData: setUseFormData,
